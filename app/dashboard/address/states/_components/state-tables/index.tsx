@@ -1,0 +1,176 @@
+'use client';
+
+import { DataTable } from '@/components/ui/table/data-table';
+import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
+import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
+import { DataTableSearch } from '@/components/ui/table/data-table-search';
+
+import { ColumnDef } from '@tanstack/react-table';
+import { CellAction } from './cell-action';
+import {
+  addEditState,
+  IState,
+  updateStateData
+} from '@/redux/slices/statesSlice';
+import { useAppDispatch } from '@/redux/hooks';
+import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
+import {
+  STATUS_OPTIONS,
+  useStateTableFilters
+} from './use-state-table-filters';
+import { Button } from '@/components/ui/button';
+
+export default function StateTable({
+  data,
+  totalData,
+  handleSearch
+}: {
+  data: IState[];
+  totalData: number;
+  handleSearch: any;
+}) {
+  const {
+    isAnyFilterActive,
+    resetFilters,
+    searchQuery,
+    statusFilter,
+    setStatusFilter,
+    setPage,
+    setSearchQuery
+  } = useStateTableFilters();
+  const dispatch = useAppDispatch();
+
+  const columns: ColumnDef<IState>[] = [
+    {
+      id: 'number',
+      header: 'S.No.',
+      cell: ({ row, table }) => {
+        const currentPage = table.getState().pagination.pageIndex; // Current page index
+        const pageSize = table.getState().pagination.pageSize; // Number of items per page
+        return <span>{currentPage * pageSize + row.index + 1}</span>; // Calculate correct S.No
+      },
+      enableSorting: false,
+      enableHiding: false
+    },
+    {
+      id: 'select',
+      header: ({ table }) =>
+        // <Checkbox
+        //   checked={table.getIsAllPageRowsSelected()}
+        //   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        //   aria-label="Select all"
+        // />
+        '',
+      cell: ({ row }) =>
+        // <Checkbox
+        //   checked={row.getIsSelected()}
+        //   onCheckedChange={(value) => row.toggleSelected(!!value)}
+        //   aria-label="Select row"
+        // />
+        '',
+      enableSorting: false,
+      enableHiding: false
+    },
+    {
+      accessorKey: 'id',
+      header: 'ID'
+    },
+    {
+      accessorKey: 'name',
+      header: 'NAME'
+    },
+    {
+      accessorKey: 'iso2',
+      header: 'ISO2'
+    },
+    {
+      accessorKey: 'country_id',
+      header: 'COUNTRY NAME'
+    },
+    {
+      accessorKey: 'country_code',
+      header: 'COUNTRY CODE'
+    },
+    {
+      accessorKey: 'fips_code',
+      header: 'FIPS CODE'
+    },
+    // {
+    //   accessorKey: 'flag',
+    //   header: 'FLAG'
+    // },
+    {
+      accessorKey: 'flag',
+      header: 'FLAG'
+    },
+    {
+      accessorKey: ' wikiDataId',
+      header: 'WIKIDATA'
+    },
+
+    {
+      accessorKey: 'active',
+      header: 'ACTIVE',
+      cell: ({ row }) => {
+        const handleToggle = async (checked: boolean) => {
+          // console.log("state active:",row.original)
+          const updatedData = { ...row.original, active: checked };
+          // console.log("state row",updatedData)
+          // console.log("state active",row.original.active)
+          try {
+            dispatch(updateStateData(updatedData));
+            const result = await dispatch(
+              addEditState(row.original._id || null)
+            ).unwrap();
+            toast.success('Status Updated Successfully!');
+          } catch (error: any) {
+            console.error('Error updating brand status:', error);
+            toast.error('Failed to Update Status');
+          }
+        };
+
+        return (
+          <Switch
+            checked={row.original.active}
+            onCheckedChange={handleToggle}
+            aria-label="Toggle Active Status"
+          />
+        );
+      }
+    },
+    {
+      header: 'ACTIONS',
+      id: 'actions',
+      cell: ({ row }) => <CellAction data={row.original} />
+    }
+  ];
+  return (
+    <div className="space-y-4 ">
+      <div className="flex flex-wrap items-center gap-4">
+        <DataTableSearch
+          searchKey="name"
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setPage={setPage}
+        />
+
+        <DataTableFilterBox
+          filterKey="active"
+          title="Filter By Status"
+          options={STATUS_OPTIONS}
+          setFilterValue={setStatusFilter}
+          filterValue={statusFilter}
+        />
+        <Button variant="outline" onClick={handleSearch}>
+          Search
+        </Button>
+        <DataTableResetFilter
+          isFilterActive={isAnyFilterActive}
+          onReset={resetFilters}
+        />
+      </div>
+      <DataTable columns={columns} data={data} totalItems={totalData} />
+    </div>
+  );
+}
