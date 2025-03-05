@@ -4,168 +4,148 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 export type ISales = BaseModel & {
-  main_heading: string;
-  main_description: string;
-  left_image: File;
-  left_image_title: string;
-  left_image_description: string;
-  left_image_link: string;
-  mid_upper_image: File;
-  mid_upper_image_title: string;
-  mid_upper_image_description: string;
-  mid_upper_image_link: string;
-  mid_lower_image: File;
-  mid_lower_image_title: string;
-  mid_lower_image_description: string;
-  mid_lower_image_link: string;
-  right_image: File;
-  right_image_title: string;
-  right_image_description: string;
-  right_image_link: string;
+  images?: {
+    leftImage?: string;
+    mainImage?: string;
+    lowerImage?: string;
+    rightImage?: string;
+    upperImage?: string;
+  };
+  titles?: {
+    leftTitle?: {
+      en?: string;
+      hi?: string;
+    };
+    rightTitle?: {
+      en?: string;
+      hi?: string;
+    };
+    upperTitle?: {
+      en?: string;
+      hi?: string;
+    };
+    lowerTitle?: {
+      en?: string;
+      hi?: string;
+    };
+    mainTitle?: {
+      en?: string;
+      hi?: string;
+    };
+  };
 };
 
 const initialState = {
   salesState: {
-    data: {}, // Initial description as an empty string
-    loading: false, // Represents whether the API call is in progress
-    error: null // Stores any errors from API calls
-  } as BaseState<ISales> // The state type is BaseState with a string as the data type
+    data: null,
+    loading: null,
+    error: null
+  } as BaseState<ISales | null>
 };
 
-export const fetchSales = createAsyncThunk<any, void, { state: RootState }>(
-  'sales/fetchData',
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      dispatch(fetchSingleSalesStart()); // Use a generic start action or create a new one
+export const fetchSales = createAsyncThunk<
+  any,
+  string | null,
+  { state: RootState }
+>('sales/fetchData', async (_, { dispatch, rejectWithValue }) => {
+  try {
+    dispatch(fetchSingleSalesStart()); // Use a generic start action or create a new one
 
-      const response = await fetchApi('/sales/all', {
-        method: 'GET'
-      });
-      if (response?.success) {
-        dispatch(fetchSingleSalesSuccess(response)); // Assuming response contains `descriptionData`
-        return response;
-      } else {
-        const errorMsg = response?.message || 'Failed to fetch description';
-        dispatch(fetchSingleSalesFailure(errorMsg));
-        return rejectWithValue(errorMsg);
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message || 'Something Went Wrong';
+    const response = await fetchApi('/store/sales/get', {
+      method: 'GET'
+    });
+    console.log('resposesata', response);
+    if (response?.success) {
+      dispatch(fetchSingleSalesSuccess(response)); // Assuming response contains `descriptionData`
+      return response;
+    } else {
+      const errorMsg = response?.message || 'Failed to fetch description';
       dispatch(fetchSingleSalesFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
+  } catch (error: any) {
+    const errorMsg = error?.message || 'Something Went Wrong';
+    dispatch(fetchSingleSalesFailure(errorMsg));
+    return rejectWithValue(errorMsg);
   }
-);
+});
 
-export const addEditSales = createAsyncThunk<
-  any,
-  {
-    main_heading: string;
-    main_description: string;
-    left_image: string;
-    left_image_title: string;
-    left_image_description: string;
-    left_image_link: string;
-    mid_upper_image: string;
-    mid_upper_image_title: string;
-    mid_upper_image_description: string;
-    mid_upper_image_link: string;
-    mid_lower_image: string;
-    mid_lower_image_title: string;
-    mid_lower_image_description: string;
-    mid_lower_image_link: string;
-    right_image: string;
-    right_image_title: string;
-    right_image_description: string;
-    right_image_link: string;
-  },
-  { state: RootState }
->(
-  'sales/addEditSales',
-  async (
-    {
-      main_heading,
-      main_description,
-      left_image,
-      left_image_title,
-      left_image_description,
-      left_image_link,
-      mid_upper_image,
-      mid_upper_image_title,
-      mid_upper_image_description,
-      mid_upper_image_link,
-      mid_lower_image,
-      mid_lower_image_title,
-      mid_lower_image_description,
-      mid_lower_image_link,
-      right_image,
-      right_image_title,
-      right_image_description,
-      right_image_link
-    },
-    { dispatch, rejectWithValue }
-  ) => {
+export const addEditSales = createAsyncThunk<any, null, { state: RootState }>(
+  'sales/addEditSale',
+  async (_, { dispatch, rejectWithValue, getState }) => {
     try {
-      dispatch(addEditSalesStart()); // Use a generic start action or create a new one
+      const {
+        sales: {
+          salesState: { data }
+        }
+      } = getState();
 
-     
+      console.log('data was coming on', data);
+
+      dispatch(addEditSalesStart());
+
+      if (!data) {
+        return rejectWithValue('Please Provide Details');
+      }
+
+      const clonedData = cloneDeep(data);
+
+      let imagesALl = {};
+
+      if (clonedData.images) {
+        imagesALl = await processNestedFields(clonedData.images || {});
+
+        clonedData.images = imagesALl;
+      }
+      console.log('data was coming on 3', clonedData);
+
+      // Prepare FormData
       const formData = new FormData();
-      formData.append('main_heading', main_heading);
-      formData.append('main_description', main_description);
-      formData.append('left_image', left_image);
-      formData.append('left_image_title', left_image_title);
-      formData.append('left_image_description', left_image_description);
-      formData.append('left_image_link', left_image_link);
-      formData.append('mid_upper_image', mid_upper_image);
-      formData.append('mid_upper_image_title', mid_upper_image_title);
-      formData.append(
-        'mid_upper_image_description',
-        mid_upper_image_description
-      );
-      formData.append('mid_upper_image_link', mid_upper_image_link);
-      formData.append('mid_lower_image', mid_lower_image);
-      formData.append('mid_lower_image_title', mid_lower_image_title);
-      formData.append(
-        'mid_lower_image_description',
-        mid_lower_image_description
-      );
-      formData.append('mid_lower_image_link', mid_lower_image_link);
-      formData.append('right_image', right_image);
-      formData.append('right_image_title', right_image_title);
-      formData.append('right_image_description', right_image_description);
-      formData.append('right_image_link', right_image_link);
+      const reqData: any = {
+        images: clonedData.images
+          ? JSON.stringify(clonedData.images)
+          : undefined,
+        titles: clonedData.titles
+          ? JSON.stringify(clonedData.titles)
+          : undefined
+      };
 
-      // Single endpoint, but the backend will decide whether to create or update
-      const endpoint = '/sales/new';
-      const method = 'POST';
+      console.log('Statw 1');
+      Object.entries(reqData).forEach(([key, value]) => {
+        console.log('Statw 2');
+        if (value !== undefined && value !== null) {
+          console.log('Statw 3');
+          formData.append(key, value as string | Blob);
+        }
+        console.log('Statw 4');
+      });
+      console.log('Statw 5');
 
-      const response = await fetchApi(endpoint, {
-        method,
+      console.log('data was coming on 4', formData);
+
+      let response = await fetchApi('/store/sales/createorupdate', {
+        method: 'POST',
         body: formData
       });
 
       if (response?.success) {
         dispatch(addEditSalesSuccess());
-        toast.success(
-          response?.isNew
-            ? 'Sales created successfully'
-            : 'Sales updated successfully'
-        );
-
-        dispatch(fetchSales()); // Re-fetch to update the latest data
+        dispatch(setSales(null));
+        dispatch(fetchSales(null));
         return response;
       } else {
-        const errorMsg = response?.message || 'Failed to save description';
+        const errorMsg = response?.data?.message ?? 'Something Went Wrong!';
         dispatch(addEditSalesFailure(errorMsg));
-        toast.error(errorMsg);
         return rejectWithValue(errorMsg);
       }
     } catch (error: any) {
-      const errorMsg = error?.message || 'Something Went Wrong';
+      const errorMsg = error?.message ?? 'Something Went Wrong!';
       dispatch(addEditSalesFailure(errorMsg));
-      toast.error(errorMsg);
       return rejectWithValue(errorMsg);
     }
   }
@@ -198,12 +178,30 @@ const salesSlice = createSlice({
     },
     fetchSingleSalesSuccess(state, action) {
       state.salesState.loading = false;
-      state.salesState.data = action.payload.SalesData;
+      state.salesState.data = action.payload.salesData;
       state.salesState.error = null;
     },
     fetchSingleSalesFailure(state, action) {
       state.salesState.loading = false;
       state.salesState.error = action.payload;
+    },
+    setSales(state, action) {
+      state.salesState.data = action.payload;
+    },
+    updateSalesPage(state, action) {
+      const oldData = state.salesState.data;
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.salesState.data = newData;
+      } else {
+        state.salesState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     }
   }
 });
@@ -212,7 +210,8 @@ export const {
   addEditSalesStart,
   addEditSalesSuccess,
   addEditSalesFailure,
-
+  setSales,
+  updateSalesPage,
   fetchSingleSalesStart,
   fetchSingleSalesSuccess,
   fetchSingleSalesFailure
