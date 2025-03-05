@@ -57,7 +57,7 @@ export const fetchSlidersList = createAsyncThunk<
     field?: string;
     status?: string;
     exportData?: boolean;
-  },
+  } | void,
   { state: RootState }
 >('sliders/fetchSlidersList', async (input, { dispatch, rejectWithValue }) => {
   try {
@@ -90,55 +90,6 @@ export const fetchSlidersList = createAsyncThunk<
     return rejectWithValue(error?.message || 'Something went wrong');
   }
 });
-
-// Async thunk to add/edit sliders
-// export const addEditSliders = createAsyncThunk<
-// any, // The return type of the thunk
-// { data: any, isUpdate: boolean }, // The argument type with data and isUpdate flag
-// { state: SlidersRootState }// The type of the root state
-// >(
-//   'sliders/addEdit',
-//   async ({data,isUpdate}, { dispatch, rejectWithValue }) => {
-
-//     if (!data) {
-//       return rejectWithValue('Please provide slider details');
-//     }
-
-//     // Prepare form data for the API request
-//     const formData = new FormData();
-//     Object.entries(data).forEach(([key, value]) => {
-//       if (value !== undefined && value !== null) {
-//         formData.append(key, value as string | Blob);
-//       }
-//     });
-
-//     // Debugging: Log the form data to ensure all data is appended correctly
-//     for (let [key, value] of formData.entries()) {
-
-//     }
-
-//     try {
-//       // Determine the request method and endpoint based on the isUpdate flag
-//       const endpoint = isUpdate ? `/sliders/${data.id}` : '/sliders/new';
-//       const method = isUpdate ? 'PUT' : 'POST';
-
-//       // Make the request (POST for new slider, PUT for updating)
-//       const response = await fetchApi(endpoint, { method, body: formData });
-
-//       // Handle the response
-//       if (response?.success) {
-//         dispatch(addEditSlidersSuccess()); // Dispatch success action
-//         return response; // Return response data
-//       } else {
-//         throw new Error(response?.message || 'Failed to save slider');
-//       }
-//     } catch (error: any) {
-//       // Dispatch failure action
-//       dispatch(addEditSlidersFailure(error?.message || 'Something went wrong'));
-//       // Reject with error message
-//       return rejectWithValue(error?.message || 'Something went wrong');
-//     }
-// });
 
 export const addEditSliders = createAsyncThunk<
   any,
@@ -217,7 +168,7 @@ export const fetchSingleSlider = createAsyncThunk<
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleSliderSuccess(response?.slider));
+        dispatch(fetchSingleSliderSuccess(response?.sliderdata));
         return response;
       } else {
         let errorMsg = response?.data?.message || 'Something Went Wrong';

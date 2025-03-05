@@ -11,59 +11,64 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import CustomDropdown from '@/utils/CusomDropdown';
 import {
-  addEditSliders,
-  ISliders,
-  updateSlidersData,
-  fetchSingleSlider
-} from '@/redux/slices/slidersSlice';
+  addEditShopPurposes,
+  IShopPurposes,
+  updateShopPurposesData,
+  fetchSingleShopPurpose
+} from '@/redux/slices/shopPurposeSlice';
 import { FileUploader } from '@/components/file-uploader';
 
-export default function SliderForm() {
+export default function shopPurposeform() {
   const params = useSearchParams();
   const entityId = params.get('id');
   const dispatch = useAppDispatch();
   const router = useRouter();
   const {
-    singleSliderState: { loading, data: bData }
-  } = useAppSelector((state) => state.slider);
+    singleShopPurposeState: { loading, data: bData }
+  } = useAppSelector((state) => state.shopPurpose);
 
-  const [showButtonFields, setShowButtonFields] = React.useState(false);
+  // const [showButtonFields, setShowButtonFields] = React.useState(false);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
   const [files, setFiles] = React.useState<File[]>([]);
-  const form = useForm<ISliders>({
+  const form = useForm<IShopPurposes>({
     defaultValues: {
       sequence: 0,
-      banner_image: '',
-      title: '',
-      description: '',
-      button: false,
-      button_name: '',
-      button_link: ''
+      dividing_image: '',
+      main_title: '',
+      product_image: '',
+      image_link: '',
+      title: ''
     }
   });
 
   React.useEffect(() => {
     if (entityId) {
-      dispatch(fetchSingleSlider(entityId));
+      dispatch(fetchSingleShopPurpose(entityId));
     }
   }, [entityId, dispatch]);
 
   React.useEffect(() => {
     if (bData && entityId) {
-      form.setValue('sequence', (bData as ISliders)?.sequence || 0);
-      form.setValue('banner_image', (bData as ISliders)?.banner_image || '');
-      form.setValue('title', (bData as ISliders)?.title || '');
-      form.setValue('button', (bData as ISliders)?.button || false);
-      form.setValue('button_name', (bData as ISliders)?.button_name || '');
-      form.setValue('button_link', (bData as ISliders)?.button_link || '');
+      form.setValue('sequence', (bData as IShopPurposes)?.sequence || 0);
+      form.setValue(
+        'dividing_image',
+        (bData as IShopPurposes)?.dividing_image || ''
+      );
+      form.setValue('main_title', (bData as IShopPurposes)?.main_title || '');
+      form.setValue(
+        'product_image',
+        (bData as IShopPurposes)?.product_image || ''
+      );
+      form.setValue('image_link', (bData as IShopPurposes)?.image_link || '');
+      form.setValue('title', (bData as IShopPurposes)?.title || '');
     }
   }, [bData, entityId, form]);
 
   function onSubmit() {
-    dispatch(addEditSliders(entityId || null))
+    dispatch(addEditShopPurposes(entityId || null))
       .then((response) => {
         if (response.payload.success) {
-          router.push('/dashboard/home/sliders');
+          router.push('/dashboard/shopPurpose');
           toast.success(response.payload.message);
         }
       })
@@ -74,13 +79,8 @@ export default function SliderForm() {
     const { name, value } = e;
 
     dispatch(
-      updateSlidersData({ [name]: value }) // .then(handleReduxResponse());
+      updateShopPurposesData({ [name]: value }) // .then(handleReduxResponse());
     );
-    if (value === 'true') {
-      setShowButtonFields(true);
-    } else {
-      setShowButtonFields(false);
-    }
   };
 
   const handleFileChange = (name: string, file: File[]) => {
@@ -95,7 +95,7 @@ export default function SliderForm() {
       reader.readAsDataURL(file[0]);
     }
     // Update Redux state with the uploaded file
-    dispatch(updateSlidersData({ [name]: file[0] }));
+    dispatch(updateShopPurposesData({ [name]: file[0] }));
   };
   //  React.useEffect(() => {
   //    if (files && files?.length > 0) {
@@ -103,12 +103,12 @@ export default function SliderForm() {
   //    }
   //  }, [files]);
 
-  console.log('The formData value is:', bData as ISliders);
+  console.log('The formData value is:', bData as IShopPurposes);
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
     dispatch(
-      updateSlidersData({
+      updateShopPurposesData({
         [name]:
           type === 'file'
             ? files?.[0]
@@ -126,7 +126,7 @@ export default function SliderForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Slider Information
+            Shop Purpose Information
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -134,72 +134,52 @@ export default function SliderForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="space-y-3">
                 <CustomTextField
-                  name="sequence"
+                  name="main_title"
                   control={form.control}
-                  label="Sequence Number"
-                  placeholder="Enter sequence number"
-                  value={(bData as ISliders)?.sequence}
+                  label="Main Title"
+                  placeholder="Enter Main Title"
+                  value={(bData as IShopPurposes)?.main_title}
                   onChange={handleInputChange}
                 />
+
                 <FormItem className="space-y-3">
-                  <FormLabel>Banner Image</FormLabel>
+                  <FormLabel>Product Image</FormLabel>
                   <FileUploader
                     value={files}
                     onValueChange={(file) =>
-                      handleFileChange('banner_image', file)
+                      handleFileChange('product_image', files)
                     }
                     accept={{ 'image/*': [] }}
                     maxSize={1024 * 1024 * 2}
                   />
                 </FormItem>
+
+                <CustomTextField
+                  name="image_link"
+                  control={form.control}
+                  label="Image Link"
+                  placeholder="Enter Image Link"
+                  value={(bData as IShopPurposes)?.image_link}
+                  onChange={handleInputChange}
+                />
+
                 <CustomTextField
                   name="title"
                   control={form.control}
                   label="Title"
                   placeholder="Enter Title"
-                  value={(bData as ISliders)?.title}
+                  value={(bData as IShopPurposes)?.title}
                   onChange={handleInputChange}
                 />
+
                 <CustomTextField
-                  name="description"
+                  name="sequence"
                   control={form.control}
-                  label="Description"
-                  placeholder="Enter Description"
-                  value={(bData as ISliders)?.description}
+                  label="Sequence Number"
+                  placeholder="Enter sequence number"
+                  value={(bData as IShopPurposes)?.sequence}
                   onChange={handleInputChange}
                 />
-                <CustomDropdown
-                  control={form.control}
-                  label="Button"
-                  name="button"
-                  defaultValue="default"
-                  data={[
-                    { name: 'True', _id: 'true' },
-                    { name: 'False', _id: 'false' }
-                  ]}
-                  value={(bData as ISliders)?.button}
-                  onChange={handleDropdownChange}
-                />
-                {showButtonFields && (
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <CustomTextField
-                      name="button_name"
-                      control={form.control}
-                      label="Button Name"
-                      placeholder="Enter Button Name"
-                      value={(bData as ISliders)?.button_name}
-                      onChange={handleInputChange}
-                    />
-                    <CustomTextField
-                      name="button_link"
-                      control={form.control}
-                      label="Button Link"
-                      placeholder="Enter Button Link"
-                      value={(bData as ISliders)?.button_link}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                )}
               </div>
 
               <Button type="submit">Submit</Button>

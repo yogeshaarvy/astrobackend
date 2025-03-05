@@ -14,19 +14,22 @@ import { Switch } from '@/components/ui/switch';
 import {
   STATUS_OPTIONS,
   FIELD_OPTIONS,
-  useSlidersTableFilters
-} from './use-sliders-table-filters';
+  useShopPurposesTableFilters
+} from './use-shopPurpose-table-filters';
 import { Button } from '@/components/ui/button';
-import { ISliders } from '@/redux/slices/slidersSlice';
-import { updateSlidersData, addEditSliders } from '@/redux/slices/slidersSlice';
-import { CellAction } from '@/app/dashboard/home/sliders/_components/sliders-tables/cell-action';
+import { IShopPurposes } from '@/redux/slices/shopPurposeSlice';
+import {
+  updateShopPurposesData,
+  addEditShopPurposes
+} from '@/redux/slices/shopPurposeSlice';
+import { CellAction } from '@/app/dashboard/shopPurpose/_components/shopPurpose-tables/cell-action';
 
-export default function SlidersTable({
+export default function ShopPurposesTable({
   data,
   totalData,
   handleSearch
 }: {
-  data: ISliders[];
+  data: IShopPurposes[];
   totalData: number;
   handleSearch: any;
 }) {
@@ -40,10 +43,10 @@ export default function SlidersTable({
     setStatusFilter,
     setPage,
     setSearchQuery
-  } = useSlidersTableFilters();
+  } = useShopPurposesTableFilters();
   const dispatch = useAppDispatch();
 
-  const columns: ColumnDef<ISliders>[] = [
+  const columns: ColumnDef<IShopPurposes>[] = [
     {
       id: 'number',
       header: 'S.No.',
@@ -79,27 +82,11 @@ export default function SlidersTable({
       accessorKey: 'sequence',
       header: 'SEQUENCE'
     },
-    // {
-    //   accessorKey: 'banner_image',
-    //   header: 'BANNER IMAGE',
-    //   cell: ({ row }) => (
-    //     (
-    //       <img
-    //         src={row.original.banner_image}
-    //         alt="Banner"
-    //         className="h-16 w-32 rounded-md object-cover"
-    //       />
-    //     )
-    //   )
-    // },
     {
       accessorKey: 'title',
       header: 'TITLE'
     },
-    {
-      accessorKey: 'description',
-      header: 'DESCRIPTION'
-    },
+
     // {
     //   accessorKey: 'button',
     //   header: ' BUTTON'
@@ -120,13 +107,13 @@ export default function SlidersTable({
         const handleToggle = async (checked: boolean) => {
           const updatedData = { ...row.original, status: checked };
           try {
-            dispatch(updateSlidersData(updatedData));
+            dispatch(updateShopPurposesData(updatedData));
             const result = await dispatch(
-              addEditSliders(row.original._id || null)
+              addEditShopPurposes(row.original._id || null)
             ).unwrap();
             toast.success('Status Updated Successfully!');
           } catch (error: any) {
-            console.error('Error updating slider status:', error);
+            console.error('Error updating Shop purpose status:', error);
             toast.error('Failed to Update Status');
           }
         };
