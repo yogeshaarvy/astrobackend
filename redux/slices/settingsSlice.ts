@@ -1,157 +1,217 @@
+import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
+import { cloneDeep } from 'lodash';
 import { fetchApi } from '@/services/utlis/fetchApi';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 
-import { BaseModel, BaseState, PaginationState } from '@/types/globals';
-import { toast } from 'sonner';
-
-export type ISettings = BaseModel & {
-  logo: string;
-  favicon: string;
-  meta_title: string;
-  meta_tag: string;
-  meta_description: string;
-  copyright: string;
+export type ISetting = BaseModel & {
+  image?: {
+    dark_logo?: string;
+    light_logo?: string;
+  };
+  general?: {
+    copyright?: string;
+  };
+  app?: {
+    play_store_link?: string;
+    app_store_link?: string;
+  };
+  social_links?: {
+    facebook?: string;
+    instagram?: string;
+    youtube?: string;
+    x?: string;
+  };
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    metaKeyword?: string;
+  };
+  contactUs?: {
+    shortDescription?: string;
+    address?: string;
+    contact?: string;
+    eMail?: string;
+  };
 };
 
 const initialState = {
-  settingsState: {
-    data: {}, // Initial description as an empty string
-    loading: false, // Represents whether the API call is in progress
-    error: null // Stores any errors from API calls
-  } as BaseState<ISettings> // The state type is BaseState with a string as the data type
+  settingState: {
+    data: null,
+    loading: null,
+    error: null
+  } as BaseState<ISetting | null>
 };
 
-export const fetchSettings = createAsyncThunk<any, void, { state: RootState }>(
-  'settings/fetchData',
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      dispatch(fetchSingleSettingsStart()); // Use a generic start action or create a new one
-
-      const response = await fetchApi('/settings/get', {
-        method: 'GET'
-      });
-      if (response?.success) {
-        dispatch(fetchSingleSettingsSuccess(response)); // Assuming response contains `descriptionData`
-        return response;
-      } else {
-        const errorMsg = response?.message || 'Failed to fetch description';
-        dispatch(fetchSingleSettingsFailure(errorMsg));
-        return rejectWithValue(errorMsg);
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message || 'Something Went Wrong';
-      dispatch(fetchSingleSettingsFailure(errorMsg));
-      return rejectWithValue(errorMsg);
-    }
-  }
-);
-
-export const addEditSettings = createAsyncThunk<
+export const fetchSetting = createAsyncThunk<
   any,
-  {
-    logo: string;
-    favicon: string;
-    meta_title: string;
-    meta_tag: string;
-    meta_description: string;
-    copyright: string;
-  },
+  string | null,
   { state: RootState }
->(
-  'settings/addEditDescription',
-  async (
-    { logo, favicon, meta_title, meta_tag, meta_description, copyright },
-    { dispatch, rejectWithValue }
-  ) => {
-    try {
-      dispatch(addEditSettingsStart()); // Use a generic start action or create a new one
-      const formData = new FormData();
-      formData.append('logo', logo);
-      formData.append('favicon', favicon);
-      formData.append('meta_title', meta_title);
-      formData.append('meta_tag', meta_tag);
-      formData.append('meta_description', meta_description);
-      formData.append('copyright', copyright);
-      // Single endpoint, but the backend will decide whether to create or update
-      const endpoint = '/settings/create';
-      const method = 'POST';
+>('setting/fetchSetting', async (_, { dispatch, rejectWithValue }) => {
+  try {
+    dispatch(fetchSettingStart());
 
-      const response = await fetchApi(endpoint, {
-        method,
-        body: formData
-      });
+    const response = await fetchApi('/setting/get', {
+      method: 'GET'
+    });
 
-      if (response?.success) {
-        dispatch(addEditSettingsSuccess());
-        toast.success(
-          response?.isNew
-            ? 'Settings created successfully'
-            : 'Settings updated successfully'
-        );
-
-        dispatch(fetchSettings()); // Re-fetch to update the latest data
-        return response;
-      } else {
-        const errorMsg = response?.message || 'Failed to save description';
-        dispatch(addEditSettingsFailure(errorMsg));
-        toast.error(errorMsg);
-        return rejectWithValue(errorMsg);
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message || 'Something Went Wrong';
-      dispatch(addEditSettingsFailure(errorMsg));
-      toast.error(errorMsg);
+    if (response?.success) {
+      dispatch(fetchSettingSuccess(response?.data));
+      return response.data;
+    } else {
+      const errorMsg = response?.message ?? 'Failed to fetch settings!';
+      dispatch(fetchSettingFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
+  } catch (error: any) {
+    const errorMsg = error?.message ?? 'Failed to fetch settings!';
+    dispatch(fetchSettingFailure(errorMsg));
+    return rejectWithValue(errorMsg);
   }
-);
+});
 
-const settingsSlice = createSlice({
-  name: 'settings',
+export const addEditSettingPage = createAsyncThunk<
+  any,
+  null,
+  { state: RootState }
+>('setting/settingpage', async (_, { dispatch, rejectWithValue, getState }) => {
+  try {
+    const {
+      settings: {
+        settingState: { data }
+      }
+    } = getState();
+
+    dispatch(addEditSettingPageStart());
+
+    if (!data) {
+      return rejectWithValue('Please Provide Details');
+    }
+
+    console.log('setting 1', data);
+
+    const clonedData = cloneDeep(data);
+
+    let imagesALl = {};
+
+    console.log('setting 2');
+
+    if (clonedData?.image) {
+      console.log('setting 3');
+      imagesALl = await processNestedFields(clonedData.image || {});
+      console.log('setting 4', imagesALl);
+
+      clonedData.image = imagesALl;
+    }
+
+    console.log('setting 5', imagesALl);
+
+    // Prepare FormData
+    const formData = new FormData();
+    const reqData: any = {
+      image: clonedData.image ? JSON.stringify(clonedData.image) : undefined,
+      general: clonedData.general
+        ? JSON.stringify(clonedData.general)
+        : undefined,
+      app: clonedData.app ? JSON.stringify(clonedData.app) : undefined,
+      social_links: clonedData.social_links
+        ? JSON.stringify(clonedData.social_links)
+        : undefined,
+      seo: clonedData.seo ? JSON.stringify(clonedData.seo) : undefined,
+      contactUs: clonedData.contactUs
+        ? JSON.stringify(clonedData.contactUs)
+        : undefined
+    };
+
+    console.log('setting 2', reqData);
+    Object.entries(reqData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value as string | Blob);
+      }
+    });
+    console.log('form data is', formData);
+    let response = await fetchApi('/setting/createorupdate', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response?.success) {
+      dispatch(addEditSettingSuccess());
+      dispatch(setSetting(null));
+      dispatch(fetchSetting(null));
+      return response;
+    } else {
+      const errorMsg = response?.data?.message ?? 'Something Went Wrong!';
+      dispatch(addEditSettingFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  } catch (error: any) {
+    const errorMsg = error?.message ?? 'Something Went Wrong!';
+    dispatch(addEditSettingFailure(errorMsg));
+    return rejectWithValue(errorMsg);
+  }
+});
+
+const settingSlice = createSlice({
+  name: 'setting',
   initialState,
   reducers: {
-    fetchTermsConditionsStart(state) {
-      state.settingsState.loading = true;
-      state.settingsState.error = null;
+    addEditSettingPageStart(state) {
+      state.settingState.loading = true;
+      state.settingState.error = null;
     },
+    addEditSettingSuccess(state) {
+      state.settingState.loading = false;
+      state.settingState.error = null;
+    },
+    addEditSettingFailure(state, action) {
+      state.settingState.loading = false;
+      state.settingState.error = action.payload;
+    },
+    setSetting(state, action) {
+      state.settingState.data = action.payload;
+    },
+    fetchSettingStart(state) {
+      state.settingState.loading = true;
+      state.settingState.error = null;
+    },
+    fetchSettingSuccess(state, action) {
+      state.settingState.loading = false;
+      state.settingState.data = action.payload;
+      state.settingState.error = null;
+    },
+    fetchSettingFailure(state, action) {
+      state.settingState.loading = false;
+      state.settingState.error = action.payload;
+    },
+    updateSetting(state, action) {
+      const oldData = state.settingState.data;
+      const keyFirst = Object.keys(action.payload)[0];
 
-    addEditSettingsStart(state) {
-      state.settingsState.loading = true;
-      state.settingsState.error = null;
-    },
-    addEditSettingsSuccess(state) {
-      state.settingsState.loading = false;
-      state.settingsState.error = null;
-    },
-    addEditSettingsFailure(state, action) {
-      state.settingsState.loading = false;
-      state.settingsState.error = action.payload;
-    },
-    fetchSingleSettingsStart(state) {
-      state.settingsState.loading = true;
-      state.settingsState.error = null;
-    },
-    fetchSingleSettingsSuccess(state, action) {
-      state.settingsState.loading = false;
-      state.settingsState.data = action.payload;
-      state.settingsState.error = null;
-    },
-    fetchSingleSettingsFailure(state, action) {
-      state.settingsState.loading = false;
-      state.settingsState.error = action.payload;
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.settingState.data = {
+          ...newData
+        };
+      } else {
+        state.settingState.data = { ...oldData, ...action.payload };
+      }
     }
   }
 });
 
 export const {
-  addEditSettingsStart,
-  addEditSettingsSuccess,
-  addEditSettingsFailure,
+  addEditSettingFailure,
+  addEditSettingPageStart,
+  addEditSettingSuccess,
+  setSetting,
+  fetchSettingStart,
+  fetchSettingSuccess,
+  fetchSettingFailure,
+  updateSetting
+} = settingSlice.actions;
 
-  fetchSingleSettingsStart,
-  fetchSingleSettingsSuccess,
-  fetchSingleSettingsFailure
-} = settingsSlice.actions;
-
-export default settingsSlice.reducer;
+export default settingSlice.reducer;

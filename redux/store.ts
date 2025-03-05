@@ -1,4 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
+
+import settingReducer from './slices/settingsSlice';
 import employeeReducer from './slices/employeeSlice';
 import departmentReducer from './slices/departmentSlice';
 import moduleReducer from './slices/moduleSlice';
@@ -37,10 +39,11 @@ import newsletterReducer from './slices/newsletterSlice';
 import promoCodesReducer from './slices/promocodeSlice';
 import InventoryReducer from './slices/inventoriesSlice';
 import productfaqReducer from './slices/productFaqSlice';
-import allUsersReducer from './slices/allusersSlice'; 
+import allUsersReducer from './slices/allusersSlice';
 export const makeStore = () => {
   return configureStore({
     reducer: {
+      settings: settingReducer,
       employee: employeeReducer,
       department: departmentReducer,
       module: moduleReducer,

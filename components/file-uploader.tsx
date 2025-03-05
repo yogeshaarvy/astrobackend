@@ -114,6 +114,8 @@ export function FileUploader(props: FileUploaderProps) {
     onChange: onValueChange
   });
 
+  console.log('The files value is:', files, existingImageURL, files?.length);
+
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (!multiple && maxFiles === 1 && acceptedFiles.length > 1) {
@@ -288,7 +290,7 @@ export function FileCard({
   );
   return (
     <div className="relative flex items-center space-x-4">
-      <div className="flex ">
+      <div className="flex flex-1 space-x-4">
         {/* Check if 'file' is provided, render image preview */}
         {file ? (
           isFileWithPreview(file) ? (
@@ -320,8 +322,8 @@ export function FileCard({
           className="size-7"
           onClick={onRemove}
         >
-          X{/* <CrossIcon className="size-4" aria-hidden="true" /> */}
-          <span className="sr-only ">Remove file</span>
+          <CrossIcon className="size-4" aria-hidden="true" />
+          <span className="sr-only">Remove file</span>
         </Button>
       </div>
     </div>
@@ -335,7 +337,7 @@ function isFileWithPreview(file: File): file is File & { preview: string } {
 // File Card To Preview the Edit or Uploaded Images With URL
 interface FileViewCardProps {
   onRemove?: () => void;
-  existingImageURL?: string;
+  existingImageURL?: any;
 }
 
 export function FileViewCard({
@@ -368,7 +370,7 @@ export function FileViewCard({
           className="size-7"
           onClick={onRemove}
         >
-          X{/* <CrossIcon className="size-4" aria-hidden="true" /> */}
+          <CrossIcon className="size-4" aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>

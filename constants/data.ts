@@ -130,21 +130,6 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [] // Empty array as there are no child items for Dashboard
   },
-
-  // {
-  //   title: 'Employee',
-  //   url: '/dashboard/employee',
-  //   icon: 'user',
-  //   isActive: false,
-  //   items: [] // No child items
-  // },
-  // {
-  //   title: 'Department',
-  //   url: '/dashboard/department',
-  //   icon: 'product',
-  //   isActive: false,
-  //   items: [] // No child items
-  // },
   {
     title: 'Brands',
     url: '/dashboard/brands',
@@ -207,31 +192,6 @@ export const navItems: NavItem[] = [
       }
     ]
   },
-  // {
-  //   title: `Modules`,
-  //   url: '/dashboard/module',
-  //   icon: 'page',
-  //   isActive: false,
-  //   items: [] // No child items
-  // },
-  // {
-  //   title: 'Roles & Permissions',
-  //   url: '#', // Placeholder as there is no direct link for the parent
-  //   icon: 'billing',
-  //   isActive: true,
-  //   items: [
-  //     {
-  //       title: 'Roles',
-  //       url: '/dashboard/roles',
-  //       icon: 'userPen'
-  //     },
-  //     {
-  //       title: 'Permissions',
-  //       url: '/dashboard/permissions',
-  //       icon: 'userPen'
-  //     }
-  //   ]
-  // },
   {
     title: 'Faqs',
     url: '/dashboard/faq',
@@ -300,7 +260,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Settings',
-    url: '/dashboard/settings',
+    url: '/dashboard/general/settings',
     icon: 'product',
     isActive: false,
     items: [] // No child items
@@ -376,17 +336,6 @@ export const navItems: NavItem[] = [
         url: '/dashboard/about-us/bottom-banner',
         icon: 'userPen'
       }
-
-      // {
-      //   title: 'About',
-      //   url: '/dashboard/home/about',
-      //   icon: 'userPen'
-      // },
-      // {
-      //   title: 'Footer',
-      //   url: '/dashboard/home/footer',
-      //   icon: 'userPen'
-      // }
     ]
   },
   {

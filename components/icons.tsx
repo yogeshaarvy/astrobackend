@@ -36,7 +36,8 @@ import {
   Handshake,
   GlobeLock,
   Undo2,
-  Truck
+  Truck,
+  UserCog
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -57,6 +58,7 @@ export const Icons = {
   page: File,
   userPen: UserPen,
   user2: UserCircle2Icon,
+  general: UserCog,
   media: Image,
   settings: Settings,
   billing: CreditCard,
