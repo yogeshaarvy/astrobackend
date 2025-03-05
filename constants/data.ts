@@ -131,6 +131,44 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
+    title: `Store`,
+    url: `#`,
+    icon: 'address',
+    isActive: false,
+    items: [
+      {
+        title: 'Slider',
+        url: '/dashboard/home/sliders',
+        icon: 'userPen'
+      },
+      {
+        title: 'Sales',
+        url: '/dashboard/home/sales',
+        icon: 'userPen'
+      },
+      {
+        title: 'Banner',
+        url: '/dashboard/home/banner',
+        icon: 'userPen'
+      },
+      {
+        title: 'About',
+        url: '/dashboard/home/about',
+        icon: 'userPen'
+      },
+      {
+        title: 'Footer',
+        url: '/dashboard/home/footer',
+        icon: 'userPen'
+      },
+      {
+        title: 'Newsletter',
+        url: '/dashboard/home/newsletter',
+        icon: 'userPen'
+      }
+    ]
+  },
+  {
     title: 'Brands',
     url: '/dashboard/brands',
     icon: 'product',
