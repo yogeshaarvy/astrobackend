@@ -344,5 +344,12 @@ export const navItems: NavItem[] = [
     icon: 'TermsAndConditions',
     isActive: false,
     items: [] // No child items
+  },
+  {
+    title: 'Shop Purpose',
+    url: '/dashboard/shopPurpose',
+    icon: 'TermsAndConditions',
+    isActive: false,
+    items: [] // No child items
   }
 ];

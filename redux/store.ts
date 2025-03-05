@@ -40,6 +40,8 @@ import promoCodesReducer from './slices/promocodeSlice';
 import InventoryReducer from './slices/inventoriesSlice';
 import productfaqReducer from './slices/productFaqSlice';
 import allUsersReducer from './slices/allusersSlice';
+import shopPurposeReducer from './slices/shopPurposeSlice';
+
 export const makeStore = () => {
   return configureStore({
     reducer: {
@@ -82,7 +84,8 @@ export const makeStore = () => {
       promoCodesdata: promoCodesReducer,
       inventories: InventoryReducer,
       productfaq: productfaqReducer,
-      allusers: allUsersReducer
+      allusers: allUsersReducer,
+      shopPurpose: shopPurposeReducer
     }
   });
 };
