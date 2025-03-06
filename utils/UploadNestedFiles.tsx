@@ -43,5 +43,7 @@ export const processNestedFields = async (content: any): Promise<any> => {
     }
   }
 
+  console.log('resultnext', result);
+
   return result;
 };

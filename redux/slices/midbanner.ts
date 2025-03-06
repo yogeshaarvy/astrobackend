@@ -4,88 +4,105 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState } from '@/types/globals';
 import { toast } from 'sonner';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 
 export type IMidbanner = BaseModel & {
-  image: string;
-  title: string;
-  description: string;
-  link: string;
+  image?: string;
+  title?: string;
+  description?: string;
+  link?: string;
 };
 
 const initialState = {
   midbannerState: {
-    data: {}, // Initial data as an empty object
-    loading: false, // Represents whether the API call is in progress
-    error: null // Stores any errors from API calls
+    data: {},
+    loading: false,
+    error: null
   } as BaseState<IMidbanner>
 };
 
-export const fetchMidbanner = createAsyncThunk<any, void, { state: RootState }>(
-  'midbanner/fetchData',
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      dispatch(fetchSingleMidbannerStart());
+export const fetchMidbanner = createAsyncThunk<
+  any,
+  string | null,
+  { state: RootState }
+>('midbanner/fetchData', async (input, { dispatch, rejectWithValue }) => {
+  try {
+    dispatch(fetchSingleMidbannerStart());
 
-      const response = await fetchApi('/midbanner/get', {
-        method: 'GET'
-      });
-      if (response?.success) {
-        dispatch(fetchSingleMidbannerSuccess(response));
-        return response;
-      } else {
-        const errorMsg = response?.message || 'Failed to fetch description';
-        dispatch(fetchSingleMidbannerFailure(errorMsg));
-        return rejectWithValue(errorMsg);
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message || 'Something Went Wrong';
+    const response = await fetchApi('/store/banner/get', {
+      method: 'GET'
+    });
+    console.log('response1', response);
+    if (response?.success) {
+      dispatch(fetchSingleMidbannerSuccess(response?.data));
+      return response;
+    } else {
+      const errorMsg = response?.message || 'Failed to fetch description';
       dispatch(fetchSingleMidbannerFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
+  } catch (error: any) {
+    const errorMsg = error?.message || 'Something Went Wrong';
+    dispatch(fetchSingleMidbannerFailure(errorMsg));
+    return rejectWithValue(errorMsg);
   }
-);
+});
 
 export const addEditMidbanner = createAsyncThunk<
   any,
-  {
-    image: string;
-    title: string;
-    description: string;
-    link: string;
-  },
+  null,
   { state: RootState }
 >(
   'midbanner/addEditMidbanner',
-  async (
-    { image, description, title, link },
-    { dispatch, rejectWithValue }
-  ) => {
+  async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
+      const {
+        midbanner: {
+          midbannerState: { data }
+        }
+      } = getState();
+      console.log('image data', data);
+
       dispatch(addEditMidbannerStart());
 
+      if (!data) {
+        return rejectWithValue('Please Provide Details');
+      }
+
+      let clonedData = cloneDeep(data);
+
+      if (clonedData) {
+        clonedData = await processNestedFields(clonedData);
+      }
+
+      console.log('The clonedData value is:', clonedData);
+
       const formData = new FormData();
-      formData.append('image', image);
-      formData.append('description', description);
-      formData.append('title', title);
-      formData.append('link', link);
 
-      const endpoint = '/midbanner/create';
-      const method = 'POST';
+      const reqData: any = {
+        title: clonedData.title,
+        description: clonedData.description,
+        image: clonedData.image,
+        link: clonedData.link
+      };
+      console.log('req.data', reqData);
+      Object.entries(reqData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
 
-      const response = await fetchApi(endpoint, {
-        method,
+      let response = await fetchApi('/store/banner/create', {
+        method: 'POST',
         body: formData
       });
 
       if (response?.success) {
         dispatch(addEditMidbannerSuccess());
-        toast.success(
-          response?.isNew
-            ? 'Midbanner created successfully'
-            : 'Midbanner updated successfully'
-        );
-
-        dispatch(fetchMidbanner()); // Re-fetch to update the latest data
+        dispatch(setMidBanner(null));
+        dispatch(fetchMidbanner(null));
         return response;
       } else {
         const errorMsg = response?.message || 'Failed to save description';
@@ -134,6 +151,24 @@ const midbannerSlice = createSlice({
     fetchSingleMidbannerFailure(state, action) {
       state.midbannerState.loading = false;
       state.midbannerState.error = action.payload;
+    },
+    updateMidBannerData(state, action) {
+      const oldData = state.midbannerState.data;
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.midbannerState.data = newData;
+      } else {
+        state.midbannerState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
+    },
+    setMidBanner(state, action) {
+      state.midbannerState.data = action.payload;
     }
   }
 });
@@ -143,6 +178,8 @@ export const {
   addEditMidbannerSuccess,
   addEditMidbannerFailure,
   fetchSingleMidbannerStart,
+  updateMidBannerData,
+  setMidBanner,
   fetchSingleMidbannerSuccess,
   fetchSingleMidbannerFailure
 } = midbannerSlice.actions;
