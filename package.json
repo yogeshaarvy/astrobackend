@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev --turbo -p 3008",
     "build": "next build",
-    "start": "next start -p 3834",
+    "start": "next start -p 3899",
     "lint": "next lint",
     "format": "prettier . --write",
     "prepare": "husky"
