@@ -59,7 +59,7 @@ export const fetchSales = createAsyncThunk<
     const response = await fetchApi('/store/sales/get', {
       method: 'GET'
     });
-    console.log('resposesata', response);
+
     if (response?.success) {
       dispatch(fetchSingleSalesSuccess(response)); // Assuming response contains `descriptionData`
       return response;
@@ -115,16 +115,11 @@ export const addEditSales = createAsyncThunk<any, null, { state: RootState }>(
           : undefined
       };
 
-      console.log('Statw 1');
       Object.entries(reqData).forEach(([key, value]) => {
-        console.log('Statw 2');
         if (value !== undefined && value !== null) {
-          console.log('Statw 3');
           formData.append(key, value as string | Blob);
         }
-        console.log('Statw 4');
       });
-      console.log('Statw 5');
 
       console.log('data was coming on 4', formData);
 

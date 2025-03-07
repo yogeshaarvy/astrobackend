@@ -4,113 +4,118 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState } from '@/types/globals';
 import { toast } from 'sonner';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 
-export type IHomeAbout = BaseModel & {
-  background_image: string;
-  main_image: string;
-  icon1: string;
-  icon2: string;
-  icon3: string;
-  title1: string;
-  title2: string;
-  title3: string;
-  heading: string;
+export type IAboutAstro = BaseModel & {
+  title?: string;
+  description?: string;
+  secureTitle?: string;
+  benefitTitle?: string;
+  greatTitle?: string;
+  images?: {
+    backgoundImage?: string;
+    mainImage?: string;
+    secureImage?: string;
+    benefitImage?: string;
+    greatImage?: string;
+  };
 };
 
 const initialState = {
   homeaboutState: {
-    data: {}, // Initial data as an empty object
-    loading: false, // Represents whether the API call is in progress
-    error: null // Stores any errors from API calls
-  } as BaseState<IHomeAbout>
+    data: null,
+    loading: null,
+    error: null
+  } as BaseState<IAboutAstro | null>
 };
 
-export const fetchHomeAbout = createAsyncThunk<any, void, { state: RootState }>(
-  'midbanner/fetchData',
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      dispatch(fetchSingleHomeAboutStart());
+export const fetchHomeAbout = createAsyncThunk<
+  any,
+  string | null,
+  { state: RootState }
+>('midbanner/fetchData', async (_, { dispatch, rejectWithValue }) => {
+  try {
+    dispatch(fetchSingleHomeAboutStart());
 
-      const response = await fetchApi('/homeabout/get', {
-        method: 'GET'
-      });
-      if (response?.success) {
-        dispatch(fetchSingleHomeAboutSuccess(response));
-        return response;
-      } else {
-        const errorMsg = response?.message || 'Failed to fetch description';
-        dispatch(fetchSingleHomeAboutFailure(errorMsg));
-        return rejectWithValue(errorMsg);
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message || 'Something Went Wrong';
+    const response = await fetchApi('/store/aboutastro/get', {
+      method: 'GET'
+    });
+    if (response?.success) {
+      dispatch(fetchSingleHomeAboutSuccess(response?.aboutAstro));
+
+      console.log('fectaboutAbout', response);
+      return response;
+    } else {
+      const errorMsg = response?.message || 'Failed to fetch description';
       dispatch(fetchSingleHomeAboutFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
+  } catch (error: any) {
+    const errorMsg = error?.message || 'Something Went Wrong';
+    dispatch(fetchSingleHomeAboutFailure(errorMsg));
+    return rejectWithValue(errorMsg);
   }
-);
+});
 
 export const addEditHomeAbout = createAsyncThunk<
   any,
-  {
-    background_image: any;
-    main_image: any;
-    icon1: any;
-    icon2: any;
-    icon3: any;
-    title1: string;
-    title2: string;
-    title3: string;
-    heading: string;
-  },
+  null,
   { state: RootState }
 >(
   'midbanner/addEditHomeAbout',
-  async (
-    {
-      background_image,
-      main_image,
-      icon1,
-      icon2,
-      icon3,
-      title1,
-      title2,
-      title3,
-      heading
-    },
-    { dispatch, rejectWithValue }
-  ) => {
+  async (_, { dispatch, rejectWithValue, getState }) => {
     try {
+      const {
+        astroAbout: {
+          homeaboutState: { data }
+        }
+      } = getState();
+
       dispatch(addEditHomeAboutStart());
 
+      if (!data) {
+        return rejectWithValue('Please Provide Details');
+      }
+
+      const clonedData = cloneDeep(data);
+
+      let imagesALl = {};
+
+      if (clonedData.images) {
+        imagesALl = await processNestedFields(clonedData.images || {});
+
+        clonedData.images = imagesALl;
+      }
+
       const formData = new FormData();
-      formData.append('background_image', background_image);
-      formData.append('main_image', main_image);
-      formData.append('icon1', icon1);
-      formData.append('icon2', icon2);
-      formData.append('icon3', icon3);
-      formData.append('title1', title1);
-      formData.append('title2', title2);
-      formData.append('title3', title3);
-      formData.append('heading', heading);
+      const reqData: any = {
+        images: clonedData.images
+          ? JSON.stringify(clonedData.images)
+          : undefined,
+        title: clonedData.title,
+        description: clonedData.description,
+        secureTitle: clonedData.secureTitle,
+        benefitTitle: clonedData.benefitTitle,
+        greatTitle: clonedData.greatTitle
+      };
 
-      const endpoint = '/homeabout/create';
-      const method = 'POST';
+      Object.entries(reqData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
 
-      const response = await fetchApi(endpoint, {
-        method,
+      const response = await fetchApi('/store/aboutastro/createorupdate', {
+        method: 'POST',
         body: formData
       });
 
       if (response?.success) {
         dispatch(addEditHomeAboutSuccess());
-        toast.success(
-          response?.isNew
-            ? 'HomeAbout created successfully'
-            : 'HomeAbout updated successfully'
-        );
-
-        dispatch(fetchHomeAbout()); // Re-fetch to update the latest data
+        dispatch(setAboutAstro(null));
+        dispatch(fetchHomeAbout(null)); // Re-fetch to update the latest data
         return response;
       } else {
         const errorMsg = response?.message || 'Failed to save description';
@@ -143,6 +148,9 @@ const homeaboutSlice = createSlice({
       state.homeaboutState.loading = false;
       state.homeaboutState.error = null;
     },
+    setAboutAstro(state, action) {
+      state.homeaboutState.data = action.payload;
+    },
     addEditHomeAboutFailure(state, action) {
       state.homeaboutState.loading = false;
       state.homeaboutState.error = action.payload;
@@ -159,6 +167,21 @@ const homeaboutSlice = createSlice({
     fetchSingleHomeAboutFailure(state, action) {
       state.homeaboutState.loading = false;
       state.homeaboutState.error = action.payload;
+    },
+    updateAboutAstro(state, action) {
+      const oldData = state.homeaboutState.data;
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.homeaboutState.data = newData;
+      } else {
+        state.homeaboutState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     }
   }
 });
@@ -167,6 +190,8 @@ export const {
   addEditHomeAboutStart,
   addEditHomeAboutSuccess,
   addEditHomeAboutFailure,
+  setAboutAstro,
+  updateAboutAstro,
   fetchSingleHomeAboutStart,
   fetchSingleHomeAboutSuccess,
   fetchSingleHomeAboutFailure

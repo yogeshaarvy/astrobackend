@@ -41,6 +41,7 @@ import InventoryReducer from './slices/inventoriesSlice';
 import productfaqReducer from './slices/productFaqSlice';
 import allUsersReducer from './slices/allusersSlice';
 import shopPurposeReducer from './slices/shopPurposeSlice';
+import astroAboutReducer from './slices/homeaboutSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -71,6 +72,7 @@ export const makeStore = () => {
       sales: salesReducer,
       midbanner: midbannerReducer,
       slider: sliderReducer,
+      astroAbout: astroAboutReducer,
       about: aboutustopbannerReducer,
       faq: faqReducer,
       homeaboutlist: homeaboutlistReducer,

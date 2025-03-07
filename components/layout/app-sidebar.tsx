@@ -55,7 +55,7 @@ import { UserNav } from './user-nav';
 import { Button } from '../ui/button';
 
 export const company = {
-  name: 'VJM BACKEND',
+  name: 'ASTRO BACKEND',
   logo: GalleryVerticalEnd,
   plan: 'Admin Panel'
 };
