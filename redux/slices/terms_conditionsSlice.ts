@@ -23,7 +23,7 @@ export const fetchTermsConditions = createAsyncThunk<
     try {
       dispatch(fetchSingleTermsConditionsStart()); // Use a generic start action or create a new one
 
-      const response = await fetchApi('/terms_conditions/get', {
+      const response = await fetchApi('/setting/termandcondition/get', {
         method: 'GET'
       });
       if (response?.success) {
@@ -56,7 +56,7 @@ export const addEditTermsConditions = createAsyncThunk<
       formData.append('description', description);
       formData.append('active', String(active));
       // Single endpoint, but the backend will decide whether to create or update
-      const endpoint = '/terms_conditions/create';
+      const endpoint = '/setting/termandcondition/create';
       const method = 'POST';
 
       const response = await fetchApi(endpoint, {

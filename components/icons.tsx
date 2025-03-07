@@ -37,17 +37,24 @@ import {
   GlobeLock,
   Undo2,
   Truck,
-  UserCog
+  UserCog,
+  Store,
+  SlidersHorizontal
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
+  store: Store,
+  slider: SlidersHorizontal,
+  taxs: HandCoins,
+  media: Image,
+  product: LucideShoppingBag,
+  user: User,
   logo: Command,
   login: LogIn,
   close: X,
-  product: LucideShoppingBag,
   spinner: Loader2,
   kanban: CircuitBoardIcon,
   chevronLeft: ChevronLeft,
@@ -59,13 +66,11 @@ export const Icons = {
   userPen: UserPen,
   user2: UserCircle2Icon,
   general: UserCog,
-  media: Image,
   settings: Settings,
   billing: CreditCard,
   ellipsis: MoreVertical,
   add: Plus,
   warning: AlertTriangle,
-  user: User,
   arrowRight: ArrowRight,
   help: HelpCircle,
   pizza: Pizza,
@@ -73,7 +78,7 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   address: MapPinned,
-  taxs: HandCoins,
+
   TermsAndConditions: Handshake,
   privicypolicy: GlobeLock,
   returnpolicy: Undo2,

@@ -234,12 +234,27 @@ const Page = () => {
 
                       <CardContent className="space-y-2">
                         <div className="space-y-1">
-                          <Label htmlFor="name">Description</Label>
+                          <Label htmlFor="name">
+                            English Short Description
+                          </Label>
                           <Input
-                            name="contactUs.shortDescription"
-                            placeholder="Enter your Description"
+                            name="contactUs.shortDescription.en"
+                            placeholder="Enter your English Description"
                             value={
                               (cData as ISetting)?.contactUs?.shortDescription
+                                ?.en
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Hindi Short Description</Label>
+                          <Input
+                            name="contactUs.shortDescription.hi"
+                            placeholder="Enter your Hindi Description"
+                            value={
+                              (cData as ISetting)?.contactUs?.shortDescription
+                                ?.hi
                             }
                             onChange={handleInputChange}
                           />

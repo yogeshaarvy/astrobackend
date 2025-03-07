@@ -131,30 +131,48 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: `Store`,
-    url: `#`,
-    icon: 'address',
+    title: 'Settings',
+    url: '/dashboard/settings',
+    icon: 'settings',
     isActive: false,
     items: [
       {
-        title: 'Slider',
-        url: '/dashboard/home/sliders',
-        icon: 'userPen'
+        title: 'General',
+        url: '/dashboard/settings/general',
+        icon: 'settings'
       },
       {
-        title: 'Sales',
+        title: 'Terms & Conditions',
+        url: '/dashboard/settings/terms-and-conditions',
+        icon: 'settings'
+      }
+    ] // No child items
+  },
+  {
+    title: `Store`,
+    url: `#`,
+    icon: 'store',
+    isActive: false,
+    items: [
+      {
+        title: 'Slider Banner',
+        url: '/dashboard/home/sliders',
+        icon: 'slider'
+      },
+      {
+        title: 'Best Salling',
         url: '/dashboard/home/sales',
-        icon: 'userPen'
+        icon: 'taxs'
       },
       {
         title: 'Banner',
         url: '/dashboard/home/banner',
-        icon: 'userPen'
+        icon: 'media'
       },
       {
         title: 'About',
         url: '/dashboard/home/about',
-        icon: 'userPen'
+        icon: 'user'
       },
       {
         title: 'Footer',
@@ -293,13 +311,6 @@ export const navItems: NavItem[] = [
     title: 'Shipping Policy',
     url: '/dashboard/shipping-policy',
     icon: 'shippingpolicy',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Settings',
-    url: '/dashboard/general/settings',
-    icon: 'product',
     isActive: false,
     items: [] // No child items
   },
