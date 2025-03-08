@@ -42,6 +42,7 @@ import productfaqReducer from './slices/productFaqSlice';
 import allUsersReducer from './slices/allusersSlice';
 import shopPurposeReducer from './slices/shopPurposeSlice';
 import astroAboutReducer from './slices/homeaboutSlice';
+import homeBannerReducer from './slices/home/banner';
 
 export const makeStore = () => {
   return configureStore({
@@ -87,7 +88,8 @@ export const makeStore = () => {
       inventories: InventoryReducer,
       productfaq: productfaqReducer,
       allusers: allUsersReducer,
-      shopPurpose: shopPurposeReducer
+      shopPurpose: shopPurposeReducer,
+      homeBanner: homeBannerReducer
     }
   });
 };

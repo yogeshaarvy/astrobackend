@@ -17,17 +17,17 @@ import {
 
 interface CustomDropdownProps<TFieldValues extends FieldValues> {
   name: FieldPath<TFieldValues>;
-  control: Control<TFieldValues>;
+  control?: Control<TFieldValues>;
   label: string;
   placeholder?: string; // Placeholder for the dropdown
-  value?: string | boolean; // Current value of the dropdown
-  defaultValue?: any; // Default value for the dropdown
+  value?: any; // Current value of the dropdown
+  defaultValue?: string | boolean; // Default value for the dropdown
   data?: any[]; // Data for dropdown options
   type?: string;
+  required?: boolean;
   className?: string;
   errorMsg?: string;
   loading?: boolean;
-  disabled?: boolean;
   onChange?: (e: { name: string; value: string; type: string }) => void;
 }
 
@@ -36,44 +36,29 @@ const CustomDropdown = <TFieldValues extends FieldValues>({
   control,
   value,
   label,
-  placeholder,
+  placeholder = '',
   defaultValue,
   data,
+  required,
   className,
   errorMsg,
   onChange,
-  disabled = false,
   loading = false
 }: CustomDropdownProps<TFieldValues>) => {
-  if (disabled) {
-    // If disabled, render only the label and the selected value (read-only view)
-    const selectedItem = data?.find((item) => item._id === value);
-
-    return (
-      <FormItem className={className}>
-        <FormLabel>{label}</FormLabel>
-        <div className="rounded-md border bg-gray-100 px-4 py-2 text-gray-600">
-          {selectedItem?.name || placeholder || 'No option selected'}
-        </div>
-        {errorMsg && <FormMessage>{errorMsg}</FormMessage>}
-      </FormItem>
-    );
-  }
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
         <FormItem className={className}>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {'  '}
+            {required && <span className="text-red-600"> *</span>}
+          </FormLabel>
           <Select
             onValueChange={(selectedValue) => {
-              // Find the full object based on selectedValue
-              const selectedItem = data?.find(
-                (item) => item._id === selectedValue
-              );
-
-              field.onChange(selectedValue); // Update the form state
+              field.onChange(selectedValue);
               if (onChange) {
                 onChange({
                   name,
@@ -99,7 +84,7 @@ const CustomDropdown = <TFieldValues extends FieldValues>({
                 Array.isArray(data) &&
                 data.map((item) => (
                   <SelectItem value={item._id} key={item._id}>
-                    {item.name}
+                    {item.name || item.title}
                   </SelectItem>
                 ))}
             </SelectContent>

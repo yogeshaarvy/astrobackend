@@ -39,7 +39,8 @@ import {
   Truck,
   UserCog,
   Store,
-  SlidersHorizontal
+  SlidersHorizontal,
+  House
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -49,6 +50,7 @@ export const Icons = {
   store: Store,
   slider: SlidersHorizontal,
   taxs: HandCoins,
+  home: House,
   media: Image,
   product: LucideShoppingBag,
   user: User,
