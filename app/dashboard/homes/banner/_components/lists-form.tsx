@@ -50,14 +50,12 @@ export default function ListForm() {
 
   useEffect(() => {
     if (entityId) {
-      console.log('entutkansckjn', entityId);
       dispatch(fetchSingleHomeBannerList(entityId));
     }
   }, [entityId]);
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('handle Input Chnage is', name, value);
     dispatch(
       updateHomeBannerListData({
         [name]:

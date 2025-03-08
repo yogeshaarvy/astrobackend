@@ -61,8 +61,6 @@ export const addEditHomeBannerList = createAsyncThunk<
         return rejectWithValue('Please Provide Details');
       }
 
-      console.log('this is a data banner 0', data);
-
       const formData = new FormData();
       const reqData: any = {
         title: data.title ? JSON.stringify(data.title) : undefined,
@@ -76,26 +74,19 @@ export const addEditHomeBannerList = createAsyncThunk<
         readLinks: data.readLinks
       };
 
-      console.log('this is a data banner 1', reqData);
-      console.log('start 1', reqData);
       Object.entries(reqData).forEach(([key, value]) => {
-        console.log('start 2', key, value);
         if (value !== undefined && value !== null) {
-          console.log('start 3', key, value);
           formData.append(key, value as string | Blob);
         }
-        console.log('start 4', formData);
       });
 
       let response;
-      console.log('lololo', entityId);
       if (!entityId) {
         response = await fetchApi('/home/homebanner/create', {
           method: 'POST',
           body: formData
         });
       } else {
-        console.log('lololo 2');
         response = await fetchApi(`/home/homebanner/update/${entityId}`, {
           method: 'PUT',
           body: formData
@@ -184,7 +175,6 @@ export const fetchSingleHomeBannerList = createAsyncThunk<
       const response = await fetchApi(`/home/homebanner/get/${entityId}`, {
         method: 'GET'
       });
-      console.log('resposkajbdcjab', response);
       if (response?.success) {
         dispatch(fetchSingleHomeBannerListSuccess(response?.homeBanner));
 
