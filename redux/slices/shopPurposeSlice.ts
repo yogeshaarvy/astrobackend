@@ -14,8 +14,6 @@ import { title } from 'process';
 // Define the IShopPurposes type
 export type IShopPurposes = BaseModel & {
   sequence?: number;
-  dividing_image?: string;
-  main_title?: string;
   product_image?: string;
   image_link?: string;
   title?: string;
@@ -72,7 +70,7 @@ export const fetchShopPurposesList = createAsyncThunk<
       } = input || {};
       dispatch(fetchShopPurposesStart());
       const response = await fetchApi(
-        `/shopPurposes/all?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}`,
+        `/store/shoppurpose/all?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}`,
         { method: 'GET' }
       );
       if (response?.success) {
@@ -118,13 +116,12 @@ export const addEditShopPurposes = createAsyncThunk<
       const formData = new FormData();
       const reqData: any = {
         sequence: data.sequence,
-        dividing_image: data.dividing_image,
-        main_title: data.main_title,
         product_image: data.product_image,
-        title: data.main_title,
+        title: data.title,
         image_link: data.image_link,
         status: data.status
       };
+
       // Append only defined fields to FormData
       Object.entries(reqData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -134,12 +131,12 @@ export const addEditShopPurposes = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        response = await fetchApi('/shopPurposes/new', {
+        response = await fetchApi('/store/shoppurpose/new', {
           method: 'POST',
           body: formData
         });
       } else {
-        response = await fetchApi(`/shopPurposes/update/${entityId}`, {
+        response = await fetchApi(`/store/shoppurpose/update/${entityId}`, {
           method: 'PUT',
           body: formData
         });
@@ -170,11 +167,11 @@ export const fetchSingleShopPurpose = createAsyncThunk<
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(fetchSingleShopPurposeStart());
-      const response = await fetchApi(`/shopPurposes/single/${entityId}`, {
+      const response = await fetchApi(`/store/shoppurpose/single/${entityId}`, {
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleShopPurposeSuccess(response?.shopPurposedata));
+        dispatch(fetchSingleShopPurposeSuccess(response?.shoppurposedata));
         return response;
       } else {
         let errorMsg = response?.data?.message || 'Something Went Wrong';
@@ -196,7 +193,7 @@ export const deleteShopPurpose = createAsyncThunk<
 >('brand/delete', async (id, { dispatch }) => {
   dispatch(deleteShopPurposeStart());
   try {
-    const response = await fetchApi(`/shopPurposes/delete/${id}`, {
+    const response = await fetchApi(`/store/shoppurpose/delete/${id}`, {
       method: 'DELETE'
     });
     if (response.success) {

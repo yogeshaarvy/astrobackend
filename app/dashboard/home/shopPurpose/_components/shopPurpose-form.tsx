@@ -18,7 +18,7 @@ import {
 } from '@/redux/slices/shopPurposeSlice';
 import { FileUploader } from '@/components/file-uploader';
 
-export default function shopPurposeform() {
+export default function ShopPurposeForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
   const dispatch = useAppDispatch();
@@ -33,11 +33,9 @@ export default function shopPurposeform() {
   const form = useForm<IShopPurposes>({
     defaultValues: {
       sequence: 0,
-      dividing_image: '',
-      main_title: '',
       product_image: '',
-      image_link: '',
-      title: ''
+      title: '',
+      image_link: ''
     }
   });
 
@@ -51,16 +49,11 @@ export default function shopPurposeform() {
     if (bData && entityId) {
       form.setValue('sequence', (bData as IShopPurposes)?.sequence || 0);
       form.setValue(
-        'dividing_image',
-        (bData as IShopPurposes)?.dividing_image || ''
-      );
-      form.setValue('main_title', (bData as IShopPurposes)?.main_title || '');
-      form.setValue(
         'product_image',
         (bData as IShopPurposes)?.product_image || ''
       );
-      form.setValue('image_link', (bData as IShopPurposes)?.image_link || '');
       form.setValue('title', (bData as IShopPurposes)?.title || '');
+      form.setValue('image_link', (bData as IShopPurposes)?.image_link || '');
     }
   }, [bData, entityId, form]);
 
@@ -68,20 +61,12 @@ export default function shopPurposeform() {
     dispatch(addEditShopPurposes(entityId || null))
       .then((response) => {
         if (response.payload.success) {
-          router.push('/dashboard/shopPurpose');
+          router.push('/dashboard/home/shopPurpose');
           toast.success(response.payload.message);
         }
       })
       .catch((err: any) => toast.error('Error:', err));
   }
-
-  const handleDropdownChange = (e: any) => {
-    const { name, value } = e;
-
-    dispatch(
-      updateShopPurposesData({ [name]: value }) // .then(handleReduxResponse());
-    );
-  };
 
   const handleFileChange = (name: string, file: File[]) => {
     setFiles(file);
@@ -99,7 +84,7 @@ export default function shopPurposeform() {
   };
   //  React.useEffect(() => {
   //    if (files && files?.length > 0) {
-  //      dispatch(updateSlidersData({ image: files }));
+  //      dispatch(updateShopPurposesData({ image: files }));
   //    }
   //  }, [files]);
 
@@ -134,50 +119,38 @@ export default function shopPurposeform() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="space-y-3">
                 <CustomTextField
-                  name="main_title"
-                  control={form.control}
-                  label="Main Title"
-                  placeholder="Enter Main Title"
-                  value={(bData as IShopPurposes)?.main_title}
+                  name="sequence"
+                  // control={form.control}
+                  label="Sequence Number"
+                  placeholder="Enter sequence number"
+                  value={(bData as IShopPurposes)?.sequence}
                   onChange={handleInputChange}
                 />
-
                 <FormItem className="space-y-3">
                   <FormLabel>Product Image</FormLabel>
                   <FileUploader
                     value={files}
                     onValueChange={(file) =>
-                      handleFileChange('product_image', files)
+                      handleFileChange('product_image', file)
                     }
                     accept={{ 'image/*': [] }}
                     maxSize={1024 * 1024 * 2}
                   />
                 </FormItem>
-
-                <CustomTextField
-                  name="image_link"
-                  control={form.control}
-                  label="Image Link"
-                  placeholder="Enter Image Link"
-                  value={(bData as IShopPurposes)?.image_link}
-                  onChange={handleInputChange}
-                />
-
                 <CustomTextField
                   name="title"
-                  control={form.control}
+                  // control={form.control}
                   label="Title"
                   placeholder="Enter Title"
                   value={(bData as IShopPurposes)?.title}
                   onChange={handleInputChange}
                 />
-
                 <CustomTextField
-                  name="sequence"
-                  control={form.control}
-                  label="Sequence Number"
-                  placeholder="Enter sequence number"
-                  value={(bData as IShopPurposes)?.sequence}
+                  name="image_link"
+                  // control={form.control}
+                  label="Image Link"
+                  placeholder="Enter Image Link"
+                  value={(bData as IShopPurposes)?.image_link}
                   onChange={handleInputChange}
                 />
               </div>
