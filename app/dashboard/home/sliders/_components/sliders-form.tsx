@@ -103,7 +103,6 @@ export default function SliderForm() {
   //    }
   //  }, [files]);
 
-  console.log('The formData value is:', bData as ISliders);
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
@@ -135,7 +134,7 @@ export default function SliderForm() {
               <div className="space-y-3">
                 <CustomTextField
                   name="sequence"
-                  control={form.control}
+                  // control={form.control}
                   label="Sequence Number"
                   placeholder="Enter sequence number"
                   value={(bData as ISliders)?.sequence}
@@ -154,7 +153,7 @@ export default function SliderForm() {
                 </FormItem>
                 <CustomTextField
                   name="title"
-                  control={form.control}
+                  // control={form.control}
                   label="Title"
                   placeholder="Enter Title"
                   value={(bData as ISliders)?.title}
@@ -162,7 +161,7 @@ export default function SliderForm() {
                 />
                 <CustomTextField
                   name="description"
-                  control={form.control}
+                  // control={form.control}
                   label="Description"
                   placeholder="Enter Description"
                   value={(bData as ISliders)?.description}
@@ -184,7 +183,7 @@ export default function SliderForm() {
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <CustomTextField
                       name="button_name"
-                      control={form.control}
+                      // control={form.control}
                       label="Button Name"
                       placeholder="Enter Button Name"
                       value={(bData as ISliders)?.button_name}
@@ -192,7 +191,7 @@ export default function SliderForm() {
                     />
                     <CustomTextField
                       name="button_link"
-                      control={form.control}
+                      // control={form.control}
                       label="Button Link"
                       placeholder="Enter Button Link"
                       value={(bData as ISliders)?.button_link}

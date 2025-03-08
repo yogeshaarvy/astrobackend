@@ -71,7 +71,7 @@ export const fetchSlidersList = createAsyncThunk<
     } = input || {};
     dispatch(fetchSlidersStart());
     const response = await fetchApi(
-      `/sliders/all?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}`,
+      `/store/sliders/all?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}`,
       { method: 'GET' }
     );
     if (response?.success) {
@@ -129,12 +129,12 @@ export const addEditSliders = createAsyncThunk<
 
     let response;
     if (!entityId) {
-      response = await fetchApi('/sliders/new', {
+      response = await fetchApi('/store/sliders/new', {
         method: 'POST',
         body: formData
       });
     } else {
-      response = await fetchApi(`/sliders/update/${entityId}`, {
+      response = await fetchApi(`/store/sliders/update/${entityId}`, {
         method: 'PUT',
         body: formData
       });
@@ -164,7 +164,7 @@ export const fetchSingleSlider = createAsyncThunk<
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(fetchSingleSliderStart());
-      const response = await fetchApi(`/sliders/single/${entityId}`, {
+      const response = await fetchApi(`/store/sliders/single/${entityId}`, {
         method: 'GET'
       });
       if (response?.success) {
@@ -188,7 +188,7 @@ export const deleteSlider = createAsyncThunk<any, string, { state: RootState }>(
   async (id, { dispatch }) => {
     dispatch(deleteSliderStart());
     try {
-      const response = await fetchApi(`/sliders/delete/${id}`, {
+      const response = await fetchApi(`/store/sliders/delete/${id}`, {
         method: 'DELETE'
       });
       if (response.success) {

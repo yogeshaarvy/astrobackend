@@ -165,6 +165,11 @@ export const navItems: NavItem[] = [
         title: 'Newsletter',
         url: '/dashboard/home/newsletter',
         icon: 'userPen'
+      },
+      {
+        title: 'Shop Purpose',
+        url: '/dashboard/home/shopPurpose',
+        icon: 'TermsAndConditions'
       }
     ]
   },
@@ -379,13 +384,6 @@ export const navItems: NavItem[] = [
   {
     title: 'Blogs',
     url: '/dashboard/blogs',
-    icon: 'TermsAndConditions',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Shop Purpose',
-    url: '/dashboard/shopPurpose',
     icon: 'TermsAndConditions',
     isActive: false,
     items: [] // No child items

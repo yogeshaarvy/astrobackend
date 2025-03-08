@@ -65,7 +65,7 @@ export default function ShopPurposeListingPage() {
 
             {/* Add New Link */}
             <Link
-              href={'/dashboard/shopPurpose/add'}
+              href={'/dashboard/home/shopPurpose/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

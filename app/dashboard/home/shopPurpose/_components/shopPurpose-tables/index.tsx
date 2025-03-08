@@ -22,7 +22,7 @@ import {
   updateShopPurposesData,
   addEditShopPurposes
 } from '@/redux/slices/shopPurposeSlice';
-import { CellAction } from '@/app/dashboard/shopPurpose/_components/shopPurpose-tables/cell-action';
+import { CellAction } from '@/app/dashboard/home/shopPurpose/_components/shopPurpose-tables/cell-action';
 
 export default function ShopPurposesTable({
   data,
@@ -86,20 +86,6 @@ export default function ShopPurposesTable({
       accessorKey: 'title',
       header: 'TITLE'
     },
-
-    // {
-    //   accessorKey: 'button',
-    //   header: ' BUTTON'
-    // },
-    // {
-    //   accessorKey: 'button_name',
-    //   header: 'BUTTON NAME'
-    // },
-
-    // {
-    //   accessorKey: 'button_link',
-    //   header: 'BUTTON LINK'
-    // },
     {
       accessorKey: 'status',
       header: 'ACTIVE',
