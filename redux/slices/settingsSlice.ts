@@ -2,9 +2,9 @@ import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { fetchApi } from '@/services/utlis/fetchApi';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
-import { processNestedFields } from '@/utils/UploadNestedFiles';
 
 export type ISetting = BaseModel & {
   image?: {
@@ -30,7 +30,10 @@ export type ISetting = BaseModel & {
     metaKeyword?: string;
   };
   contactUs?: {
-    shortDescription?: string;
+    shortDescription?: {
+      en?: string;
+      hi?: string;
+    };
     address?: string;
     contact?: string;
     eMail?: string;
@@ -90,23 +93,15 @@ export const addEditSettingPage = createAsyncThunk<
       return rejectWithValue('Please Provide Details');
     }
 
-    console.log('setting 1', data);
-
     const clonedData = cloneDeep(data);
 
     let imagesALl = {};
 
-    console.log('setting 2');
-
-    if (clonedData?.image) {
-      console.log('setting 3');
+    if (clonedData.image) {
       imagesALl = await processNestedFields(clonedData.image || {});
-      console.log('setting 4', imagesALl);
 
       clonedData.image = imagesALl;
     }
-
-    console.log('setting 5', imagesALl);
 
     // Prepare FormData
     const formData = new FormData();
@@ -124,14 +119,12 @@ export const addEditSettingPage = createAsyncThunk<
         ? JSON.stringify(clonedData.contactUs)
         : undefined
     };
-
-    console.log('setting 2', reqData);
     Object.entries(reqData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         formData.append(key, value as string | Blob);
       }
     });
-    console.log('form data is', formData);
+
     let response = await fetchApi('/setting/createorupdate', {
       method: 'POST',
       body: formData
@@ -193,11 +186,12 @@ const settingSlice = createSlice({
       if (keyFirst.includes('.')) {
         const newData = { ...oldData };
         setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
-        state.settingState.data = {
-          ...newData
-        };
+        state.settingState.data = newData;
       } else {
-        state.settingState.data = { ...oldData, ...action.payload };
+        state.settingState.data = {
+          ...oldData,
+          ...action.payload
+        };
       }
     }
   }
