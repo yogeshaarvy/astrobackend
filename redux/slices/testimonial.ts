@@ -189,7 +189,6 @@ export const fetchSingleTestimonialList = createAsyncThunk<
       });
       if (response?.success) {
         dispatch(fetchSingleTestimonialListSuccess(response?.testimonial));
-        console.log('ajbjbdjbcabdc', response);
         return response;
       } else {
         let errorMsg = response?.message || 'Something Went Wrong';

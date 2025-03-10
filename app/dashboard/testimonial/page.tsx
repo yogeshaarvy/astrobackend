@@ -1,5 +1,5 @@
 import { SearchParams } from 'nuqs/parsers';
-import HomeBannerListPage from './_components/listing-page';
+import TestimonialListPage from './_components/listing-page';
 
 type PageProps = {
   searchParams: SearchParams;
@@ -10,5 +10,5 @@ export const metadata = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return <HomeBannerListPage />;
+  return <TestimonialListPage />;
 }

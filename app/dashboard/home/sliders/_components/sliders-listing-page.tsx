@@ -6,23 +6,26 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { fetchSlidersList, ISliders } from '@/redux/slices/slidersSlice';
+import {
+  fetchSlidersList,
+  ISliders,
+  setSliderData
+} from '@/redux/slices/slidersSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useSearchParams } from 'next/navigation';
 import SlidersTable from './sliders-tables';
+import * as XLSX from 'xlsx';
+import { toast } from 'sonner';
 
 export default function SliderListingPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-
-  // Fetching query params from the URL
   const keyword = searchParams.get('q') || '';
-  const status = searchParams.get('status') || '';
+  const active = searchParams.get('active') || '';
   const field = searchParams.get('field') || '';
   const page = parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams.get('limit') ?? '10', 10);
 
-  // Selector for sliders state
   const {
     slidersListState: {
       loading: slidersListLoading,
@@ -31,36 +34,78 @@ export default function SliderListingPage() {
     }
   } = useAppSelector((state) => state.slider);
 
-  // Fetch data on component mount and when dependencies change
   useEffect(() => {
-    dispatch(fetchSlidersList({ page, pageSize, keyword, field, status }));
-    // dispatch(setTypesData(null));
-  }, [page, pageSize, keyword, field, status, dispatch]);
+    dispatch(fetchSlidersList({ page, pageSize }));
+    dispatch(setSliderData(null));
+  }, [page, pageSize, dispatch]);
 
   const sliders: ISliders[] = cData;
-  // Handle search action
+
   const handleSearch = () => {
-    if ((!keyword && field) || (!field && keyword)) {
-      alert('Both keyword and field are required');
-      return;
+    if (!field || !keyword) {
+      toast.warning(
+        'Both Keyword and Field is required to Search with Keyword'
+      );
     }
-    dispatch(fetchSlidersList({ page, pageSize, keyword, field, status }));
+    dispatch(fetchSlidersList({ page, pageSize, keyword, field, active }));
+  };
+
+  const handleExport = async () => {
+    dispatch(
+      fetchSlidersList({
+        page,
+        pageSize,
+        keyword,
+        field,
+        active,
+        exportData: true
+      })
+    ).then((response: any) => {
+      if (response?.error) {
+        toast.error("Can't Export The Data Something Went Wrong");
+      }
+      const allsliderList = response.payload?.slider;
+      const fileType =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      const fileExtension = '.xlsx';
+      const fileName = 'Slider';
+
+      const ws = XLSX.utils.json_to_sheet(
+        allsliderList?.map((row: any) => {
+          const id = row?._id || 'N/A';
+          const active = row?.active || 'false';
+          const sequence = row?.sequence || `N/A`;
+
+          return {
+            ID: id,
+            Active: active,
+            Sequence: sequence
+          };
+        })
+      );
+
+      const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+      const data = new Blob([excelBuffer], { type: fileType });
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName + fileExtension;
+      a.click();
+    });
   };
 
   return (
     <PageContainer scrollable>
-      <div className="mr-5 space-y-4">
-        {/* Header */}
-        <div className="flex items-start justify-between pr-4">
-          <Heading title={`Sliders`} description="" />
-
-          <div className="flex items-center">
-            {/* Export Button */}
-            <Button className="mx-5 py-4" variant="default">
-              Export
+      <div className="space-y-4">
+        <div className="flex items-start justify-between">
+          <Heading title={`Sliders List (${totalCount})`} description="" />
+          <div className="flex gap-5">
+            <Button variant="default" onClick={handleExport}>
+              Export All
             </Button>
 
-            {/* Add New Link */}
             <Link
               href={'/dashboard/home/sliders/add'}
               className={buttonVariants({ variant: 'default' })}
@@ -69,12 +114,9 @@ export default function SliderListingPage() {
             </Link>
           </div>
         </div>
-
         <Separator />
-
-        {/* Sliders Table */}
         <SlidersTable
-          data={sliders as ISliders[]}
+          data={sliders}
           totalData={totalCount}
           handleSearch={handleSearch}
         />

@@ -10,17 +10,29 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { title } from 'process';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 // Define the ISliders type
 export type ISliders = BaseModel & {
+  title?: {
+    en?: string;
+    hi?: string;
+  };
+  description?: {
+    en?: string;
+    hi?: string;
+  };
+  buttonTitle?: {
+    en?: string;
+    hi?: string;
+  };
   sequence?: number;
   banner_image?: string;
-  title?: string;
-  description?: string;
-  button?: boolean;
-  button_name?: string;
+  buttonStatus?: boolean;
   button_link?: string;
-  status?: boolean;
+  active?: boolean;
 };
 
 // Initial state
@@ -39,11 +51,6 @@ const initialState = {
     data: null,
     loading: null,
     error: null
-  } as BaseState<ISliders | null>,
-  currentSliderState: {
-    data: null,
-    loading: null,
-    error: null
   } as BaseState<ISliders | null>
 };
 
@@ -55,32 +62,35 @@ export const fetchSlidersList = createAsyncThunk<
     pageSize?: number;
     keyword?: string;
     field?: string;
-    status?: string;
+    active?: string;
     exportData?: boolean;
   } | void,
   { state: RootState }
 >('sliders/fetchSlidersList', async (input, { dispatch, rejectWithValue }) => {
   try {
-    const {
-      page = 1,
-      pageSize = 10,
-      keyword = '',
-      field = '',
-      status = '',
-      exportData = false
-    } = input || {};
+    const { page, pageSize, keyword, field, active, exportData } = input || {};
     dispatch(fetchSlidersStart());
+
     const response = await fetchApi(
-      `/store/sliders/all?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}`,
+      `/store/sliders/all?page=${page || 1}&pageSize=${pageSize || 5}&text=${
+        keyword || ''
+      }&field=${field || ''}&active=${active || ''}&export=${
+        exportData || false
+      }`,
       { method: 'GET' }
     );
     if (response?.success) {
-      dispatch(
-        fetchSlidersListSuccess({
-          data: response.SlidersData,
-          totalCount: response.totalCount
-        })
-      );
+      if (!input?.exportData) {
+        dispatch(
+          fetchSlidersListSuccess({
+            data: response.slider,
+            totalCount: response.totalSliderCount
+          })
+        );
+      } else {
+        dispatch(fetchSlidersExportLoading(false));
+      }
+
       return response;
     } else {
       throw new Error('Invalid API response');
@@ -109,16 +119,26 @@ export const addEditSliders = createAsyncThunk<
       return rejectWithValue('Please Provide Details');
     }
 
+    let clonedData = cloneDeep(data);
+
+    if (clonedData) {
+      clonedData = await processNestedFields(clonedData);
+    }
+
     const formData = new FormData();
     const reqData: any = {
-      sequence: data.sequence,
-      banner_image: data.banner_image,
-      title: data.title,
-      description: data.description,
-      button: data.button,
-      button_name: data.button_name,
-      button_link: data.button_link,
-      status: data.status
+      title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+      description: clonedData.description
+        ? JSON.stringify(clonedData.description)
+        : undefined,
+      buttonTitle: clonedData.buttonTitle
+        ? JSON.stringify(clonedData.buttonTitle)
+        : undefined,
+      sequence: clonedData.sequence,
+      banner_image: clonedData.banner_image,
+      buttonStatus: clonedData.buttonStatus,
+      button_link: clonedData.button_link,
+      active: clonedData.active
     };
     // Append only defined fields to FormData
     Object.entries(reqData).forEach(([key, value]) => {
@@ -213,6 +233,9 @@ const slidersSlice = createSlice({
   name: 'sliders',
   initialState,
   reducers: {
+    setSliderData(state, action) {
+      state.singleSliderState.data = action.payload;
+    },
     fetchSlidersStart(state) {
       state.slidersListState.loading = true;
       state.slidersListState.error = null;
@@ -240,7 +263,18 @@ const slidersSlice = createSlice({
     },
     updateSlidersData(state, action) {
       const oldData = state.singleSliderState.data;
-      state.singleSliderState.data = { ...oldData, ...action.payload };
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.singleSliderState.data = newData;
+      } else {
+        state.singleSliderState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     },
     fetchSingleSliderStart(state) {
       state.singleSliderState.loading = true;
@@ -265,6 +299,9 @@ const slidersSlice = createSlice({
     deleteSliderFailure(state, action) {
       state.singleSliderState.loading = false;
       state.singleSliderState.error = action.payload;
+    },
+    fetchSlidersExportLoading(state, action) {
+      state.slidersListState.loading = action.payload;
     }
   }
 });
@@ -277,11 +314,13 @@ export const {
   addEditSlidersSuccess,
   addEditSlidersFailure,
   updateSlidersData,
+  setSliderData,
   fetchSingleSliderStart,
   fetchSingleSliderSuccess,
   fetchSingleSliderFailure,
   deleteSliderStart,
   deleteSliderSuccess,
+  fetchSlidersExportLoading,
   deleteSliderFailure
 } = slidersSlice.actions;
 

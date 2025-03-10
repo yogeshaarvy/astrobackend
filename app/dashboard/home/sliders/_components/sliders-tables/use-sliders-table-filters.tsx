@@ -10,11 +10,7 @@ export const STATUS_OPTIONS = [
   { value: 'true', label: 'True' },
   { value: 'false', label: 'False' }
 ];
-export const FIELD_OPTIONS = [
-  { value: 'name', label: 'Name' },
-  { value: 'type', label: 'Type' },
-  { value: 'searchpage', label: 'Search Page' }
-];
+export const FIELD_OPTIONS = [{ value: 'title.en', label: 'Title' }];
 export function useSlidersTableFilters() {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useQueryState(
@@ -41,9 +37,9 @@ export function useSlidersTableFilters() {
     setSearchQuery(null);
     setStatusFilter(null);
     setFieldFilter(null);
-    setPage(1);
-    dispatch(fetchSlidersList());
-  }, [setSearchQuery, setPage, setStatusFilter]);
+    // setPage(1);
+    // dispatch(fetchSlidersList());
+  }, [setSearchQuery, setPage, setStatusFilter, setFieldFilter]);
 
   const isAnyFilterActive = useMemo(() => {
     return !!searchQuery || !!statusFilter;

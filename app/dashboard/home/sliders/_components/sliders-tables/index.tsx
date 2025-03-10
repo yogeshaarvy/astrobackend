@@ -44,81 +44,55 @@ export default function SlidersTable({
   const dispatch = useAppDispatch();
 
   const columns: ColumnDef<ISliders>[] = [
-    {
-      id: 'number',
-      header: 'S.No.',
-      cell: ({ row, table }) => {
-        const currentPage = table.getState().pagination.pageIndex; // Current page index
-        const pageSize = table.getState().pagination.pageSize; // Number of items per page
-        return <span>{currentPage * pageSize + row.index + 1}</span>; // Calculate correct S.No
-      },
-      enableSorting: false,
-      enableHiding: false
-    },
-    {
-      id: 'select',
-      header: ({ table }) =>
-        // <Checkbox
-        //   checked={table.getIsAllPageRowsSelected()}
-        //   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        //   aria-label="Select all"
-        // />
-        '',
-      cell: ({ row }) =>
-        // <Checkbox
-        //   checked={row.getIsSelected()}
-        //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-        //   aria-label="Select row"
-        // />
-        '',
-      enableSorting: false,
-      enableHiding: false
-    },
+    // {
+    //   id: 'number',
+    //   header: 'S.No.',
+    //   cell: ({ row, table }) => {
+    //     const currentPage = table.getState().pagination.pageIndex; // Current page index
+    //     const pageSize = table.getState().pagination.pageSize; // Number of items per page
+    //     return <span>{currentPage * pageSize + row.index + 1}</span>; // Calculate correct S.No
+    //   },
+    //   enableSorting: false,
+    //   enableHiding: false
+    // },
+    // {
+    //   id: 'select',
+    //   header: ({ table }) =>
+    //     // <Checkbox
+    //     //   checked={table.getIsAllPageRowsSelected()}
+    //     //   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //     //   aria-label="Select all"
+    //     // />
+    //     '',
+    //   cell: ({ row }) =>
+    //     // <Checkbox
+    //     //   checked={row.getIsSelected()}
+    //     //   onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //     //   aria-label="Select row"
+    //     // />
+    //     '',
+    //   enableSorting: false,
+    //   enableHiding: false
+    // },
 
+    {
+      accessorKey: 'title.en',
+      header: 'Title'
+    },
+    {
+      accessorKey: 'buttonStatus',
+      header: 'Button Status'
+    },
     {
       accessorKey: 'sequence',
-      header: 'SEQUENCE'
-    },
-    // {
-    //   accessorKey: 'banner_image',
-    //   header: 'BANNER IMAGE',
-    //   cell: ({ row }) => (
-    //     (
-    //       <img
-    //         src={row.original.banner_image}
-    //         alt="Banner"
-    //         className="h-16 w-32 rounded-md object-cover"
-    //       />
-    //     )
-    //   )
-    // },
-    {
-      accessorKey: 'title',
-      header: 'TITLE'
+      header: 'Sequence'
     },
     {
-      accessorKey: 'description',
-      header: 'DESCRIPTION'
-    },
-    // {
-    //   accessorKey: 'button',
-    //   header: ' BUTTON'
-    // },
-    // {
-    //   accessorKey: 'button_name',
-    //   header: 'BUTTON NAME'
-    // },
-
-    // {
-    //   accessorKey: 'button_link',
-    //   header: 'BUTTON LINK'
-    // },
-    {
-      accessorKey: 'status',
+      accessorKey: 'active',
       header: 'ACTIVE',
       cell: ({ row }) => {
         const handleToggle = async (checked: boolean) => {
-          const updatedData = { ...row.original, status: checked };
+          const updatedData = { ...row.original, active: checked };
           try {
             dispatch(updateSlidersData(updatedData));
             const result = await dispatch(
@@ -126,14 +100,14 @@ export default function SlidersTable({
             ).unwrap();
             toast.success('Status Updated Successfully!');
           } catch (error: any) {
-            console.error('Error updating slider status:', error);
+            console.error('Error updating slider active:', error);
             toast.error('Failed to Update Status');
           }
         };
 
         return (
           <Switch
-            checked={row.original.status}
+            checked={row.original.active}
             onCheckedChange={handleToggle}
             aria-label="Toggle Active Status"
           />

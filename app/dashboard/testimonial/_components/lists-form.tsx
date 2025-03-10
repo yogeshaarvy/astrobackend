@@ -51,7 +51,7 @@ export default function ListForm() {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('name , value, file', name, value, files);
+
     dispatch(
       updateTestimonialListData({
         [name]:
