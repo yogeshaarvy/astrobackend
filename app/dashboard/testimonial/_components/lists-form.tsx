@@ -19,21 +19,16 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import CustomTextField from '@/utils/CustomTextField';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import CustomTextEditor from '@/utils/CustomTextEditor';
 import {
   addEditTestimonialList,
   fetchSingleTestimonialList,
   ITestimonial,
   updateTestimonialListData
 } from '@/redux/slices/testimonial';
-import { Checkbox } from '@/components/ui/checkbox';
-import slugify from 'slugify';
-import CustomDropdown from '@/utils/CusomDropdown';
 
 export default function ListForm() {
   const params = useSearchParams();
@@ -56,6 +51,7 @@ export default function ListForm() {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
+    console.log('name , value, file', name, value, files);
     dispatch(
       updateTestimonialListData({
         [name]:
@@ -120,16 +116,6 @@ export default function ListForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
-                <div className="space-y-1">
-                  <Label htmlFor="name">Sequence</Label>
-                  <Input
-                    name="sequence"
-                    placeholder="Enter Sequence"
-                    type="number"
-                    value={(jData as ITestimonial)?.sequence || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
                     <TabsTrigger
@@ -148,7 +134,7 @@ export default function ListForm() {
 
                   <TabsContent value="English">
                     <>
-                      <CardContent className="space-y-2">
+                      <CardContent className="space-y-2 p-0">
                         <div className="space-y-1">
                           <Label htmlFor="name">Title</Label>
                           <Input
@@ -184,7 +170,7 @@ export default function ListForm() {
 
                   <TabsContent value="Hindi">
                     <>
-                      <CardContent className="space-y-2">
+                      <CardContent className="space-y-2 p-0">
                         <div className="space-y-1">
                           <Label htmlFor="name">Title</Label>
                           <Input
@@ -197,7 +183,7 @@ export default function ListForm() {
                         <div className="space-y-1">
                           <Label htmlFor="name">Name</Label>
                           <Input
-                            name="Name.hi"
+                            name="name.hi"
                             placeholder="Enter your Name"
                             value={(jData as ITestimonial)?.name?.hi || ''}
                             onChange={handleInputChange}
@@ -219,6 +205,66 @@ export default function ListForm() {
                   </TabsContent>
                 </Tabs>
 
+                <div className="space-y-1">
+                  <Label htmlFor="name">Sequence</Label>
+                  <Input
+                    name="sequence"
+                    placeholder="Enter Sequence"
+                    type="number"
+                    value={(jData as ITestimonial)?.sequence || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="name">Date</Label>
+                  <Input
+                    name="date"
+                    placeholder=""
+                    type="date"
+                    value={
+                      (jData as ITestimonial)?.date
+                        ? new Date((jData as ITestimonial)?.date)
+                            .toISOString()
+                            .split('T')[0]
+                        : ''
+                    }
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  {/* <FormLabel></FormLabel> */}
+                  <Label htmlFor="name" className="space-x-3">
+                    Read Button
+                  </Label>
+                  <Switch
+                    className="!m-0"
+                    checked={(jData as ITestimonial)?.readStatus}
+                    onCheckedChange={(checked: any) =>
+                      handleInputChange({
+                        target: {
+                          type: 'checkbox',
+                          name: 'readStatus',
+                          checked
+                        }
+                      })
+                    }
+                    aria-label="Toggle Active Status"
+                  />
+                </div>
+
+                {(jData as ITestimonial)?.readStatus && (
+                  <div className="space-y-1">
+                    <Label htmlFor="name">Read Link</Label>
+                    <Input
+                      name="readLinks"
+                      placeholder="Enter Your Link"
+                      value={(jData as ITestimonial)?.readLinks || ''}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                )}
+
                 <FormItem className="space-y-3">
                   <FormLabel>Light Logo</FormLabel>
                   <FileUploader
@@ -237,13 +283,13 @@ export default function ListForm() {
                     maxSize={1024 * 1024 * 2}
                   />{' '}
                   <>
-                    {typeof (jData as ITestimonial)?.profie_image ===
+                    {typeof (jData as ITestimonial)?.profile_image ===
                       'string' && (
                       <>
                         <div className="max-h-48 space-y-4">
                           <FileViewCard
                             existingImageURL={
-                              (jData as ITestimonial)?.profie_image
+                              (jData as ITestimonial)?.profile_image
                             }
                           />
                         </div>

@@ -2,7 +2,9 @@ import { RootState } from '@/redux/store';
 import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { cloneDeep } from 'lodash';
 
 export type ITestimonial = BaseModel & {
   name?: {
@@ -19,7 +21,7 @@ export type ITestimonial = BaseModel & {
   };
   sequence?: number;
   date?: string;
-  profie_image?: string;
+  profile_image?: string;
   active?: boolean;
   readStatus?: boolean;
   readLinks?: string;
@@ -63,18 +65,25 @@ export const addEditTestimonialList = createAsyncThunk<
         return rejectWithValue('Please Provide Details');
       }
 
+      let clonedData = cloneDeep(data);
+
+      if (clonedData) {
+        clonedData = await processNestedFields(clonedData);
+      }
+
       const formData = new FormData();
       const reqData: any = {
-        name: data.name ? JSON.stringify(data.name) : undefined,
-        title: data.title ? JSON.stringify(data.title) : undefined,
-        description: data.description
-          ? JSON.stringify(data.description)
+        name: clonedData.name ? JSON.stringify(clonedData.name) : undefined,
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        description: clonedData.description
+          ? JSON.stringify(clonedData.description)
           : undefined,
-        date: data.date,
-        sequence: data.sequence,
-        active: data.active,
-        readStatus: data.readStatus,
-        readLinks: data.readLinks
+        date: clonedData.date,
+        sequence: clonedData.sequence,
+        profile_image: clonedData.profile_image,
+        active: clonedData.active,
+        readStatus: clonedData.readStatus,
+        readLinks: clonedData.readLinks
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
@@ -85,18 +94,15 @@ export const addEditTestimonialList = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        response = await fetchApi('/testimonial/testimonialbanner/create', {
+        response = await fetchApi('/store/testimonial/create', {
           method: 'POST',
           body: formData
         });
       } else {
-        response = await fetchApi(
-          `/testimonial/testimonialbanner/update/${entityId}`,
-          {
-            method: 'PUT',
-            body: formData
-          }
-        );
+        response = await fetchApi(`/store/testimonial/update/${entityId}`, {
+          method: 'PUT',
+          body: formData
+        });
       }
 
       if (response?.success) {
@@ -137,7 +143,7 @@ export const fetchTestimonialList = createAsyncThunk<
       dispatch(fetchTestimonialListStart());
 
       const response = await fetchApi(
-        `/testimonial/testimonialbanner/all??page=${page || 1}&limit=${
+        `/store/testimonial/all??page=${page || 1}&limit=${
           pageSize || 5
         }&field=${field || ''}&text=${keyword || ''}&active=${
           active || ''
@@ -178,15 +184,12 @@ export const fetchSingleTestimonialList = createAsyncThunk<
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(fetchSingleTestimonialListStart());
-      const response = await fetchApi(
-        `/testimonial/testimonialbanner/get/${entityId}`,
-        {
-          method: 'GET'
-        }
-      );
+      const response = await fetchApi(`/store/testimonial/get/${entityId}`, {
+        method: 'GET'
+      });
       if (response?.success) {
         dispatch(fetchSingleTestimonialListSuccess(response?.testimonial));
-
+        console.log('ajbjbdjbcabdc', response);
         return response;
       } else {
         let errorMsg = response?.message || 'Something Went Wrong';
