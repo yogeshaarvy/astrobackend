@@ -224,7 +224,7 @@ export default function ListForm() {
                     type="date"
                     value={
                       (jData as ITestimonial)?.date
-                        ? new Date((jData as ITestimonial)?.date)
+                        ? new Date((jData as ITestimonial)?.date || '')
                             .toISOString()
                             .split('T')[0]
                         : ''
