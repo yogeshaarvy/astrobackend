@@ -148,7 +148,7 @@ export const navItems: NavItem[] = [
           },
           {
             title: 'Bloges',
-            url: '/dashboard/pages/blogs/blogs',
+            url: '/dashboard/pages/blogs/list',
             icon: 'category'
           }
         ]
