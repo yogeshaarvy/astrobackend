@@ -40,7 +40,8 @@ import {
   UserCog,
   Store,
   SlidersHorizontal,
-  House
+  House,
+  Library
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -54,6 +55,7 @@ export const Icons = {
   media: Image,
   product: LucideShoppingBag,
   user: User,
+  category: Library,
   logo: Command,
   login: LogIn,
   close: X,

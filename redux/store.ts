@@ -44,6 +44,7 @@ import shopPurposeReducer from './slices/shopPurposeSlice';
 import astroAboutReducer from './slices/homeaboutSlice';
 import homeBannerReducer from './slices/home/banner';
 import testimonialReducer from './slices/testimonial';
+import blogsReducer from './slices/pages/bloges/categorySlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -91,7 +92,8 @@ export const makeStore = () => {
       allusers: allUsersReducer,
       shopPurpose: shopPurposeReducer,
       homeBanner: homeBannerReducer,
-      testimonial: testimonialReducer
+      testimonial: testimonialReducer,
+      blogs: blogsReducer
     }
   });
 };
