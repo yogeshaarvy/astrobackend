@@ -19,7 +19,6 @@ import countriesReducer from './slices/countriesSlice';
 import sellersReducer from './slices/sellersSlice';
 import taxsReduser from './slices/taxsSlice';
 import attributesSlice from './slices/attributesSlice';
-import terms_conditionsReducer from './slices/terms_conditionsSlice';
 import privacy_policyReducer from './slices/privacy_policySlice';
 import return_policyReducer from './slices/return_policySlice';
 import shipping_policyReducer from './slices/shipping_policySlice';
@@ -45,6 +44,7 @@ import astroAboutReducer from './slices/homeaboutSlice';
 import homeBannerReducer from './slices/home/banner';
 import testimonialReducer from './slices/testimonial';
 import blogsReducer from './slices/pages/bloges/categorySlice';
+import promiseReducer from './slices/pages/promiseSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -68,7 +68,6 @@ export const makeStore = () => {
       sellers: sellersReducer,
       taxsdata: taxsReduser,
       attributesSlice: attributesSlice,
-      terms_conditions: terms_conditionsReducer,
       privacy_policy: privacy_policyReducer,
       return_policy: return_policyReducer,
       shipping_policy: shipping_policyReducer,
@@ -93,7 +92,8 @@ export const makeStore = () => {
       shopPurpose: shopPurposeReducer,
       homeBanner: homeBannerReducer,
       testimonial: testimonialReducer,
-      blogs: blogsReducer
+      blogs: blogsReducer,
+      promise: promiseReducer
     }
   });
 };

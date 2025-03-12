@@ -152,6 +152,26 @@ export const navItems: NavItem[] = [
             icon: 'category'
           }
         ]
+      },
+      {
+        title: 'Terms & Conditions',
+        url: '/dashboard/pages/termsandconditions',
+        icon: 'settings'
+      },
+      {
+        title: 'Privacy Policy',
+        url: '/dashboard/pages/privacypolicy',
+        icon: 'settings'
+      },
+      {
+        title: 'Refund Policy',
+        url: '/dashboard/pages/refundpolicy',
+        icon: 'settings'
+      },
+      {
+        title: 'Cancellation Policy',
+        url: '/dashboard/pages/cancellationpolicy',
+        icon: 'settings'
       }
     ] // No child items
   },
@@ -164,11 +184,6 @@ export const navItems: NavItem[] = [
       {
         title: 'General',
         url: '/dashboard/settings/general',
-        icon: 'settings'
-      },
-      {
-        title: 'Terms & Conditions',
-        url: '/dashboard/settings/terms-and-conditions',
         icon: 'settings'
       }
     ] // No child items
