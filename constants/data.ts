@@ -137,7 +137,7 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
-        title: 'Bloges',
+        title: 'Blogs',
         url: '/dashboard/pages/bloges',
         icon: 'settings',
         items: [
@@ -147,7 +147,7 @@ export const navItems: NavItem[] = [
             icon: 'category'
           },
           {
-            title: 'Bloges',
+            title: 'Blogs',
             url: '/dashboard/pages/blogs/list',
             icon: 'category'
           }
