@@ -99,17 +99,6 @@ export default function CategoryForm() {
     );
   };
 
-  // function onSubmit() {
-  //     dispatch(addEditBlogsCategory(entityId || null))
-  //         .then((response) => {
-  //             if (response.payload.success) {
-  //                 router.push('/dashboard/blogs/category');
-  //                 toast.success(response.payload.message);
-  //             }
-  //         })
-  //         .catch((err) => console.error('Error:', err));
-  // }
-
   const handleSubmit = () => {
     const requiredFields: (keyof IBlogsCategory)[] = ['name', 'slug'];
 
@@ -227,22 +216,7 @@ export default function CategoryForm() {
                   <TabsContent value="web">
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
-                        <CardTitle>WISDOM CATEGORY WEB STATUS</CardTitle>
-                        <Switch
-                          className="!m-0"
-                          checked={(cData as IBlogsCategory)?.web?.active}
-                          // onCheckedChange={handleToggle}
-                          onCheckedChange={(checked: any) =>
-                            handleInputChange({
-                              target: {
-                                type: 'checkbox',
-                                name: 'web.active',
-                                checked
-                              }
-                            })
-                          }
-                          aria-label="Toggle Active Status"
-                        />
+                        <CardTitle>BLOG CATEGORY WEB DATA</CardTitle>
                       </CardHeader>
                       <Tabs defaultValue="English" className="mt-4 w-full">
                         <TabsList className="flex w-full space-x-2 p-0">
@@ -263,11 +237,6 @@ export default function CategoryForm() {
                         <TabsContent value="English">
                           <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>WEB-ENGLISH</CardTitle>
-                            {/* <Switch
-                                                            checked={(cData as IBlogsCategory)?.web?.active}
-                                                            // onCheckedChange={handleToggle}
-                                                            aria-label="Toggle Active Status"
-                                                        /> */}
                           </CardHeader>
 
                           <CardContent className="space-y-2">
@@ -322,11 +291,6 @@ export default function CategoryForm() {
                         <TabsContent value="Hindi">
                           <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>WEB-HINDI</CardTitle>
-                            {/* <Switch
-                                                            checked={false}
-                                                            // onCheckedChange={handleToggle}
-                                                            aria-label="Toggle Active Status"
-                                                        /> */}
                           </CardHeader>
 
                           {/* English Form */}

@@ -28,7 +28,6 @@ export type IBlogsCategory = BaseModel & {
 
 export type IBlogs = BaseModel & {
   title?: string;
-  shortDescription?: string;
   slug?: string;
   categories?: IBlogsCategory[];
   createdAt?: Date;
@@ -270,7 +269,6 @@ export const addEditBlogsList = createAsyncThunk<
       const formData = new FormData();
       const reqData: any = {
         title: data.title,
-        shortDescription: data.shortDescription,
         slug: data.slug,
         categories: data.categories
           ? data.categories?.map((cat) => cat?._id).join(',')

@@ -185,12 +185,6 @@ export default function ListForm() {
                   >
                     WEB
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="app"
-                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
-                  >
-                    APP
-                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="seo">
@@ -223,15 +217,6 @@ export default function ListForm() {
                             label="Slug"
                             placeholder="Enter your Slug"
                             value={(wData as IBlogs)?.slug}
-                            onChange={handleInputChange}
-                          />
-                          <CustomTextField
-                            name="shortDescription"
-                            // control={form.control}
-                            label="Short Description"
-                            required={true}
-                            placeholder="Enter your Blogs List Short Description"
-                            value={(wData as IBlogs)?.shortDescription}
                             onChange={handleInputChange}
                           />
                           <CustomTextField
@@ -362,22 +347,7 @@ export default function ListForm() {
                 <TabsContent value="web">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-center gap-5">
-                      <CardTitle>Blogs LIST WEB STATUS</CardTitle>
-                      <Switch
-                        className="!m-0"
-                        checked={(wData as IBlogs)?.web?.active}
-                        // onCheckedChange={handleToggle}
-                        onCheckedChange={(checked: any) =>
-                          handleInputChange({
-                            target: {
-                              type: 'checkbox',
-                              name: 'web.active',
-                              checked
-                            }
-                          })
-                        }
-                        aria-label="Toggle Active Status"
-                      />
+                      <CardTitle>BLOGES LIST WEB STATUS</CardTitle>
                     </CardHeader>
                     <Tabs defaultValue="English" className="mt-4 w-full">
                       <TabsList className="flex w-full space-x-2 p-0">
