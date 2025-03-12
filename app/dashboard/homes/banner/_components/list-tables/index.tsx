@@ -54,6 +54,17 @@ export default function HomeBannerListTable({
       size: 300
     },
     {
+      accessorKey: 'readStatus',
+      header: 'Button status',
+      size: 300
+    },
+    {
+      accessorKey: 'textColour',
+      header: 'Text Color',
+      size: 300
+    },
+
+    {
       accessorKey: 'active',
       header: 'ACTIVE',
       cell: ({ row }) => {

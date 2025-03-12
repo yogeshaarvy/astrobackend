@@ -8,10 +8,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { IHomeBanner } from '@/redux/slices/home/banner';
+import { deleteHomeBanner, IHomeBanner } from '@/redux/slices/home/banner';
+import { AppDispatch } from '@/redux/store';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 interface CellActionProps {
   data: IHomeBanner;
@@ -20,9 +22,13 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    dispatch(deleteHomeBanner(data?._id || ''));
+    setOpen(false);
+  };
 
   return (
     <>
@@ -50,9 +56,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
-          {/* <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem> */}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

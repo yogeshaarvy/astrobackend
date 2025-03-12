@@ -1,52 +1,55 @@
 'use client';
-import {
-  FileCard,
-  FileUploader,
-  FileViewCard
-} from '@/components/file-uploader';
-import PageContainer from '@/components/layout/page-container';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
+import { Form, FormItem, FormLabel } from '@/components/ui/form';
 import {
   Card,
-  CardContent,
-  CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
+  CardContent,
+  CardFooter
 } from '@/components/ui/card';
-import { Form, FormItem, FormLabel } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import PageContainer from '@/components/layout/page-container';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import CustomTextField from '@/utils/CustomTextField';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import CustomTextEditor from '@/utils/CustomTextEditor';
+import React, { useEffect, useState } from 'react';
 import {
   addEditHomeBannerList,
-  fetchSingleHomeBannerList,
   IHomeBanner,
-  updateHomeBannerListData
+  updateHomeBannerListData,
+  fetchSingleHomeBannerList
 } from '@/redux/slices/home/banner';
-import { Checkbox } from '@/components/ui/checkbox';
-import slugify from 'slugify';
+import { FileUploader, FileViewCard } from '@/components/file-uploader';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@radix-ui/react-select';
 import CustomDropdown from '@/utils/CusomDropdown';
 
-export default function ListForm() {
+export default function HomeBannerForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const {
-    singleHomeBannerState: { data: jData }
+    singleHomeBannerState: { loading, data: bData }
   } = useAppSelector((state) => state.homeBanner);
-  const [thumbnailImage, setThumbnailImage] = React.useState<File | null>(null);
+  const [bannerImage, setBannerImage] = useState<File | null>(null);
 
-  const form = useForm({});
+  const [showBannerImage, setShowBannerImage] = useState(true);
+  const [showBackgroundColor, setShowBackgroundColor] = useState(false);
+  const [showSwitch, setShowSwitch] = useState(false);
+
+  const form = useForm<IHomeBanner>({});
 
   useEffect(() => {
     if (entityId) {
@@ -54,13 +57,40 @@ export default function ListForm() {
     }
   }, [entityId]);
 
+  useEffect(() => {
+    const hasImage =
+      !!bannerImage || typeof (bData as IHomeBanner)?.banner_image === 'string';
+    const hasColor = !!(bData as IHomeBanner)?.backgroundColor;
+
+    // Default to image if both exist or none exist
+    if (hasImage) {
+      setShowBannerImage(true);
+      setShowBackgroundColor(false);
+    } else if (hasColor) {
+      setShowBannerImage(false);
+      setShowBackgroundColor(true);
+    } else {
+      setShowBannerImage(false);
+      setShowBackgroundColor(false);
+    }
+  }, [bannerImage, bData]);
+
+  const handleDropdownChange = (e: any) => {
+    const { name, value } = e;
+
+    dispatch(
+      updateHomeBannerListData({ [name]: value }) // .then(handleReduxResponse());
+    );
+  };
+
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
+
     dispatch(
       updateHomeBannerListData({
         [name]:
           type === 'file'
-            ? files[0]
+            ? files?.[0]
             : type === 'checkbox'
             ? checked
             : type === 'number'
@@ -69,30 +99,12 @@ export default function ListForm() {
       })
     );
   };
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const requiredFields: (keyof IHomeBanner)[] = ['title'];
-
-    const missingFields = requiredFields.filter(
-      (field) => !(jData as IHomeBanner)?.[field]
-    );
-
-    if (missingFields.length > 0) {
-      const fieldLabels: { [key in keyof IHomeBanner]?: string } = {
-        title: 'Title'
-      };
-
-      const missingFieldLabels = missingFields.map(
-        (field) => fieldLabels[field] || field
-      );
-      toast.error(
-        `Please fill the required fields: ${missingFieldLabels.join(', ')}`
-      );
-      return;
-    }
 
     try {
-      dispatch(addEditHomeBannerList(entityId || '')).then((response: any) => {
+      dispatch(addEditHomeBannerList(entityId)).then((response: any) => {
         if (!response?.error) {
           router.push('/dashboard/homes/banner');
           toast.success(response?.payload?.message);
@@ -105,12 +117,29 @@ export default function ListForm() {
     }
   };
 
+  const toggleBannerImage = (checked: boolean) => {
+    setShowBannerImage(checked);
+    if (checked) {
+      setShowBackgroundColor(false);
+    }
+  };
+
+  const toggleBackgroundColor = (checked: boolean) => {
+    setShowBackgroundColor(checked);
+    if (checked) {
+      setShowBannerImage(false);
+    }
+  };
+
+  const hasExistingImage =
+    typeof (bData as IHomeBanner)?.banner_image === 'string';
+
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Home Banner List
+            HomeBanner List Information
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -120,16 +149,59 @@ export default function ListForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
-                <div className="space-y-1">
-                  <Label htmlFor="name">Sequence</Label>
-                  <Input
-                    name="sequence"
-                    placeholder="Enter Sequence"
-                    type="number"
-                    value={(jData as IHomeBanner)?.sequence || ''}
-                    onChange={handleInputChange}
+                <FormItem className="space-y-3">
+                  <FormLabel>Banner Image</FormLabel>
+
+                  <FileUploader
+                    value={bannerImage ? [bannerImage] : []}
+                    onValueChange={(newFiles: any) => {
+                      setBannerImage(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'banner_image',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
                   />
+
+                  {typeof (bData as IHomeBanner)?.banner_image === 'string' && (
+                    <div className="max-h-48 space-y-4">
+                      <FileViewCard
+                        existingImageURL={(bData as IHomeBanner)?.banner_image}
+                      />
+                    </div>
+                  )}
+                </FormItem>
+
+                <div className="space-y-3">
+                  <Label htmlFor="backgroundColor">Background Color</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="color"
+                      name="backgroundColor"
+                      value={
+                        (bData as IHomeBanner)?.backgroundColor || '#000000'
+                      }
+                      onChange={handleInputChange}
+                      className="h-10 w-12 cursor-pointer p-1"
+                    />
+                    <Input
+                      type="text"
+                      name="backgroundColor"
+                      value={
+                        (bData as IHomeBanner)?.backgroundColor || '#000000'
+                      }
+                      onChange={handleInputChange}
+                      placeholder="Enter color hex code"
+                      className="flex-1"
+                    />
+                  </div>
                 </div>
+
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
                     <TabsTrigger
@@ -148,23 +220,32 @@ export default function ListForm() {
 
                   <TabsContent value="English">
                     <>
-                      <CardContent className="space-y-2">
+                      <CardContent className="space-y-2 p-0">
                         <div className="space-y-1">
                           <Label htmlFor="name">Title</Label>
                           <Input
                             name="title.en"
                             placeholder="Enter your Title"
-                            value={(jData as IHomeBanner)?.title?.en || ''}
+                            value={(bData as IHomeBanner)?.title?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Description</Label>
+                          <Input
+                            name="description.en"
+                            placeholder="Enter your Description"
+                            value={(bData as IHomeBanner)?.description?.en}
                             onChange={handleInputChange}
                           />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="name">Short Description</Label>
                           <Input
-                            name="description.en"
+                            name="short_description.en"
                             placeholder="Enter your Short Description"
                             value={
-                              (jData as IHomeBanner)?.description?.en || ''
+                              (bData as IHomeBanner)?.short_description?.en
                             }
                             onChange={handleInputChange}
                           />
@@ -175,23 +256,32 @@ export default function ListForm() {
 
                   <TabsContent value="Hindi">
                     <>
-                      <CardContent className="space-y-2">
+                      <CardContent className="space-y-2 p-0">
                         <div className="space-y-1">
                           <Label htmlFor="name">Title</Label>
                           <Input
                             name="title.hi"
                             placeholder="Enter your Title"
-                            value={(jData as IHomeBanner)?.title?.hi || ''}
+                            value={(bData as IHomeBanner)?.title?.hi}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name"> Description</Label>
+                          <Input
+                            name="description.hi"
+                            placeholder="Enter your  Description"
+                            value={(bData as IHomeBanner)?.description?.hi}
                             onChange={handleInputChange}
                           />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="name">Short Description</Label>
                           <Input
-                            name="description.hi"
+                            name="short_description.hi"
                             placeholder="Enter your Short Description"
                             value={
-                              (jData as IHomeBanner)?.description?.hi || ''
+                              (bData as IHomeBanner)?.short_description?.hi
                             }
                             onChange={handleInputChange}
                           />
@@ -201,50 +291,152 @@ export default function ListForm() {
                   </TabsContent>
                 </Tabs>
 
-                <CustomDropdown
-                  label="Read Type"
-                  name="readStatus"
-                  placeholder="Select Content Type"
-                  value={(jData as IHomeBanner)?.readStatus ?? false} // Ensure value is always boolean
-                  defaultValue={false}
-                  data={[
-                    { _id: true, name: 'True' },
-                    { _id: false, name: 'False' }
-                  ]}
-                  onChange={(value) =>
-                    handleInputChange({
-                      target: {
-                        name: 'readStatus',
-                        value: value.value // Already boolean
-                      }
-                    })
-                  }
-                />
+                <div className="space-y-1">
+                  <Label htmlFor="name">Sequence</Label>
+                  <Input
+                    name="sequence"
+                    placeholder="Enter Sequence"
+                    type="number"
+                    value={(bData as IHomeBanner)?.sequence || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
 
-                {(jData as IHomeBanner)?.readStatus && (
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <CustomTextField
-                      name="readTitle.en"
-                      label="English Button Name"
-                      placeholder="Enter English Button Name"
-                      value={(jData as IHomeBanner)?.readTitle?.en}
+                <div className="space-y-3">
+                  <Label htmlFor="textColour">Text Color</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="color"
+                      name="textColour"
+                      value={(bData as IHomeBanner)?.textColour || '#000000'}
                       onChange={handleInputChange}
+                      className="h-10 w-12 cursor-pointer p-1"
                     />
-                    <CustomTextField
-                      name="readTitle.hi"
-                      label="Hindi Button Name"
-                      placeholder="Enter Hindi Button Name"
-                      value={(jData as IHomeBanner)?.readTitle?.hi}
+                    <Input
+                      type="text"
+                      name="textColour"
+                      value={(bData as IHomeBanner)?.textColour || '#000000'}
                       onChange={handleInputChange}
-                    />
-                    <CustomTextField
-                      name="readLinks"
-                      label="Button Link"
-                      placeholder="Enter Button Link"
-                      value={(jData as IHomeBanner)?.readLinks}
-                      onChange={handleInputChange}
+                      placeholder="Enter color hex code"
+                      className="flex-1"
                     />
                   </div>
+                  <CustomDropdown
+                    label="textAlignment"
+                    name="textAlignment"
+                    defaultValue="left"
+                    data={[
+                      { name: 'Left', _id: 'left' },
+                      { name: 'Center', _id: 'center' },
+                      { name: 'Right', _id: 'right' }
+                    ]}
+                    value={form.getValues('textAlignment') || ''}
+                    onChange={handleDropdownChange}
+                  />
+                </div>
+
+                <div className="space-y-1 ">
+                  <Label htmlFor="name" className="space-x-3">
+                    Read Button Status
+                  </Label>
+                  <Switch
+                    className="!m-0"
+                    checked={(bData as IHomeBanner)?.readStatus}
+                    onCheckedChange={(checked: any) =>
+                      handleInputChange({
+                        target: {
+                          type: 'checkbox',
+                          name: 'readStatus',
+                          checked
+                        }
+                      })
+                    }
+                    aria-label="Toggle Active Status"
+                  />
+                </div>
+
+                {(bData as IHomeBanner)?.readStatus && (
+                  <>
+                    <div className="!mt-3">
+                      <Label htmlFor="name">Button English Title</Label>
+                      <Input
+                        name="readTitle.en"
+                        placeholder="Enter English Button Titlte"
+                        value={(bData as IHomeBanner)?.readTitle?.en}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="!mt-3">
+                      <Label htmlFor="name">Button Hindi Title</Label>
+                      <Input
+                        name="readTitle.hi"
+                        placeholder="Enter Hindi Button Titlte"
+                        value={(bData as IHomeBanner)?.readTitle?.hi}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="!mt-3">
+                      <Label htmlFor="name">Button Link</Label>
+                      <Input
+                        name="readLinks"
+                        placeholder="Enter Button Link"
+                        value={(bData as IHomeBanner)?.readLinks}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label htmlFor="readTextColor">Read Text Color</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="color"
+                          name="readTextColor"
+                          value={
+                            (bData as IHomeBanner)?.readTextColor || '#000000'
+                          }
+                          onChange={handleInputChange}
+                          className="h-10 w-12 cursor-pointer p-1"
+                        />
+                        <Input
+                          type="text"
+                          name="readTextColor"
+                          value={
+                            (bData as IHomeBanner)?.readTextColor || '#000000'
+                          }
+                          onChange={handleInputChange}
+                          placeholder="Enter color hex code"
+                          className="flex-1"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="textColour">
+                          Read Background Color
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="color"
+                            name="readBackgroundcolor"
+                            value={
+                              (bData as IHomeBanner)?.readBackgroundcolor ||
+                              '#000000'
+                            }
+                            onChange={handleInputChange}
+                            className="h-10 w-12 cursor-pointer p-1"
+                          />
+                          <Input
+                            type="text"
+                            name="readBackgroundcolor"
+                            value={
+                              (bData as IHomeBanner)?.readBackgroundcolor ||
+                              '#000000'
+                            }
+                            onChange={handleInputChange}
+                            placeholder="Enter color hex code"
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
                 )}
               </form>
             </Form>
