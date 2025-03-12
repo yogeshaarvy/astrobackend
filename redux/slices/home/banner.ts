@@ -2,7 +2,10 @@ import { RootState } from '@/redux/store';
 import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { cloneDeep } from 'lodash';
+import { toast } from 'sonner';
 
 export type IHomeBanner = BaseModel & {
   title?: {
@@ -13,14 +16,24 @@ export type IHomeBanner = BaseModel & {
     en?: string;
     hi?: string;
   };
+  short_description?: {
+    en?: string;
+    hi?: string;
+  };
   readTitle?: {
     en?: string;
     hi?: string;
   };
+  backgroundColor?: string;
+  banner_image?: string;
   sequence?: number;
   active?: boolean;
   readStatus?: boolean;
   readLinks?: string;
+  textAlignment?: string;
+  textColour?: string;
+  readBackgroundcolor?: string;
+  readTextColor?: string;
 };
 
 const initialState = {
@@ -61,17 +74,34 @@ export const addEditHomeBannerList = createAsyncThunk<
         return rejectWithValue('Please Provide Details');
       }
 
+      let clonedData = cloneDeep(data);
+
+      if (clonedData) {
+        clonedData = await processNestedFields(clonedData);
+      }
+
       const formData = new FormData();
       const reqData: any = {
-        title: data.title ? JSON.stringify(data.title) : undefined,
-        description: data.description
-          ? JSON.stringify(data.description)
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        description: clonedData.description
+          ? JSON.stringify(clonedData.description)
           : undefined,
-        readTitle: data.readTitle ? JSON.stringify(data.readTitle) : undefined,
-        sequence: data.sequence,
-        active: data.active,
-        readStatus: data.readStatus,
-        readLinks: data.readLinks
+        short_description: clonedData.short_description
+          ? JSON.stringify(clonedData.short_description)
+          : undefined,
+        readTitle: clonedData.readTitle
+          ? JSON.stringify(clonedData.readTitle)
+          : undefined,
+        banner_image: clonedData.banner_image,
+        backgroundColor: clonedData.backgroundColor,
+        sequence: clonedData.sequence,
+        active: clonedData.active,
+        readStatus: clonedData.readStatus,
+        readLinks: clonedData.readLinks,
+        textAlignment: clonedData.textAlignment,
+        textColour: clonedData.textColour,
+        readBackgroundcolor: clonedData.readBackgroundcolor,
+        readTextColor: clonedData.readTextColor
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
@@ -192,6 +222,34 @@ export const fetchSingleHomeBannerList = createAsyncThunk<
   }
 );
 
+export const deleteHomeBanner = createAsyncThunk<
+  any,
+  string,
+  { state: RootState }
+>('brand/delete', async (id, { dispatch }) => {
+  dispatch(deleteHomeBannerStart());
+  try {
+    const response = await fetchApi(`/home/homebanner/delete/${id}`, {
+      method: 'DELETE'
+    });
+    if (response.success) {
+      dispatch(deleteHomeBannerSuccess(id));
+      dispatch(fetchHomeBannerList());
+      toast.success('Slider deleted successfuly');
+      return response;
+    } else {
+      let errorMsg = response?.data?.message || 'Something Went Wrong';
+      toast.error(errorMsg);
+      dispatch(deleteHomeBannerFailure(errorMsg));
+    }
+  } catch (error: any) {
+    dispatch(
+      deleteHomeBannerFailure(error.message || 'Failed to delete slider')
+    );
+    toast.error(error.message);
+  }
+});
+
 const homeBannerSlice = createSlice({
   name: 'homebanner',
   initialState,
@@ -254,6 +312,17 @@ const homeBannerSlice = createSlice({
       state.singleHomeBannerState.data = action.payload;
       state.singleHomeBannerState.error = null;
     },
+    deleteHomeBannerStart(state) {
+      state.singleHomeBannerState.loading = true;
+      state.singleHomeBannerState.error = null;
+    },
+    deleteHomeBannerSuccess(state, action) {
+      state.singleHomeBannerState.loading = false;
+    },
+    deleteHomeBannerFailure(state, action) {
+      state.singleHomeBannerState.loading = false;
+      state.singleHomeBannerState.error = action.payload;
+    },
     fetchHomeBannerExportLoading(state, action) {
       state.homeBannerList.loading = action.payload;
     }
@@ -272,7 +341,10 @@ export const {
   addEditHomeBannerListFailure,
   addEditHomeBannerListStart,
   addEditHomeBannerListSuccess,
-  updateHomeBannerListData
+  deleteHomeBannerStart,
+  deleteHomeBannerSuccess,
+  updateHomeBannerListData,
+  deleteHomeBannerFailure
 } = homeBannerSlice.actions;
 
 export default homeBannerSlice.reducer;
