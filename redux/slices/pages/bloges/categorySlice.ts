@@ -164,8 +164,6 @@ export const addEditBlogsCategory = createAsyncThunk<
       return rejectWithValue('Please Provide Details');
     }
 
-    console.log('dhbcjhasbcjhb', data);
-
     const formData = new FormData();
     const reqData: any = {
       name: data.name,
@@ -175,7 +173,6 @@ export const addEditBlogsCategory = createAsyncThunk<
       active: data.active
     };
 
-    console.log('jabscjabscjb', reqData);
     Object.entries(reqData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         formData.append(key, value as string | Blob);
