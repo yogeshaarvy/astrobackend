@@ -56,16 +56,6 @@ export default function ListForm() {
     singleBlogsListState: { data: wData }
   } = useAppSelector((state) => state.blogs);
 
-  const {
-    tagListState: {
-      loading: tagListLoading,
-      data: tagsList = []
-      // pagination: { totalCount }
-    }
-  } = useAppSelector((state) => state.tags);
-  const [quoteType, setQuoteType] = React.useState<'image' | 'text' | null>(
-    null
-  );
   const [bannerImage, setBannerImage] = React.useState<File | null>(null);
   const [thumbnailImage, setThumbnailImage] = React.useState<File | null>(null);
 

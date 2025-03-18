@@ -28,6 +28,28 @@ export type IPrivacyPolicy = BaseModel & {
   };
 };
 
+export type IRefundPolicy = BaseModel & {
+  title?: {
+    en?: string;
+    hi?: string;
+  };
+  description?: {
+    en?: string;
+    hi?: string;
+  };
+};
+
+export type ICancellationPolicy = BaseModel & {
+  title?: {
+    en?: string;
+    hi?: string;
+  };
+  description?: {
+    en?: string;
+    hi?: string;
+  };
+};
+
 const initialState = {
   termConditionsState: {
     data: null,
@@ -38,7 +60,17 @@ const initialState = {
     data: null,
     loading: null,
     error: null
-  } as BaseState<IPrivacyPolicy | null>
+  } as BaseState<IPrivacyPolicy | null>,
+  refundPolicyState: {
+    data: null,
+    loading: null,
+    error: null
+  } as BaseState<IRefundPolicy | null>,
+  cancellationPolicyState: {
+    data: null,
+    loading: null,
+    error: null
+  } as BaseState<ICancellationPolicy | null>
 };
 
 export const addEditTermConditionsPage = createAsyncThunk<
@@ -223,6 +255,182 @@ export const fetchPrivacyPolicysPage = createAsyncThunk<
   }
 );
 
+export const addEditRefundPolicysPage = createAsyncThunk<
+  any,
+  null,
+  { state: RootState }
+>(
+  'pages/refundPolicyspage',
+  async (entityId, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const {
+        promise: {
+          refundPolicyState: { data }
+        }
+      } = getState();
+
+      dispatch(addEditRefundPolicysPageStart());
+
+      if (!data) {
+        return rejectWithValue('Please Provide Details');
+      }
+
+      console.log('refund', data);
+
+      const clonedData = cloneDeep(data);
+
+      const formData = new FormData();
+      const reqData: any = {
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        description: clonedData.description
+          ? JSON.stringify(clonedData.description)
+          : undefined
+      };
+
+      Object.entries(reqData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
+
+      let response = await fetchApi('/pages/refundpolicy/create', {
+        method: 'POST',
+        body: formData
+      });
+      if (response?.success) {
+        dispatch(addEditRefundPolicysPageSuccess());
+        dispatch(setRefundPolicysPage(null));
+        dispatch(fetchRefundPolicysPage(null));
+        return response;
+      } else {
+        const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
+        dispatch(addEditRefundPolicysPageSuccess(errorMsg));
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message ?? 'Something Went Wrong!!';
+      dispatch(addEditRefundPolicysPageFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
+export const fetchRefundPolicysPage = createAsyncThunk<
+  any,
+  string | null,
+  { state: RootState }
+>(
+  'pages/refundPolicyspage',
+  async (input, { dispatch, rejectWithValue, getState }) => {
+    try {
+      dispatch(fetchPrivacyPolicysPageStart());
+      const response = await fetchApi(`/pages/refundpolicy/get`, {
+        method: 'GET'
+      });
+      if (response?.success) {
+        dispatch(fetchRefundPolicysPageSuccess(response?.data));
+        return response;
+      } else {
+        let errorMsg = response?.data?.message || 'Something Went Wrong';
+        dispatch(fetchRefundPolicysPageFailure(errorMsg));
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      let errorMsg = error?.message || 'Something Went Wrong';
+      dispatch(fetchRefundPolicysPageFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
+export const addEditCancellationPolicysPage = createAsyncThunk<
+  any,
+  null,
+  { state: RootState }
+>(
+  'pages/cancellationPolicyspage',
+  async (entityId, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const {
+        promise: {
+          cancellationPolicyState: { data }
+        }
+      } = getState();
+
+      dispatch(addEditCancellationPolicysPageStart());
+
+      if (!data) {
+        return rejectWithValue('Please Provide Details');
+      }
+
+      console.log('cancel', data);
+
+      const clonedData = cloneDeep(data);
+
+      const formData = new FormData();
+      const reqData: any = {
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        description: clonedData.description
+          ? JSON.stringify(clonedData.description)
+          : undefined
+      };
+
+      Object.entries(reqData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
+
+      let response = await fetchApi('/pages/cancellationpolicy/create', {
+        method: 'POST',
+        body: formData
+      });
+      if (response?.success) {
+        dispatch(addEditCancellationPolicysPageSuccess());
+        dispatch(setCancellationPolicysPage(null));
+        dispatch(fetchCancellationPolicysPage(null));
+        return response;
+      } else {
+        const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
+        dispatch(addEditCancellationPolicysPageSuccess(errorMsg));
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message ?? 'Something Went Wrong!!';
+      dispatch(addEditCancellationPolicysPageFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
+export const fetchCancellationPolicysPage = createAsyncThunk<
+  any,
+  string | null,
+  { state: RootState }
+>(
+  'pages/cancellationPolicyspage',
+  async (input, { dispatch, rejectWithValue, getState }) => {
+    try {
+      dispatch(fetchCancellationPolicysPageStart());
+      const response = await fetchApi(`/pages/cancellationpolicy/get`, {
+        method: 'GET'
+      });
+      if (response?.success) {
+        dispatch(fetchCancellationPolicysPageSuccess(response?.data));
+        return response;
+      } else {
+        let errorMsg = response?.data?.message || 'Something Went Wrong';
+        dispatch(fetchCancellationPolicysPageFailure(errorMsg));
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      let errorMsg = error?.message || 'Something Went Wrong';
+      dispatch(fetchCancellationPolicysPageFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
 const conditonSlice = createSlice({
   name: 'condtion',
   initialState,
@@ -313,6 +521,94 @@ const conditonSlice = createSlice({
     addEditPrivacyPolicysPageFailure(state, action) {
       state.privayPolicyState.loading = false;
       state.privayPolicyState.error = action.payload;
+    },
+
+    fetchRefundPolicysPageStart(state) {
+      state.refundPolicyState.loading = true;
+      state.refundPolicyState.error = null;
+    },
+    fetchRefundPolicysPageSuccess(state, action) {
+      state.refundPolicyState.loading = false;
+      state.refundPolicyState.data = action.payload;
+      state.refundPolicyState.error = null;
+    },
+    fetchRefundPolicysPageFailure(state, action) {
+      state.refundPolicyState.loading = false;
+      state.refundPolicyState.error = action.payload;
+    },
+    setRefundPolicysPage(state, action) {
+      state.refundPolicyState.data = action.payload;
+    },
+    updateRefundPolicysPage(state, action) {
+      const oldData = state.refundPolicyState.data;
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.refundPolicyState.data = newData;
+      } else {
+        state.refundPolicyState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
+    },
+    addEditRefundPolicysPageStart(state) {
+      state.refundPolicyState.loading = true;
+      state.refundPolicyState.error = null;
+    },
+    addEditRefundPolicysPageSuccess(state) {
+      state.refundPolicyState.loading = false;
+      state.refundPolicyState.error = null;
+    },
+    addEditRefundPolicysPageFailure(state, action) {
+      state.refundPolicyState.loading = false;
+      state.refundPolicyState.error = action.payload;
+    },
+
+    fetchCancellationPolicysPageStart(state) {
+      state.cancellationPolicyState.loading = true;
+      state.cancellationPolicyState.error = null;
+    },
+    fetchCancellationPolicysPageSuccess(state, action) {
+      state.cancellationPolicyState.loading = false;
+      state.cancellationPolicyState.data = action.payload;
+      state.cancellationPolicyState.error = null;
+    },
+    fetchCancellationPolicysPageFailure(state, action) {
+      state.cancellationPolicyState.loading = false;
+      state.cancellationPolicyState.error = action.payload;
+    },
+    setCancellationPolicysPage(state, action) {
+      state.cancellationPolicyState.data = action.payload;
+    },
+    updateCancellationPolicysPage(state, action) {
+      const oldData = state.cancellationPolicyState.data;
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.cancellationPolicyState.data = newData;
+      } else {
+        state.cancellationPolicyState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
+    },
+    addEditCancellationPolicysPageStart(state) {
+      state.cancellationPolicyState.loading = true;
+      state.cancellationPolicyState.error = null;
+    },
+    addEditCancellationPolicysPageSuccess(state) {
+      state.cancellationPolicyState.loading = false;
+      state.cancellationPolicyState.error = null;
+    },
+    addEditCancellationPolicysPageFailure(state, action) {
+      state.cancellationPolicyState.loading = false;
+      state.cancellationPolicyState.error = action.payload;
     }
   }
 });
@@ -334,7 +630,25 @@ export const {
   fetchPrivacyPolicysPageStart,
   fetchPrivacyPolicysPageSuccess,
   setPrivacyPolicysPage,
-  updatePrivacyPolicysPage
+  updatePrivacyPolicysPage,
+
+  addEditRefundPolicysPageFailure,
+  addEditRefundPolicysPageStart,
+  addEditRefundPolicysPageSuccess,
+  fetchRefundPolicysPageFailure,
+  fetchRefundPolicysPageStart,
+  fetchRefundPolicysPageSuccess,
+  setRefundPolicysPage,
+  updateRefundPolicysPage,
+
+  addEditCancellationPolicysPageFailure,
+  addEditCancellationPolicysPageStart,
+  addEditCancellationPolicysPageSuccess,
+  fetchCancellationPolicysPageFailure,
+  fetchCancellationPolicysPageStart,
+  fetchCancellationPolicysPageSuccess,
+  setCancellationPolicysPage,
+  updateCancellationPolicysPage
 } = conditonSlice.actions;
 
 export default conditonSlice.reducer;
