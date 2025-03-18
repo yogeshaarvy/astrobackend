@@ -87,9 +87,7 @@ const Page = () => {
                   <TabsContent value="web">
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
-                        <CardTitle>
-                          Cancellation Policy SECTION'S (WEBSITE)
-                        </CardTitle>
+                        <CardTitle>CANCELLATION POLICY</CardTitle>
                       </CardHeader>
 
                       <Tabs defaultValue="English" className="mt-4 w-full">
@@ -111,9 +109,7 @@ const Page = () => {
                         <TabsContent value="English">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>
-                                Cancellation Policy-WEB-ENGLISH
-                              </CardTitle>
+                              <CardTitle>Cancellation Policy-ENGLISH</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">
@@ -154,9 +150,7 @@ const Page = () => {
                         <TabsContent value="Hindi">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>
-                                Cancellation-Policy-WEB-HINDI
-                              </CardTitle>
+                              <CardTitle>Cancellation-Policy-HINDI</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">

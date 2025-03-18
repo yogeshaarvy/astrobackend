@@ -133,13 +133,13 @@ export const navItems: NavItem[] = [
   {
     title: 'Pages',
     url: '/dashboard/pages/',
-    icon: 'page',
+    icon: 'pages',
     isActive: false,
     items: [
       {
         title: 'Blogs',
         url: '/dashboard/pages/bloges',
-        icon: 'settings',
+        icon: 'blogs',
         items: [
           {
             title: 'Category',
@@ -154,23 +154,46 @@ export const navItems: NavItem[] = [
         ]
       },
       {
+        title: `Home`,
+        url: `#`,
+        icon: 'home',
+        isActive: false,
+        items: [
+          {
+            title: 'Banner',
+            url: '/dashboard/homes/banner',
+            icon: 'media'
+          },
+          {
+            title: 'Config',
+            url: '/dashboard/config/general',
+            icon: 'config'
+          }
+        ]
+      },
+      {
         title: 'Terms & Conditions',
         url: '/dashboard/pages/termsandconditions',
-        icon: 'settings'
+        icon: 'TermsAndConditions'
       },
       {
         title: 'Privacy Policy',
         url: '/dashboard/pages/privacypolicy',
-        icon: 'settings'
+        icon: 'privicypolicy'
       },
       {
         title: 'Refund Policy',
         url: '/dashboard/pages/refundpolicy',
-        icon: 'settings'
+        icon: 'returnpolicy'
       },
       {
         title: 'Cancellation Policy',
         url: '/dashboard/pages/cancellationpolicy',
+        icon: 'cancel'
+      },
+      {
+        title: 'Shipping Policy',
+        url: '/dashboard/pages/shippingpolicy',
         icon: 'settings'
       }
     ] // No child items
@@ -184,22 +207,9 @@ export const navItems: NavItem[] = [
       {
         title: 'General',
         url: '/dashboard/settings/general',
-        icon: 'settings'
+        icon: 'general'
       }
     ] // No child items
-  },
-  {
-    title: `Home`,
-    url: `#`,
-    icon: 'home',
-    isActive: false,
-    items: [
-      {
-        title: 'Banner',
-        url: '/dashboard/homes/banner',
-        icon: 'media'
-      }
-    ]
   },
 
   {
@@ -217,6 +227,11 @@ export const navItems: NavItem[] = [
         title: 'Best Salling',
         url: '/dashboard/home/sales',
         icon: 'taxs'
+      },
+      {
+        title: 'Store Config',
+        url: '/dashboard/storeConfig/general',
+        icon: 'config'
       },
       {
         title: 'Banner',

@@ -41,7 +41,11 @@ import {
   Store,
   SlidersHorizontal,
   House,
-  Library
+  Library,
+  Settings2,
+  Newspaper,
+  Logs,
+  Ban
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -82,11 +86,15 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   address: MapPinned,
-
+  config: Settings2,
   TermsAndConditions: Handshake,
   privicypolicy: GlobeLock,
   returnpolicy: Undo2,
   shippingpolicy: Truck,
+  pages: Newspaper,
+  blogs: Logs,
+  cancel: Ban,
+
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

@@ -87,7 +87,7 @@ const Page = () => {
                   <TabsContent value="web">
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
-                        <CardTitle>Refund Policy SECTION'S (WEBSITE)</CardTitle>
+                        <CardTitle>REFUND POLICY</CardTitle>
                       </CardHeader>
 
                       <Tabs defaultValue="English" className="mt-4 w-full">
@@ -109,7 +109,7 @@ const Page = () => {
                         <TabsContent value="English">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>Refund Policy-WEB-ENGLISH</CardTitle>
+                              <CardTitle>Refund Policy-ENGLISH</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">
@@ -149,7 +149,7 @@ const Page = () => {
                         <TabsContent value="Hindi">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>Refund-Policy-WEB-HINDI</CardTitle>
+                              <CardTitle>Refund-Policy-HINDI</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">
