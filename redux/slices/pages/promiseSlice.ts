@@ -50,6 +50,17 @@ export type ICancellationPolicy = BaseModel & {
   };
 };
 
+export type IShippingPolicy = BaseModel & {
+  title?: {
+    en?: string;
+    hi?: string;
+  };
+  description?: {
+    en?: string;
+    hi?: string;
+  };
+};
+
 const initialState = {
   termConditionsState: {
     data: null,
@@ -70,7 +81,12 @@ const initialState = {
     data: null,
     loading: null,
     error: null
-  } as BaseState<ICancellationPolicy | null>
+  } as BaseState<ICancellationPolicy | null>,
+  shippingPolicyState: {
+    data: null,
+    loading: null,
+    error: null
+  } as BaseState<IShippingPolicy | null>
 };
 
 export const addEditTermConditionsPage = createAsyncThunk<
@@ -431,6 +447,94 @@ export const fetchCancellationPolicysPage = createAsyncThunk<
   }
 );
 
+export const addEditShippingPolicysPage = createAsyncThunk<
+  any,
+  null,
+  { state: RootState }
+>(
+  'pages/shippingPolicyspage',
+  async (entityId, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const {
+        promise: {
+          shippingPolicyState: { data }
+        }
+      } = getState();
+
+      dispatch(addEditShippingPolicysPageStart());
+
+      if (!data) {
+        return rejectWithValue('Please Provide Details');
+      }
+
+      console.log('cancel', data);
+
+      const clonedData = cloneDeep(data);
+
+      const formData = new FormData();
+      const reqData: any = {
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        description: clonedData.description
+          ? JSON.stringify(clonedData.description)
+          : undefined
+      };
+
+      Object.entries(reqData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
+
+      let response = await fetchApi('/pages/shippingpolicy/create', {
+        method: 'POST',
+        body: formData
+      });
+      if (response?.success) {
+        dispatch(addEditShippingPolicysPageSuccess());
+        dispatch(setShippingPolicysPage(null));
+        dispatch(fetchShippingPolicysPage(null));
+        return response;
+      } else {
+        const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
+        dispatch(addEditShippingPolicysPageSuccess(errorMsg));
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message ?? 'Something Went Wrong!!';
+      dispatch(addEditShippingPolicysPageFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
+export const fetchShippingPolicysPage = createAsyncThunk<
+  any,
+  string | null,
+  { state: RootState }
+>(
+  'pages/shippingPolicyspage',
+  async (input, { dispatch, rejectWithValue, getState }) => {
+    try {
+      dispatch(fetchShippingPolicysPageStart());
+      const response = await fetchApi(`/pages/shippingpolicy/get`, {
+        method: 'GET'
+      });
+      if (response?.success) {
+        dispatch(fetchShippingPolicysPageSuccess(response?.data));
+        return response;
+      } else {
+        let errorMsg = response?.data?.message || 'Something Went Wrong';
+        dispatch(fetchShippingPolicysPageFailure(errorMsg));
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      let errorMsg = error?.message || 'Something Went Wrong';
+      dispatch(fetchShippingPolicysPageFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
 const conditonSlice = createSlice({
   name: 'condtion',
   initialState,
@@ -609,6 +713,50 @@ const conditonSlice = createSlice({
     addEditCancellationPolicysPageFailure(state, action) {
       state.cancellationPolicyState.loading = false;
       state.cancellationPolicyState.error = action.payload;
+    },
+
+    fetchShippingPolicysPageStart(state) {
+      state.shippingPolicyState.loading = true;
+      state.shippingPolicyState.error = null;
+    },
+    fetchShippingPolicysPageSuccess(state, action) {
+      state.shippingPolicyState.loading = false;
+      state.shippingPolicyState.data = action.payload;
+      state.shippingPolicyState.error = null;
+    },
+    fetchShippingPolicysPageFailure(state, action) {
+      state.shippingPolicyState.loading = false;
+      state.shippingPolicyState.error = action.payload;
+    },
+    setShippingPolicysPage(state, action) {
+      state.shippingPolicyState.data = action.payload;
+    },
+    updateShippingPolicysPage(state, action) {
+      const oldData = state.shippingPolicyState.data;
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.shippingPolicyState.data = newData;
+      } else {
+        state.shippingPolicyState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
+    },
+    addEditShippingPolicysPageStart(state) {
+      state.shippingPolicyState.loading = true;
+      state.shippingPolicyState.error = null;
+    },
+    addEditShippingPolicysPageSuccess(state) {
+      state.shippingPolicyState.loading = false;
+      state.shippingPolicyState.error = null;
+    },
+    addEditShippingPolicysPageFailure(state, action) {
+      state.shippingPolicyState.loading = false;
+      state.shippingPolicyState.error = action.payload;
     }
   }
 });
@@ -648,7 +796,16 @@ export const {
   fetchCancellationPolicysPageStart,
   fetchCancellationPolicysPageSuccess,
   setCancellationPolicysPage,
-  updateCancellationPolicysPage
+  updateCancellationPolicysPage,
+
+  addEditShippingPolicysPageFailure,
+  addEditShippingPolicysPageStart,
+  addEditShippingPolicysPageSuccess,
+  fetchShippingPolicysPageFailure,
+  fetchShippingPolicysPageStart,
+  fetchShippingPolicysPageSuccess,
+  setShippingPolicysPage,
+  updateShippingPolicysPage
 } = conditonSlice.actions;
 
 export default conditonSlice.reducer;

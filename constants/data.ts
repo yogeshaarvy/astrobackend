@@ -172,6 +172,11 @@ export const navItems: NavItem[] = [
         title: 'Cancellation Policy',
         url: '/dashboard/pages/cancellationpolicy',
         icon: 'settings'
+      },
+      {
+        title: 'Shipping Policy',
+        url: '/dashboard/pages/shippingpolicy',
+        icon: 'settings'
       }
     ] // No child items
   },

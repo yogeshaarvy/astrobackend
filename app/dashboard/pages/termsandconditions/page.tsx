@@ -86,9 +86,7 @@ const Page = () => {
                   <TabsContent value="web">
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
-                        <CardTitle>
-                          TERM & CONDITIONS SECTION'S (WEBSITE)
-                        </CardTitle>
+                        <CardTitle>TERM & CONDITIONS</CardTitle>
                       </CardHeader>
 
                       <Tabs defaultValue="English" className="mt-4 w-full">
@@ -110,9 +108,7 @@ const Page = () => {
                         <TabsContent value="English">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>
-                                TERM-&-CONDITIONS-WEB-ENGLISH
-                              </CardTitle>
+                              <CardTitle>TERM-&-CONDITIONS-ENGLISH</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">
@@ -152,7 +148,7 @@ const Page = () => {
                         <TabsContent value="Hindi">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>TERM-&-CONDITIONS-WEB-HINDI</CardTitle>
+                              <CardTitle>TERM-&-CONDITIONS-HINDI</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">

@@ -17,21 +17,21 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  addEditCancellationPolicysPage,
-  fetchCancellationPolicysPage,
-  ICancellationPolicy,
-  updateCancellationPolicysPage
+  addEditShippingPolicysPage,
+  fetchShippingPolicysPage,
+  IShippingPolicy,
+  updateShippingPolicysPage
 } from '@/redux/slices/pages/promiseSlice';
 import CustomTextEditor from '@/utils/CustomTextEditor';
 
 const Page = () => {
   const dispatch = useAppDispatch();
   const {
-    cancellationPolicyState: { loading, data: cData = [] }
+    shippingPolicyState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.promise);
 
   useEffect(() => {
-    dispatch(fetchCancellationPolicysPage(null));
+    dispatch(fetchShippingPolicysPage(null));
   }, []);
 
   const form = useForm({});
@@ -40,7 +40,7 @@ const Page = () => {
     const { name, value, type, files, checked } = e.target;
     console.log('name value', name, value);
     dispatch(
-      updateCancellationPolicysPage({
+      updateShippingPolicysPage({
         [name]:
           type === 'file'
             ? files[0]
@@ -55,7 +55,7 @@ const Page = () => {
 
   const handleSubmit = () => {
     try {
-      dispatch(addEditCancellationPolicysPage(null)).then((response: any) => {
+      dispatch(addEditShippingPolicysPage(null)).then((response: any) => {
         if (!response?.error) {
           toast.success(response?.payload?.message);
         } else {
@@ -72,7 +72,7 @@ const Page = () => {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Cancellation Policy Section
+            Shipping Policy Section
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -87,7 +87,9 @@ const Page = () => {
                   <TabsContent value="web">
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
-                        <CardTitle>CANCELLATION POLICY</CardTitle>
+                        <CardTitle>
+                          Shipping Policy SECTION'S (WEBSITE)
+                        </CardTitle>
                       </CardHeader>
 
                       <Tabs defaultValue="English" className="mt-4 w-full">
@@ -109,7 +111,7 @@ const Page = () => {
                         <TabsContent value="English">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>Cancellation Policy-ENGLISH</CardTitle>
+                              <CardTitle>Shipping Policy-WEB-ENGLISH</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">
@@ -119,8 +121,7 @@ const Page = () => {
                                   name="title.en"
                                   placeholder="Enter your Title"
                                   value={
-                                    (cData as ICancellationPolicy)?.title?.en ||
-                                    ''
+                                    (cData as IShippingPolicy)?.title?.en || ''
                                   }
                                   onChange={handleInputChange}
                                 />
@@ -130,7 +131,7 @@ const Page = () => {
                                   name="description.en"
                                   label="Full Description"
                                   value={
-                                    (cData as ICancellationPolicy)?.description
+                                    (cData as IShippingPolicy)?.description
                                       ?.en || ''
                                   }
                                   onChange={(value) =>
@@ -150,7 +151,7 @@ const Page = () => {
                         <TabsContent value="Hindi">
                           <div>
                             <CardHeader className="flex flex-row items-center justify-between">
-                              <CardTitle>Cancellation-Policy-HINDI</CardTitle>
+                              <CardTitle>Shipping-Policy-WEB-HINDI</CardTitle>
                             </CardHeader>
 
                             <CardContent className="space-y-2">
@@ -160,8 +161,7 @@ const Page = () => {
                                   name="title.hi"
                                   placeholder="Enter your Title"
                                   value={
-                                    (cData as ICancellationPolicy)?.title?.hi ||
-                                    ''
+                                    (cData as IShippingPolicy)?.title?.hi || ''
                                   }
                                   onChange={handleInputChange}
                                 />
@@ -171,7 +171,7 @@ const Page = () => {
                                   name="description.hi"
                                   label="Full Description"
                                   value={
-                                    (cData as ICancellationPolicy)?.description
+                                    (cData as IShippingPolicy)?.description
                                       ?.hi || ''
                                   }
                                   onChange={(value) =>
