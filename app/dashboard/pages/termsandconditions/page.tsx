@@ -87,7 +87,7 @@ const Page = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
                         <CardTitle>
-                          TERM & CONDITIONS SECTION'S (WEBSITE)
+                          TERM'S & CONDITIONS SECTION'S (WEBSITE)
                         </CardTitle>
                       </CardHeader>
 
