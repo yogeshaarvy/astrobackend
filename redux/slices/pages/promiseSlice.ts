@@ -236,6 +236,7 @@ export const addEditPrivacyPolicysPage = createAsyncThunk<
         return rejectWithValue(errorMsg);
       }
     } catch (error: any) {
+      console.log('not able to fetch');
       const errorMsg = error?.message ?? 'Something Went Wrong!!';
       dispatch(addEditPrivacyPolicysPageFailure(errorMsg));
       return rejectWithValue(errorMsg);
