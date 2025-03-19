@@ -16,7 +16,7 @@ import {
   updateShopPurposesData,
   fetchSingleShopPurpose
 } from '@/redux/slices/shopPurposeSlice';
-import { FileUploader } from '@/components/file-uploader';
+import { FileUploader, FileViewCard } from '@/components/file-uploader';
 
 export default function ShopPurposeForm() {
   const params = useSearchParams();
@@ -29,6 +29,7 @@ export default function ShopPurposeForm() {
 
   // const [showButtonFields, setShowButtonFields] = React.useState(false);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+  const [product_image, setproduct_image] = React.useState<File | null>(null);
   const [files, setFiles] = React.useState<File[]>([]);
   const form = useForm<IShopPurposes>({
     defaultValues: {
@@ -129,13 +130,34 @@ export default function ShopPurposeForm() {
                 <FormItem className="space-y-3">
                   <FormLabel>Product Image</FormLabel>
                   <FileUploader
-                    value={files}
-                    onValueChange={(file) =>
-                      handleFileChange('product_image', file)
-                    }
+                    value={product_image ? [product_image] : []}
+                    onValueChange={(newFiles: any) => {
+                      setproduct_image(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'product_image',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
                     accept={{ 'image/*': [] }}
                     maxSize={1024 * 1024 * 2}
-                  />
+                  />{' '}
+                  <>
+                    {typeof (bData as IShopPurposes)?.product_image ===
+                      'string' && (
+                      <>
+                        <div className="max-h-48 space-y-4">
+                          <FileViewCard
+                            existingImageURL={
+                              (bData as IShopPurposes)?.product_image
+                            }
+                          />
+                        </div>
+                      </>
+                    )}
+                  </>
                 </FormItem>
                 <CustomTextField
                   name="title"

@@ -10,6 +10,8 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { title } from 'process';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 
 // Define the IShopPurposes type
 export type IShopPurposes = BaseModel & {
@@ -113,13 +115,19 @@ export const addEditShopPurposes = createAsyncThunk<
         return rejectWithValue('Please Provide Details');
       }
 
+      let clonedData = cloneDeep(data);
+
+      if (clonedData) {
+        clonedData = await processNestedFields(clonedData);
+      }
+
       const formData = new FormData();
       const reqData: any = {
-        sequence: data.sequence,
-        product_image: data.product_image,
-        title: data.title,
-        image_link: data.image_link,
-        status: data.status
+        sequence: clonedData.sequence,
+        product_image: clonedData.product_image,
+        title: clonedData.title,
+        image_link: clonedData.image_link,
+        status: clonedData.status
       };
 
       // Append only defined fields to FormData
