@@ -9,17 +9,20 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
-import { title } from 'process';
 import { cloneDeep } from 'lodash';
 import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 // Define the IShopPurposes type
 export type IShopPurposes = BaseModel & {
+  title?: {
+    en?: string;
+    hi?: string;
+  };
   sequence?: number;
   product_image?: string;
   image_link?: string;
-  title?: string;
-  status?: boolean;
+  active?: boolean;
 };
 
 // Initial state
@@ -38,11 +41,6 @@ const initialState = {
     data: null,
     loading: null,
     error: null
-  } as BaseState<IShopPurposes | null>,
-  currentShopPurposeState: {
-    data: null,
-    loading: null,
-    error: null
   } as BaseState<IShopPurposes | null>
 };
 
@@ -54,7 +52,7 @@ export const fetchShopPurposesList = createAsyncThunk<
     pageSize?: number;
     keyword?: string;
     field?: string;
-    status?: string;
+    active?: string;
     exportData?: boolean;
   } | void,
   { state: RootState }
@@ -62,26 +60,30 @@ export const fetchShopPurposesList = createAsyncThunk<
   'shopPurposes/fetchShopPurposesList',
   async (input, { dispatch, rejectWithValue }) => {
     try {
-      const {
-        page = 1,
-        pageSize = 10,
-        keyword = '',
-        field = '',
-        status = '',
-        exportData = false
-      } = input || {};
+      const { page, pageSize, keyword, field, active, exportData } =
+        input || {};
       dispatch(fetchShopPurposesStart());
+
       const response = await fetchApi(
-        `/store/shoppurpose/all?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}`,
+        `/store/shoppurpose/all?page=${page || 1}&pageSize=${
+          pageSize || 5
+        }&text=${keyword || ''}&field=${field || ''}&active=${
+          active || ''
+        }&export=${exportData || false}`,
         { method: 'GET' }
       );
       if (response?.success) {
-        dispatch(
-          fetchShopPurposesListSuccess({
-            data: response.ShopPurposesData,
-            totalCount: response.totalCount
-          })
-        );
+        if (!input?.exportData) {
+          dispatch(
+            fetchShopPurposesListSuccess({
+              data: response.shoppurpose,
+              totalCount: response.totalShopPurposesCount
+            })
+          );
+        } else {
+          dispatch(fetchShopPurposesExportLoading(false));
+        }
+
         return response;
       } else {
         throw new Error('Invalid API response');
@@ -123,11 +125,11 @@ export const addEditShopPurposes = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         sequence: clonedData.sequence,
         product_image: clonedData.product_image,
-        title: clonedData.title,
         image_link: clonedData.image_link,
-        status: clonedData.status
+        active: clonedData.active
       };
 
       // Append only defined fields to FormData
@@ -179,7 +181,7 @@ export const fetchSingleShopPurpose = createAsyncThunk<
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleShopPurposeSuccess(response?.shoppurposedata));
+        dispatch(fetchSingleShopPurposeSuccess(response?.shoppurpose));
         return response;
       } else {
         let errorMsg = response?.data?.message || 'Something Went Wrong';
@@ -227,6 +229,9 @@ const shopPurposesSlice = createSlice({
   name: 'shopPurposes',
   initialState,
   reducers: {
+    setShopPurposesData(state, action) {
+      state.singleShopPurposeState.data = action.payload;
+    },
     fetchShopPurposesStart(state) {
       state.shopPurposesListState.loading = true;
       state.shopPurposesListState.error = null;
@@ -254,7 +259,18 @@ const shopPurposesSlice = createSlice({
     },
     updateShopPurposesData(state, action) {
       const oldData = state.singleShopPurposeState.data;
-      state.singleShopPurposeState.data = { ...oldData, ...action.payload };
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.singleShopPurposeState.data = newData;
+      } else {
+        state.singleShopPurposeState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     },
     fetchSingleShopPurposeStart(state) {
       state.singleShopPurposeState.loading = true;
@@ -279,6 +295,9 @@ const shopPurposesSlice = createSlice({
     deleteShopPurposeFailure(state, action) {
       state.singleShopPurposeState.loading = false;
       state.singleShopPurposeState.error = action.payload;
+    },
+    fetchShopPurposesExportLoading(state, action) {
+      state.shopPurposesListState.loading = action.payload;
     }
   }
 });
@@ -288,7 +307,9 @@ export const {
   fetchShopPurposesListSuccess,
   fetchShopPurposesFailure,
   addEditShopPurposesStart,
+  fetchShopPurposesExportLoading,
   addEditShopPurposesSuccess,
+  setShopPurposesData,
   addEditShopPurposesFailure,
   updateShopPurposesData,
   fetchSingleShopPurposeStart,

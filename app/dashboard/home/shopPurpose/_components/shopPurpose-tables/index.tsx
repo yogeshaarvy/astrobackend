@@ -83,15 +83,15 @@ export default function ShopPurposesTable({
       header: 'SEQUENCE'
     },
     {
-      accessorKey: 'title',
+      accessorKey: 'title.en',
       header: 'TITLE'
     },
     {
-      accessorKey: 'status',
+      accessorKey: 'active',
       header: 'ACTIVE',
       cell: ({ row }) => {
         const handleToggle = async (checked: boolean) => {
-          const updatedData = { ...row.original, status: checked };
+          const updatedData = { ...row.original, active: checked };
           try {
             dispatch(updateShopPurposesData(updatedData));
             const result = await dispatch(
@@ -106,7 +106,7 @@ export default function ShopPurposesTable({
 
         return (
           <Switch
-            checked={row.original.status}
+            checked={row.original.active}
             onCheckedChange={handleToggle}
             aria-label="Toggle Active Status"
           />
