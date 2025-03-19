@@ -45,6 +45,7 @@ import homeBannerReducer from './slices/home/banner';
 import testimonialReducer from './slices/testimonial';
 import blogsReducer from './slices/pages/bloges/categorySlice';
 import promiseReducer from './slices/pages/promiseSlice';
+import storeFaq from './slices/store/faqSlice';
 import configReducer from './slices/home/configSlice';
 import storeConfigReducer from './slices/store/storeconfigSlice';
 
@@ -97,7 +98,8 @@ export const makeStore = () => {
       blogs: blogsReducer,
       promise: promiseReducer,
       configs: configReducer,
-      storeconfigs: storeConfigReducer
+      storeconfigs: storeConfigReducer,
+      storeListFaq: storeFaq
     }
   });
 };
