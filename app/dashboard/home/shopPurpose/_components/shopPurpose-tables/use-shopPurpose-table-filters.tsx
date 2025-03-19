@@ -41,8 +41,8 @@ export function useShopPurposesTableFilters() {
     setSearchQuery(null);
     setStatusFilter(null);
     setFieldFilter(null);
-    setPage(1);
-    dispatch(fetchShopPurposesList());
+    // setPage(1);
+    // dispatch(fetchShopPurposesList());
   }, [setSearchQuery, setPage, setStatusFilter]);
 
   const isAnyFilterActive = useMemo(() => {

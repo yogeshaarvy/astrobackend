@@ -166,7 +166,7 @@ export const navItems: NavItem[] = [
           },
           {
             title: 'Config',
-            url: '/dashboard/config/general',
+            url: '/dashboard/homes/config',
             icon: 'config'
           }
         ]
@@ -230,7 +230,7 @@ export const navItems: NavItem[] = [
       },
       {
         title: 'Store Config',
-        url: '/dashboard/storeConfig/general',
+        url: '/dashboard/store/config',
         icon: 'config'
       },
       {

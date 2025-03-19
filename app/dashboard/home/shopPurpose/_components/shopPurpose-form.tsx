@@ -1,9 +1,14 @@
 'use client';
-import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form, FormItem, FormLabel } from '@/components/ui/form';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter
+} from '@/components/ui/card';
 import PageContainer from '@/components/layout/page-container';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomTextField from '@/utils/CustomTextField';
@@ -16,79 +21,30 @@ import {
   updateShopPurposesData,
   fetchSingleShopPurpose
 } from '@/redux/slices/shopPurposeSlice';
-import { FileUploader } from '@/components/file-uploader';
+import { FileUploader, FileViewCard } from '@/components/file-uploader';
+import { useEffect, useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 export default function ShopPurposeForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const {
     singleShopPurposeState: { loading, data: bData }
   } = useAppSelector((state) => state.shopPurpose);
+  const [productImage, setproduct_image] = useState<File | null>(null);
 
-  // const [showButtonFields, setShowButtonFields] = React.useState(false);
-  const [imagePreview, setImagePreview] = React.useState<string | null>(null);
-  const [files, setFiles] = React.useState<File[]>([]);
-  const form = useForm<IShopPurposes>({
-    defaultValues: {
-      sequence: 0,
-      product_image: '',
-      title: '',
-      image_link: ''
-    }
-  });
+  const form = useForm<IShopPurposes>({});
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (entityId) {
       dispatch(fetchSingleShopPurpose(entityId));
     }
-  }, [entityId, dispatch]);
+  }, [entityId]);
 
-  React.useEffect(() => {
-    if (bData && entityId) {
-      form.setValue('sequence', (bData as IShopPurposes)?.sequence || 0);
-      form.setValue(
-        'product_image',
-        (bData as IShopPurposes)?.product_image || ''
-      );
-      form.setValue('title', (bData as IShopPurposes)?.title || '');
-      form.setValue('image_link', (bData as IShopPurposes)?.image_link || '');
-    }
-  }, [bData, entityId, form]);
-
-  function onSubmit() {
-    dispatch(addEditShopPurposes(entityId || null))
-      .then((response) => {
-        if (response.payload.success) {
-          router.push('/dashboard/home/shopPurpose');
-          toast.success(response.payload.message);
-        }
-      })
-      .catch((err: any) => toast.error('Error:', err));
-  }
-
-  const handleFileChange = (name: string, file: File[]) => {
-    setFiles(file);
-
-    // Create image preview
-    if (file && file.length > 0) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file[0]);
-    }
-    // Update Redux state with the uploaded file
-    dispatch(updateShopPurposesData({ [name]: file[0] }));
-  };
-  //  React.useEffect(() => {
-  //    if (files && files?.length > 0) {
-  //      dispatch(updateShopPurposesData({ image: files }));
-  //    }
-  //  }, [files]);
-
-  console.log('The formData value is:', bData as IShopPurposes);
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
@@ -106,6 +62,42 @@ export default function ShopPurposeForm() {
     );
   };
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    // const requiredFields: (keyof ISliders)[] = ['title'];
+
+    // const missingFields = requiredFields.filter(
+    //   (field) => !(bData as ISliders)?.[field]
+    // );
+
+    // if (missingFields.length > 0) {
+    //   const fieldLabels: { [key in keyof ISliders]?: string } = {
+    //     title: 'Title'
+    //   };
+
+    //   const missingFieldLabels = missingFields.map(
+    //     (field) => fieldLabels[field] || field
+    //   );
+    //   toast.error(
+    //     `Please fill the required fields: ${missingFieldLabels.join(', ')}`
+    //   );
+    //   return;
+    // }
+
+    try {
+      dispatch(addEditShopPurposes(entityId)).then((response: any) => {
+        if (!response?.error) {
+          router.push('/dashboard/home/shopPurpose');
+          toast.success(response?.payload?.message);
+        } else {
+          toast.error(response.payload);
+        }
+      });
+    } catch (error) {
+      toast.error('Something Went Wrong');
+    }
+  };
+
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
@@ -116,12 +108,33 @@ export default function ShopPurposeForm() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="space-y-1">
+                <Label htmlFor="name">English Title</Label>
+                <Input
+                  name="title.en"
+                  placeholder="Enter your Title"
+                  value={(bData as IShopPurposes)?.title?.en}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="name">Hindi Title</Label>
+                <Input
+                  name="title.hi"
+                  placeholder="Enter your Title"
+                  value={(bData as IShopPurposes)?.title?.hi}
+                  onChange={handleInputChange}
+                />
+              </div>
               <div className="space-y-3">
                 <CustomTextField
                   name="sequence"
-                  // control={form.control}
                   label="Sequence Number"
+                  type="number"
                   placeholder="Enter sequence number"
                   value={(bData as IShopPurposes)?.sequence}
                   onChange={handleInputChange}
@@ -129,22 +142,35 @@ export default function ShopPurposeForm() {
                 <FormItem className="space-y-3">
                   <FormLabel>Product Image</FormLabel>
                   <FileUploader
-                    value={files}
-                    onValueChange={(file) =>
-                      handleFileChange('product_image', file)
-                    }
+                    value={productImage ? [productImage] : []}
+                    onValueChange={(newFiles: any) => {
+                      setproduct_image(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'product_image',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
                     accept={{ 'image/*': [] }}
                     maxSize={1024 * 1024 * 2}
-                  />
+                  />{' '}
+                  <>
+                    {typeof (bData as IShopPurposes)?.product_image ===
+                      'string' && (
+                      <>
+                        <div className="max-h-48 space-y-4">
+                          <FileViewCard
+                            existingImageURL={
+                              (bData as IShopPurposes)?.product_image
+                            }
+                          />
+                        </div>
+                      </>
+                    )}
+                  </>
                 </FormItem>
-                <CustomTextField
-                  name="title"
-                  // control={form.control}
-                  label="Title"
-                  placeholder="Enter Title"
-                  value={(bData as IShopPurposes)?.title}
-                  onChange={handleInputChange}
-                />
                 <CustomTextField
                   name="image_link"
                   // control={form.control}
@@ -154,11 +180,20 @@ export default function ShopPurposeForm() {
                   onChange={handleInputChange}
                 />
               </div>
-
-              <Button type="submit">Submit</Button>
             </form>
           </Form>
         </CardContent>
+        <CardFooter
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '1rem'
+          }}
+        >
+          <Button type="submit" onClick={(e: any) => handleSubmit(e)}>
+            Submit
+          </Button>
+        </CardFooter>
       </Card>
     </PageContainer>
   );

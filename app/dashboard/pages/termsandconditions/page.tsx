@@ -86,7 +86,7 @@ const Page = () => {
                   <TabsContent value="web">
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
-                        <CardTitle>TERM & CONDITIONS</CardTitle>
+                        <CardTitle>TERM'S & CONDITIONS</CardTitle>
                       </CardHeader>
 
                       <Tabs defaultValue="English" className="mt-4 w-full">
