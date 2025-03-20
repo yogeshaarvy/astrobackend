@@ -254,6 +254,11 @@ export const navItems: NavItem[] = [
         icon: 'userPen'
       },
       {
+        title: 'FAQ',
+        url: '/dashboard/home/faq',
+        icon: 'userPen'
+      },
+      {
         title: 'Shop Purpose',
         url: '/dashboard/home/shopPurpose',
         icon: 'TermsAndConditions'
