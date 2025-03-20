@@ -60,47 +60,26 @@ export const addEditListFaq = createAsyncThunk<
       }
 
       console.log('data', data);
-      //   const clonedData = cloneDeep(data);
 
       const formData = new FormData();
-      //   const reqData: any = {
-      //     name: data.name,
-      //     sequence: data.sequence,
-      //     question: clonedData.question ? JSON.stringify(clonedData.question) : undefined,
-      //     answer: clonedData.answer
-      //       ? JSON.stringify(clonedData.answer)
-      //       : undefined,
-      //     active: data.active
-      //   };
-      //   console.log("reqdata",reqData)
+      const reqData: any = {
+        name: data.name,
+        sequence: data.sequence,
+        question: JSON.stringify({
+          en: data.question?.en,
+          hi: data.question?.hi
+        }),
+        answer: JSON.stringify({ en: data.answer?.en, hi: data.answer?.hi }),
+        active: data.active
+      };
 
-      //   Object.entries(reqData).forEach(([key, value]) => {
-      //     if (value !== undefined && value !== null) {
-      //       formData.append(key, value as string | Blob);
-      //     }
-      //   });
+      console.log('reqData', reqData);
 
-      // Append basic fields
-      if (data.name) formData.append('name', data.name);
-      if (data.sequence !== undefined && data.sequence !== null)
-        formData.append('sequence', data.sequence.toString());
-
-      // Append question fields individually
-      if (data.question?.en !== undefined)
-        formData.append('question[en]', data.question.en);
-      if (data.question?.hi !== undefined)
-        formData.append('question[hi]', data.question.hi);
-
-      // Append answer fields individually
-      if (data.answer?.en !== undefined)
-        formData.append('answer[en]', data.answer.en);
-      if (data.answer?.hi !== undefined)
-        formData.append('answer[hi]', data.answer.hi);
-
-      // Set active with default value
-      formData.append('active', (data.active ?? false).toString());
-
-      console.log('Sending form data');
+      Object.entries(reqData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
 
       let response;
       if (!entityId) {

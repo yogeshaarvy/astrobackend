@@ -135,22 +135,6 @@ export default function ListForm() {
                             value={(bData as IFaq)?.sequence}
                             onChange={handleInputChange}
                           />
-                          {/* <CustomDropdown
-                            label="Publication Type"
-                            name="type"
-                            placeholder="Select Your Type"
-                            value={(bData as IBookFaq)?.type || ''}
-                            defaultValue={(bData as IBookFaq)?.type || ''}
-                            data={typeData}
-                            onChange={(value) =>
-                              handleInputChange({
-                                target: {
-                                  name: 'type',
-                                  value: value.value
-                                }
-                              })
-                            }
-                          /> */}
                         </form>
                       </Form>
                     </CardContent>
