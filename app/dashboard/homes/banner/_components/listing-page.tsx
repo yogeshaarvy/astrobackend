@@ -25,7 +25,6 @@ export default function HomeBannerListPage() {
   const keyword = searchParams.get('q') || '';
   const active = searchParams.get('active') || '';
   const field = searchParams.get('field') || '';
-
   const page = parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams.get('limit') ?? '5', 10);
 

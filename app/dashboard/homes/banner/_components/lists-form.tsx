@@ -25,14 +25,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@radix-ui/react-select';
 import CustomDropdown from '@/utils/CusomDropdown';
+import CustomTextEditor from '@/utils/CustomTextEditor';
 
 export default function HomeBannerForm() {
   const params = useSearchParams();
@@ -44,10 +38,9 @@ export default function HomeBannerForm() {
     singleHomeBannerState: { loading, data: bData }
   } = useAppSelector((state) => state.homeBanner);
   const [bannerImage, setBannerImage] = useState<File | null>(null);
-
   const [showBannerImage, setShowBannerImage] = useState(true);
   const [showBackgroundColor, setShowBackgroundColor] = useState(false);
-  const [showSwitch, setShowSwitch] = useState(false);
+  const [showSwitch, setShowSwitch] = useState(true);
 
   const form = useForm<IHomeBanner>({});
 
@@ -56,32 +49,6 @@ export default function HomeBannerForm() {
       dispatch(fetchSingleHomeBannerList(entityId));
     }
   }, [entityId]);
-
-  useEffect(() => {
-    const hasImage =
-      !!bannerImage || typeof (bData as IHomeBanner)?.banner_image === 'string';
-    const hasColor = !!(bData as IHomeBanner)?.backgroundColor;
-
-    // Default to image if both exist or none exist
-    if (hasImage) {
-      setShowBannerImage(true);
-      setShowBackgroundColor(false);
-    } else if (hasColor) {
-      setShowBannerImage(false);
-      setShowBackgroundColor(true);
-    } else {
-      setShowBannerImage(false);
-      setShowBackgroundColor(false);
-    }
-  }, [bannerImage, bData]);
-
-  const handleDropdownChange = (e: any) => {
-    const { name, value } = e;
-
-    dispatch(
-      updateHomeBannerListData({ [name]: value }) // .then(handleReduxResponse());
-    );
-  };
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
@@ -117,22 +84,31 @@ export default function HomeBannerForm() {
     }
   };
 
-  const toggleBannerImage = (checked: boolean) => {
-    setShowBannerImage(checked);
-    if (checked) {
+  useEffect(() => {
+    const hasImage =
+      !!bannerImage || typeof (bData as IHomeBanner)?.banner_image === 'string';
+    const hasColor = !!(bData as IHomeBanner)?.backgroundColor;
+
+    // Default to image if both exist or none exist
+    if (hasImage) {
+      setShowBannerImage(true);
+      setShowBackgroundColor(false);
+    } else if (hasColor) {
+      setShowBannerImage(false);
+      setShowBackgroundColor(true);
+    } else {
+      setShowBannerImage(false);
       setShowBackgroundColor(false);
     }
-  };
+  }, [bannerImage, bData]);
 
-  const toggleBackgroundColor = (checked: boolean) => {
-    setShowBackgroundColor(checked);
-    if (checked) {
-      setShowBannerImage(false);
-    }
-  };
+  const handleDropdownChange = (e: any) => {
+    const { name, value } = e;
 
-  const hasExistingImage =
-    typeof (bData as IHomeBanner)?.banner_image === 'string';
+    dispatch(
+      updateHomeBannerListData({ [name]: value }) // .then(handleReduxResponse());
+    );
+  };
 
   return (
     <PageContainer scrollable>
@@ -179,27 +155,48 @@ export default function HomeBannerForm() {
 
                 <div className="space-y-3">
                   <Label htmlFor="backgroundColor">Background Color</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="color"
-                      name="backgroundColor"
-                      value={
-                        (bData as IHomeBanner)?.backgroundColor || '#000000'
-                      }
-                      onChange={handleInputChange}
-                      className="h-10 w-12 cursor-pointer p-1"
-                    />
-                    <Input
-                      type="text"
-                      name="backgroundColor"
-                      value={
-                        (bData as IHomeBanner)?.backgroundColor || '#000000'
-                      }
-                      onChange={handleInputChange}
-                      placeholder="Enter color hex code"
-                      className="flex-1"
-                    />
-                  </div>
+
+                  <Switch
+                    className="!m-0"
+                    checked={(bData as IHomeBanner)?.backgroundStatus}
+                    onCheckedChange={(checked: any) =>
+                      handleInputChange({
+                        target: {
+                          type: 'checkbox',
+                          name: 'backgroundStatus',
+                          checked
+                        }
+                      })
+                    }
+                    aria-label="Toggle Active Status"
+                  />
+
+                  {(bData as IHomeBanner)?.backgroundStatus && (
+                    <div className="flex items-center gap-2">
+                      {/* Color Picker */}
+                      <Input
+                        type="color"
+                        name="backgroundColor"
+                        value={
+                          (bData as IHomeBanner)?.backgroundColor || '#000000'
+                        }
+                        onChange={handleInputChange}
+                        className="h-10 w-12 cursor-pointer p-1"
+                      />
+
+                      {/* Hex Code Input */}
+                      <Input
+                        type="text"
+                        name="backgroundColor"
+                        value={
+                          (bData as IHomeBanner)?.backgroundColor || '#000000'
+                        }
+                        // onChange={handleInputChange}
+                        placeholder="Enter color hex code"
+                        className="flex-1"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <Tabs defaultValue="English" className="mt-4 w-full">
@@ -230,15 +227,7 @@ export default function HomeBannerForm() {
                             onChange={handleInputChange}
                           />
                         </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="name">Description</Label>
-                          <Input
-                            name="description.en"
-                            placeholder="Enter your Description"
-                            value={(bData as IHomeBanner)?.description?.en}
-                            onChange={handleInputChange}
-                          />
-                        </div>
+
                         <div className="space-y-1">
                           <Label htmlFor="name">Short Description</Label>
                           <Input
@@ -250,6 +239,20 @@ export default function HomeBannerForm() {
                             onChange={handleInputChange}
                           />
                         </div>
+                        <CustomTextEditor
+                          name="description.en"
+                          label="Full Description"
+                          value={(bData as IHomeBanner)?.description?.en}
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'description.en',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
                       </CardContent>
                     </>
                   </TabsContent>
@@ -267,15 +270,6 @@ export default function HomeBannerForm() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="name"> Description</Label>
-                          <Input
-                            name="description.hi"
-                            placeholder="Enter your  Description"
-                            value={(bData as IHomeBanner)?.description?.hi}
-                            onChange={handleInputChange}
-                          />
-                        </div>
-                        <div className="space-y-1">
                           <Label htmlFor="name">Short Description</Label>
                           <Input
                             name="short_description.hi"
@@ -286,6 +280,20 @@ export default function HomeBannerForm() {
                             onChange={handleInputChange}
                           />
                         </div>
+                        <CustomTextEditor
+                          name="description.hi"
+                          label="Full Description"
+                          value={(bData as IHomeBanner)?.description?.hi}
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'description.hi',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
                       </CardContent>
                     </>
                   </TabsContent>
@@ -316,13 +324,13 @@ export default function HomeBannerForm() {
                       type="text"
                       name="textColour"
                       value={(bData as IHomeBanner)?.textColour || '#000000'}
-                      onChange={handleInputChange}
+                      // onChange={handleInputChange}
                       placeholder="Enter color hex code"
                       className="flex-1"
                     />
                   </div>
                   <CustomDropdown
-                    label="textAlignment"
+                    label="Text Alignment"
                     name="textAlignment"
                     defaultValue="left"
                     data={[
@@ -330,7 +338,7 @@ export default function HomeBannerForm() {
                       { name: 'Center', _id: 'center' },
                       { name: 'Right', _id: 'right' }
                     ]}
-                    value={form.getValues('textAlignment') || ''}
+                    value={(bData as IHomeBanner)?.textAlignment || ''}
                     onChange={handleDropdownChange}
                   />
                 </div>
@@ -402,7 +410,7 @@ export default function HomeBannerForm() {
                           value={
                             (bData as IHomeBanner)?.readTextColor || '#000000'
                           }
-                          onChange={handleInputChange}
+                          // onChange={handleInputChange}
                           placeholder="Enter color hex code"
                           className="flex-1"
                         />
@@ -429,8 +437,7 @@ export default function HomeBannerForm() {
                               (bData as IHomeBanner)?.readBackgroundcolor ||
                               '#000000'
                             }
-                            onChange={handleInputChange}
-                            placeholder="Enter color hex code"
+                            // onChange={handleInputChange}
                             className="flex-1"
                           />
                         </div>

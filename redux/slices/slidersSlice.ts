@@ -1,20 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-
-// Define the SlidersRootState type to include sliders
-export interface SlidersRootState {
-  sliders: typeof initialState;
-}
 import { fetchApi } from '@/services/utlis/fetchApi';
-
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
-import { title } from 'process';
 import { cloneDeep } from 'lodash';
 import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
 
-// Define the ISliders type
 export type ISliders = BaseModel & {
   title?: {
     en?: string;

@@ -29,6 +29,7 @@ export type IHomeBanner = BaseModel & {
   sequence?: number;
   active?: boolean;
   readStatus?: boolean;
+  backgroundStatus?: boolean;
   readLinks?: string;
   textAlignment?: string;
   textColour?: string;
@@ -96,6 +97,7 @@ export const addEditHomeBannerList = createAsyncThunk<
         backgroundColor: clonedData.backgroundColor,
         sequence: clonedData.sequence,
         active: clonedData.active,
+        backgroundStatus: clonedData.backgroundStatus,
         readStatus: clonedData.readStatus,
         readLinks: clonedData.readLinks,
         textAlignment: clonedData.textAlignment,
@@ -157,11 +159,10 @@ export const fetchHomeBannerList = createAsyncThunk<
     try {
       const { page, pageSize, keyword, field, active, exportData } =
         input || {};
-
       dispatch(fetchHomeBannerListStart());
 
       const response = await fetchApi(
-        `/home/homebanner/all??page=${page || 1}&limit=${pageSize || 5}&field=${
+        `/home/homebanner/all?page=${page || 1}&limit=${pageSize || 10}&field=${
           field || ''
         }&text=${keyword || ''}&active=${active || ''}&exportData=${
           exportData || false
