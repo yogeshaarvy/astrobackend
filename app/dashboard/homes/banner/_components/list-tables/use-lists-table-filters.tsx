@@ -3,7 +3,7 @@
 import { searchParams } from '@/lib/searchparams';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
-export const FIELD_OPTIONS = [{ value: 'title', label: 'Title' }];
+export const FIELD_OPTIONS = [{ value: 'title.en', label: 'Title' }];
 export const STATUS_OPTIONS = [
   { value: 'true', label: 'True' },
   { value: 'false', label: 'False' }
