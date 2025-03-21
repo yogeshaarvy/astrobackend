@@ -262,6 +262,11 @@ export const navItems: NavItem[] = [
         title: 'Shop Purpose',
         url: '/dashboard/home/shopPurpose',
         icon: 'TermsAndConditions'
+      },
+      {
+        title: 'Gallery Image',
+        url: '/dashboard/home/galleryImage',
+        icon: 'TermsAndConditions'
       }
     ]
   },

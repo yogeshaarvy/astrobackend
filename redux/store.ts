@@ -48,6 +48,7 @@ import promiseReducer from './slices/pages/promiseSlice';
 import storeFaq from './slices/store/faqSlice';
 import configReducer from './slices/home/configSlice';
 import storeConfigReducer from './slices/store/storeconfigSlice';
+import storegallery from './slices/store/gallerySlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -99,7 +100,8 @@ export const makeStore = () => {
       promise: promiseReducer,
       configs: configReducer,
       storeconfigs: storeConfigReducer,
-      storeListFaq: storeFaq
+      storeListFaq: storeFaq,
+      galleryImage: storegallery
     }
   });
 };
