@@ -33,6 +33,7 @@ import {
 } from '@/redux/slices/midbanner';
 import { Checkbox } from '@/components/ui/checkbox';
 import slugify from 'slugify';
+import CustomTextEditor from '@/utils/CustomTextEditor';
 
 export default function ListForm() {
   const params = useSearchParams();
@@ -41,7 +42,7 @@ export default function ListForm() {
   const router = useRouter(); // Ref for file input
 
   const {
-    midbannerState: { data: jData }
+    midbannerState: { data: jData = [] }
   } = useAppSelector((state) => state.midbanner);
   const [iconImg, setIconImg] = React.useState<File | null>(null);
 
@@ -158,21 +159,39 @@ export default function ListForm() {
                         )}
                       </>
                     </FormItem>
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Title</Label>
+                    {/* <div className="space-y-1">
+                      <Label htmlFor="name">English Title</Label>
                       <Input
-                        name="title"
+                        name="title.en"
                         placeholder="Enter your Title"
-                        value={(jData as IMidbanner)?.title || ''}
+                        value={(jData as IMidbanner)?.title?.en || ''}
                         onChange={handleInputChange}
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label htmlFor="name">Description</Label>
+                      <Label htmlFor="name">English Description</Label>
                       <Input
-                        name="description"
+                        name="description.en"
                         placeholder="Enter your Description"
-                        value={(jData as IMidbanner)?.description || ''}
+                        value={(jData as IMidbanner)?.description?.en || ''}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="name">Hindi Title</Label>
+                      <Input
+                        name="title.hi"
+                        placeholder="Enter your Title"
+                        value={(jData as IMidbanner)?.title?.hi || ''}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="name">Hindi Description</Label>
+                      <Input
+                        name="description.hi"
+                        placeholder="Enter your Description"
+                        value={(jData as IMidbanner)?.description?.hi || ''}
                         onChange={handleInputChange}
                       />
                     </div>
@@ -184,66 +203,92 @@ export default function ListForm() {
                         value={(jData as IMidbanner)?.link || ''}
                         onChange={handleInputChange}
                       />
-                    </div>
+                    </div> */}
 
-                    {/* <Card>
-                      <CardHeader className="flex flex-row items-center justify-center gap-5">
-                        <CardTitle>Hero Slider</CardTitle>
-                      </CardHeader>
-                      <Tabs defaultValue="English" className="mt-4 w-full">
-                        <TabsList className="flex w-full space-x-2 p-0">
-                          <TabsTrigger
-                            value="English"
-                            className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
-                          >
-                            English
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="Hindi"
-                            className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
-                          >
-                            Hindi
-                          </TabsTrigger>
-                        </TabsList>
+                    <Tabs defaultValue="English" className="mt-4 w-full">
+                      <TabsList className="flex w-full space-x-2 p-0">
+                        <TabsTrigger
+                          value="English"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          English
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="Hindi"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          Hindi
+                        </TabsTrigger>
+                      </TabsList>
 
-                        <TabsContent value="English">
-                          <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>ENGLISH CONTENT</CardTitle>
-                          </CardHeader>
+                      <TabsContent value="English">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                          <CardTitle>ENGLISH CONTENT</CardTitle>
+                        </CardHeader>
 
-                          <CardContent className="space-y-2">
-                            <div className="space-y-1">
-                              <Label htmlFor="name">Title</Label>
-                              <Input
-                                name="title.en"
-                                placeholder="Enter your Title"
-                                value={(jData as IMidbanner)?.title?.en || ''}
-                                onChange={handleInputChange}
-                              />
-                            </div>
-                          </CardContent>
-                        </TabsContent>
+                        <CardContent className="space-y-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="title.en"
+                              placeholder="Enter your Title"
+                              value={(jData as IMidbanner)?.title?.en || ''}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="description.en"
+                              label="Full Description"
+                              value={(jData as IMidbanner)?.description?.en}
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </TabsContent>
 
-                       
-                        <TabsContent value="Hindi">
-                          <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>HINDI CONTENT</CardTitle>
-                          </CardHeader>
+                      <TabsContent value="Hindi">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                          <CardTitle>HINDI CONTENT</CardTitle>
+                        </CardHeader>
 
-                          <CardContent className="space-y-2">
-                            <div className="space-y-1">
-                              <Label htmlFor="name">Title</Label>
-                              <Input
-                                name="title.hi"
-                                placeholder="Enter your Title"
-                                value={(jData as IMidbanner)?.title?.hi || ''}
-                                onChange={handleInputChange}
-                              />
-                            </div>
-                          </CardContent>
-                        </TabsContent>
-                      </Tabs>
-                    </Card> */}
+                        <CardContent className="space-y-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="title.hi"
+                              placeholder="Enter your Title"
+                              value={(jData as IMidbanner)?.title?.hi || ''}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="description.hi"
+                              label="Full Description"
+                              value={(jData as IMidbanner)?.description?.hi}
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'description.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </TabsContent>
+                    </Tabs>
                   </form>
                 </Form>
               </div>

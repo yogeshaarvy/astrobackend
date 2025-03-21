@@ -10,8 +10,14 @@ import { processNestedFields } from '@/utils/UploadNestedFiles';
 
 export type IMidbanner = BaseModel & {
   image?: string;
-  title?: string;
-  description?: string;
+  title?: {
+    en?: string;
+    hi?: string;
+  };
+  description?: {
+    en?: string;
+    hi?: string;
+  };
   link?: string;
 };
 
@@ -82,8 +88,10 @@ export const addEditMidbanner = createAsyncThunk<
       const formData = new FormData();
 
       const reqData: any = {
-        title: clonedData.title,
-        description: clonedData.description,
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        description: clonedData.description
+          ? JSON.stringify(clonedData.description)
+          : undefined,
         image: clonedData.image,
         link: clonedData.link
       };
