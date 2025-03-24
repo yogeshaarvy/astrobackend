@@ -9,11 +9,26 @@ import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 export type IAboutAstro = BaseModel & {
-  title?: string;
-  description?: string;
-  secureTitle?: string;
-  benefitTitle?: string;
-  greatTitle?: string;
+  title?: {
+    en?: string;
+    hi?: string;
+  };
+  description?: {
+    en?: string;
+    hi?: string;
+  };
+  secureTitle?: {
+    en?: string;
+    hi?: string;
+  };
+  benefitTitle?: {
+    en?: string;
+    hi?: string;
+  };
+  greatTitle?: {
+    en?: string;
+    hi?: string;
+  };
   images?: {
     backgoundImage?: string;
     mainImage?: string;
@@ -79,14 +94,10 @@ export const addEditHomeAbout = createAsyncThunk<
         return rejectWithValue('Please Provide Details');
       }
 
-      const clonedData = cloneDeep(data);
+      let clonedData = cloneDeep(data);
 
-      let imagesALl = {};
-
-      if (clonedData.images) {
-        imagesALl = await processNestedFields(clonedData.images || {});
-
-        clonedData.images = imagesALl;
+      if (clonedData) {
+        clonedData = await processNestedFields(clonedData);
       }
 
       const formData = new FormData();
@@ -94,11 +105,19 @@ export const addEditHomeAbout = createAsyncThunk<
         images: clonedData.images
           ? JSON.stringify(clonedData.images)
           : undefined,
-        title: clonedData.title,
-        description: clonedData.description,
-        secureTitle: clonedData.secureTitle,
-        benefitTitle: clonedData.benefitTitle,
+        title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        description: clonedData.description
+          ? JSON.stringify(clonedData.description)
+          : undefined,
+        secureTitle: clonedData.secureTitle
+          ? JSON.stringify(clonedData.secureTitle)
+          : undefined,
+        benefitTitle: clonedData.benefitTitle
+          ? JSON.stringify(clonedData.benefitTitle)
+          : undefined,
         greatTitle: clonedData.greatTitle
+          ? JSON.stringify(clonedData.greatTitle)
+          : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
@@ -133,10 +152,10 @@ export const addEditHomeAbout = createAsyncThunk<
 );
 
 const homeaboutSlice = createSlice({
-  name: 'midbanner',
+  name: 'homeabout',
   initialState,
   reducers: {
-    fetchMidbannerStart(state) {
+    fetchHomeAboutStart(state) {
       state.homeaboutState.loading = true;
       state.homeaboutState.error = null;
     },
