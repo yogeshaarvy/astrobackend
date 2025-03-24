@@ -778,19 +778,76 @@ export const navItems: NavItem[] = [
       }
     ]
   },
+
   {
-    title: 'Settings',
-    url: '/dashboard/settings',
-    icon: 'settings',
+    title: 'Pages',
+    url: '/dashboard/pages/',
+    icon: 'pages',
     isActive: false,
     items: [
       {
-        title: 'General',
-        url: '/dashboard/settings/general',
-        icon: 'general'
+        title: 'Blogs',
+        url: '/dashboard/pages/bloges',
+        icon: 'tableContents',
+        items: [
+          {
+            title: 'Category',
+            url: '/dashboard/pages/blogs/category',
+            icon: 'categories'
+          },
+          {
+            title: 'Blogs',
+            url: '/dashboard/pages/blogs/list',
+            icon: 'categories'
+          }
+        ]
+      },
+      {
+        title: `Home`,
+        url: `#`,
+        icon: 'home',
+        isActive: false,
+        items: [
+          {
+            title: 'Banner',
+            url: '/dashboard/homes/banner',
+            icon: 'media'
+          },
+          {
+            title: 'Config',
+            url: '/dashboard/homes/config',
+            icon: 'config'
+          }
+        ]
+      },
+      {
+        title: 'Terms & Conditions',
+        url: '/dashboard/pages/termsandconditions',
+        icon: 'handshake'
+      },
+      {
+        title: 'Privacy Policy',
+        url: '/dashboard/pages/privacypolicy',
+        icon: 'privicypolicy'
+      },
+      {
+        title: 'Refund Policy',
+        url: '/dashboard/pages/refundpolicy',
+        icon: 'returnpolicy'
+      },
+      {
+        title: 'Cancellation Policy',
+        url: '/dashboard/pages/cancellationpolicy',
+        icon: 'cancel'
+      },
+      {
+        title: 'Shipping Policy',
+        url: '/dashboard/pages/shippingpolicy',
+        icon: 'settings'
       }
     ]
   },
+  //----
   {
     title: 'Brands',
     url: '/dashboard/brands',
