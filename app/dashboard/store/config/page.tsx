@@ -14,17 +14,16 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import {
-  addEditStoreconfigPage,
-  fetchStoreconfig,
-  IStoreconfig,
-  setStoreconfig,
-  updateStoreconfig
-} from '@/redux/slices/store/storeconfigSlice';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import CustomTextField from '@/utils/CustomTextField';
+import {
+  addEditStoreconfigPage,
+  fetchStoreconfig,
+  IStoreconfig,
+  updateStoreconfig
+} from '@/redux/slices/store/storeconfigSliceTest';
 
 const Page = () => {
   const dispatch = useAppDispatch();

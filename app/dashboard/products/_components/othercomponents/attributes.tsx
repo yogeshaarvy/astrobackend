@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { fetchTypesList } from '@/redux/slices/typesSlice';
-import { fetchValuesList } from '@/redux/slices/valuesSlice';
+import { fetchTypesList } from '@/redux/slices/store/filtersSlice';
+import { fetchValuesList } from '@/redux/slices/store/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomReactSelect from '@/utils/CustomReactSelect';
 import { debounce } from 'lodash';
@@ -20,10 +20,10 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
 }) => {
   const {
     typesListState: { loading: typesListLoading, data: tData = [] }
-  } = useAppSelector((state) => state.filtertypes);
+  } = useAppSelector((state) => state.filter);
   const {
     valuesListState: { loading: valuesListLoading, data: vData = [] }
-  } = useAppSelector((state) => state.filtervalues);
+  } = useAppSelector((state) => state.filter);
   const savedAttributes = useAppSelector(
     (state) => state?.attributesSlice?.data
   ); // Get saved attributes from Redux store
