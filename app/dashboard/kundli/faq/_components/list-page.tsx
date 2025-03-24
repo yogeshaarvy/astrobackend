@@ -15,7 +15,7 @@ import {
   fetchListFaq,
   IFaq,
   setListFaqData
-} from '@/redux/slices/store/faqSlice';
+} from '@/redux/slices/kundli/faqSlice';
 
 export default function ListFaqPage() {
   const dispatch = useAppDispatch();
@@ -30,17 +30,17 @@ export default function ListFaqPage() {
   const {
     ListFaq: {
       loading: ListLoading,
-      data: storeData = [],
+      data: kundliData = [],
       pagination: { totalCount }
     }
-  } = useAppSelector((state) => state.storeListFaq);
+  } = useAppSelector((state) => state.kundliListFaq);
 
   useEffect(() => {
     dispatch(fetchListFaq({ page, pageSize }));
     dispatch(setListFaqData(null));
   }, [page, pageSize]);
 
-  const list: IFaq[] = storeData;
+  const list: IFaq[] = kundliData;
 
   const handleSearch = () => {
     if (!field || !keyword) {
@@ -65,7 +65,7 @@ export default function ListFaqPage() {
       if (response?.error) {
         toast.error("Can't Export The Data Something Went Wrong");
       }
-      const allFAQList = response.payload?.StoreFaq;
+      const allFAQList = response.payload?.KundliFaq;
       const fileType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
       const fileExtension = '.xlsx';
@@ -106,14 +106,14 @@ export default function ListFaqPage() {
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <Heading title={`Store List Faq (${totalCount})`} description="" />
+          <Heading title={`Kundli List Faq (${totalCount})`} description="" />
           <div className="flex gap-5">
             <Button variant="default" onClick={handleExport}>
               Export All
             </Button>
 
             <Link
-              href={'/dashboard/home/faq/add'}
+              href={'/dashboard/kundli/faq/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

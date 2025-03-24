@@ -17,7 +17,7 @@ import {
   addEditListFaq,
   IFaq,
   updateListFaqData
-} from '@/redux/slices/store/faqSlice';
+} from '@/redux/slices/kundli/faqSlice';
 
 export default function ListFaqTable({
   data,

@@ -369,7 +369,7 @@ export const navItems: NavItem[] = [
     items: [
       {
         title: "FAQ's",
-        url: '/dashboard/kundli/faqs',
+        url: '/dashboard/kundli/faq',
         icon: 'general'
       },
       {

@@ -28,7 +28,7 @@ import {
   fetchSingleListFaq,
   IFaq,
   updateListFaqData
-} from '@/redux/slices/store/faqSlice';
+} from '@/redux/slices/kundli/faqSlice';
 
 export default function ListForm() {
   const params = useSearchParams();
@@ -37,7 +37,7 @@ export default function ListForm() {
   const router = useRouter();
   const {
     singleListFaqState: { data: bData }
-  } = useAppSelector((state) => state.storeListFaq);
+  } = useAppSelector((state) => state.kundliListFaq);
 
   const form = useForm({});
 
@@ -86,7 +86,7 @@ export default function ListForm() {
     try {
       dispatch(addEditListFaq(entityId || null)).then((response: any) => {
         if (!response?.error) {
-          router.push('/dashboard/home/faq');
+          router.push('/dashboard/kundli/faq');
           toast.success(response?.payload?.message);
         } else {
           console.log('error');

@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { IFaq, deleteFaq } from '@/redux/slices/store/faqSlice';
+import { IFaq, deleteFaq } from '@/redux/slices/kundli/faqSlice';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -51,7 +51,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/home/faq/edit?id=${data._id}`)
+              router.push(`/dashboard/kundli/faq/edit?id=${data._id}`)
             }
           >
             <Edit className="mr-2 h-4 w-4" /> Update
