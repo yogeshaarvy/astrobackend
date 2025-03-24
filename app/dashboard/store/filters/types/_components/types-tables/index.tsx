@@ -11,7 +11,7 @@ import {
   addEditTypes,
   ITypes,
   updateTypesData
-} from '@/redux/slices/typesSlice';
+} from '@/redux/slices/store/filtersSlice';
 import { useAppDispatch } from '@/redux/hooks';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
@@ -58,13 +58,7 @@ export default function TypesTable({
     },
     {
       id: 'select',
-      header: ({ table }) =>
-        // <Checkbox
-        //   checked={table.getIsAllPageRowsSelected()}
-        //   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        //   aria-label="Select all"
-        // />
-        '',
+      header: ({ table }) => '',
       cell: ({ row }) =>
         // <Checkbox
         //   checked={row.getIsSelected()}
@@ -85,7 +79,7 @@ export default function TypesTable({
       header: 'SEQUENCE'
     },
     {
-      accessorKey: 'searchpage',
+      accessorKey: 'searchPage',
       header: 'SEARCH PAGE'
     },
     {

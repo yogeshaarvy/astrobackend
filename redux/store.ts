@@ -10,8 +10,6 @@ import wallpaperReducer from './slices/wallpaperSlice';
 import brandReducer from './slices/brandSlice';
 import categoryReducer from './slices/categoriesSlice';
 import tagsReducer from './slices/tagsSlice';
-import filtertypesReducer from './slices/typesSlice';
-import filtervaluesReducer from './slices/valuesSlice';
 import productsReducer from './slices/productSlice';
 import statesReducer from './slices/statesSlice';
 import citiesReducer from './slices/citiesSlice';
@@ -49,6 +47,7 @@ import storeFaq from './slices/store/faqSlice';
 import configReducer from './slices/home/configSlice';
 import storeConfigReducer from './slices/store/storeconfigSlice';
 import storegallery from './slices/store/gallerySlice';
+import filterReducer from './slices/store/filtersSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -63,8 +62,7 @@ export const makeStore = () => {
       brand: brandReducer,
       category: categoryReducer,
       tags: tagsReducer,
-      filtertypes: filtertypesReducer,
-      filtervalues: filtervaluesReducer,
+      filter: filterReducer,
       productsdata: productsReducer,
       statesdata: statesReducer,
       Citiesdata: citiesReducer,

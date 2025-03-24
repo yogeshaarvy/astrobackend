@@ -131,6 +131,586 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
+    title: `Store`,
+    url: `#`,
+    icon: 'store',
+    isActive: false,
+    items: [
+      {
+        title: 'Filters',
+        url: '/dashboard/store/filters',
+        icon: 'filter',
+        isActive: false,
+        items: [
+          {
+            title: 'Types',
+            url: '/dashboard/store/filters/types',
+            icon: 'type'
+          },
+          {
+            title: 'Values',
+            url: '/dashboard/store/filters/values',
+            icon: 'filter'
+          }
+        ]
+      },
+      {
+        title: 'Categories',
+        url: '/dashboard/store/categories',
+        icon: 'categories'
+      },
+      {
+        title: 'Products',
+        url: '/dashboard/store/products',
+        icon: 'basket'
+      },
+      {
+        title: 'Inventory',
+        url: '/dashboard/store/inventory',
+        icon: 'notepad'
+      },
+      {
+        title: "FAQ's",
+        url: '/dashboard/store/faqs',
+        icon: 'tableContents'
+      },
+      {
+        title: 'Testimonial',
+        url: '/dashboard/store/testimonial',
+        icon: 'message'
+      },
+      {
+        title: 'Others',
+        url: `/dashboard/store/others`,
+        icon: 'otherlist',
+        isActive: false,
+        items: [
+          {
+            title: 'Store Sliders',
+            url: '/dashboard/store/other/store-sliders',
+            icon: 'slider'
+          },
+          {
+            title: 'Best Selling',
+            url: '/dashboard/store/other/best-selling',
+            icon: 'taxs'
+          },
+          {
+            title: 'Store Banner',
+            url: '/dashboard/store/other/store-banner',
+            icon: 'media'
+          },
+          {
+            title: 'Config',
+            url: '/dashboard/store/other/config',
+            icon: 'config'
+          }
+        ]
+      }
+      // {
+      //   title: 'Slider Banner',
+      //   url: '/dashboard/home/sliders',
+      //   icon: 'slider'
+      // },
+      // {
+      //   title: 'Best Salling',
+      //   url: '/dashboard/home/sales',
+      //   icon: 'taxs'
+      // },
+      // {
+      //   title: 'Store Config',
+      //   url: '/dashboard/store/config',
+      //   icon: 'config'
+      // },
+      // {
+      //   title: 'Banner',
+      //   url: '/dashboard/home/banner',
+      //   icon: 'media'
+      // },
+      // {
+      //   title: 'About',
+      //   url: '/dashboard/home/about',
+      //   icon: 'user'
+      // },
+      // {
+      //   title: 'Footer',
+      //   url: '/dashboard/home/footer',
+      //   icon: 'userPen'
+      // },
+      // {
+      //   title: 'Newsletter',
+      //   url: '/dashboard/home/newsletter',
+      //   icon: 'userPen'
+      // },
+      // {
+      //   title: 'FAQ',
+      //   url: '/dashboard/home/faq',
+      //   icon: 'userPen'
+      // },
+      // {
+      //   title: 'Shop Purpose',
+      //   url: '/dashboard/home/shopPurpose',
+      //   icon: 'TermsAndConditions'
+      // },
+      // {
+      //   title: 'Gallery Image',
+      //   url: '/dashboard/home/galleryImage',
+      //   icon: 'TermsAndConditions'
+      // }
+    ]
+  },
+  {
+    title: 'Astro Pooja',
+    url: '/dashboard/astro-pooja',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'List',
+        url: '/dashboard/astro-pooja/list',
+        icon: 'general'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/astro-pooja/other',
+        isActive: false,
+        icon: 'general',
+        items: [
+          {
+            title: 'Config',
+
+            url: '/dashboard/astro-pooja/other/config',
+            icon: 'general'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Blog',
+    url: '/dashboard/blog',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'Categories',
+        url: '/dashboard/blog/categories',
+        icon: 'general'
+      },
+      {
+        title: 'List',
+        url: '/dashboard/blog/list',
+        icon: 'general'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/blog/other',
+        icon: 'general',
+        isActive: false,
+        items: [
+          {
+            title: 'Config',
+            url: '/dashboard/blog/other/config',
+            icon: 'general'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Horoscope',
+    url: '/dashboard/horoscope',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'Testimonial',
+        url: '/dashboard/horoscope/testimonial',
+        icon: 'general'
+      },
+      {
+        title: "FAQ's",
+        url: '/dashboard/horoscope/faqs',
+        icon: 'general'
+      },
+      {
+        title: 'Signs',
+        url: '/dashboard/horoscope/signs',
+        icon: 'general',
+        isActive: false,
+        items: [
+          {
+            title: 'Aries',
+            url: '/dashboard/horoscope/signs/aries',
+            icon: 'general'
+          }
+        ]
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/horoscope/other',
+        icon: 'general',
+        isActive: false,
+        items: [
+          {
+            title: 'Config',
+            url: '/dashboard/horoscope/other/config',
+            icon: 'general'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Kundli',
+    url: '/dashboard/kundli',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: "FAQ's",
+        url: '/dashboard/kundli/faqs',
+        icon: 'general'
+      },
+      {
+        title: 'Testimonial',
+        url: '/dashboard/kundli/testimonial',
+        icon: 'general'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/kundli/other',
+        icon: 'general',
+        isActive: false,
+        items: [
+          {
+            title: 'Config',
+            url: '/dashboard/kundli/other/config',
+            icon: 'general'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Match Making',
+    url: '/dashboard/match-making',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: "FAQ's",
+        url: '/dashboard/match-making/faqs',
+        icon: 'general'
+      },
+      {
+        title: 'Testimonial',
+        url: '/dashboard/match-making/testimonial',
+        icon: 'general'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/match-making/other',
+        icon: 'general',
+        isActive: false,
+        items: [
+          {
+            title: 'Config',
+            url: '/dashboard/match-making/other/config',
+            icon: 'general'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Astrologers',
+    url: '/dashboard/astrologers',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'Requested',
+        url: '/dashboard/astrologers/requested',
+        icon: 'general'
+      },
+      {
+        title: 'List',
+        url: '/dashboard/astrologers/list',
+        icon: 'general',
+        isActive: false,
+        items: [
+          {
+            title: 'Profiles',
+            url: '/dashboard/astrologers/list/profiles',
+            icon: 'general'
+          },
+          {
+            title: 'Packages',
+            url: '/dashboard/astrologers/list/packages',
+            icon: 'general'
+          },
+          {
+            title: 'Availability',
+            url: '/dashboard/astrologers/list/availability',
+            icon: 'general'
+          },
+          {
+            title: 'Rating',
+            url: '/dashboard/astrologers/list/rating',
+            icon: 'general'
+          },
+          {
+            title: 'Followers',
+            url: '/dashboard/astrologers/list/followers',
+            icon: 'general'
+          },
+          {
+            title: 'History',
+            url: '/dashboard/astrologers/list/history',
+            icon: 'general'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Panchang',
+    url: '/dashboard/panchang',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: "FAQ's",
+        url: '/dashboard/panchang/faqs',
+        icon: 'general'
+      },
+      {
+        title: 'Testimonial',
+        url: '/dashboard/panchang/testimonial',
+        icon: 'general'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/panchang/other',
+        icon: 'general',
+        isActive: false,
+        items: [
+          {
+            title: 'Config',
+            url: '/dashboard/panchang/other/config',
+            icon: 'general'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Feedbacks',
+    url: '/dashboard/feedbacks',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'By User',
+        url: '/dashboard/feedbacks/by-user',
+        icon: 'general'
+      },
+      {
+        title: 'By Astrologer',
+        url: '/dashboard/feedbacks/by-astrologer',
+        icon: 'general'
+      }
+    ]
+  },
+  {
+    title: 'Contact Us',
+    url: '/dashboard/contact-us',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'By User',
+        url: '/dashboard/contact-us/by-user',
+        icon: 'general'
+      },
+      {
+        title: 'By Astrologer',
+        url: '/dashboard/contact-us/by-astrologer',
+        icon: 'general'
+      }
+    ]
+  },
+  {
+    title: 'News Letter',
+    url: '/dashboard/news-letter',
+    icon: 'settings'
+  },
+  {
+    title: 'Writer Consultant',
+    url: '/dashboard/writer-consultant',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'Packages',
+        url: '/dashboard/writer-consultant/packages',
+        icon: 'general'
+      },
+      {
+        title: 'Profile',
+        url: '/dashboard/writer-consultant/profile',
+        icon: 'general'
+      },
+      {
+        title: 'Config',
+        url: '/dashboard/writer-consultant/config',
+        icon: 'general'
+      },
+      {
+        title: 'Testominal',
+        url: '/dashboard/writer-consultant/testominal',
+        icon: 'general'
+      },
+      {
+        title: "FAQ's",
+        url: '/dashboard/writer-consultant/faqs',
+        icon: 'general'
+      }
+    ]
+  },
+  {
+    title: 'Career Forms',
+    url: '/dashboard/career-forms',
+    icon: 'settings'
+  },
+  {
+    title: 'Orders',
+    url: '/dashboard/orders',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'Store',
+        url: '/dashboard/orders/store',
+        icon: 'general'
+      },
+      {
+        title: 'Pooja',
+        url: '/dashboard/orders/pooja',
+        icon: 'general'
+      },
+      {
+        title: 'Written Consultancy',
+        url: '/dashboard/orders/written-consultancy',
+        icon: 'general'
+      }
+    ]
+  },
+  {
+    title: 'Consultancy History',
+    url: '/dashboard/consultancy-history',
+    icon: 'settings'
+  },
+  {
+    title: 'User List',
+    url: '/dashboard/user-list',
+    icon: 'user',
+    isActive: false,
+    items: [
+      {
+        title: 'Wallet',
+        url: '/dashboard/user-list/wallet',
+        icon: 'general'
+      },
+      {
+        title: 'Order History',
+        url: '/dashboard/user-list/order-history',
+        icon: 'general'
+      },
+      {
+        title: 'Address',
+        url: '/dashboard/user-list/address',
+        icon: 'general'
+      }
+    ]
+  },
+  {
+    title: 'Settings',
+    url: '/dashboard/settings',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'General',
+        url: '/dashboard/settings/general',
+        icon: 'general'
+      },
+      {
+        title: 'Website',
+        url: '/dashboard/settings/website',
+        icon: 'general'
+      },
+      {
+        title: 'App',
+        url: '/dashboard/settings/app',
+        icon: 'general'
+      },
+      {
+        title: 'Pages',
+        url: '/dashboard/settings/pages',
+        icon: 'general',
+        items: [
+          {
+            title: 'Terms & Conditions',
+            url: '/dashboard/settings/pages/terms-and-conditions',
+            icon: 'general'
+          },
+          {
+            title: 'Privacy Policy',
+            url: '/dashboard/settings/pages/privacy-policy',
+            icon: 'general'
+          },
+          {
+            title: 'Shipping Policy',
+            url: '/dashboard/settings/pages/shipping-policy',
+            icon: 'general'
+          },
+          {
+            title: 'Cancel & Return Policy',
+            url: '/dashboard/settings/pages/cancel-return-policy',
+            icon: 'general'
+          },
+          {
+            title: 'About Us',
+            url: '/dashboard/settings/pages/about-us',
+            icon: 'general'
+          },
+          {
+            title: "FAQ's",
+            url: '/dashboard/settings/pages/faqs',
+            icon: 'general'
+          },
+          {
+            title: 'Astrologer Policy',
+            url: '/dashboard/settings/pages/astrologer-policy',
+            icon: 'general'
+          }
+        ]
+      },
+      {
+        title: 'Languages',
+        url: '/dashboard/settings/languages',
+        icon: 'general'
+      },
+      {
+        title: 'Expertise',
+        url: '/dashboard/settings/expertise',
+        icon: 'general'
+      }
+    ]
+  },
+  {
     title: 'Pages',
     url: '/dashboard/pages/',
     icon: 'pages',
@@ -139,17 +719,17 @@ export const navItems: NavItem[] = [
       {
         title: 'Blogs',
         url: '/dashboard/pages/bloges',
-        icon: 'blogs',
+        icon: 'tableContents',
         items: [
           {
             title: 'Category',
             url: '/dashboard/pages/blogs/category',
-            icon: 'category'
+            icon: 'categories'
           },
           {
             title: 'Blogs',
             url: '/dashboard/pages/blogs/list',
-            icon: 'category'
+            icon: 'categories'
           }
         ]
       },
@@ -174,7 +754,7 @@ export const navItems: NavItem[] = [
       {
         title: 'Terms & Conditions',
         url: '/dashboard/pages/termsandconditions',
-        icon: 'TermsAndConditions'
+        icon: 'handshake'
       },
       {
         title: 'Privacy Policy',
@@ -196,7 +776,7 @@ export const navItems: NavItem[] = [
         url: '/dashboard/pages/shippingpolicy',
         icon: 'settings'
       }
-    ] // No child items
+    ]
   },
   {
     title: 'Settings',
@@ -209,65 +789,6 @@ export const navItems: NavItem[] = [
         url: '/dashboard/settings/general',
         icon: 'general'
       }
-    ] // No child items
-  },
-
-  {
-    title: `Store`,
-    url: `#`,
-    icon: 'store',
-    isActive: false,
-    items: [
-      {
-        title: 'Slider Banner',
-        url: '/dashboard/home/sliders',
-        icon: 'slider'
-      },
-      {
-        title: 'Best Salling',
-        url: '/dashboard/home/sales',
-        icon: 'taxs'
-      },
-      {
-        title: 'Store Config',
-        url: '/dashboard/store/config',
-        icon: 'config'
-      },
-      {
-        title: 'Banner',
-        url: '/dashboard/home/banner',
-        icon: 'media'
-      },
-      {
-        title: 'About',
-        url: '/dashboard/home/about',
-        icon: 'user'
-      },
-      {
-        title: 'Footer',
-        url: '/dashboard/home/footer',
-        icon: 'userPen'
-      },
-      {
-        title: 'Newsletter',
-        url: '/dashboard/home/newsletter',
-        icon: 'userPen'
-      },
-      {
-        title: 'FAQ',
-        url: '/dashboard/home/faq',
-        icon: 'userPen'
-      },
-      {
-        title: 'Shop Purpose',
-        url: '/dashboard/home/shopPurpose',
-        icon: 'TermsAndConditions'
-      },
-      {
-        title: 'Gallery Image',
-        url: '/dashboard/home/galleryImage',
-        icon: 'TermsAndConditions'
-      }
     ]
   },
   {
@@ -277,7 +798,6 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [] // No child items
   },
-
   {
     title: 'Categories',
     url: '/dashboard/categories',
@@ -335,18 +855,17 @@ export const navItems: NavItem[] = [
   {
     title: 'Faqs',
     url: '/dashboard/faq',
-    icon: 'TermsAndConditions',
+    icon: 'handshake',
     isActive: false,
     items: [] // No child items
   },
   {
     title: 'Promo Codes',
     url: '/dashboard/promocodes',
-    icon: 'TermsAndConditions',
+    icon: 'handshake',
     isActive: false,
     items: [] // No child items
   },
-
   {
     title: `Address`,
     url: `#`,
@@ -373,7 +892,7 @@ export const navItems: NavItem[] = [
   {
     title: 'Terms and Conditions',
     url: '/dashboard/terms-and-conditions',
-    icon: 'TermsAndConditions',
+    icon: 'handshake',
     isActive: false,
     items: [] // No child items
   },
@@ -402,86 +921,6 @@ export const navItems: NavItem[] = [
     title: 'Inventries',
     url: '/dashboard/inventries',
     icon: 'product',
-    isActive: false,
-    items: [] // No child items
-  },
-  // {
-  //   title: `Home`,
-  //   url: `#`,
-  //   icon: 'address',
-  //   isActive: false,
-  //   items: [
-  //     {
-  //       title: 'Slider',
-  //       url: '/dashboard/home/sliders',
-  //       icon: 'userPen'
-  //     },
-  //     {
-  //       title: 'Sales',
-  //       url: '/dashboard/home/sales',
-  //       icon: 'userPen'
-  //     },
-  //     {
-  //       title: 'Banner',
-  //       url: '/dashboard/home/banner',
-  //       icon: 'userPen'
-  //     },
-  //     {
-  //       title: 'About',
-  //       url: '/dashboard/home/about',
-  //       icon: 'userPen'
-  //     },
-  //     {
-  //       title: 'Footer',
-  //       url: '/dashboard/home/footer',
-  //       icon: 'userPen'
-  //     },
-  //     {
-  //       title: 'Newsletter',
-  //       url: '/dashboard/home/newsletter',
-  //       icon: 'userPen'
-  //     }
-  //   ]
-  // },
-  {
-    title: `About Us`,
-    url: `#`,
-    icon: 'address',
-    isActive: false,
-    items: [
-      {
-        title: 'Top Banner',
-        url: '/dashboard/about-us/top-banner',
-        icon: 'userPen'
-      },
-      {
-        title: 'Introduction',
-        url: '/dashboard/about-us/intro',
-        icon: 'userPen'
-      },
-      {
-        title: 'Vision',
-        url: '/dashboard/about-us/vision',
-        icon: 'userPen'
-      },
-      {
-        title: 'Bottom banner',
-        url: '/dashboard/about-us/bottom-banner',
-        icon: 'userPen'
-      }
-    ]
-  },
-  {
-    title: 'Blogs',
-    url: '/dashboard/blogs',
-    icon: 'TermsAndConditions',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Testimonial',
-    url: '/dashboard/testimonial',
-    icon: 'TermsAndConditions',
     isActive: false,
     items: [] // No child items
   }

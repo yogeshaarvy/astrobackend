@@ -41,11 +41,21 @@ import {
   Store,
   SlidersHorizontal,
   House,
+  ListFilter,
   Library,
   Settings2,
   Newspaper,
   Logs,
-  Ban
+  Ban,
+  NotepadText,
+  TableOfContents,
+  MessageSquareMore,
+  NotebookText,
+  LayoutList,
+  ListStart,
+  ShoppingBasket,
+  Cog,
+  Keyboard
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -53,13 +63,21 @@ export type Icon = LucideIcon;
 export const Icons = {
   dashboard: LayoutDashboardIcon,
   store: Store,
+  filter: ListFilter,
+  type: Keyboard,
+  categories: Library,
+  basket: ShoppingBasket,
+  notepad: NotepadText,
+  tableContents: TableOfContents,
+  message: MessageSquareMore,
+  otherlist: ListStart,
   slider: SlidersHorizontal,
   taxs: HandCoins,
-  home: House,
   media: Image,
+  home: House,
+  list: LayoutList,
   product: LucideShoppingBag,
   user: User,
-  category: Library,
   logo: Command,
   login: LogIn,
   close: X,
@@ -86,13 +104,13 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   address: MapPinned,
-  config: Settings2,
-  TermsAndConditions: Handshake,
+  config: Cog,
+  handshake: Handshake,
   privicypolicy: GlobeLock,
   returnpolicy: Undo2,
   shippingpolicy: Truck,
   pages: Newspaper,
-  blogs: Logs,
+
   cancel: Ban,
 
   gitHub: ({ ...props }: LucideProps) => (

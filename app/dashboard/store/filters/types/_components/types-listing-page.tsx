@@ -11,7 +11,7 @@ import {
   fetchTypesList,
   ITypes,
   setTypesData
-} from '@/redux/slices/typesSlice';
+} from '@/redux/slices/store/filtersSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { fetchBrandList } from '@/redux/slices/brandSlice';
@@ -30,13 +30,12 @@ export default function TypesListingPage() {
       data: tData = [],
       pagination: { totalCount }
     }
-  } = useAppSelector((state) => state.filtertypes);
+  } = useAppSelector((state) => state.filter);
   useEffect(() => {
     dispatch(fetchTypesList({ page, pageSize, keyword, field, status }));
     dispatch(setTypesData(null));
-  }, [page, pageSize, dispatch]); // Ensure this is run only once when the component mounts
+  }, [page, pageSize, dispatch]);
 
-  // You can safely assume `tData` is populated now
   const types: ITypes[] = tData;
   const handleSearch = () => {
     if ((!keyword && field) || (!field && keyword)) {
@@ -72,7 +71,7 @@ export default function TypesListingPage() {
           item._id,
           item.name,
           item.sequence,
-          item.searchpage,
+          item.searchPage,
           item.type,
           item.active
         ])
@@ -109,7 +108,7 @@ export default function TypesListingPage() {
             </Button>
 
             <Link
-              href={'/dashboard/filters/types/add'}
+              href={'/dashboard/store/filters/types/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

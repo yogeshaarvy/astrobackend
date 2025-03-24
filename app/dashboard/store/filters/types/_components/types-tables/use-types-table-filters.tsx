@@ -5,7 +5,7 @@ import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { fetchTypesList } from '@/redux/slices/typesSlice';
+import { fetchTypesList } from '@/redux/slices/store/filtersSlice';
 export const STATUS_OPTIONS = [
   { value: 'true', label: 'True' },
   { value: 'false', label: 'False' }
@@ -13,7 +13,7 @@ export const STATUS_OPTIONS = [
 export const FIELD_OPTIONS = [
   { value: 'name', label: 'Name' },
   { value: 'type', label: 'Type' },
-  { value: 'searchpage', label: 'Search Page' }
+  { value: 'searchPage', label: 'Search Page' }
 ];
 export function useTypesTableFilters() {
   const dispatch = useDispatch();

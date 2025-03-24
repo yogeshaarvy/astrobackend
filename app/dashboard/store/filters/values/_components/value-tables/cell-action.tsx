@@ -8,13 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { ITypes, deleteTypes } from '@/redux/slices/typesSlice';
+import { IValues, deleteValues } from '@/redux/slices/store/filtersSlice';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 interface CellActionProps {
-  data: ITypes;
+  data: IValues;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -23,7 +23,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const onConfirm = async () => {
-    dispatch(deleteTypes(data?._id || ''));
+    dispatch(deleteValues(data?._id || ''));
     setOpen(false);
   };
 
@@ -47,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/filters/types/edit?id=${data._id}`)
+              router.push(`/dashboard/store/filters/values/edit?id=${data._id}`)
             }
           >
             <Edit className="mr-2 h-4 w-4" /> Update
