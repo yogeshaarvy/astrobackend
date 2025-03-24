@@ -74,26 +74,6 @@ const Page = () => {
   };
 
   const handleSubmit = () => {
-    const requiredFields: (keyof IAboutAstro)[] = ['title'];
-
-    const missingFields = requiredFields.filter(
-      (field) => !(cData as IAboutAstro)?.[field]
-    );
-
-    if (missingFields.length > 0) {
-      const fieldLabels: { [key in keyof IAboutAstro]?: string } = {
-        title: 'Title'
-      };
-
-      const missingFieldLabels = missingFields.map(
-        (field) => fieldLabels[field] || field
-      );
-      toast.error(
-        `Please fill the required fields: ${missingFieldLabels.join(', ')}`
-      );
-      return;
-    }
-
     try {
       dispatch(addEditHomeAbout(null)).then((response: any) => {
         if (!response?.error) {
@@ -227,75 +207,53 @@ const Page = () => {
                     </TabsList>
 
                     <TabsContent value="English">
-                      <div>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ABOUT-ENGLISH</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
+                      <>
+                        <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
-                              name="title"
+                              name="title.en"
                               placeholder="Enter your Title"
-                              value={(cData as IAboutAstro)?.title}
+                              value={(cData as IAboutAstro)?.title?.en}
                               onChange={handleInputChange}
                             />
                           </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Description</Label>
                             <Input
-                              name="description"
+                              name="description.en"
                               placeholder="Enter your Description"
-                              value={(cData as IAboutAstro)?.description}
+                              value={(cData as IAboutAstro)?.description?.en}
                               onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>
-                      </div>
+                      </>
                     </TabsContent>
 
-                    {/* Hindi Content */}
                     <TabsContent value="Hindi">
-                      <div>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ENGLISH-HINDI</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
+                      <>
+                        <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
-                            <Label htmlFor="name">Description</Label>
+                            <Label htmlFor="name">Title</Label>
                             <Input
-                              name="web.desk.description.hi"
-                              placeholder="Enter your Description"
-                              // value={
-                              //   (cData as IAboutAstro)?.web?.desk
-                              //     ?.description?.hi || ''
-                              // }
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </CardContent>
-
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>MOBILE-WEB-HINDI</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Description</Label>
-                            <Input
-                              name="web.mob.description.hi"
+                              name="title.hi"
                               placeholder="Enter your Title"
-                              // value={
-                              //   (cData as IAboutAstro)?.web?.mob
-                              //     ?.description?.hi
-                              // }
+                              value={(cData as IAboutAstro)?.title?.hi}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name"> Description</Label>
+                            <Input
+                              name="description.hi"
+                              placeholder="Enter your  Description"
+                              value={(cData as IAboutAstro)?.description?.hi}
                               onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>
-                      </div>
+                      </>
                     </TabsContent>
                   </Tabs>
 
@@ -433,108 +391,89 @@ const Page = () => {
                     </TabsList>
 
                     <TabsContent value="English">
-                      <div>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ICON-1-ENGLISH</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <CardHeader className="flex flex-row">
+                            <CardTitle>ICON-1-ENGLISH</CardTitle>
+                          </CardHeader>
                           <div className="space-y-1">
                             <Label htmlFor="name">Icon Title</Label>
                             <Input
-                              name="secureTitle"
-                              placeholder="Enter ...."
-                              value={(cData as IAboutAstro)?.secureTitle}
+                              name="secureTitle.en"
+                              placeholder="Secure Payment"
+                              value={(cData as IAboutAstro)?.secureTitle?.en}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <CardHeader className="flex flex-row ">
+                            <CardTitle>ICON-2-ENGLISH</CardTitle>
+                          </CardHeader>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Icon Title</Label>
+                            <Input
+                              name="benefitTitle.en"
+                              placeholder="Enter your Description"
+                              value={(cData as IAboutAstro)?.benefitTitle?.en}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <CardHeader className="flex flex-row ">
+                            <CardTitle>ICON-3-ENGLISH</CardTitle>
+                          </CardHeader>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Icon Title</Label>
+                            <Input
+                              name="greatTitle.en"
+                              placeholder="Enter your Description"
+                              value={(cData as IAboutAstro)?.greatTitle?.en}
                               onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>
-
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ICON-2-ENGLISH</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Icon Title</Label>
-                            <Input
-                              name="benefitTitle"
-                              placeholder="Enter ..."
-                              value={(cData as IAboutAstro)?.benefitTitle}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </CardContent>
-
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ICON-3-ENGLISH</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Icon Title</Label>
-                            <Input
-                              name="greatTitle"
-                              placeholder="Enter ..."
-                              value={(cData as IAboutAstro)?.greatTitle}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </CardContent>
-                      </div>
+                      </>
                     </TabsContent>
 
-                    {/* Hindi Content */}
                     <TabsContent value="Hindi">
-                      <div>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ICON-1-ENGLISH</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <CardHeader className="flex flex-row ">
+                            <CardTitle>ICON-1-HINDI</CardTitle>
+                          </CardHeader>
                           <div className="space-y-1">
                             <Label htmlFor="name">Icon Title</Label>
                             <Input
-                              name="secureTitle"
-                              placeholder="Enter ...."
-                              value={(cData as IAboutAstro)?.secureTitle}
+                              name="secureTitle.hi"
+                              placeholder="Secure Payment"
+                              value={(cData as IAboutAstro)?.secureTitle?.hi}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <CardHeader className="flex flex-row ">
+                            <CardTitle>ICON-2-HINDI</CardTitle>
+                          </CardHeader>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Icon Title</Label>
+                            <Input
+                              name="benefitTitle.hi"
+                              placeholder="Enter your Description"
+                              value={(cData as IAboutAstro)?.benefitTitle?.hi}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <CardHeader className="flex flex-row ">
+                            <CardTitle>ICON-3-HINDI</CardTitle>
+                          </CardHeader>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Icon Title</Label>
+                            <Input
+                              name="greatTitle.hi"
+                              placeholder="Enter your Description"
+                              value={(cData as IAboutAstro)?.greatTitle?.hi}
                               onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>
-
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ICON-2-ENGLISH</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Icon Title</Label>
-                            <Input
-                              name="benefitTitle"
-                              placeholder="Enter ..."
-                              value={(cData as IAboutAstro)?.benefitTitle}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </CardContent>
-
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>ICON-3-ENGLISH</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Icon Title</Label>
-                            <Input
-                              name="greatTitle"
-                              placeholder="Enter ..."
-                              value={(cData as IAboutAstro)?.greatTitle}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </CardContent>
-                      </div>
+                      </>
                     </TabsContent>
                   </Tabs>
                   {/* </Card> */}
