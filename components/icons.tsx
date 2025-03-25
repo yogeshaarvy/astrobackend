@@ -55,7 +55,13 @@ import {
   ListStart,
   ShoppingBasket,
   Cog,
-  Keyboard
+  Keyboard,
+  SquareUser,
+  ChartCandlestick,
+  Goal,
+  GalleryThumbnails,
+  Church,
+  NotepadTextDashed
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -65,6 +71,9 @@ export const Icons = {
   store: Store,
   filter: ListFilter,
   type: Keyboard,
+  squareUser: SquareUser,
+  goal: Goal,
+  chartCandlestick: ChartCandlestick,
   categories: Library,
   basket: ShoppingBasket,
   notepad: NotepadText,
@@ -73,7 +82,12 @@ export const Icons = {
   otherlist: ListStart,
   slider: SlidersHorizontal,
   taxs: HandCoins,
+  thumbnails: GalleryThumbnails,
   media: Image,
+  temple: Church,
+  config: Cog,
+  notepadDash: NotepadTextDashed,
+
   home: House,
   list: LayoutList,
   product: LucideShoppingBag,
@@ -104,7 +118,6 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   address: MapPinned,
-  config: Cog,
   handshake: Handshake,
   privicypolicy: GlobeLock,
   returnpolicy: Undo2,

@@ -150,7 +150,7 @@ export const navItems: NavItem[] = [
           {
             title: 'Values',
             url: '/dashboard/store/filters/values',
-            icon: 'filter'
+            icon: 'chartCandlestick'
           }
         ]
       },
@@ -187,100 +187,64 @@ export const navItems: NavItem[] = [
         items: [
           {
             title: 'Store Sliders',
-            url: '/dashboard/store/other/store-sliders',
+            url: '/dashboard/store/others/store-sliders',
             icon: 'slider'
           },
           {
             title: 'Best Selling',
-            url: '/dashboard/store/other/best-selling',
+            url: '/dashboard/store/others/best-selling',
             icon: 'taxs'
           },
           {
+            title: 'Shop By Purpose',
+            url: '/dashboard/store/others/shop-purpose',
+            icon: 'goal'
+          },
+          {
             title: 'Store Banner',
-            url: '/dashboard/store/other/store-banner',
+            url: '/dashboard/store/others/store-banner',
+            icon: 'thumbnails'
+          },
+          {
+            title: 'About',
+            url: '/dashboard/store/others/about',
+            icon: 'squareUser'
+          },
+          {
+            title: 'Gallery',
+            url: '/dashboard/store/others/gallery',
             icon: 'media'
           },
           {
             title: 'Config',
-            url: '/dashboard/store/other/config',
+            url: '/dashboard/store/others/config',
             icon: 'config'
           }
         ]
       }
-      // {
-      //   title: 'Slider Banner',
-      //   url: '/dashboard/home/sliders',
-      //   icon: 'slider'
-      // },
-      // {
-      //   title: 'Best Salling',
-      //   url: '/dashboard/home/sales',
-      //   icon: 'taxs'
-      // },
-      // {
-      //   title: 'Store Config',
-      //   url: '/dashboard/store/config',
-      //   icon: 'config'
-      // },
-      // {
-      //   title: 'Banner',
-      //   url: '/dashboard/home/banner',
-      //   icon: 'media'
-      // },
-      // {
-      //   title: 'About',
-      //   url: '/dashboard/home/about',
-      //   icon: 'user'
-      // },
-      // {
-      //   title: 'Footer',
-      //   url: '/dashboard/home/footer',
-      //   icon: 'userPen'
-      // },
-      // {
-      //   title: 'Newsletter',
-      //   url: '/dashboard/home/newsletter',
-      //   icon: 'userPen'
-      // },
-      // {
-      //   title: 'FAQ',
-      //   url: '/dashboard/home/faq',
-      //   icon: 'userPen'
-      // },
-      // {
-      //   title: 'Shop Purpose',
-      //   url: '/dashboard/home/shopPurpose',
-      //   icon: 'TermsAndConditions'
-      // },
-      // {
-      //   title: 'Gallery Image',
-      //   url: '/dashboard/home/galleryImage',
-      //   icon: 'TermsAndConditions'
-      // }
     ]
   },
   {
     title: 'Astro Pooja',
     url: '/dashboard/astro-pooja',
-    icon: 'settings',
+    icon: 'temple',
     isActive: false,
     items: [
       {
         title: 'List',
         url: '/dashboard/astro-pooja/list',
-        icon: 'general'
+        icon: 'list'
       },
       {
         title: 'Other',
         url: '/dashboard/astro-pooja/other',
         isActive: false,
-        icon: 'general',
+        icon: 'otherlist',
         items: [
           {
             title: 'Config',
-
             url: '/dashboard/astro-pooja/other/config',
-            icon: 'general'
+            icon: 'config'
           }
         ]
       }
@@ -289,29 +253,29 @@ export const navItems: NavItem[] = [
   {
     title: 'Blog',
     url: '/dashboard/blog',
-    icon: 'settings',
+    icon: 'notepadDash',
     isActive: false,
     items: [
       {
         title: 'Categories',
         url: '/dashboard/blog/categories',
-        icon: 'general'
+        icon: 'categories'
       },
       {
         title: 'List',
         url: '/dashboard/blog/list',
-        icon: 'general'
+        icon: 'list'
       },
       {
         title: 'Other',
         url: '/dashboard/blog/other',
-        icon: 'general',
+        icon: 'otherlist',
         isActive: false,
         items: [
           {
             title: 'Config',
             url: '/dashboard/blog/other/config',
-            icon: 'general'
+            icon: 'config'
           }
         ]
       }
@@ -568,8 +532,8 @@ export const navItems: NavItem[] = [
         icon: 'general'
       },
       {
-        title: 'Testominal',
-        url: '/dashboard/writer-consultant/testominal',
+        title: 'Testimonial',
+        url: '/dashboard/writer-consultant/testimonial',
         icon: 'general'
       },
       {
@@ -642,21 +606,6 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
-        title: 'General',
-        url: '/dashboard/settings/general',
-        icon: 'general'
-      },
-      {
-        title: 'Website',
-        url: '/dashboard/settings/website',
-        icon: 'general'
-      },
-      {
-        title: 'App',
-        url: '/dashboard/settings/app',
-        icon: 'general'
-      },
-      {
         title: 'Pages',
         url: '/dashboard/settings/pages',
         icon: 'general',
@@ -674,6 +623,11 @@ export const navItems: NavItem[] = [
           {
             title: 'Shipping Policy',
             url: '/dashboard/settings/pages/shipping-policy',
+            icon: 'general'
+          },
+          {
+            title: 'Refund Policy',
+            url: '/dashboard/settings/pages/refund-policy',
             icon: 'general'
           },
           {
@@ -699,6 +653,22 @@ export const navItems: NavItem[] = [
         ]
       },
       {
+        title: 'General',
+        url: '/dashboard/settings/general',
+        icon: 'general'
+      },
+      {
+        title: 'Website',
+        url: '/dashboard/settings/website',
+        icon: 'general'
+      },
+      {
+        title: 'App',
+        url: '/dashboard/settings/app',
+        icon: 'general'
+      },
+
+      {
         title: 'Languages',
         url: '/dashboard/settings/languages',
         icon: 'general'
@@ -709,276 +679,5 @@ export const navItems: NavItem[] = [
         icon: 'general'
       }
     ]
-  },
-  {
-    title: 'Pages',
-    url: '/dashboard/pages/',
-    icon: 'pages',
-    isActive: false,
-    items: [
-      {
-        title: 'Blogs',
-        url: '/dashboard/pages/bloges',
-        icon: 'tableContents',
-        items: [
-          {
-            title: 'Category',
-            url: '/dashboard/pages/blogs/category',
-            icon: 'categories'
-          },
-          {
-            title: 'Blogs',
-            url: '/dashboard/pages/blogs/list',
-            icon: 'categories'
-          }
-        ]
-      },
-      {
-        title: `Home`,
-        url: `#`,
-        icon: 'home',
-        isActive: false,
-        items: [
-          {
-            title: 'Banner',
-            url: '/dashboard/homes/banner',
-            icon: 'media'
-          },
-          {
-            title: 'Config',
-            url: '/dashboard/homes/config',
-            icon: 'config'
-          }
-        ]
-      },
-      {
-        title: 'Terms & Conditions',
-        url: '/dashboard/pages/termsandconditions',
-        icon: 'handshake'
-      },
-      {
-        title: 'Privacy Policy',
-        url: '/dashboard/pages/privacypolicy',
-        icon: 'privicypolicy'
-      },
-      {
-        title: 'Refund Policy',
-        url: '/dashboard/pages/refundpolicy',
-        icon: 'returnpolicy'
-      },
-      {
-        title: 'Cancellation Policy',
-        url: '/dashboard/pages/cancellationpolicy',
-        icon: 'cancel'
-      },
-      {
-        title: 'Shipping Policy',
-        url: '/dashboard/pages/shippingpolicy',
-        icon: 'settings'
-      }
-    ]
-  },
-
-  {
-    title: 'Pages',
-    url: '/dashboard/pages/',
-    icon: 'pages',
-    isActive: false,
-    items: [
-      {
-        title: 'Blogs',
-        url: '/dashboard/pages/bloges',
-        icon: 'tableContents',
-        items: [
-          {
-            title: 'Category',
-            url: '/dashboard/pages/blogs/category',
-            icon: 'categories'
-          },
-          {
-            title: 'Blogs',
-            url: '/dashboard/pages/blogs/list',
-            icon: 'categories'
-          }
-        ]
-      },
-      {
-        title: `Home`,
-        url: `#`,
-        icon: 'home',
-        isActive: false,
-        items: [
-          {
-            title: 'Banner',
-            url: '/dashboard/homes/banner',
-            icon: 'media'
-          },
-          {
-            title: 'Config',
-            url: '/dashboard/homes/config',
-            icon: 'config'
-          }
-        ]
-      },
-      {
-        title: 'Terms & Conditions',
-        url: '/dashboard/pages/termsandconditions',
-        icon: 'handshake'
-      },
-      {
-        title: 'Privacy Policy',
-        url: '/dashboard/pages/privacypolicy',
-        icon: 'privicypolicy'
-      },
-      {
-        title: 'Refund Policy',
-        url: '/dashboard/pages/refundpolicy',
-        icon: 'returnpolicy'
-      },
-      {
-        title: 'Cancellation Policy',
-        url: '/dashboard/pages/cancellationpolicy',
-        icon: 'cancel'
-      },
-      {
-        title: 'Shipping Policy',
-        url: '/dashboard/pages/shippingpolicy',
-        icon: 'settings'
-      }
-    ]
-  },
-  //----
-  {
-    title: 'Brands',
-    url: '/dashboard/brands',
-    icon: 'product',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Categories',
-    url: '/dashboard/categories',
-    icon: 'product',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Tags',
-    url: '/dashboard/tags',
-    icon: 'product',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'All Users',
-    url: '/dashboard/users',
-
-    icon: 'product',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Taxs',
-    url: '/dashboard/taxs',
-    icon: 'taxs',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Products',
-    url: '/dashboard/products',
-    icon: 'product',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: `Filters`,
-    url: `#`,
-    icon: 'kanban',
-    isActive: false,
-    items: [
-      {
-        title: 'Types',
-        url: '/dashboard/filters/types',
-        icon: 'userPen'
-      },
-      {
-        title: 'Values',
-        url: '/dashboard/filters/values',
-        icon: 'userPen'
-      }
-    ]
-  },
-  {
-    title: 'Faqs',
-    url: '/dashboard/faq',
-    icon: 'handshake',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Promo Codes',
-    url: '/dashboard/promocodes',
-    icon: 'handshake',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: `Address`,
-    url: `#`,
-    icon: 'address',
-    isActive: false,
-    items: [
-      {
-        title: 'Countries',
-        url: '/dashboard/address/countries',
-        icon: 'userPen'
-      },
-      {
-        title: 'States',
-        url: '/dashboard/address/states',
-        icon: 'userPen'
-      },
-      {
-        title: 'Cities',
-        url: '/dashboard/address/cities',
-        icon: 'userPen'
-      }
-    ]
-  },
-  {
-    title: 'Terms and Conditions',
-    url: '/dashboard/terms-and-conditions',
-    icon: 'handshake',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Privacy Policy',
-    url: '/dashboard/privacy-policy',
-    icon: 'privicypolicy',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Return Policy',
-    url: '/dashboard/return-policy',
-    icon: 'returnpolicy',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Shipping Policy',
-    url: '/dashboard/shipping-policy',
-    icon: 'shippingpolicy',
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Inventries',
-    url: '/dashboard/inventries',
-    icon: 'product',
-    isActive: false,
-    items: [] // No child items
   }
 ];
