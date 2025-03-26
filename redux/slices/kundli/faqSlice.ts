@@ -177,7 +177,7 @@ export const fetchSingleListFaq = createAsyncThunk<
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleListFaqSuccess(response.KundliFaqData));
+        dispatch(fetchSingleListFaqSuccess(response.FaqData));
         return response;
       } else {
         let errorMsg = response?.data?.message || 'Something Went Wrong';
