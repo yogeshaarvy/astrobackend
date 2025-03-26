@@ -49,6 +49,7 @@ import configReducer from './slices/home/configSlice';
 import storeConfigReducer from './slices/store/storeconfigSliceTest';
 import storegallery from './slices/store/gallerySlice';
 import filterReducer from './slices/store/filtersSlice';
+import astroPoojaReducer from './slices/Configs/astroPoojaSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -101,7 +102,8 @@ export const makeStore = () => {
       storeconfigs: storeConfigReducer,
       storeListFaq: storeFaq,
       kundliListFaq: kundliFaq,
-      galleryImage: storegallery
+      galleryImage: storegallery,
+      astroPoojas: astroPoojaReducer
     }
   });
 };
