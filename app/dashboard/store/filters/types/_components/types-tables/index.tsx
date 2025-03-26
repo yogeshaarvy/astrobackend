@@ -71,7 +71,7 @@ export default function TypesTable({
     },
 
     {
-      accessorKey: 'name',
+      accessorKey: 'name.en',
       header: 'NAME'
     },
     {
@@ -124,7 +124,7 @@ export default function TypesTable({
     <div className="space-y-4 ">
       <div className="flex flex-wrap items-center gap-4">
         <DataTableSearch
-          searchKey="name"
+          searchKey="name.en"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setPage={setPage}

@@ -21,6 +21,7 @@ import { debounce } from 'lodash';
 
 import { toast } from 'sonner';
 import { fetchTypesList } from '@/redux/slices/store/filtersSlice';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function ValuesForm() {
   const params = useSearchParams();
@@ -42,8 +43,14 @@ export default function ValuesForm() {
   const [typesData, setTypesData] = React.useState([]);
   const form = useForm<IValues>({
     defaultValues: {
-      short_name: '',
-      full_name: '',
+      short_name: {
+        en: '',
+        hi: ''
+      },
+      full_name: {
+        en: '',
+        hi: ''
+      },
       sequence: 0,
       types: [],
       active: false
@@ -84,8 +91,10 @@ export default function ValuesForm() {
 
   React.useEffect(() => {
     if (vData && entityId) {
-      form.setValue('short_name', vData?.short_name || '');
-      form.setValue('full_name', vData?.full_name || '');
+      form.setValue('short_name.en', vData?.short_name?.en || '');
+      form.setValue('short_name.hi', vData?.short_name?.hi || '');
+      form.setValue('full_name.en', vData?.full_name?.en || '');
+      form.setValue('full_name.hi', vData?.full_name?.hi || '');
       form.setValue('sequence', vData?.sequence || 0);
       form.setValue('types', vData?.types || []); // Set 'types' as an array
       setTypesData(vData?.types || []);
@@ -108,6 +117,8 @@ export default function ValuesForm() {
       })
     );
   };
+
+  console.log('The vData value is:', vData);
 
   // Update typesData separately to ensure it syncs with the state
   React.useEffect(() => {
@@ -147,40 +158,92 @@ export default function ValuesForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <CustomTextField
-                  name="short_name"
-                  label="Short Name"
-                  placeholder="Enter your short name"
-                  value={(vData as IValues)?.short_name}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  name="full_name"
-                  label="Full Name"
-                  placeholder="Enter your full name"
-                  value={(vData as IValues)?.full_name}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  name="sequence"
-                  label="Sequence"
-                  placeholder="Enter your sequence"
-                  value={(vData as IValues)?.sequence}
-                  onChange={handleInputChange}
-                  type="number"
-                />
-                <CustomMultiDropdown
-                  name="types"
-                  title="Types"
-                  options={tData.map((e) => ({
-                    value: e._id,
-                    label: e.name
-                  }))}
-                  value={typesData}
-                  onChange={setTypesData}
-                />
-              </div>
+              {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2"> */}
+
+              <Tabs defaultValue="English" className="mt-4 w-full">
+                <TabsList className="flex w-full space-x-2 p-0">
+                  <TabsTrigger
+                    value="English"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    English
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Hindi"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    Hindi
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="English">
+                  <CardHeader className="!px-0">
+                    <CardTitle className="text-lg font-bold ">
+                      ENGLISH-VALUES
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="short_name.en"
+                      label="Short Name"
+                      placeholder="Enter your short name"
+                      value={(vData as IValues)?.short_name?.en}
+                      onChange={handleInputChange}
+                    />
+                    <CustomTextField
+                      name="full_name.en"
+                      label="Full Name"
+                      placeholder="Enter your full name"
+                      value={(vData as IValues)?.full_name?.en}
+                      onChange={handleInputChange}
+                    />
+                  </CardContent>
+                </TabsContent>
+
+                <TabsContent value="Hindi">
+                  <CardHeader className="!px-0">
+                    <CardTitle className="text-lg font-bold ">
+                      HINDI-VALUES
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="short_name.hi"
+                      label="Short Name"
+                      placeholder="Enter your short name"
+                      value={(vData as IValues)?.short_name?.hi}
+                      onChange={handleInputChange}
+                    />
+                    <CustomTextField
+                      name="full_name.hi"
+                      label="Full Name"
+                      placeholder="Enter your full name"
+                      value={(vData as IValues)?.full_name?.hi}
+                      onChange={handleInputChange}
+                    />
+                  </CardContent>
+                </TabsContent>
+              </Tabs>
+
+              <CustomTextField
+                name="sequence"
+                label="Sequence"
+                placeholder="Enter your sequence"
+                value={(vData as IValues)?.sequence}
+                onChange={handleInputChange}
+                type="number"
+              />
+              <CustomMultiDropdown
+                name="types"
+                title="Types"
+                options={tData.map((e) => ({
+                  value: e._id,
+                  label: e.name?.en
+                }))}
+                value={typesData}
+                onChange={setTypesData}
+              />
+              {/* </div> */}
 
               <Button type="submit">Submit</Button>
             </form>

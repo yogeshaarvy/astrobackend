@@ -32,7 +32,10 @@ export default function TypesForm() {
 
   const form = useForm<ITypes>({
     defaultValues: {
-      name: '',
+      name: {
+        en: '',
+        hi: ''
+      },
       active: false,
       sequence: 0,
       type: '',
@@ -45,19 +48,11 @@ export default function TypesForm() {
     }
   }, [entityId]);
 
-  React.useEffect(() => {
-    if (bData && entityId) {
-      form.setValue('name', (bData as ITypes)?.name || '');
-      form.setValue('sequence', (bData as ITypes)?.sequence || 0);
-      form.setValue('searchPage', (bData as ITypes)?.searchPage || '');
-      form.setValue('type', (bData as ITypes)?.type || '');
-    }
-  }, [bData, entityId, form]);
-
   // Handle Input Change
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
+    console.log('namevalue', name, value);
     dispatch(
       updateTypesData({
         [name]:
@@ -76,7 +71,7 @@ export default function TypesForm() {
     dispatch(addEditTypes(entityId || null))
       .then((response: any) => {
         if (response.payload.success) {
-          router.push('/dashboard/store/filters/types');
+          // router.push('/dashboard/store/filters/types');
           toast.success(response.payload.message);
         }
       })
@@ -101,10 +96,17 @@ export default function TypesForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomTextField
-                  name="name"
-                  label="Name"
-                  placeholder="Enter your name"
-                  value={(bData as ITypes)?.name}
+                  name="name.en"
+                  label="English Name"
+                  placeholder="Enter your English name"
+                  value={(bData as ITypes)?.name?.en}
+                  onChange={handleInputChange}
+                />
+                <CustomTextField
+                  name="name.hi"
+                  label="Hindi Name"
+                  placeholder="Enter your Hindi name"
+                  value={(bData as ITypes)?.name?.hi}
                   onChange={handleInputChange}
                 />
                 <CustomTextField

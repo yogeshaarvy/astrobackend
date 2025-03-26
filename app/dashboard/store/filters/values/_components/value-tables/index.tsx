@@ -77,23 +77,23 @@ export default function ValuesTable({
     },
 
     {
-      accessorKey: 'short_name',
+      accessorKey: 'short_name.en',
       header: 'SHORT NAME'
     },
     {
-      accessorKey: 'full_name',
+      accessorKey: 'full_name.en',
       header: 'FULL NAME'
     },
-    {
-      accessorKey: 'types',
-      header: 'TYPES',
-      cell: ({ row }) => {
-        const typesNames = row.original?.types
-          .map((e: any) => e?.name)
-          .join(', ');
-        return <span>{typesNames || 'No types'}</span>;
-      }
-    },
+    // {
+    //   accessorKey: 'types',
+    //   header: 'TYPES',
+    //   cell: ({ row }) => {
+    //     const typesNames = row.original?.types
+    //       .map((e: any) => e?.name?.en)
+    //       .join(', ');
+    //     return <span>{typesNames || 'No types'}</span>;
+    //   }
+    // },
 
     {
       accessorKey: 'active',

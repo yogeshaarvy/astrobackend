@@ -11,8 +11,8 @@ export const STATUS_OPTIONS = [
   { value: 'false', label: 'False' }
 ];
 export const FIELD_OPTIONS = [
-  { value: 'short_name', label: 'Short Name' },
-  { value: 'full_name', label: 'Full Name' },
+  { value: 'short_name.en', label: 'Short Name' },
+  { value: 'full_name.en', label: 'Full Name' },
   { value: 'types', label: 'Types' }
 ];
 export function useValuesTableFilters() {
