@@ -1,12 +1,18 @@
 import { RootState } from '@/redux/store';
 import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { cloneDeep } from 'lodash';
 import { toast } from 'sonner';
 
 export type ITypes = BaseModel & {
   _id?: string;
-  name?: string;
+  name?: {
+    en?: String;
+    hi?: String;
+  };
   active?: boolean;
   sequence?: number;
   searchPage?: string;
@@ -15,8 +21,14 @@ export type ITypes = BaseModel & {
 
 export type IValues = BaseModel & {
   _id?: string;
-  short_name?: string;
-  full_name?: string;
+  short_name?: {
+    en?: String;
+    hi?: String;
+  };
+  full_name?: {
+    en?: String;
+    hi?: String;
+  };
   active?: boolean;
   types?: any;
   sequence?: number;
@@ -61,12 +73,12 @@ const initialState = {
 export const fetchTypesList = createAsyncThunk<
   any,
   {
-    page: number;
-    pageSize: number;
-    keyword: string;
-    field: string;
-    status: string;
-    exportData: string;
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    field?: string;
+    status?: string;
+    exportData?: string;
     searchKeyword?: string;
   } | void,
   { state: RootState }
@@ -125,14 +137,22 @@ export const addEditTypes = createAsyncThunk<
     } = getState();
 
     dispatch(addEditTypesStart());
+    console.log('filterSlice -> addEditTypes -> data 1');
 
     if (!data) {
       return rejectWithValue('Please Provide Details');
     }
 
+    console.log('filterSlice -> addEditTypes -> data', data);
+    let clonedData = cloneDeep(data);
+
+    if (clonedData) {
+      clonedData = await processNestedFields(clonedData);
+    }
+
     const formData = new FormData();
     const reqData: any = {
-      name: data.name,
+      name: clonedData.name ? JSON.stringify(clonedData.name) : undefined,
       active: data.active,
       sequence: data.sequence,
       searchPage: data.searchPage,
@@ -300,21 +320,25 @@ export const addEditValues = createAsyncThunk<
       return rejectWithValue('Please Provide Details');
     }
 
+    let clonedData = cloneDeep(data);
+
+    if (clonedData) {
+      clonedData = await processNestedFields(clonedData);
+    }
+
     const formData = new FormData();
     const reqData: any = {
-      short_name: data.short_name,
-      full_name: data.full_name,
+      short_name: clonedData.short_name
+        ? JSON.stringify(clonedData.short_name)
+        : undefined,
+      full_name: clonedData.full_name
+        ? JSON.stringify(clonedData.full_name)
+        : undefined,
       active: data.active,
       sequence: data.sequence,
-      // types: Array.isArray(data.types) ? data.types : [data.types]
       types: Array.isArray(data.types)
         ? data.types.map((type) => (typeof type === 'object' ? type._id : type))
         : [data.types]
-      // types: Array.isArray(data.types)
-      // ? data.types.map((type) =>
-      //     typeof type === 'object' ? JSON.stringify(type) : type
-      //   )
-      // : [data.types]
     };
 
     formData.forEach((value, key) => {});
@@ -385,30 +409,31 @@ export const fetchSingleValues = createAsyncThunk<
   }
 );
 
-export const deleteValues = createAsyncThunk<any, string, { state: RootState }>(
-  'values/delete',
-  async (id, { dispatch }) => {
-    dispatch(deleteValuesStart());
-    try {
-      const response = await fetchApi(`/store/filter/value/delete/${id}`, {
-        method: 'DELETE'
-      });
-      if (response.success) {
-        dispatch(deleteValuesSuccess(id));
-        dispatch(fetchValuesList());
-        toast.success('Values deleted successfuly');
-        return response;
-      } else {
-        let errorMsg = response?.data?.message || 'Something Went Wrong';
-        toast.error(errorMsg);
-        dispatch(deleteValuesFailure(errorMsg));
-      }
-    } catch (error: any) {
-      dispatch(deleteValuesFailure(error.message || 'Failed to delete values'));
-      toast.error(error.message);
+export const deleteValues = createAsyncThunk<
+  any,
+  string | null,
+  { state: RootState }
+>('values/delete', async (id, { dispatch }) => {
+  dispatch(deleteValuesStart());
+  try {
+    const response = await fetchApi(`/store/filter/value/delete/${id}`, {
+      method: 'DELETE'
+    });
+    if (response.success) {
+      dispatch(deleteValuesSuccess(id));
+      dispatch(fetchValuesList());
+      toast.success('Values deleted successfuly');
+      return response;
+    } else {
+      let errorMsg = response?.data?.message || 'Something Went Wrong';
+      toast.error(errorMsg);
+      dispatch(deleteValuesFailure(errorMsg));
     }
+  } catch (error: any) {
+    dispatch(deleteValuesFailure(error.message || 'Failed to delete values'));
+    toast.error(error.message);
   }
-);
+});
 
 const filterSlice = createSlice({
   name: 'filter',
@@ -433,8 +458,20 @@ const filterSlice = createSlice({
       state.singleTypesState.data = action.payload;
     },
     updateTypesData(state, action) {
+      console.log('testing 1', action.payload);
       const oldData = state.singleTypesState.data;
-      state.singleTypesState.data = { ...oldData, ...action.payload };
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.singleTypesState.data = newData;
+      } else {
+        state.singleTypesState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     },
     addEditTypesStart(state) {
       state.singleTypesState.loading = true;
@@ -492,8 +529,20 @@ const filterSlice = createSlice({
       state.singleValuesState.data = action.payload;
     },
     updateValuesData(state, action) {
+      console.log('testing 1', action.payload);
       const oldData = state.singleValuesState.data;
-      state.singleValuesState.data = { ...oldData, ...action.payload };
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.singleValuesState.data = newData;
+      } else {
+        state.singleValuesState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     },
     addEditValuesStart(state) {
       state.singleValuesState.loading = true;

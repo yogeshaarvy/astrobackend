@@ -11,7 +11,7 @@ export const STATUS_OPTIONS = [
   { value: 'false', label: 'False' }
 ];
 export const FIELD_OPTIONS = [
-  { value: 'name', label: 'Name' },
+  { value: 'name.en', label: 'Name' },
   { value: 'type', label: 'Type' },
   { value: 'searchPage', label: 'Search Page' }
 ];
