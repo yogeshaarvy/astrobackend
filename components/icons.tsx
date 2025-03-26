@@ -61,7 +61,8 @@ import {
   Goal,
   GalleryThumbnails,
   Church,
-  NotepadTextDashed
+  NotepadTextDashed,
+  Tag
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -71,6 +72,7 @@ export const Icons = {
   store: Store,
   filter: ListFilter,
   type: Keyboard,
+  tag: Tag,
   squareUser: SquareUser,
   goal: Goal,
   chartCandlestick: ChartCandlestick,

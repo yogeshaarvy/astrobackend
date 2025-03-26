@@ -21,7 +21,6 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 // import CustomDropdown from '@/utils/CustomDropdown';
-import { fetchTagList } from '@/redux/slices/tagsSlice';
 import { debounce } from 'lodash';
 import {
   addEditListFaq,

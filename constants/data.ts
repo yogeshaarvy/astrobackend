@@ -160,6 +160,11 @@ export const navItems: NavItem[] = [
         icon: 'categories'
       },
       {
+        title: 'Tags',
+        url: '/dashboard/store/tags',
+        icon: 'tag'
+      },
+      {
         title: 'Products',
         url: '/dashboard/store/products',
         icon: 'basket'
@@ -258,17 +263,17 @@ export const navItems: NavItem[] = [
     items: [
       {
         title: 'Categories',
-        url: '/dashboard/blog/categories',
+        url: '/dashboard/blogs/categories',
         icon: 'categories'
       },
       {
         title: 'List',
-        url: '/dashboard/blog/list',
+        url: '/dashboard/blogs/list',
         icon: 'list'
       },
       {
         title: 'Other',
-        url: '/dashboard/blog/other',
+        url: '/dashboard/blogs/other',
         icon: 'otherlist',
         isActive: false,
         items: [

@@ -402,6 +402,7 @@ const SidebarContent = React.forwardRef<
 >(({ className, ...props }, ref) => {
   return (
     <div
+      style={{ scrollbarWidth: 'none', overflowY: 'auto' }}
       ref={ref}
       data-sidebar="content"
       className={cn(
