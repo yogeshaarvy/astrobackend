@@ -45,6 +45,7 @@ import blogsReducer from './slices/pages/bloges/categorySlice';
 import promiseReducer from './slices/pages/promiseSlice';
 import storeFaq from './slices/store/faqSlice';
 import kundliFaq from './slices/kundli/faqSlice';
+import kundliconfig from './slices/kundli/kundliSlice';
 import configReducer from './slices/home/configSlice';
 import storeConfigReducer from './slices/store/storeconfigSliceTest';
 import storegallery from './slices/store/gallerySlice';
@@ -102,6 +103,7 @@ export const makeStore = () => {
       storeconfigs: storeConfigReducer,
       storeListFaq: storeFaq,
       kundliListFaq: kundliFaq,
+      kundliConfig: kundliconfig,
       galleryImage: storegallery,
       astroPoojas: astroPoojaReducer
     }
