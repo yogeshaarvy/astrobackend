@@ -6,16 +6,12 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import BrandTable from './brand-tables';
-import {
-  fetchBrandList,
-  IBrand,
-  setBrandData
-} from '@/redux/slices/brandSlice';
+import TaxTable from './tax-tables';
+import { fetchTaxList, ITax, setTaxData } from '@/redux/slices/taxsSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function BrandListingPage() {
+export default function TaxListingPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
@@ -23,31 +19,26 @@ export default function BrandListingPage() {
   const field = searchParams.get('field') || '';
   const page = parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams.get('limit') ?? '10', 10);
-  const moduleId = '673f04ecd8f4b9fe9a44598a';
+  let exportData = 'false';
   const {
-    brandListState: {
-      loading: brandListLoading,
-      data: eData = [],
+    taxListState: {
+      loading: taxListLoading,
+      data: tData = [],
       pagination: { totalCount }
     }
-  } = useAppSelector((state) => state.brand);
-  let exportData = 'false';
+  } = useAppSelector((state) => state.taxsdata);
   useEffect(() => {
     dispatch(
-      fetchBrandList({ page, pageSize, keyword, field, status, exportData })
+      fetchTaxList({ page, pageSize, keyword, field, status, exportData })
     );
-    dispatch(setBrandData(null));
+    dispatch(setTaxData(null));
   }, [page, pageSize, dispatch]); // Ensure this is run only once when the component mounts
 
-  // You can safely assume `eData` is populated now
-  const brand: IBrand[] = eData;
-
+  // You can safely assume `tData` is populated now
+  const tax: ITax[] = tData;
   const handleSearch = () => {
-    if ((!field && keyword) || (!keyword && field)) {
-      alert('Both keyword and field is required to search with keyword');
-    }
     dispatch(
-      fetchBrandList({ page, pageSize, keyword, field, status, exportData })
+      fetchTaxList({ page, pageSize, keyword, field, status, exportData })
     );
   };
 
@@ -55,7 +46,7 @@ export default function BrandListingPage() {
     try {
       // Fetch the export data from the API
       const exportResponse = await dispatch(
-        fetchBrandList({
+        fetchTaxList({
           page,
           pageSize,
           keyword,
@@ -64,7 +55,7 @@ export default function BrandListingPage() {
           exportData: 'true'
         })
       ).unwrap(); // Ensure this returns a promise that resolves the data
-      const exportData = exportResponse.brand;
+      const exportData = exportResponse.taxsData;
 
       if (!exportData || exportData.length === 0) {
         alert('No data available to export');
@@ -73,29 +64,12 @@ export default function BrandListingPage() {
 
       // Generate CSV content
       const csvContent = [
-        [
-          'ID',
-          'Name',
-          'Slug',
-          'Status',
-          'Sequence No.',
-          'Short Description',
-          'Long Description',
-          'Meta tag',
-          'Meta Title',
-          'Meta Description'
-        ], // CSV headers
+        ['ID', 'Name', 'Rate', 'Active'], // CSV headers
         ...exportData.map((item: any) => [
           item._id,
           item.name,
-          item.slug,
-          item.active,
-          item.sequence,
-          item.short_description,
-          item.long_description,
-          item.meta_tag,
-          item.meta_title,
-          item.meta_description
+          item.rate,
+          item.active
         ])
       ]
         .map((row) => row.join(','))
@@ -105,7 +79,7 @@ export default function BrandListingPage() {
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', 'brand_data.csv');
+      link.setAttribute('download', 'taxs_data.csv');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -118,10 +92,9 @@ export default function BrandListingPage() {
   return (
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">
-        <div className="flex items-start justify-between ">
-          <Heading title={`Brands`} description="" />
-          {/* {empPermissions.permission.add ? ( */}
-          <div>
+        <div className="flex items-start justify-between pr-4">
+          <Heading title={`Tax`} description="" />
+          <div className="flex items-center">
             <Button
               className="mx-5 py-4"
               variant="default"
@@ -130,7 +103,7 @@ export default function BrandListingPage() {
               Export
             </Button>
             <Link
-              href={'/dashboard/brands/add'}
+              href={'/dashboard/store/taxs/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New
@@ -138,8 +111,8 @@ export default function BrandListingPage() {
           </div>
         </div>
         <Separator />
-        <BrandTable
-          data={brand}
+        <TaxTable
+          data={tax}
           totalData={totalCount}
           handleSearch={handleSearch}
         />

@@ -82,7 +82,7 @@ export default function CategoryTable({
       enableHiding: false
     },
     {
-      accessorKey: 'name.en',
+      accessorKey: 'name',
       header: 'NAME'
     },
     {
@@ -134,7 +134,7 @@ export default function CategoryTable({
     <div className="space-y-4 ">
       <div className="flex flex-wrap items-center gap-4">
         <DataTableSearch
-          searchKey="name.en"
+          searchKey="name"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setPage={setPage}

@@ -22,7 +22,7 @@ import {
 } from '@/redux/slices/brandSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomTextField from '@/utils/CustomTextField';
-import { FileUploader } from '@/components/file-uploader';
+import { FileUploader, FileViewCard } from '@/components/file-uploader';
 
 import { useEffect } from 'react';
 import slugify from 'slugify';
@@ -42,6 +42,8 @@ export default function BrandForm() {
     singleBrandState: { loading, data: bData }
   } = useAppSelector((state) => state.brand);
   const [files, setFiles] = React.useState<File[]>([]);
+  const [logoImage, setLogoImage] = React.useState<File | null>(null);
+  const [bannerImage, setBannerImage] = React.useState<File | null>(null);
 
   const form = useForm<IBrand>({
     defaultValues: {
@@ -54,8 +56,7 @@ export default function BrandForm() {
       active: false,
       sequence: 0,
       meta_description: '',
-      meta_title: '',
-      slug: ''
+      meta_title: ''
     }
   });
   React.useEffect(() => {
@@ -77,7 +78,6 @@ export default function BrandForm() {
         'long_description',
         (bData as IBrand)?.long_description || ''
       );
-      form.setValue('slug', (bData as IBrand)?.slug || '');
       form.setValue('sequence', (bData as IBrand)?.sequence || 0);
       form.setValue('meta_title', (bData as IBrand)?.meta_title ?? '');
       form.setValue(
@@ -90,20 +90,20 @@ export default function BrandForm() {
     }
   }, [bData, entityId, form]);
 
-  React.useEffect(() => {
-    const name = form.watch('name'); // Watch for changes in the 'name' field
+  // React.useEffect(() => {
+  //   const name = form.watch('name'); // Watch for changes in the 'name' field
 
-    if (name) {
-      const generatedSlug = slugify(name, {
-        lower: true, // Converts to lowercase
-        strict: true, // Removes special characters
-        trim: true // Trims whitespace
-      });
+  //   if (name) {
+  //     const generatedSlug = slugify(name, {
+  //       lower: true, // Converts to lowercase
+  //       strict: true, // Removes special characters
+  //       trim: true // Trims whitespace
+  //     });
 
-      form.setValue('slug', generatedSlug);
-      dispatch(updateBrandData({ ['slug']: generatedSlug })); // Set the generated slug value
-    }
-  }, [form.watch('name'), form]);
+  //     form.setValue('slug', generatedSlug);
+  //     dispatch(updateBrandData({ ['slug']: generatedSlug })); // Set the generated slug value
+  //   }
+  // }, [form.watch('name'), form]);
 
   // Handle Input Change
   const handleInputChange = (e: any) => {
@@ -142,7 +142,7 @@ export default function BrandForm() {
     dispatch(addEditBrand(entityId || null))
       .then((response) => {
         if (response.payload.success) {
-          router.push('/dashboard/brands');
+          router.push('/dashboard/store/brands');
           toast.success(response.payload.message);
         }
       })
@@ -167,15 +167,6 @@ export default function BrandForm() {
                   label="Name"
                   placeholder="Enter your name"
                   value={(bData as IBrand)?.name}
-                  onChange={handleInputChange}
-                />
-
-                <CustomTextField
-                  name="slug"
-                  control={form.control}
-                  label="Slug"
-                  placeholder="Enter your Slug"
-                  value={form.getValues('slug')}
                   onChange={handleInputChange}
                 />
                 <CustomTextField
@@ -247,30 +238,62 @@ export default function BrandForm() {
               </FormItem>
 
               <FormItem className="space-y-3">
-                <FormLabel>Logo Image</FormLabel>
+                <FormLabel>Dark Logo</FormLabel>
                 <FileUploader
-                  value={files}
-                  onValueChange={(file) => handleFileChange('logo_image', file)}
-                  // onUpload={handleInputChange}
+                  value={logoImage ? [logoImage] : []}
+                  onValueChange={(newFiles: any) => {
+                    setLogoImage(newFiles[0] || null);
+                    handleInputChange({
+                      target: {
+                        name: 'logo_image',
+                        type: 'file',
+                        files: newFiles
+                      }
+                    });
+                  }}
                   accept={{ 'image/*': [] }}
-                  // maxFiles={2}
                   maxSize={1024 * 1024 * 2}
-                  // multiple
-                />
+                />{' '}
+                <>
+                  {typeof (bData as IBrand)?.logo_image === 'string' && (
+                    <>
+                      <div className="max-h-48 space-y-4">
+                        <FileViewCard
+                          existingImageURL={(bData as IBrand)?.logo_image}
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
               </FormItem>
               <FormItem className="space-y-3">
-                <FormLabel>Banner Image</FormLabel>
+                <FormLabel>Dark Logo</FormLabel>
                 <FileUploader
-                  value={files}
-                  onValueChange={(file) =>
-                    handleFileChange('banner_image', file)
-                  }
-                  // onUpload={handleInputChange}
+                  value={bannerImage ? [bannerImage] : []}
+                  onValueChange={(newFiles: any) => {
+                    setBannerImage(newFiles[0] || null);
+                    handleInputChange({
+                      target: {
+                        name: 'banner_image',
+                        type: 'file',
+                        files: newFiles
+                      }
+                    });
+                  }}
                   accept={{ 'image/*': [] }}
-                  // maxFiles={2}
                   maxSize={1024 * 1024 * 2}
-                  // multiple
-                />
+                />{' '}
+                <>
+                  {typeof (bData as IBrand)?.banner_image === 'string' && (
+                    <>
+                      <div className="max-h-48 space-y-4">
+                        <FileViewCard
+                          existingImageURL={(bData as IBrand)?.banner_image}
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
               </FormItem>
 
               <Button type="submit">Submit</Button>

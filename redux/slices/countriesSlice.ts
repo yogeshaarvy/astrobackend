@@ -72,7 +72,7 @@ export const fetchCountriesList = createAsyncThunk<
 
     dispatch(fetchCountriesStart());
     const response = await fetchApi(
-      `/country/all?page=${page || 1}&pageSize=${pageSize || 10}&text=${
+      `/store/country/all?page=${page || 1}&pageSize=${pageSize || 10}&text=${
         keyword || ''
       }&field=${field || ''}&active=${status || ''}&export=${exportData}`,
       { method: 'GET' }
@@ -137,12 +137,12 @@ export const addEditCountries = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        response = await fetchApi('/country/create', {
+        response = await fetchApi('/store/country/create', {
           method: 'POST',
           body: formData
         });
       } else {
-        response = await fetchApi(`/country/update/${entityId}`, {
+        response = await fetchApi(`/store/country/update/${entityId}`, {
           method: 'PUT',
           body: formData
         });

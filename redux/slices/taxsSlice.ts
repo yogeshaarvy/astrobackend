@@ -60,7 +60,7 @@ export const fetchTaxList = createAsyncThunk<
 
       dispatch(fetchTaxStart());
       const response = await fetchApi(
-        `/taxs/all?page=${page || 1}&limit=${pageSize || 10}&text=${
+        `/store/taxs/all?page=${page || 1}&limit=${pageSize || 10}&text=${
           keyword || ''
         }&field=${field || ''}&active=${status || ''}&export=${exportData}`,
         { method: 'GET' }
@@ -118,12 +118,12 @@ export const addEditTax = createAsyncThunk<
 
     let response;
     if (!entityId) {
-      response = await fetchApi('/taxs/new', {
+      response = await fetchApi('/store/taxs/new', {
         method: 'POST',
         body: formData
       });
     } else {
-      response = await fetchApi(`/taxs/update/${entityId}`, {
+      response = await fetchApi(`/store/taxs/update/${entityId}`, {
         method: 'PUT',
         body: formData
       });
@@ -147,10 +147,10 @@ export const fetchSingleTax = createAsyncThunk<
   any,
   string | null,
   { state: RootState }
->('/taxs/all', async (entityId, { dispatch, rejectWithValue, getState }) => {
+>('taxs/all', async (entityId, { dispatch, rejectWithValue, getState }) => {
   try {
     dispatch(fetchSingleTaxStart());
-    const response = await fetchApi(`/taxs/single/${entityId}`, {
+    const response = await fetchApi(`/store/taxs/single/${entityId}`, {
       method: 'GET'
     });
 
@@ -174,7 +174,7 @@ export const deleteTax = createAsyncThunk<any, string, { state: RootState }>(
   async (id, { dispatch }) => {
     dispatch(deleteTaxStart());
     try {
-      const response = await fetchApi(`/taxs/delete/${id}`, {
+      const response = await fetchApi(`/store/taxs/delete/${id}`, {
         method: 'DELETE'
       });
       if (response.success) {

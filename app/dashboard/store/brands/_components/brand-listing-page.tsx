@@ -6,16 +6,16 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import ProductsTable from './product-tables';
+import BrandTable from './brand-tables';
 import {
-  fetchProductsList,
-  IProducts,
-  setProductsData
-} from '@/redux/slices/productSlice';
+  fetchBrandList,
+  IBrand,
+  setBrandData
+} from '@/redux/slices/brandSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ProductsListingPage() {
+export default function BrandListingPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
@@ -23,36 +23,39 @@ export default function ProductsListingPage() {
   const field = searchParams.get('field') || '';
   const page = parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams.get('limit') ?? '10', 10);
+  const moduleId = '673f04ecd8f4b9fe9a44598a';
   const {
-    productsListState: {
-      loading: productsListLoading,
-      data: pData = [],
+    brandListState: {
+      loading: brandListLoading,
+      data: eData = [],
       pagination: { totalCount }
     }
-  } = useAppSelector((state) => state.productsdata);
+  } = useAppSelector((state) => state.brand);
   let exportData = 'false';
   useEffect(() => {
     dispatch(
-      fetchProductsList({ page, pageSize, keyword, field, status, exportData })
+      fetchBrandList({ page, pageSize, keyword, field, status, exportData })
     );
-    dispatch(setProductsData(null));
+    dispatch(setBrandData(null));
   }, [page, pageSize, dispatch]); // Ensure this is run only once when the component mounts
 
-  // You can safely assume `pData` is populated now
-  const products: IProducts[] = pData;
+  // You can safely assume `eData` is populated now
+  const brand: IBrand[] = eData;
+
   const handleSearch = () => {
-    if ((!keyword && field) || (!field && keyword)) {
-      alert('Both keyword and field required');
+    if ((!field && keyword) || (!keyword && field)) {
+      alert('Both keyword and field is required to search with keyword');
     }
     dispatch(
-      fetchProductsList({ page, pageSize, keyword, field, status, exportData })
+      fetchBrandList({ page, pageSize, keyword, field, status, exportData })
     );
   };
+
   const handleExport = async () => {
     try {
       // Fetch the export data from the API
       const exportResponse = await dispatch(
-        fetchProductsList({
+        fetchBrandList({
           page,
           pageSize,
           keyword,
@@ -61,58 +64,48 @@ export default function ProductsListingPage() {
           exportData: 'true'
         })
       ).unwrap(); // Ensure this returns a promise that resolves the data
-      const exportData = exportResponse.productsdata;
+      const exportData = exportResponse.brand;
+
       if (!exportData || exportData.length === 0) {
         alert('No data available to export');
         return;
       }
+
       // Generate CSV content
       const csvContent = [
         [
           'ID',
           'Name',
-          'Active',
           'Slug',
-          'Sequence',
-          'Price',
-          'Special Price',
-          'Model No.',
-          'Manufacture',
-          'Categories',
-          'Brand',
-          'Filter Types',
-          'Filter Values'
+          'Status',
+          'Sequence No.',
+          'Short Description',
+          'Long Description',
+          'Meta tag',
+          'Meta Title',
+          'Meta Description'
         ], // CSV headers
-
-        ...exportData.map((item: IProducts) => {
-          let returnarray = [
-            item._id,
-            item?.name,
-            item?.active,
-            item?.slug,
-            item?.sequence,
-            item?.price,
-            item?.special_price,
-            item?.model_no,
-            item?.manufacture,
-            item?.categories.map((cate: any) => cate?.name).join(' | '), // Add the processed categprires data
-            item?.brand_name?.name, // Add the processed brands data
-            item?.filtertypes.map((types: any) => types?.name).join(' | '), // Add the processed types data
-            item?.filtervalues.map((val: any) => val?.short_name).join(' | ') // Add the processed values data
-          ];
-
-          // Construct the CSV row
-          return returnarray;
-        })
+        ...exportData.map((item: any) => [
+          item._id,
+          item.name,
+          item.slug,
+          item.active,
+          item.sequence,
+          item.short_description,
+          item.long_description,
+          item.meta_tag,
+          item.meta_title,
+          item.meta_description
+        ])
       ]
-        .map((row) => row.join(',')) // Convert each row to a CSV string
-        .join('\n'); // Combine all rows into a single CSV content
+        .map((row) => row.join(','))
+        .join('\n');
 
       // Create a blob and trigger download
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', 'values_data.csv');
+      link.setAttribute('download', 'brand_data.csv');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -121,12 +114,14 @@ export default function ProductsListingPage() {
       alert('An error occurred while exporting data.');
     }
   };
+
   return (
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">
-        <div className="flex items-start justify-between pr-4">
-          <Heading title={`Products`} description="" />
-          <div className="flex items-center">
+        <div className="flex items-start justify-between ">
+          <Heading title={`Brands`} description="" />
+          {/* {empPermissions.permission.add ? ( */}
+          <div>
             <Button
               className="mx-5 py-4"
               variant="default"
@@ -135,7 +130,7 @@ export default function ProductsListingPage() {
               Export
             </Button>
             <Link
-              href={'/dashboard/products/add'}
+              href={'/dashboard/store/brands/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New
@@ -143,8 +138,8 @@ export default function ProductsListingPage() {
           </div>
         </div>
         <Separator />
-        <ProductsTable
-          data={products}
+        <BrandTable
+          data={brand}
           totalData={totalCount}
           handleSearch={handleSearch}
         />

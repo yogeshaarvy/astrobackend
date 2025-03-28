@@ -8,13 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { ITax, deleteTax } from '@/redux/slices/taxsSlice';
+import { IBrand, deleteBrand, fetchBrandList } from '@/redux/slices/brandSlice';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 interface CellActionProps {
-  data: ITax;
+  data: IBrand;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -23,7 +23,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const onConfirm = async () => {
-    dispatch(deleteTax(data?._id || ''));
+    dispatch(deleteBrand(data?._id || ''));
     setOpen(false);
   };
 
@@ -46,7 +46,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/taxs/edit?id=${data._id}`)}
+            onClick={() =>
+              router.push(`/dashboard/store/brands/edit?id=${data._id}`)
+            }
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

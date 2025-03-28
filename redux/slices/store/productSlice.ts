@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store';
 import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
+import { RootState } from '@/redux/store';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
 export type ISimpleProduct = {
   price?: number;
@@ -23,9 +23,16 @@ export type IStockManagement = {
 export type IProducts = BaseModel & {
   _id?: string;
   id?: string;
+  title?: {
+    en?: string;
+    hi?: string;
+  };
   name?: string;
   slug?: string;
-  description?: string;
+  description?: {
+    en?: string;
+    hi?: string;
+  };
   active?: boolean;
   filtertypes?: any;
   filtervalues?: any;
@@ -35,9 +42,13 @@ export type IProducts = BaseModel & {
   price?: number;
   model_no?: string;
   main_image?: string;
+  second_main_image?: string;
   other_image?: any;
   brand_name?: any;
-  manufacture?: string;
+  manufacture?: {
+    en?: string;
+    hi?: string;
+  };
   meta_title?: string;
   meta_description?: string;
   meta_tag?: string;
@@ -69,7 +80,7 @@ export type IProducts = BaseModel & {
   sku?: string;
   totalStock?: number;
   stock_status?: string;
-  values?: any
+  values?: any;
 };
 
 const initialState = {
@@ -120,7 +131,8 @@ export const fetchProductsList = createAsyncThunk<
 
       dispatch(fetchProductsStart());
       const response = await fetchApi(
-        `/products/all?page=${page || 1}&limit=${pageSize || 10}&text=${keyword || ''
+        `/products/all?page=${page || 1}&limit=${pageSize || 10}&text=${
+          keyword || ''
         }&field=${field || ''}&active=${status || ''}&exportData=${exportData}`,
         { method: 'GET' }
       );
@@ -162,7 +174,9 @@ export const addEditProducts = createAsyncThunk<
     if (!data) {
       return rejectWithValue('Please Provide Details');
     }
+
     const formData = new FormData();
+
     const reqData: any = {
       name: data.name,
       slug: data.slug,
@@ -170,6 +184,7 @@ export const addEditProducts = createAsyncThunk<
       sequence: data.sequence,
       model_no: data.model_no,
       main_image: data.main_image,
+      second_main_image: data.second_main_image,
       manufacture: data.manufacture,
       meta_tag: data.meta_tag,
       meta_description: data.meta_description,
@@ -209,15 +224,17 @@ export const addEditProducts = createAsyncThunk<
       other_image: Array.isArray(data.other_image)
         ? data.other_image
         : [data.other_image],
-      filtertypes: Array.isArray(data.filtertypes)
-        ? data.filtertypes
-        : [data.filtertypes],
-      filtervalues: Array.isArray(data.filtervalues)
-        ? data.filtervalues
-        : [data.filtervalues],
-      categories: data.categories ? data.categories?.map((cat: any) => cat?._id).join(",") : [],
-      attributes: data.attributes,
-      variants: data.variations,
+      // filtertypes: Array.isArray(data.filtertypes)
+      //   ? data.filtertypes
+      //   : [data.filtertypes],
+      // filtervalues: Array.isArray(data.filtervalues)
+      //   ? data.filtervalues
+      //   : [data.filtervalues],
+      categories: data.categories
+        ? data.categories?.map((cat: any) => cat?._id).join(',')
+        : [],
+      attributes: JSON.stringify(data.attributes),
+      variants: JSON.stringify(data.variations),
       stockManagement: JSON.stringify(data.stockManagement) // Convert to JSON string
     };
     // Append only defined fields to FormData
@@ -251,12 +268,12 @@ export const addEditProducts = createAsyncThunk<
     } else {
       const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
       dispatch(addEditProductsFailure(errorMsg));
-      toast.error(errorMsg)
+      toast.error(errorMsg);
       return rejectWithValue(errorMsg);
     }
   } catch (error: any) {
     const errorMsg = error?.message ?? 'Something Went Wrong!!';
-    toast.error(errorMsg)
+    toast.error(errorMsg);
     dispatch(addEditProductsFailure(errorMsg));
     return rejectWithValue(errorMsg);
   }
@@ -340,22 +357,19 @@ const productsSlice = createSlice({
       state.singleProductsState.data = action.payload;
     },
     updateProductsData(state, action) {
-
       const oldData = state.singleProductsState.data;
-      state.singleProductsState.data = { ...oldData, ...action.payload };
-      // const keyFirst = Object.keys(action.payload)[0];
+      const keyFirst = Object.keys(action.payload)[0];
 
-      // if (keyFirst.includes('.')) {
-      //   const newData = { ...oldData };
-
-      //   setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
-      //   state.singleProductsState.data = newData;
-      // } else {
-      //   state.singleProductsState.data = {
-      //     ...oldData,
-      //     ...action.payload
-      //   };
-      // }
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.singleProductsState.data = newData;
+      } else {
+        state.singleProductsState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     },
     addEditProductsStart(state) {
       state.singleProductsState.loading = true;

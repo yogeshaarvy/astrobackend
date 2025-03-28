@@ -10,7 +10,7 @@ import wallpaperReducer from './slices/wallpaperSlice';
 import brandReducer from './slices/brandSlice';
 import categoryReducer from './slices/store/categoriesSlice';
 import tagsReducer from './slices/store/tagsSlice';
-import productsReducer from './slices/productSlice';
+import productsReducer from './slices/store/productSlice';
 import statesReducer from './slices/statesSlice';
 import citiesReducer from './slices/citiesSlice';
 import countriesReducer from './slices/countriesSlice';

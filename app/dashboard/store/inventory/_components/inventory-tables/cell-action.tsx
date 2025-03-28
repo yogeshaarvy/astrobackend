@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { IInventory, deleteInventory } from '@/redux/slices/inventoriesSlice';
-import { IProducts } from '@/redux/slices/productSlice';
+import { IProducts } from '@/redux/slices/store/productSlice';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

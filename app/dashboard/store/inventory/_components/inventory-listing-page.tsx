@@ -5,7 +5,7 @@ import InventoryTable from './inventory-tables';
 import { fetchProductsList } from '@/redux/slices/inventoriesSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useSearchParams } from 'next/navigation';
-import { IProducts } from '@/redux/slices/productSlice';
+import { IProducts } from '@/redux/slices/store/productSlice';
 
 export default function InventoryListingPage() {
   const dispatch = useAppDispatch();

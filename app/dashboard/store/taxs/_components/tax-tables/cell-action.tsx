@@ -8,13 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { IProducts, deleteProducts } from '@/redux/slices/productSlice';
+import { ITax, deleteTax } from '@/redux/slices/taxsSlice';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 interface CellActionProps {
-  data: IProducts;
+  data: ITax;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -23,7 +23,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const onConfirm = async () => {
-    // dispatch(deleteProducts(data?._id || ''));
+    dispatch(deleteTax(data?._id || ''));
     setOpen(false);
   };
 
@@ -47,17 +47,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/products/edit?id=${data._id}`)
+              router.push(`/dashboard/store/taxs/edit?id=${data._id}`)
             }
           >
             <Edit className="mr-2 h-4 w-4" /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(`/dashboard/products/faq/productFaq?id=${data._id}`)
-            }
-          >
-            <Edit className="mr-2 h-4 w-4" /> Faq
           </DropdownMenuItem>
           {/* <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete

@@ -160,9 +160,19 @@ export const navItems: NavItem[] = [
         icon: 'categories'
       },
       {
+        title: 'Brands',
+        url: '/dashboard/store/brands',
+        icon: 'medal'
+      },
+      {
         title: 'Tags',
         url: '/dashboard/store/tags',
         icon: 'tag'
+      },
+      {
+        title: 'Tax',
+        url: '/dashboard/store/taxs',
+        icon: 'tax'
       },
       {
         title: 'Products',
@@ -226,6 +236,29 @@ export const navItems: NavItem[] = [
             icon: 'config'
           }
         ]
+      }
+    ]
+  },
+  {
+    title: 'Address',
+    url: '/dashboard/address',
+    icon: 'mapPinned',
+    isActive: false,
+    items: [
+      {
+        title: 'Cities',
+        url: '/dashboard/address/cities',
+        icon: 'city'
+      },
+      {
+        title: 'Countries',
+        url: '/dashboard/address/countries',
+        icon: 'earth'
+      },
+      {
+        title: 'States',
+        url: '/dashboard/address/states',
+        icon: 'mapHome'
       }
     ]
   },
@@ -333,29 +366,29 @@ export const navItems: NavItem[] = [
   {
     title: 'Kundli',
     url: '/dashboard/kundli',
-    icon: 'settings',
+    icon: 'atom',
     isActive: false,
     items: [
       {
         title: "FAQ's",
         url: '/dashboard/kundli/faq',
-        icon: 'general'
+        icon: 'tableContents'
       },
       {
         title: 'Testimonial',
         url: '/dashboard/kundli/testimonial',
-        icon: 'general'
+        icon: 'message'
       },
       {
         title: 'Other',
         url: '/dashboard/kundli/other',
-        icon: 'general',
+        icon: 'otherlist',
         isActive: false,
         items: [
           {
             title: 'Config',
             url: '/dashboard/kundli/other/config',
-            icon: 'general'
+            icon: 'config'
           }
         ]
       }

@@ -261,7 +261,7 @@ const Page = () => {
                     <CardTitle>Icon Images / Part's</CardTitle>
                   </CardHeader>
 
-                  <div className="space-y-2 p-6 pt-0 ">
+                  <div className="space-y-2 p-0 pt-0 ">
                     {/* Card 1 Image */}
                     <FormItem className="space-y-3">
                       <FormLabel>Icon 1 Image</FormLabel>
@@ -393,7 +393,7 @@ const Page = () => {
                     <TabsContent value="English">
                       <>
                         <CardContent className="space-y-2 p-0">
-                          <CardHeader className="flex flex-row">
+                          <CardHeader className="flex flex-row px-0">
                             <CardTitle>ICON-1-ENGLISH</CardTitle>
                           </CardHeader>
                           <div className="space-y-1">
@@ -405,7 +405,7 @@ const Page = () => {
                               onChange={handleInputChange}
                             />
                           </div>
-                          <CardHeader className="flex flex-row ">
+                          <CardHeader className="flex flex-row px-0">
                             <CardTitle>ICON-2-ENGLISH</CardTitle>
                           </CardHeader>
                           <div className="space-y-1">
@@ -417,7 +417,7 @@ const Page = () => {
                               onChange={handleInputChange}
                             />
                           </div>
-                          <CardHeader className="flex flex-row ">
+                          <CardHeader className="flex flex-row px-0">
                             <CardTitle>ICON-3-ENGLISH</CardTitle>
                           </CardHeader>
                           <div className="space-y-1">
@@ -436,7 +436,7 @@ const Page = () => {
                     <TabsContent value="Hindi">
                       <>
                         <CardContent className="space-y-2 p-0">
-                          <CardHeader className="flex flex-row ">
+                          <CardHeader className="flex flex-row px-0">
                             <CardTitle>ICON-1-HINDI</CardTitle>
                           </CardHeader>
                           <div className="space-y-1">
@@ -448,7 +448,7 @@ const Page = () => {
                               onChange={handleInputChange}
                             />
                           </div>
-                          <CardHeader className="flex flex-row ">
+                          <CardHeader className="flex flex-row px-0">
                             <CardTitle>ICON-2-HINDI</CardTitle>
                           </CardHeader>
                           <div className="space-y-1">
@@ -460,7 +460,7 @@ const Page = () => {
                               onChange={handleInputChange}
                             />
                           </div>
-                          <CardHeader className="flex flex-row ">
+                          <CardHeader className="flex flex-row px-0">
                             <CardTitle>ICON-3-HINDI</CardTitle>
                           </CardHeader>
                           <div className="space-y-1">

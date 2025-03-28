@@ -62,7 +62,14 @@ import {
   GalleryThumbnails,
   Church,
   NotepadTextDashed,
-  Tag
+  Tag,
+  Medal,
+  ReceiptIndianRupee,
+  Omega,
+  Atom,
+  Building2,
+  Earth,
+  MapPinHouseIcon
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -75,6 +82,11 @@ export const Icons = {
   tag: Tag,
   squareUser: SquareUser,
   goal: Goal,
+  tax: ReceiptIndianRupee,
+  medal: Medal,
+  city: Building2,
+  earth: Earth,
+  mapHome: MapPinHouseIcon,
   chartCandlestick: ChartCandlestick,
   categories: Library,
   basket: ShoppingBasket,
@@ -89,9 +101,11 @@ export const Icons = {
   temple: Church,
   config: Cog,
   notepadDash: NotepadTextDashed,
-
+  omega: Omega,
   home: House,
+  atom: Atom,
   list: LayoutList,
+  mapPinned: MapPinned,
   product: LucideShoppingBag,
   user: User,
   logo: Command,

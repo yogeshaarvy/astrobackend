@@ -70,7 +70,7 @@ export default function TaxForm() {
     dispatch(addEditTax(entityId || null))
       .then((response: any) => {
         if (response.payload.success) {
-          router.push('/dashboard/taxs');
+          router.push('/dashboard/store/taxs');
           toast.success(response.payload.message);
         }
       })

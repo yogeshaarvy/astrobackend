@@ -81,20 +81,8 @@ export default function BrandTable({
       header: 'NAME'
     },
     {
-      accessorKey: 'slug',
-      header: 'SLUG'
-    },
-    {
       accessorKey: 'sequence',
       header: 'SEQUENCE'
-    },
-    {
-      accessorKey: 'short_description',
-      header: 'SHORT DESCRIPTION'
-    },
-    {
-      accessorKey: 'long_description',
-      header: 'LONG DESCRIPTION'
     },
     {
       accessorKey: 'meta_title',
@@ -103,10 +91,6 @@ export default function BrandTable({
     {
       accessorKey: 'meta_tag',
       header: 'META TAG'
-    },
-    {
-      accessorKey: 'meta_description',
-      header: 'META DESCRIPTION'
     },
 
     {

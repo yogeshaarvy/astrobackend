@@ -5,7 +5,7 @@ import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { fetchProductsList } from '@/redux/slices/productSlice';
+import { fetchProductsList } from '@/redux/slices/store/productSlice';
 export const STATUS_OPTIONS = [
   { value: 'true', label: 'True' },
   { value: 'false', label: 'False' }

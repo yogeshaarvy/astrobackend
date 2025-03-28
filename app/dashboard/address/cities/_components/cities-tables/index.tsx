@@ -96,10 +96,6 @@ export default function CitiesTable({
       header: 'COUNTRY CODE'
     },
     {
-      accessorKey: 'latitide',
-      header: 'LATITUDE'
-    },
-    {
       accessorKey: 'longitude',
       header: 'LONGITUDE'
     },
@@ -108,7 +104,7 @@ export default function CitiesTable({
       header: 'FLAG'
     },
     {
-      accessorKey: ' wikiDataId',
+      accessorKey: 'wikiDataId',
       header: 'WIKIDATA'
     },
 
@@ -117,7 +113,8 @@ export default function CitiesTable({
       header: 'ACTIVE',
       cell: ({ row }) => {
         const handleToggle = async (checked: boolean) => {
-          const updatedData = { ...row.original, active: checked };          try {
+          const updatedData = { ...row.original, active: checked };
+          try {
             dispatch(updateCitiesData(updatedData));
             const result = await dispatch(
               addEditCities(row.original._id || null)

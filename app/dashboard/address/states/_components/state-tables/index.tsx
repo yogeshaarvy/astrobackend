@@ -80,22 +80,7 @@ export default function StateTable({
       accessorKey: 'name',
       header: 'NAME'
     },
-    {
-      accessorKey: 'iso2',
-      header: 'ISO2'
-    },
-    {
-      accessorKey: 'country_id',
-      header: 'COUNTRY NAME'
-    },
-    {
-      accessorKey: 'country_code',
-      header: 'COUNTRY CODE'
-    },
-    {
-      accessorKey: 'fips_code',
-      header: 'FIPS CODE'
-    },
+
     // {
     //   accessorKey: 'flag',
     //   header: 'FLAG'
@@ -105,7 +90,7 @@ export default function StateTable({
       header: 'FLAG'
     },
     {
-      accessorKey: ' wikiDataId',
+      accessorKey: 'wikiDataId',
       header: 'WIKIDATA'
     },
 

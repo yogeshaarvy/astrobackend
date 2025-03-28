@@ -11,7 +11,7 @@ import {
   IProducts,
   addEditProducts,
   fetchSingleProducts
-} from '@/redux/slices/productSlice';
+} from '@/redux/slices/store/productSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomTextField from '@/utils/CustomTextField';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -26,11 +26,11 @@ import { fetchTaxList } from '@/redux/slices/taxsSlice';
 import { fetchTagList } from '@/redux/slices/store/tagsSlice';
 import SimpleProductForm from '../_components/othercomponents/simpleproductsdrop';
 import StockmanagmentProductForm from './othercomponents/stockmanagement';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import Quill CSS
 import AttributesForm from './othercomponents/attributes';
 import VariationsForm from './othercomponents/variations';
 import CustomReactSelect from '@/utils/CustomReactSelect';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import CustomTextEditor from '@/utils/CustomTextEditor';
 
 export default function ProductsForm() {
   const router = useRouter();
@@ -71,6 +71,10 @@ export default function ProductsForm() {
     defaultValues: {
       name: '',
       slug: '',
+      title: {
+        en: '',
+        hi: ''
+      },
       model_no: '',
       main_image: '',
       other_image: [],
@@ -111,7 +115,10 @@ export default function ProductsForm() {
       sku: '',
       is_cod_allowed: false,
       // stock_management: false,
-      description: '',
+      description: {
+        en: '',
+        hi: ''
+      },
       stockManagement: {
         stock_management: false,
         stock_value: 0,
@@ -151,6 +158,7 @@ export default function ProductsForm() {
 
   const handleSaveSettings = () => {
     const formData = form.getValues(); // Get current form data
+    console.log('formdata is On', formData);
     const productype = formData.productype; // Get the product type
     const stockManagementEnabled = formData.stock_management;
     const stockManagementLevel = formData.stock_management_level;
@@ -330,7 +338,10 @@ export default function ProductsForm() {
       form.setValue('slug', pData?.slug || '');
       form.setValue('sequence', pData?.sequence || 0);
       form.setValue('categories', pData?.categories || []); // Set 'categories' as an array
-      form.setValue('manufacture', pData?.manufacture || '');
+      form.setValue('title.en', pData?.title?.en || '');
+      form.setValue('title.hi', pData?.title?.hi || '');
+      form.setValue('manufacture.en', pData?.manufacture?.en || '');
+      form.setValue('manufacture.hi', pData?.manufacture?.hi || '');
       form.setValue('meta_title', pData?.meta_title || '');
       form.setValue('meta_description', pData.meta_description || '');
       form.setValue('meta_tag', pData?.meta_tag || '');
@@ -351,7 +362,8 @@ export default function ProductsForm() {
       form.setValue('if_cancel', pData?.if_cancel || 'false');
       form.setValue('cancel_days', pData?.cancel_days || 0);
       form.setValue('videodata', pData?.videodata || '');
-      form.setValue('description', pData?.description || '');
+      form.setValue('description.en', pData?.description?.en || '');
+      form.setValue('description.hi', pData?.description?.hi || '');
       form.setValue('is_cod_allowed', pData?.is_cod_allowed || false); // Initialize the checkbox
 
       // Set initial state for images
@@ -410,13 +422,11 @@ export default function ProductsForm() {
     if (!madeIndata) missingFields.push('Made In');
     if (!data.meta_title) missingFields.push('Meta Title');
     if (!data.meta_description) missingFields.push('Meta Description');
-    if (!data.description) missingFields.push('Description');
     if (!data.meta_tag) missingFields.push('Meta Tag');
     if (!tagsdata) missingFields.push('Tags');
     if (!taxdata) missingFields.push('Tax');
     if (!data.hsn_code) missingFields.push('HSN Code');
     if (!data.sku) missingFields.push('SKU');
-    if (!data.manufacture) missingFields.push('Manufacture');
     if (!categoriesdata?.length) missingFields.push('Categories');
     if (!mainImage) missingFields.push('Main Image');
     // If any fields are missing, show an error message with the field names
@@ -599,229 +609,300 @@ export default function ProductsForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <CustomTextField
-                  name="name"
-                  control={form.control}
-                  label="Name*"
-                  placeholder="Enter name"
-                  value={(pData as IProducts)?.name}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  name="slug"
-                  control={form.control}
-                  label="Slug*"
-                  placeholder="Enter your Slug"
-                  value={form.getValues('slug')}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  name="manufacture"
-                  control={form.control}
-                  label="Manufacture*"
-                  placeholder="Enter manufacture"
-                  value={form.getValues('manufacture')}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  name="model_no"
-                  control={form.control}
-                  label="Model No.*"
-                  placeholder="Enter model number"
-                  value={(pData as IProducts)?.model_no}
-                  onChange={handleInputChange}
-                  type="text"
-                />
-                <CustomTextField
-                  name="meta_tag"
-                  control={form.control}
-                  label="Meta Tag*"
-                  placeholder="Enter your meta tag"
-                  value={(pData as IProducts)?.meta_tag}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  name="meta_description"
-                  control={form.control}
-                  label="Meta Description*"
-                  placeholder="Enter your meta description"
-                  value={(pData as IProducts)?.meta_description}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  label="Meta Title*"
-                  name="meta_title"
-                  control={form.control}
-                  placeholder="Enter meta title"
-                  onChange={handleInputChange}
-                  value={(pData as IProducts)?.meta_title}
-                />
-                <CustomTextField
-                  name="sequence"
-                  control={form.control}
-                  label="Sequence*"
-                  placeholder="Enter your sequence"
-                  value={(pData as IProducts)?.sequence}
-                  onChange={handleInputChange}
-                  type="number"
-                />
-                <CustomReactSelect
-                  options={brands}
-                  label="Brand Name*"
-                  getOptionLabel={(option) => option.name}
-                  getOptionValue={(option) => option._id}
-                  placeholder="Select Brand"
-                  onChange={(e: any) =>
-                    handleInputChange({
-                      target: { name: 'brand_name', value: e }
-                    })
-                  }
-                  value={(pData as IProducts)?.brand_name}
-                />
-
-                <CustomReactSelect
-                  options={canData}
-                  label="Made In*"
-                  getOptionLabel={(option) => option.name}
-                  getOptionValue={(option) => option._id}
-                  placeholder="Select Country"
-                  onChange={(e: any) =>
-                    handleInputChange({
-                      target: { name: 'madeIn', value: e }
-                    })
-                  }
-                  value={(pData as IProducts)?.madeIn}
-                />
-
-                <CustomReactSelect
-                  options={cData}
-                  isMulti
-                  label="Categories Testing*"
-                  getOptionLabel={(option) => option.name}
-                  getOptionValue={(option) => option._id}
-                  placeholder="Select Categories"
-                  onChange={(e: any) =>
-                    handleInputChange({
-                      target: { name: 'categories', value: e }
-                    })
-                  }
-                  value={(pData as IProducts)?.categories}
-                />
-                <CustomReactSelect
-                  options={tagData}
-                  label="Tags*"
-                  getOptionLabel={(option) => option.name}
-                  getOptionValue={(option) => option._id}
-                  placeholder="Select Tags"
-                  onChange={(e: any) =>
-                    handleInputChange({
-                      target: { name: 'tags', value: e }
-                    })
-                  }
-                  value={(pData as IProducts)?.tags}
-                />
-                <CustomReactSelect
-                  options={taxData}
-                  label="Tax*"
-                  getOptionLabel={(option) => option.name}
-                  getOptionValue={(option) => option._id}
-                  placeholder="Select Tax"
-                  onChange={(e: any) =>
-                    handleInputChange({
-                      target: { name: 'tax', value: e }
-                    })
-                  }
-                  value={(pData as IProducts)?.tax}
-                />
-
-                <CustomTextField
-                  label="HSN code*"
-                  name="hsn_code"
-                  control={form.control}
-                  placeholder="Enter HSN Code"
-                  onChange={handleInputChange}
-                  value={(pData as IProducts)?.hsn_code}
-                />
-                <CustomTextField
-                  label="SKU*"
-                  name="sku"
-                  control={form.control}
-                  placeholder="Enter SKU "
-                  onChange={handleInputChange}
-                  value={(pData as IProducts)?.sku}
-                />
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <CustomDropdown
-                    control={form.control}
-                    label="Is returnable "
-                    name="return_able"
-                    placeholder="Select is returnable"
-                    defaultValue="false"
-                    data={[
-                      { name: 'True', _id: 'true' },
-                      { name: 'false ', _id: 'false' }
-                    ]}
-                    loading={brandListLoading ?? false}
-                    // value={form.getValues('parent') || ''}
-                    value={(pData as IProducts)?.return_able}
-                    onChange={handleDropdownChange}
-                  />
-                  {form.getValues('return_able') === 'true' && (
-                    <CustomTextField
-                      label="Number of days"
-                      name="number_of_days"
-                      control={form.control}
-                      placeholder="Enter Number of days"
-                      onChange={handleInputChange}
-                      value={(pData as IProducts)?.number_of_days}
-                      type="number"
-                    />
-                  )}
-                </div>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <CustomDropdown
-                    control={form.control}
-                    label="If cancel "
-                    name="if_cancel"
-                    placeholder="Select if cancel"
-                    defaultValue="false"
-                    data={[
-                      { name: 'True', _id: 'true' },
-                      { name: 'false ', _id: 'false' }
-                    ]}
-                    loading={brandListLoading ?? false}
-                    // value={form.getValues('parent') || ''}
-                    value={(pData as IProducts)?.if_cancel}
-                    onChange={handleDropdownChange}
-                  />
-                  {form.getValues('if_cancel') === 'true' && (
-                    <CustomTextField
-                      label="Number of days"
-                      name="cancel_days"
-                      control={form.control}
-                      placeholder="Enter number of days"
-                      onChange={handleInputChange}
-                      value={(pData as IProducts)?.cancel_days}
-                      type="number"
-                    />
-                  )}
-                </div>
-                <div className="mb-4 flex items-center">
-                  <input
-                    id="cod-checkbox"
-                    type="checkbox"
-                    {...form.register('is_cod_allowed')} // Bind to react-hook-form
-                    className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                  />
-                  <label
-                    htmlFor="cod-checkbox"
-                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+              <Tabs defaultValue="English" className="mt-4 w-full">
+                <TabsList className="flex w-full space-x-2 p-0">
+                  <TabsTrigger
+                    value="English"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
                   >
-                    Is COD allowed?
-                  </label>
-                </div>
+                    English
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Hindi"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    Hindi
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="English">
+                  <CardHeader className="!px-0">
+                    <CardTitle className="text-lg font-bold ">
+                      ENGLISH-PRODUCT
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="title.en"
+                      label="Title*"
+                      placeholder="Enter title"
+                      value={(pData as IProducts)?.title?.en}
+                      onChange={handleInputChange}
+                    />
+
+                    <CustomTextField
+                      name="manufacture.en"
+                      label="Manufacture*"
+                      placeholder="Enter manufacture"
+                      value={(pData as IProducts)?.manufacture?.en}
+                      onChange={handleInputChange}
+                    />
+
+                    <CustomTextEditor
+                      name="description.en"
+                      label="Full Description"
+                      value={(pData as IProducts)?.description?.en}
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'description.en',
+                            value: value,
+                            type: 'text'
+                          }
+                        })
+                      }
+                    />
+                  </CardContent>
+                </TabsContent>
+
+                <TabsContent value="Hindi">
+                  <CardHeader className="!px-0">
+                    <CardTitle className="text-lg font-bold ">
+                      HINDI-PRODUCT
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="title.hi"
+                      label="Tilte*"
+                      placeholder="Enter Title"
+                      value={(pData as IProducts)?.title?.hi}
+                      onChange={handleInputChange}
+                    />
+
+                    <CustomTextField
+                      name="manufacture.hi"
+                      label="Manufacture*"
+                      placeholder="Enter manufacture"
+                      value={(pData as IProducts)?.manufacture?.hi}
+                      onChange={handleInputChange}
+                    />
+
+                    <CustomTextEditor
+                      name="description.hi"
+                      label="Full Description"
+                      value={(pData as IProducts)?.description?.hi}
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'description.hi',
+                            value: value,
+                            type: 'text'
+                          }
+                        })
+                      }
+                    />
+                  </CardContent>
+                </TabsContent>
+              </Tabs>
+
+              <CustomTextField
+                name="name"
+                label="Name*"
+                placeholder="Enter name"
+                value={(pData as IProducts)?.name}
+                onChange={handleInputChange}
+              />
+
+              <CustomTextField
+                name="model_no"
+                label="Model No.*"
+                placeholder="Enter model number"
+                value={(pData as IProducts)?.model_no}
+                onChange={handleInputChange}
+                type="text"
+              />
+              <CustomTextField
+                name="meta_tag"
+                label="Meta Tag*"
+                placeholder="Enter your meta tag"
+                value={(pData as IProducts)?.meta_tag}
+                onChange={handleInputChange}
+              />
+              <CustomTextField
+                name="meta_description"
+                label="Meta Description*"
+                placeholder="Enter your meta description"
+                value={(pData as IProducts)?.meta_description}
+                onChange={handleInputChange}
+              />
+              <CustomTextField
+                label="Meta Title*"
+                name="meta_title"
+                placeholder="Enter meta title"
+                onChange={handleInputChange}
+                value={(pData as IProducts)?.meta_title}
+              />
+              <CustomTextField
+                name="sequence"
+                label="Sequence*"
+                placeholder="Enter your sequence"
+                value={(pData as IProducts)?.sequence}
+                onChange={handleInputChange}
+                type="number"
+              />
+              <CustomReactSelect
+                options={brands}
+                label="Brand Name*"
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option._id}
+                placeholder="Select Brand"
+                onChange={(e: any) =>
+                  handleInputChange({
+                    target: { name: 'brand_name', value: e }
+                  })
+                }
+                value={(pData as IProducts)?.brand_name}
+              />
+
+              <CustomReactSelect
+                options={canData}
+                label="Made In*"
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option._id}
+                placeholder="Select Country"
+                onChange={(e: any) =>
+                  handleInputChange({
+                    target: { name: 'madeIn', value: e }
+                  })
+                }
+                value={(pData as IProducts)?.madeIn}
+              />
+
+              <CustomReactSelect
+                options={cData}
+                isMulti
+                label="Categories Testing*"
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option._id}
+                placeholder="Select Categories"
+                onChange={(e: any) =>
+                  handleInputChange({
+                    target: { name: 'categories', value: e }
+                  })
+                }
+                value={(pData as IProducts)?.categories}
+              />
+              <CustomReactSelect
+                options={tagData}
+                label="Tags*"
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option._id}
+                placeholder="Select Tags"
+                onChange={(e: any) =>
+                  handleInputChange({
+                    target: { name: 'tags', value: e }
+                  })
+                }
+                value={(pData as IProducts)?.tags}
+              />
+              <CustomReactSelect
+                options={taxData}
+                label="Tax*"
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option._id}
+                placeholder="Select Tax"
+                onChange={(e: any) =>
+                  handleInputChange({
+                    target: { name: 'tax', value: e }
+                  })
+                }
+                value={(pData as IProducts)?.tax}
+              />
+
+              <CustomTextField
+                label="HSN code*"
+                name="hsn_code"
+                placeholder="Enter HSN Code"
+                onChange={handleInputChange}
+                value={(pData as IProducts)?.hsn_code}
+              />
+              <CustomTextField
+                label="SKU*"
+                name="sku"
+                placeholder="Enter SKU "
+                onChange={handleInputChange}
+                value={(pData as IProducts)?.sku}
+              />
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <CustomDropdown
+                  control={form.control}
+                  label="Is returnable "
+                  name="return_able"
+                  placeholder="Select is returnable"
+                  defaultValue="false"
+                  data={[
+                    { name: 'True', _id: 'true' },
+                    { name: 'false ', _id: 'false' }
+                  ]}
+                  loading={brandListLoading ?? false}
+                  // value={form.getValues('parent') || ''}
+                  value={(pData as IProducts)?.return_able}
+                  onChange={handleDropdownChange}
+                />
+                {form.getValues('return_able') === 'true' && (
+                  <CustomTextField
+                    label="Number of days"
+                    name="number_of_days"
+                    placeholder="Enter Number of days"
+                    onChange={handleInputChange}
+                    value={(pData as IProducts)?.number_of_days}
+                    type="number"
+                  />
+                )}
               </div>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <CustomDropdown
+                  control={form.control}
+                  label="If cancel "
+                  name="if_cancel"
+                  placeholder="Select if cancel"
+                  defaultValue="false"
+                  data={[
+                    { name: 'True', _id: 'true' },
+                    { name: 'false ', _id: 'false' }
+                  ]}
+                  loading={brandListLoading ?? false}
+                  // value={form.getValues('parent') || ''}
+                  value={(pData as IProducts)?.if_cancel}
+                  onChange={handleDropdownChange}
+                />
+                {form.getValues('if_cancel') === 'true' && (
+                  <CustomTextField
+                    label="Number of days"
+                    name="cancel_days"
+                    placeholder="Enter number of days"
+                    onChange={handleInputChange}
+                    value={(pData as IProducts)?.cancel_days}
+                    type="number"
+                  />
+                )}
+              </div>
+              <div className="mb-4 flex items-center">
+                <input
+                  id="cod-checkbox"
+                  type="checkbox"
+                  {...form.register('is_cod_allowed')} // Bind to react-hook-form
+                  className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                />
+                <label
+                  htmlFor="cod-checkbox"
+                  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >
+                  Is COD allowed?
+                </label>
+              </div>
+
               {/* Main Image Uploader */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -940,7 +1021,6 @@ export default function ProductsForm() {
                   <CustomTextField
                     label=" Upload Video*"
                     name="videodata"
-                    control={form.control}
                     placeholder="Enter Vimeo video URL"
                     onChange={handleInputChange}
                     value={(pData as IProducts)?.videodata}
@@ -952,7 +1032,6 @@ export default function ProductsForm() {
                   <CustomTextField
                     label="Upload Video*"
                     name="videodata"
-                    control={form.control}
                     placeholder="Enter YouTube video URL"
                     onChange={handleInputChange}
                     value={(pData as IProducts)?.videodata}
@@ -981,7 +1060,6 @@ export default function ProductsForm() {
                   <CustomTextField
                     label="Maximum Order Value"
                     name="maxorder_value"
-                    control={form.control}
                     placeholder="Enter maximum order value"
                     onChange={handleInputChange}
                     value={(pData as IProducts)?.maxorder_value}
@@ -1009,7 +1087,6 @@ export default function ProductsForm() {
                   <CustomTextField
                     label="Minimum Order Value"
                     name="minorder_value"
-                    control={form.control}
                     placeholder="Enter minimum order value"
                     onChange={handleInputChange}
                     value={(pData as IProducts)?.minorder_value}
@@ -1142,7 +1219,7 @@ export default function ProductsForm() {
                   </div>
                 )}
 
-                {/* Quill Editor for Long Description */}
+                {/* Quill Editor for Long Description
                 <FormItem className="space-y-3">
                   <FormLabel>Description*</FormLabel>
                   <FormControl>
@@ -1162,7 +1239,7 @@ export default function ProductsForm() {
                       }}
                     />
                   </FormControl>
-                </FormItem>
+                </FormItem> */}
               </div>
               <Button type="submit">Submit</Button>
             </form>

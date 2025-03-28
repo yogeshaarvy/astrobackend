@@ -8,13 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { IBrand, deleteBrand, fetchBrandList } from '@/redux/slices/brandSlice';
+import { IProducts, deleteProducts } from '@/redux/slices/store/productSlice';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 interface CellActionProps {
-  data: IBrand;
+  data: IProducts;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -23,7 +23,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const onConfirm = async () => {
-    dispatch(deleteBrand(data?._id || ''));
+    // dispatch(deleteProducts(data?._id || ''));
     setOpen(false);
   };
 
@@ -46,9 +46,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/brands/edit?id=${data._id}`)}
+            onClick={() =>
+              router.push(`/dashboard/products/edit?id=${data._id}`)
+            }
           >
             <Edit className="mr-2 h-4 w-4" /> Update
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/dashboard/products/faq/productFaq?id=${data._id}`)
+            }
+          >
+            <Edit className="mr-2 h-4 w-4" /> Faq
           </DropdownMenuItem>
           {/* <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete

@@ -11,7 +11,7 @@ import CustomReactSelect from '@/utils/CustomReactSelect';
 import { fetchProductsList, IInventory } from '@/redux/slices/inventoriesSlice';
 import { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
-import { IProducts } from '@/redux/slices/productSlice';
+import { IProducts } from '@/redux/slices/store/productSlice';
 
 export default function InventoryTable({
   data,

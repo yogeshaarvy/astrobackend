@@ -11,7 +11,7 @@ import {
   addEditProducts,
   IProducts,
   updateProductsData
-} from '@/redux/slices/productSlice';
+} from '@/redux/slices/store/productSlice';
 import { useAppDispatch } from '@/redux/hooks';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
@@ -77,42 +77,13 @@ export default function ProductsTable({
     },
 
     {
-      accessorKey: 'name',
-      header: 'NAME'
-    },
-    {
-      accessorKey: 'slug',
-      header: 'SLUG'
+      accessorKey: 'title.en',
+      header: 'Title'
     },
     {
       accessorKey: 'model_no',
       header: 'MODEL NO.'
     },
-
-    {
-      accessorKey: 'manufacture',
-      header: 'MANUFACTURE'
-    },
-    {
-      accessorKey: 'meta_title',
-      header: 'META TITLE'
-    },
-    {
-      accessorKey: 'meta_tag',
-      header: 'META TAG'
-    },
-    {
-      accessorKey: 'meta_description',
-      header: 'META DESCRIPTION'
-    },
-    // {
-    //   accessorKey: 'price',
-    //   header: 'PRICE'
-    // },
-    // {
-    //   accessorKey: 'special_price',
-    //   header: 'SPECAIL PRICE'
-    // },
     {
       accessorKey: 'sequence',
       header: 'SEQUENCE'
@@ -123,17 +94,6 @@ export default function ProductsTable({
       cell: ({ row }) => {
         const typesNames = row.original?.name;
         return <span>{typesNames || 'No types'}</span>;
-      }
-    },
-
-    {
-      accessorKey: 'categories',
-      header: 'TYPES',
-      cell: ({ row }) => {
-        const categoriesNames = row.original?.categories
-          .map((e: any) => e?.name)
-          .join(', ');
-        return <span>{categoriesNames || 'No Category'}</span>;
       }
     },
 

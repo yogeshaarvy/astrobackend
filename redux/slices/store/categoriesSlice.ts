@@ -7,7 +7,8 @@ import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 export type ICategory = BaseModel & {
   _id?: string;
-  name?: {
+  name?: string;
+  title?: {
     en?: string;
     hi?: string;
   };
@@ -82,7 +83,7 @@ export const fetchCategoryList = createAsyncThunk<
         input || {};
       dispatch(fetchCategoryStart());
       const response = await fetchApi(
-        `/store/category/all?page=${page || 1}&limit=${pageSize || 10}&text=${
+        `/store/categories/all?page=${page || 1}&limit=${pageSize || 10}&text=${
           keyword || ''
         }&field=${field || ''}&active=${
           status || ''
@@ -129,7 +130,8 @@ export const addEditCategory = createAsyncThunk<
     // let childdata = (data?.child as ICategory) === 'yes' ? 1 : 0
     const formData = new FormData();
     const reqData: any = {
-      name: data.name ? JSON.stringify(data.name) : undefined,
+      name: data.name,
+      title: data.title ? JSON.stringify(data.title) : undefined,
       short_description: JSON.stringify(data.short_description),
       long_description: JSON.stringify(data.long_description),
       light_logo_image: data.light_logo_image,
@@ -163,12 +165,12 @@ export const addEditCategory = createAsyncThunk<
 
     let response;
     if (!entityId) {
-      response = await fetchApi('/store/category/new', {
+      response = await fetchApi('/store/categories/new', {
         method: 'POST',
         body: formData
       });
     } else {
-      response = await fetchApi(`/store/category/update/${entityId}`, {
+      response = await fetchApi(`/store/categories/update/${entityId}`, {
         method: 'PUT',
         body: formData
       });
@@ -197,11 +199,10 @@ export const fetchSingleCategory = createAsyncThunk<
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(fetchSingleCategoryStart());
-      const response = await fetchApi(`/store/category/${entityId}`, {
+      const response = await fetchApi(`/store/categories/${entityId}`, {
         method: 'GET'
       });
       if (response?.success) {
-        response.category.parent = response.category.parent._id;
         dispatch(fetchSingleCategorySuccess(response?.category));
         return response.category;
       } else {
@@ -224,7 +225,7 @@ export const deleteCategory = createAsyncThunk<
 >('category/delete', async (id, { dispatch }) => {
   dispatch(deleteCategoryStart());
   try {
-    const response = await fetchApi(`/store/category/delete/${id}`, {
+    const response = await fetchApi(`/store/categories/delete/${id}`, {
       method: 'DELETE'
     });
     if (response.success) {

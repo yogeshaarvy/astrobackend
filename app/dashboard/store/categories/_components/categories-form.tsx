@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormItem, FormLabel } from '@/components/ui/form';
-
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import PageContainer from '@/components/layout/page-container';
 import {
@@ -24,9 +23,6 @@ import {
 
 import { useEffect } from 'react';
 import slugify from 'slugify';
-
-import ReactQuill from 'react-quill'; // Import Quill
-import 'react-quill/dist/quill.snow.css'; // Import Quill CSS
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import CustomDropdown from '@/utils/CusomDropdown';
@@ -58,34 +54,7 @@ export default function CategoryForm() {
   const allCategories: ICategory[] = cData;
   const [files, setFiles] = React.useState<File[]>([]);
   const form = useForm<ICategory>({
-    defaultValues: {
-      name: {
-        en: '',
-        hi: ''
-      },
-      short_description: {
-        en: '',
-        hi: ''
-      },
-      long_description: {
-        en: '',
-        hi: ''
-      },
-      banner_image: '',
-      light_logo_image: '',
-      dark_logo_image: '',
-      meta_tag: '',
-      active: false,
-      sequence: 0,
-      meta_description: '',
-      meta_title: '',
-      slug: '',
-      child: '',
-      parent: '',
-      show_in_menu: false,
-      show_in_home: false,
-      tags: ''
-    }
+    defaultValues: {}
   });
   useEffect(() => {
     if (entityId) {
@@ -119,65 +88,18 @@ export default function CategoryForm() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (bData && entityId) {
-      // const {name, email, phone, countryCode, password, bio , role , permissionType} = bData;
-      form.setValue('name.en', (bData as ICategory)?.name?.en || '');
-      form.setValue(
-        'short_description.en',
-        (bData as ICategory)?.short_description?.en || ''
-      );
-      form.setValue(
-        'long_description.en',
-        (bData as ICategory)?.long_description?.en || ''
-      );
-      form.setValue('name.hi', (bData as ICategory)?.name?.hi || '');
-      form.setValue(
-        'short_description.hi',
-        (bData as ICategory)?.short_description?.en || ''
-      );
-      form.setValue(
-        'long_description.hi',
-        (bData as ICategory)?.long_description?.hi || ''
-      );
-      form.setValue('slug', (bData as ICategory)?.slug || '');
-      form.setValue('sequence', (bData as ICategory)?.sequence || 0);
-      form.setValue('child', (bData as ICategory)?.child || '');
-      form.setValue('parent', (bData as ICategory)?.parent || '');
-      form.setValue('meta_title', (bData as ICategory)?.meta_title ?? '');
-      form.setValue('tags', (bData as ICategory)?.tags ?? '');
-      form.setValue(
-        'meta_description',
-        (bData as ICategory)?.meta_description || ''
-      );
-      form.setValue('meta_tag', (bData as ICategory)?.meta_tag || '');
-      form.setValue(
-        'light_logo_image',
-        (bData as ICategory)?.light_logo_image || ''
-      );
-      form.setValue(
-        'dark_logo_image',
-        (bData as ICategory)?.dark_logo_image || ''
-      );
-      form.setValue('banner_image', (bData as ICategory)?.banner_image || '');
-      form.setValue('show_in_menu', (bData as ICategory)?.show_in_menu);
-      form.setValue('show_in_home', (bData as ICategory)?.show_in_home);
+    if (!entityId) {
+      const name = (bData as ICategory)?.name;
+      if (name) {
+        const generatedSlug = slugify(name, {
+          lower: true,
+          strict: true,
+          trim: true
+        });
+        dispatch(updateCategoryData({ ['name']: generatedSlug }));
+      }
     }
-  }, [bData, entityId, form]);
-
-  React.useEffect(() => {
-    const name = form.watch('name.en'); // Watch for changes in the 'name' field
-
-    if (name) {
-      const generatedSlug = slugify(name, {
-        lower: true, // Converts to lowercase
-        strict: true, // Removes special characters
-        trim: true // Trims whitespace
-      });
-
-      form.setValue('slug', generatedSlug);
-      dispatch(updateCategoryData({ ['slug']: generatedSlug })); // Set the generated slug value
-    }
-  }, [form.watch('name.en'), form]);
+  }, [(bData as ICategory)?.title, entityId]);
 
   //handle dropdon input changes
   const handleDropdownChange = (e: any) => {
@@ -191,7 +113,7 @@ export default function CategoryForm() {
   // Handle Input Change
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-
+    console.log('name is coming', name, value);
     dispatch(
       updateCategoryData({
         [name]:
@@ -229,7 +151,7 @@ export default function CategoryForm() {
     )
       .then((response) => {
         if (response.payload.success) {
-          router.push('/dashboard/store/categories');
+          // router.push('/dashboard/store/categories');
           toast.success(response.payload.message);
         }
       })
@@ -273,11 +195,11 @@ export default function CategoryForm() {
                   </CardHeader>
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
-                      name="name.en"
+                      name="title.en"
                       // control={form.control}
                       label="Name"
                       placeholder="Enter your name"
-                      value={(bData as ICategory)?.name?.en}
+                      value={(bData as ICategory)?.title?.en}
                       onChange={handleInputChange}
                     />
 
@@ -310,16 +232,16 @@ export default function CategoryForm() {
                 <TabsContent value="Hindi">
                   <CardHeader className="!px-0">
                     <CardTitle className="text-lg font-bold ">
-                      ENGLISH-CATEGORIES
+                      HINDI-CATEGORIES
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
-                      name="name.hi"
+                      name="title.hi"
                       // control={form.control}
                       label="Name"
                       placeholder="Enter your name"
-                      value={(bData as ICategory)?.name?.hi}
+                      value={(bData as ICategory)?.title?.hi}
                       onChange={handleInputChange}
                     />
 
@@ -351,11 +273,19 @@ export default function CategoryForm() {
               </Tabs>
 
               <CustomTextField
+                name="name"
+                // control={form.control}
+                label="Name"
+                placeholder="Enter your Slug"
+                value={(bData as ICategory)?.name}
+                onChange={handleInputChange}
+              />
+              <CustomTextField
                 name="slug"
                 // control={form.control}
                 label="Slug"
                 placeholder="Enter your Slug"
-                value={form.getValues('slug')}
+                value={(bData as ICategory)?.slug}
                 onChange={handleInputChange}
               />
               <CustomTextField
@@ -382,19 +312,6 @@ export default function CategoryForm() {
                 onChange={handleDropdownChange}
               />
               {form.getValues('child') === 'yes' && (
-                // <CustomReactSelect
-                //   options={allCategories}
-                //   label="Parent"
-                //   getOptionLabel={(option) => option.name}
-                //   getOptionValue={(option) => option._id}
-                //   placeholder="Select Parent"
-                //   onChange={(e: any) =>
-                //     handleInputChange({
-                //       target: { name: 'parent', value: e }
-                //     })
-                //   }
-                //   value={(bData as ICategory)?.parent}
-                // />
                 <CustomDropdown
                   control={form.control}
                   label="Parent"

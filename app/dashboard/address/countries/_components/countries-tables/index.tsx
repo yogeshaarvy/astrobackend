@@ -56,38 +56,12 @@ export default function CountriesTable({
       enableSorting: false,
       enableHiding: false
     },
-    {
-      id: 'select',
-      header: ({ table }) =>
-        // <Checkbox
-        //   checked={table.getIsAllPageRowsSelected()}
-        //   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        //   aria-label="Select all"
-        // />
-        '',
-      cell: ({ row }) =>
-        // <Checkbox
-        //   checked={row.getIsSelected()}
-        //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-        //   aria-label="Select row"
-        // />
-        '',
-      enableSorting: false,
-      enableHiding: false
-    },
 
     {
       accessorKey: 'name',
       header: 'NAME'
     },
-    {
-      accessorKey: 'iso3',
-      header: 'ISO3'
-    },
-    {
-      accessorKey: 'iso2',
-      header: 'ISO2'
-    },
+
     {
       accessorKey: 'phonecode',
       header: 'PHONE CODE'
@@ -96,46 +70,9 @@ export default function CountriesTable({
       accessorKey: 'capital',
       header: 'CAPITAL'
     },
-
-    // {
-    //   accessorKey: 'currency',
-    //   header: 'CURRENCY',
-    //   cell: ({ row }) => {
-    //     const handleToggle = async (checked: boolean) => {
-    //       const updatedData = { ...row.original, active: checked };
-    //       try {
-    //         dispatch(updateTypesData(updatedData));
-    //         const result = await dispatch(
-    //           addEditTypes(row.original._id || null)
-    //         ).unwrap();
-    //         toast.success('Status Updated Successfully!');
-    //       } catch (error: any) {
-    //         console.error('Error updating brand status:', error);
-    //         toast.error('Failed to Update Status');
-    //       }
-    //     }
-
-    //     return (
-    //       <Switch
-    //         checked={row.original.active}
-    //         onCheckedChange={handleToggle}
-    //         aria-label="Toggle Active Status"
-    //       />
-    //     );
-    //   }
-    // },
-    // {
-    //   header: 'ACTIONS',
-    //   id: 'actions',
-    //   cell: ({ row }) => <CellAction data={row.original} />
-    // }
     {
       accessorKey: 'currency',
       header: 'CURRENCY'
-    },
-    {
-      accessorKey: 'native',
-      header: 'NATIVE'
     }
   ];
   return (
