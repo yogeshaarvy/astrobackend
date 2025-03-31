@@ -54,8 +54,8 @@ export const fetchCountriesList = createAsyncThunk<
     page?: number;
     pageSize?: number;
     keyword?: string;
-    field: string;
-    status: string;
+    field?: string;
+    status?: string;
     exportData?: string;
   } | void,
   { state: RootState }
@@ -92,7 +92,7 @@ export const fetchCountriesList = createAsyncThunk<
     return response;
   } catch (error: any) {
     const errorMsg = error?.message ?? 'Something Went Wrong!!';
-    dispatch(fetchFailure(errorMsg));
+    dispatch(fetchTypesFailure(errorMsg));
     return rejectWithValue(errorMsg);
   }
 });
@@ -171,12 +171,12 @@ export const fetchSingleCountries = createAsyncThunk<
   'types/getsinglecountry',
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
-      dispatch(fetchSingleCountryStart());
+      dispatch(fetchSingleTypesStart());
       const response = await fetchApi(`/filtertypes/single/${entityId}`, {
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleCountrySuccess(response?.filterTypesdata));
+        dispatch(fetchSingleTypesSuccess(response?.filterTypesdata));
         return response;
       } else {
         let errorMsg = response?.data?.message || 'Something Went Wrong';

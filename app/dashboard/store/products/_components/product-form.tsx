@@ -1,46 +1,57 @@
 'use client';
-import * as React from 'react';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormItem, FormLabel } from '@/components/ui/form';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import PageContainer from '@/components/layout/page-container';
+import { Button } from '@/components/ui/button';
 import {
-  updateProductsData,
-  setProductsData,
-  IProducts,
-  addEditProducts,
-  fetchSingleProducts
-} from '@/redux/slices/store/productSlice';
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  addEditProducts,
+  fetchSingleProducts,
+  IProducts,
+  updateProductsData
+} from '@/redux/slices/store/productSlice';
+import CustomReactSelect from '@/utils/CustomReactSelect';
+import { fetchBrandList, IBrand } from '@/redux/slices/brandSlice';
+import CustomTextEditor from '@/utils/CustomTextEditor';
 import CustomTextField from '@/utils/CustomTextField';
 import { useRouter, useSearchParams } from 'next/navigation';
-
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import slugify from 'slugify';
-import CustomDropdown from '@/utils/CusomDropdown';
-import { fetchBrandList, IBrand } from '@/redux/slices/brandSlice';
-import { fetchCategoryList } from '@/redux/slices/store/categoriesSlice';
+import { useEffect, useState } from 'react';
 import { fetchCountriesList } from '@/redux/slices/countriesSlice';
-import { fetchTaxList } from '@/redux/slices/taxsSlice';
 import { fetchTagList } from '@/redux/slices/store/tagsSlice';
-import SimpleProductForm from '../_components/othercomponents/simpleproductsdrop';
-import StockmanagmentProductForm from './othercomponents/stockmanagement';
-import AttributesForm from './othercomponents/attributes';
-import VariationsForm from './othercomponents/variations';
-import CustomReactSelect from '@/utils/CustomReactSelect';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import CustomTextEditor from '@/utils/CustomTextEditor';
+import { fetchTaxList } from '@/redux/slices/taxsSlice';
+import { fetchCategoryList } from '@/redux/slices/store/categoriesSlice';
+import CustomDropdown from '@/utils/CusomDropdown';
+import { Switch } from '@/components/ui/switch';
 
 export default function ProductsForm() {
   const router = useRouter();
   const params = useSearchParams();
   const entityId = params?.get('id');
   const dispatch = useAppDispatch();
+
+  const [mainImage, setMainImage] = useState<File | null>(null);
+  const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
+  const [secondMainImage, setSecondMainImage] = useState<File | null>(null);
+  const [secondMainImagePreview, setSecondMainImagePreview] = useState<
+    string | null
+  >(null);
+  const [otherImages, setOtherImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoFileName, setVideoFileName] = useState<string | null>(null);
+
   const {
     singleProductsState: { loading, data: pData }
   } = useAppSelector((state) => state.productsdata);
-
   const {
     categoryListState: { loading: categoryListLoading, data: cData = [] }
   } = useAppSelector((state) => state.category);
@@ -50,16 +61,9 @@ export default function ProductsForm() {
   const {
     taxListState: { loading: taxListLoading, data: taxData = [] }
   } = useAppSelector((state) => state.taxsdata);
-
-  const [attributes, setAttributes] = React.useState<
-    { type: string; values: string[] }[]
-  >([]);
-  // This will handle saving the selected attributes from AttributesForm
-  const handleSaveAttributes = (
-    newAttributes: { type: any; values: string[] }[]
-  ) => {
-    setAttributes(newAttributes); // Store the selected attributes (type + values) in the parent
-  };
+  const {
+    brandListState: { loading: brandListLoading, data: bData = [] }
+  } = useAppSelector((state) => state.brand);
   const {
     countriesListState: {
       loading: countryListLoading,
@@ -67,220 +71,21 @@ export default function ProductsForm() {
       pagination: { totalCount }
     }
   } = useAppSelector((state) => state.countries);
-  const form = useForm<IProducts>({
-    defaultValues: {
-      name: '',
-      slug: '',
-      title: {
-        en: '',
-        hi: ''
-      },
-      model_no: '',
-      main_image: '',
-      other_image: [],
-      brand_name: '',
-      sequence: 0,
-      price: 0,
-      special_price: 0,
-      // filtertypes: [],
-      // filtervalues: [],
-      categories: [],
-      active: false,
-      meta_tag: '',
-      meta_description: '',
-      meta_title: '',
-      madeIn: '',
-      productype: '',
-      simpleProduct: {
-        price: 0,
-        special_price: 0,
-        weight: 0,
-        height: 0,
-        breadth: 0,
-        length: 0
-      },
-      videotype: '',
-      tax: '',
-      tags: '',
-      maxorder: '',
-      maxorder_value: 0,
-      minorder: '',
-      minorder_value: 0,
-      hsn_code: '',
-      return_able: '',
-      number_of_days: 0,
-      if_cancel: '',
-      cancel_days: 0,
-      videodata: '',
-      sku: '',
-      is_cod_allowed: false,
-      // stock_management: false,
-      description: {
-        en: '',
-        hi: ''
-      },
-      stockManagement: {
-        stock_management: false,
-        stock_value: 0,
-        // sku: '',
-        stock_status: 'true',
-        stock_management_level: ''
-      }
-    }
+
+  const form = useForm({
+    defaultValues: {}
   });
 
-  const [otherImages, setOtherImages] = React.useState<File[]>([]); // State for storing selected images
-  const [imagePreviews, setImagePreviews] = React.useState<string[]>([]); // State for image previews
-  const [mainImage, setMainImage] = React.useState<File | null>(null);
-  const [mainImagePreview, setMainImagePreview] = React.useState<string | null>(
-    null
-  );
-  const [videoFile, setVideoFile] = React.useState<File | null>(null);
-  const [videoFileName, setVideoFileName] = React.useState<string | null>(null);
-
-  const [activeTab, setActiveTab] = React.useState('general'); // Default to 'General'
-
-  const [tabsEnabled, setTabsEnabled] = React.useState({
-    general: true, // "General" is always enabled
-    attribute: false, // Initially disabled
-    variations: false // Initially disabled
-  });
-  const [generalTabData, setGeneralTabData] = React.useState({});
-  // State to track whether settings are saved
-  const [settingsSaved, setSettingsSaved] = React.useState(false); // State to store data specific to the "Additional Information" section
-
-  const [variations, setVariations] = React.useState<any[]>([]); // State to store variations data
-  const handleTabChange = (tab: any) => {
-    if (tabsEnabled[tab]) {
-      setActiveTab(tab);
+  useEffect(() => {
+    if (entityId) {
+      dispatch(fetchSingleProducts(entityId));
     }
-  };
+  }, [entityId]);
 
-  const handleSaveSettings = () => {
-    const formData = form.getValues(); // Get current form data
-    console.log('formdata is On', formData);
-    const productype = formData.productype; // Get the product type
-    const stockManagementEnabled = formData.stock_management;
-    const stockManagementLevel = formData.stock_management_level;
-    let requiredFields: string[] = [];
-
-    // Validation: Ensure Simple Product Fields are filled if product type is "simpleproduct"
-    if (productype === 'simpleproduct') {
-      requiredFields = [
-        'price',
-        'special_price',
-        'weight',
-        'height',
-        'breadth',
-        'length'
-      ];
-      // Additional required fields if stock management is enabled
-      if (stockManagementEnabled) {
-        requiredFields.push('stock_value');
-      }
-    }
-    // Required field for Variable Product if stock management is enabled
-    if (productype === 'variableproduct' && stockManagementEnabled) {
-      requiredFields.push('stock_management_level');
-    }
-    // If stock management level is "product_level", require stock_value and stock_status
-    if (stockManagementLevel === 'product_level') {
-      requiredFields.push('stock_value');
-    }
-    const missingFields = requiredFields.filter(
-      (field) => !formData[field] // Check for empty or undefined fields
-    );
-
-    if (missingFields.length > 0) {
-      toast.error(`Missing  fields required: ${missingFields.join(', ')}`);
-      return;
-    }
-    const extractedData: Partial<IProducts> = {
-      productype,
-      simpleProduct:
-        productype === 'simpleproduct'
-          ? {
-              price: formData?.price,
-              special_price: formData?.special_price,
-              weight: formData?.weight,
-              height: formData?.height,
-              breadth: formData?.breadth,
-              length: formData?.length
-            }
-          : {}, // Only save Simple Product Fields if the product type is "simpleproduct"
-      stockManagement: {
-        stock_management: formData.stock_management,
-        stock_value: formData.stock_value,
-        // sku: formData.sku,
-        stock_status: formData.stock_status,
-        stock_management_level: formData.stock_management_level
-      }
-    };
-    if (activeTab === 'general') {
-      setGeneralTabData(extractedData); // Save data specific to General tab
-    }
-
-    // Enable the "Attribute" and "Variations" tabs after saving settings
-    setTabsEnabled((prev) => ({
-      ...prev,
-      attribute: true,
-      variations: true
-    }));
-    // Mark settings as saved
-    setSettingsSaved(true);
-
-    toast.success('Settings saved successfully!');
-  };
-
-  // Handle input change for multiple images
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setOtherImages((prev) => [...prev, ...files]);
-
-    // Generate image previews
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prev) => [...prev, ...newPreviews]);
-  };
-  // Remove an image from the list
-  const handleRemoveImage = (index: number) => {
-    setOtherImages((prev) => prev.filter((_, i) => i !== index));
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  // Handle Single Image Upload
-  const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setMainImage(file);
-    setMainImagePreview(file ? URL.createObjectURL(file) : null);
-  };
-
-  // Remove Main Image
-  const handleRemoveMainImage = () => {
-    setMainImage(null);
-    setMainImagePreview(null);
-  };
-
-  // Handle Video File Upload
-  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setVideoFile(file);
-    setVideoFileName(file?.name || null);
-  };
-
-  // Remove Video File
-  const handleRemoveVideoFile = () => {
-    setVideoFile(null);
-    setVideoFileName(null);
-  };
-
-  const {
-    brandListState: { loading: brandListLoading, data: bData = [] }
-  } = useAppSelector((state) => state.brand);
-
+  const brands: IBrand[] = bData;
   const page = 1;
   const pageSize = 100000;
-
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(fetchCountriesList({ page, pageSize }));
     dispatch(
       fetchTagList({
@@ -324,70 +129,71 @@ export default function ProductsForm() {
         entityId: ''
       })
     );
-  }, [dispatch]); // Ensure this is run only once when the component
+  }, [dispatch]);
 
-  React.useEffect(() => {
-    if (entityId) {
-      dispatch(fetchSingleProducts(entityId));
-    }
-  }, [entityId]);
+  // Handle Single Image Upload
+  const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setMainImage(file);
+    setMainImagePreview(file ? URL.createObjectURL(file) : null);
+  };
 
-  React.useEffect(() => {
-    if (pData && entityId) {
-      form.setValue('name', pData?.name || '');
-      form.setValue('slug', pData?.slug || '');
-      form.setValue('sequence', pData?.sequence || 0);
-      form.setValue('categories', pData?.categories || []); // Set 'categories' as an array
-      form.setValue('title.en', pData?.title?.en || '');
-      form.setValue('title.hi', pData?.title?.hi || '');
-      form.setValue('manufacture.en', pData?.manufacture?.en || '');
-      form.setValue('manufacture.hi', pData?.manufacture?.hi || '');
-      form.setValue('meta_title', pData?.meta_title || '');
-      form.setValue('meta_description', pData.meta_description || '');
-      form.setValue('meta_tag', pData?.meta_tag || '');
-      form.setValue('brand_name', pData?.brand_name || '');
-      form.setValue('madeIn', pData?.madeIn || '');
-      form.setValue('productype', pData?.productype || '');
-      form.setValue('videotype', pData?.videotype || '');
-      form.setValue('tags', pData?.tags || '');
-      form.setValue('tax', pData?.tax || '');
-      form.setValue('maxorder', pData?.maxorder || 'false');
-      form.setValue('minorder', pData?.minorder || 'false');
-      form.setValue('minorder_value', pData?.maxorder_value || 0);
-      form.setValue('maxorder_value', pData?.maxorder_value || 0);
-      form.setValue('hsn_code', pData?.hsn_code || '');
-      form.setValue('sku', pData?.sku || '');
-      form.setValue('return_able', pData?.return_able || 'false');
-      form.setValue('number_of_days', pData?.number_of_days || 0);
-      form.setValue('if_cancel', pData?.if_cancel || 'false');
-      form.setValue('cancel_days', pData?.cancel_days || 0);
-      form.setValue('videodata', pData?.videodata || '');
-      form.setValue('description.en', pData?.description?.en || '');
-      form.setValue('description.hi', pData?.description?.hi || '');
-      form.setValue('is_cod_allowed', pData?.is_cod_allowed || false); // Initialize the checkbox
+  // Remove Main Image
+  const handleRemoveMainImage = () => {
+    setMainImage(null);
+    setMainImagePreview(null);
+  };
 
-      // Set initial state for images
-      setMainImagePreview(pData?.main_image || null);
-      setOtherImages(pData?.other_image || []);
-      setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
-      setSettingsSaved(true);
-      setTabsEnabled((prev) => ({
-        ...prev,
-        attribute: true,
-        variations: true
-      }));
-    }
-  }, [pData, entityId, form]);
+  const handleSecondMainImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0] || null;
+    setSecondMainImage(file);
+    setSecondMainImagePreview(file ? URL.createObjectURL(file) : null);
+  };
 
-  // Handle Input Change
+  // Remove Second Main Image
+  const handleRemoveSecondMainImage = () => {
+    setSecondMainImage(null);
+    setSecondMainImagePreview(null);
+  };
+
+  // Handle input change for multiple images
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setOtherImages((prev) => [...prev, ...files]);
+
+    // Generate image previews
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
+  };
+  // Remove an image from the list
+  const handleRemoveImage = (index: number) => {
+    setOtherImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle Video File Upload
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setVideoFile(file);
+    setVideoFileName(file?.name || null);
+  };
+
+  const handleDropdownChange = (e: any) => {
+    const { name, value } = e;
+    dispatch(
+      updateProductsData({ [name]: value }) // .then(handleReduxResponse());
+    );
+  };
+
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-
     dispatch(
       updateProductsData({
         [name]:
           type === 'file'
-            ? files?.[0]
+            ? files[0]
             : type === 'checkbox'
             ? checked
             : type === 'number'
@@ -397,205 +203,20 @@ export default function ProductsForm() {
     );
   };
 
-  // Handle variations change
-  const handleVariationsChange = (newVariations: any[]) => {
-    setVariations(newVariations);
-  };
-
-  const onSubmit = (data: any) => {
-    // Validate required fields
-    let missingFields: string[] = [];
-
-    let categoriesdata =
-      data.categories?.length > 0 ? data.categories : pData?.categories ?? [];
-    let brand_namedata = data.brand_name || pData?.brand_name || ''; // Retain brand
-    let madeIndata = data.madeIn || pData?.madeIn || ''; // Retain madeIn
-    let tagsdata = data.tags || pData?.tags || ''; // Retain tag
-    let taxdata = data.tax || pData?.tax || ''; // Retain tag
-
-    // Check required fields and add their names to missingFields array if missing
-    if (!data.name) missingFields.push('Name');
-    if (!data.slug) missingFields.push('Slug');
-    if (!data.model_no) missingFields.push('Model Number');
-    if (!data.productype) missingFields.push('Product Type');
-    if (!brand_namedata) missingFields.push('Brand Name');
-    if (!madeIndata) missingFields.push('Made In');
-    if (!data.meta_title) missingFields.push('Meta Title');
-    if (!data.meta_description) missingFields.push('Meta Description');
-    if (!data.meta_tag) missingFields.push('Meta Tag');
-    if (!tagsdata) missingFields.push('Tags');
-    if (!taxdata) missingFields.push('Tax');
-    if (!data.hsn_code) missingFields.push('HSN Code');
-    if (!data.sku) missingFields.push('SKU');
-    if (!categoriesdata?.length) missingFields.push('Categories');
-    if (!mainImage) missingFields.push('Main Image');
-    // If any fields are missing, show an error message with the field names
-    if (missingFields.length > 0) {
-      toast.error(
-        `The following fields are required: ${missingFields.join(', ')}`
-      );
+  const handleSubmit = () => {
+    if (!cData) {
+      toast.error('Please fill in the required fields.');
       return;
     }
 
-    // If product type is variable, ensure at least one attribute is selected
-    if (
-      data.productype === 'variableproduct' &&
-      (!attributes || attributes.length === 0)
-    ) {
-      toast.error('At least one attribute is required for variable products');
-      return;
-    }
-    // Validate video data if videotype is selected
-    if (data.videotype && !data.videodata) {
-      toast.error('Video data is required when video type is selected');
-      return;
-    }
-    // Validate video data based on videotype
-    if (data.videotype) {
-      if (data.videotype === 'selfhosted' && !videoFile) {
-        toast.error('Video file is required for self-hosted videos');
-        return;
-      } else if (data.videotype !== 'selfhosted' && !data.videodata) {
-        toast.error('Video data is required when video type is selected');
-        return;
+    dispatch(addEditProducts(null)).then((response: any) => {
+      if (!response?.error) {
+        router.push('/dashboard/store/products');
+        toast.success(response?.payload?.message);
+      } else {
+        toast.error(response.payload);
       }
-    }
-    //valide varitions required
-    if (variations?.length > 0) {
-      let isValid = true;
-      let variationErrors: string[] = [];
-
-      variations.forEach((variation, index) => {
-        let missingVariationFields: string[] = [];
-
-        if (!variation.price) missingVariationFields.push('Price');
-        if (!variation.special_price)
-          missingVariationFields.push('Special Price');
-        if (!variation.weight) missingVariationFields.push('Weight');
-        if (!variation.height) missingVariationFields.push('Height');
-        if (!variation.breadth) missingVariationFields.push('Breadth');
-        if (!variation.length) missingVariationFields.push('Length');
-        if (!variation.sku) missingVariationFields.push('SKU');
-
-        if (
-          generalTabData?.stockManagement?.stock_management_level ===
-          'variable_level'
-        ) {
-          if (!variation.totalStock) missingVariationFields.push('Total Stock');
-          if (!variation.stock_status)
-            missingVariationFields.push('Stock Status');
-        }
-
-        if (missingVariationFields.length > 0) {
-          isValid = false;
-          variationErrors.push(
-            `Variation ${index + 1}: ${missingVariationFields.join(', ')}`
-          );
-        }
-      });
-
-      if (!isValid) {
-        toast.error(
-          `Please fill in the required fields for variations:\n${variationErrors.join(
-            '\n'
-          )}`
-        );
-        return;
-      }
-    }
-
-    //   variations.forEach((variation, index) => {
-    //     if (
-    //       !variation.price ||
-    //       !variation.special_price ||
-    //       !variation.weight ||
-    //       !variation.height ||
-    //       !variation.breadth ||
-    //       !variation.length
-    //     ) {
-    //       isValid = false;
-    //     }
-
-    //     if (
-    //       generalTabData?.stockManagement?.stock_management_level ===
-    //       'variable_level'
-    //     ) {
-    //       if (!variation.totalStock) {
-    //         isValid = false;
-    //       }
-    //     }
-    //   });
-
-    //   if (!isValid) {
-    //     toast.error('All variation fields are required!');
-    //     return;
-    //   }
-    // }
-
-    const finalVideoData =
-      data.videotype === 'selfmadevideo' ? videoFile : data.videodata; // Use videodata from the form for Vimeo/YouTube
-
-    let finalVariations = variations;
-    if (data.productype === 'simpleproduct') {
-      finalVariations = [
-        {
-          ...generalTabData?.simpleProduct,
-          values: [] // Add any necessary values here
-        }
-      ];
-    }
-    const attributesToSave = attributes.map((attr: any) => ({
-      type: attr?.type?._id,
-      values: attr?.values.map((value: any) => value?._id)
-    }));
-    dispatch(
-      updateProductsData({
-        ...(pData ?? {}), // Ensure pData is not null
-        ...data, // Override with new values
-        brand_name: brand_namedata, // Retain brand
-        madeIn: madeIndata, // Retain madeIn
-        tags: tagsdata, // Retain tag
-        tax: taxdata, // Retain tag
-        categories: categoriesdata,
-        variations: JSON.stringify(finalVariations), // Stringify variations data
-        main_image: mainImage ?? '',
-        videodata: finalVideoData ?? '',
-        attributes: JSON.stringify(attributesToSave), // Send only IDs to API
-        other_image: otherImages ?? [], // Add selected images to form data
-        stockManagement: generalTabData?.stockManagement
-      })
-    );
-
-    dispatch(addEditProducts(entityId || null))
-      .then((response: any) => {
-        if (response.payload.success) {
-          // router.push('/dashboard/products');
-          toast.success(response.payload.message);
-        }
-      })
-      .catch((err: any) => toast.error('Error:', err));
-  };
-  React.useEffect(() => {
-    const name = form.watch('name'); // Watch for changes in the 'name' field
-    if (name) {
-      const generatedSlug = slugify(name, {
-        lower: true, // Converts to lowercase
-        strict: true, // Removes special characters
-        trim: true // Trims whitespace
-      });
-
-      form.setValue('slug', generatedSlug);
-      dispatch(updateProductsData({ ['slug']: generatedSlug })); // Set the generated slug value
-    }
-  }, [form.watch('name'), form]);
-  const brands: IBrand[] = bData;
-  //handle dropdon input changes
-  const handleDropdownChange = (e: any) => {
-    const { name, value } = e;
-
-    dispatch(
-      updateProductsData({ [name]: value }) // .then(handleReduxResponse());
-    );
+    });
   };
 
   return (
@@ -608,7 +229,10 @@ export default function ProductsForm() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
               <Tabs defaultValue="English" className="mt-4 w-full">
                 <TabsList className="flex w-full space-x-2 p-0">
                   <TabsTrigger
@@ -778,11 +402,10 @@ export default function ProductsForm() {
                 }
                 value={(pData as IProducts)?.madeIn}
               />
-
               <CustomReactSelect
                 options={cData}
                 isMulti
-                label="Categories Testing*"
+                label="Categories*"
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Categories"
@@ -819,7 +442,6 @@ export default function ProductsForm() {
                 }
                 value={(pData as IProducts)?.tax}
               />
-
               <CustomTextField
                 label="HSN code*"
                 name="hsn_code"
@@ -836,21 +458,26 @@ export default function ProductsForm() {
               />
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomDropdown
-                  control={form.control}
-                  label="Is returnable "
+                  // control={form.control}
+                  label="Is Return"
                   name="return_able"
-                  placeholder="Select is returnable"
-                  defaultValue="false"
+                  required={true}
+                  value={(pData as IProducts)?.return_able}
+                  defaultValue={(pData as IProducts)?.return_able || 'false'}
                   data={[
                     { name: 'True', _id: 'true' },
-                    { name: 'false ', _id: 'false' }
+                    { name: 'False', _id: 'false' }
                   ]}
-                  loading={brandListLoading ?? false}
-                  // value={form.getValues('parent') || ''}
-                  value={(pData as IProducts)?.return_able}
-                  onChange={handleDropdownChange}
+                  onChange={(value) =>
+                    handleInputChange({
+                      target: {
+                        name: 'return_able',
+                        value: value.value
+                      }
+                    })
+                  }
                 />
-                {form.getValues('return_able') === 'true' && (
+                {(pData as IProducts)?.return_able && (
                   <CustomTextField
                     label="Number of days"
                     name="number_of_days"
@@ -863,47 +490,54 @@ export default function ProductsForm() {
               </div>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomDropdown
-                  control={form.control}
-                  label="If cancel "
+                  // control={form.control}
+                  label="Is Cancle"
                   name="if_cancel"
-                  placeholder="Select if cancel"
-                  defaultValue="false"
+                  required={true}
+                  value={(pData as IProducts)?.if_cancel}
+                  defaultValue={(pData as IProducts)?.if_cancel || 'false'}
                   data={[
                     { name: 'True', _id: 'true' },
-                    { name: 'false ', _id: 'false' }
+                    { name: 'False', _id: 'false' }
                   ]}
-                  loading={brandListLoading ?? false}
-                  // value={form.getValues('parent') || ''}
-                  value={(pData as IProducts)?.if_cancel}
-                  onChange={handleDropdownChange}
+                  onChange={(value) =>
+                    handleInputChange({
+                      target: {
+                        name: 'if_cancel',
+                        value: value.value
+                      }
+                    })
+                  }
                 />
-                {form.getValues('if_cancel') === 'true' && (
+                {(pData as IProducts)?.if_cancel && (
                   <CustomTextField
-                    label="Number of days"
+                    label="Number Of Days"
                     name="cancel_days"
-                    placeholder="Enter number of days"
+                    placeholder="Enter Number of days"
                     onChange={handleInputChange}
                     value={(pData as IProducts)?.cancel_days}
                     type="number"
                   />
                 )}
               </div>
-              <div className="mb-4 flex items-center">
-                <input
-                  id="cod-checkbox"
-                  type="checkbox"
-                  {...form.register('is_cod_allowed')} // Bind to react-hook-form
-                  className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+              <div className="flex items-center gap-3">
+                <CardTitle>Is COD Available?</CardTitle>
+                <Switch
+                  className="!m-0"
+                  checked={(pData as IProducts)?.is_cod_allowed}
+                  // onCheckedChange={handleToggle}
+                  onCheckedChange={(checked: any) =>
+                    handleInputChange({
+                      target: {
+                        type: 'checkbox',
+                        name: 'is_cod_allowed',
+                        checked
+                      }
+                    })
+                  }
+                  aria-label="Toggle Active Status"
                 />
-                <label
-                  htmlFor="cod-checkbox"
-                  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Is COD allowed?
-                </label>
               </div>
-
-              {/* Main Image Uploader */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Main Image*
@@ -938,8 +572,40 @@ export default function ProductsForm() {
                   </div>
                 )}
               </div>
-              {/* Multiple Image Upload */}
-
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Second Main Image*
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSecondMainImageUpload}
+                  className="file:bg-black-100 hover:file:bg-black-100 block text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-500"
+                />
+                {secondMainImagePreview && (
+                  <div
+                    className="relative mt-4"
+                    style={{
+                      display: 'flex',
+                      right: '650px',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    <img
+                      src={secondMainImagePreview}
+                      alt="Main Preview"
+                      className="h-32 w-32 rounded-md border object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveSecondMainImage}
+                      className="absolute right-0 top-0 rounded-full bg-white p-1 text-red-500 shadow-md"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Upload Other Images
@@ -970,28 +636,30 @@ export default function ProductsForm() {
                   ))}
                 </div>
               </div>
-
-              {/* uploade video */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomDropdown
-                  control={form.control}
-                  label="Video Type "
+                  label="Video Type"
                   name="videotype"
-                  placeholder="Select Video Type"
-                  defaultValue="none"
+                  // placeholder="Select Video Type"
+                  required={true}
+                  value={(pData as IProducts)?.videotype}
+                  defaultValue={(pData as IProducts)?.videotype || 'none'}
                   data={[
                     { name: 'None', _id: 'none' },
                     { name: 'Self Hosted', _id: 'selfmadevideo' },
                     { name: 'Vimeo ', _id: 'vimeovideo' },
                     { name: 'YouTube', _id: 'youtubvideo' }
                   ]}
-                  loading={brandListLoading ?? false}
-                  // value={form.getValues('parent') || ''}
-                  value={(pData as IProducts)?.videotype}
-                  onChange={handleDropdownChange}
+                  onChange={(value) =>
+                    handleInputChange({
+                      target: {
+                        name: 'videotype',
+                        value: value.value
+                      }
+                    })
+                  }
                 />
-                {/* Conditional UI based on the selected video type */}
-                {form.getValues('videotype') === 'selfmadevideo' && (
+                {(pData as IProducts)?.videotype === 'selfmadevideo' && (
                   <div>
                     <label className="mt-2 block text-sm font-medium text-gray-700">
                       Upload Video*
@@ -1005,19 +673,11 @@ export default function ProductsForm() {
                     {videoFileName && (
                       <div className="mt-2">
                         <p className="text-sm text-gray-700">{videoFileName}</p>
-                        {/* <button
-                          type="button"
-                          onClick={handleRemoveVideoFile}
-                          className="mt-1 text-red-500 underline"
-                        >
-                          Remove Video File
-                        </button> */}
                       </div>
                     )}
                   </div>
                 )}
-
-                {form.getValues('videotype') === 'vimeovideo' && (
+                {(pData as IProducts)?.videotype === 'vimeovideo' && (
                   <CustomTextField
                     label=" Upload Video*"
                     name="videodata"
@@ -1027,8 +687,7 @@ export default function ProductsForm() {
                     type="url"
                   />
                 )}
-
-                {form.getValues('videotype') === 'youtubvideo' && (
+                {(pData as IProducts)?.videotype === 'youtubvideo' && (
                   <CustomTextField
                     label="Upload Video*"
                     name="videodata"
@@ -1039,24 +698,27 @@ export default function ProductsForm() {
                   />
                 )}
               </div>
-
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomDropdown
-                  control={form.control}
-                  label="Maximum Order "
+                  label="Maximum Order"
                   name="maxorder"
-                  placeholder="Select Maximum Order"
-                  defaultValue="false"
+                  required={true}
+                  value={(pData as IProducts)?.maxorder}
+                  defaultValue={(pData as IProducts)?.maxorder || 'false'}
                   data={[
                     { name: 'True', _id: 'true' },
-                    { name: 'false ', _id: 'false' }
+                    { name: 'False', _id: 'false' }
                   ]}
-                  loading={brandListLoading ?? false}
-                  // value={form.getValues('parent') || ''}
-                  value={(pData as IProducts)?.maxorder}
-                  onChange={handleDropdownChange}
+                  onChange={(value) =>
+                    handleInputChange({
+                      target: {
+                        name: 'maxorder',
+                        value: value.value
+                      }
+                    })
+                  }
                 />
-                {form.getValues('maxorder') === 'true' && (
+                {(pData as IProducts)?.maxorder && (
                   <CustomTextField
                     label="Maximum Order Value"
                     name="maxorder_value"
@@ -1069,182 +731,177 @@ export default function ProductsForm() {
               </div>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomDropdown
-                  control={form.control}
-                  label="Minimum Order "
+                  label="Minimum Order"
                   name="minorder"
-                  placeholder="Select Minimum Order"
-                  defaultValue="false"
+                  required={true}
+                  value={(pData as IProducts)?.minorder}
+                  defaultValue={(pData as IProducts)?.minorder || 'false'}
                   data={[
                     { name: 'True', _id: 'true' },
-                    { name: 'false ', _id: 'false' }
+                    { name: 'False', _id: 'false' }
                   ]}
-                  loading={brandListLoading ?? false}
-                  // value={form.getValues('parent') || ''}
-                  value={(pData as IProducts)?.minorder}
-                  onChange={handleDropdownChange}
+                  onChange={(value) =>
+                    handleInputChange({
+                      target: {
+                        name: 'minorder',
+                        value: value.value
+                      }
+                    })
+                  }
                 />
-                {form.getValues('minorder') === 'true' && (
+                {(pData as IProducts)?.minorder && (
                   <CustomTextField
                     label="Minimum Order Value"
                     name="minorder_value"
-                    placeholder="Enter minimum order value"
+                    placeholder="Enter maximum order value"
                     onChange={handleInputChange}
                     value={(pData as IProducts)?.minorder_value}
                     type="number"
                   />
                 )}
               </div>
-              <div className="">
-                <h4 className="py-2">Additional Info</h4>
 
-                {/* Tab Buttons */}
-                <div className="inline-flex rounded-md shadow-sm" role="group">
-                  <button
-                    type="button"
-                    onClick={() => handleTabChange('general')}
-                    className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                      activeTab === 'general'
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                    }`}
-                  >
-                    General
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleTabChange('attribute')}
-                    disabled={!tabsEnabled.attribute}
-                    className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                      tabsEnabled.attribute
-                        ? activeTab === 'attribute'
+              {/* Testing */}
+
+              {/* <div className="">
+                  <h4 className="py-2">Additional Info</h4>
+                  <div className="inline-flex rounded-md shadow-sm" role="group">
+                    <button
+                      type="button"
+                      onClick={() => handleTabChange('general')}
+                      className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                        activeTab === 'general'
                           ? 'bg-gray-900 text-white'
                           : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                        : 'cursor-not-allowed bg-transparent text-gray-500'
-                    }`}
-                  >
-                    Attribute
-                  </button>
-                  {form.getValues('productype') === 'variableproduct' &&
-                    tabsEnabled.variations && (
-                      <button
-                        type="button"
-                        onClick={() => handleTabChange('variations')}
-                        disabled={!tabsEnabled.variations}
-                        className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                          tabsEnabled.variations
-                            ? activeTab === 'variations'
-                              ? 'bg-gray-900 text-white'
-                              : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                            : 'cursor-not-allowed bg-transparent text-gray-500'
-                        }`}
-                      >
-                        Variations
-                      </button>
-                    )}
-                </div>
-                {activeTab === 'general' && (
-                  <>
-                    <CustomDropdown
-                      control={form.control}
-                      label="Type of Product*"
-                      name="productype"
-                      placeholder="Select product type"
-                      defaultValue="default"
-                      data={[
-                        { name: 'Simple Product', _id: 'simpleproduct' },
-                        { name: 'Variable Product', _id: 'variableproduct' }
-                      ]}
-                      loading={brandListLoading ?? false}
-                      value={
-                        (pData as IProducts)?.productype ||
-                        form.getValues('productype')
-                      }
-                      onChange={handleDropdownChange}
-                      disabled={settingsSaved} // Disable dropdown if settings are saved
-                    />
+                      }`}
+                    >
+                      General
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleTabChange('attribute')}
+                      disabled={!tabsEnabled.attribute}
+                      className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                        tabsEnabled.attribute
+                          ? activeTab === 'attribute'
+                            ? 'bg-gray-900 text-white'
+                            : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
+                          : 'cursor-not-allowed bg-transparent text-gray-500'
+                      }`}
+                    >
+                      Attribute
+                    </button>
+                    {form.getValues('productype') === 'variableproduct' &&
+                      tabsEnabled.variations && (
+                        <button
+                          type="button"
+                          onClick={() => handleTabChange('variations')}
+                          disabled={!tabsEnabled.variations}
+                          className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                            tabsEnabled.variations
+                              ? activeTab === 'variations'
+                                ? 'bg-gray-900 text-white'
+                                : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
+                              : 'cursor-not-allowed bg-transparent text-gray-500'
+                          }`}
+                        >
+                          Variations
+                        </button>
+                      )}
+                  </div>
+                  {activeTab === 'general' && (
+                    <>
+                      <CustomDropdown
+                        control={form.control}
+                        label="Type of Product*"
+                        name="productype"
+                        placeholder="Select product type"
+                        defaultValue="default"
+                        data={[
+                          { name: 'Simple Product', _id: 'simpleproduct' },
+                          { name: 'Variable Product', _id: 'variableproduct' }
+                        ]}
+                        loading={brandListLoading ?? false}
+                        value={
+                          (pData as IProducts)?.productype ||
+                          form.getValues('productype')
+                        }
+                        onChange={handleDropdownChange}
+                        disabled={settingsSaved} // Disable dropdown if settings are saved
+                      />
 
-                    {/* Render SimpleProductForm if productype is 'simpleproduct' */}
-                    {form.getValues('productype') === 'simpleproduct' && (
-                      <SimpleProductForm
-                        handleInputChange={handleInputChange}
-                        disabled={settingsSaved}
-                        entityId={entityId}
+                     
+                      {form.getValues('productype') === 'simpleproduct' && (
+                        <SimpleProductForm
+                          handleInputChange={handleInputChange}
+                          disabled={settingsSaved}
+                          entityId={entityId}
+                          pData={pData}
+                        />
+                      )}
+
+                      
+                      {(form.getValues('productype') === 'simpleproduct' ||
+                        form.getValues('productype') === 'variableproduct') && (
+                        <StockmanagmentProductForm
+                          handleInputChange={handleInputChange}
+                          handleDropdownChange={handleDropdownChange}
+                          producttype={form.getValues('productype')}
+                          disabled={settingsSaved}
+                        />
+                      )}
+                      {(form.getValues('productype') === 'simpleproduct' ||
+                        form.getValues('productype') === 'variableproduct') && (
+                        <Button
+                          type="button"
+                          onClick={handleSaveSettings}
+                          className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
+                          disabled={settingsSaved} // Disable button if settings are saved
+                        >
+                          Save Settings
+                        </Button>
+                      )}
+                    </>
+                  )}
+                  {activeTab === 'attribute' && (
+                    <div className="mt-4">
+                      <AttributesForm
+                        onSaveAttributes={handleSaveAttributes}
                         pData={pData}
                       />
-                    )}
-
-                    {/* Render StockmanagmentProductForm for both product type */}
-                    {(form.getValues('productype') === 'simpleproduct' ||
-                      form.getValues('productype') === 'variableproduct') && (
-                      <StockmanagmentProductForm
+                    </div>
+                  )}
+                  {activeTab === 'variations' && (
+                    <div className="mt-4">
+                      <VariationsForm
+                        newAttributes={attributes}
+                        stockmanagemet={
+                          generalTabData?.stockManagement
+                            ?.stock_management_level || ''
+                        }
                         handleInputChange={handleInputChange}
-                        handleDropdownChange={handleDropdownChange}
-                        producttype={form.getValues('productype')}
-                        disabled={settingsSaved}
+                        onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
+                        pData={pData}
                       />
-                    )}
-                    {(form.getValues('productype') === 'simpleproduct' ||
-                      form.getValues('productype') === 'variableproduct') && (
-                      <Button
-                        type="button"
-                        onClick={handleSaveSettings}
-                        className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
-                        disabled={settingsSaved} // Disable button if settings are saved
-                      >
-                        Save Settings
-                      </Button>
-                    )}
-                  </>
-                )}
-                {activeTab === 'attribute' && (
-                  <div className="mt-4">
-                    <AttributesForm
-                      onSaveAttributes={handleSaveAttributes}
-                      pData={pData}
-                    />
-                  </div>
-                )}
-                {activeTab === 'variations' && (
-                  <div className="mt-4">
-                    <VariationsForm
-                      newAttributes={attributes}
-                      stockmanagemet={
-                        generalTabData?.stockManagement
-                          ?.stock_management_level || ''
-                      }
-                      handleInputChange={handleInputChange}
-                      onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
-                      pData={pData}
-                    />
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div> */}
 
-                {/* Quill Editor for Long Description
-                <FormItem className="space-y-3">
-                  <FormLabel>Description*</FormLabel>
-                  <FormControl>
-                    <ReactQuill
-                      value={form.getValues('description')}
-                      onChange={(value) => form.setValue('description', value)}
-                      placeholder="Enter product description"
-                      modules={{
-                        toolbar: [
-                          [{ header: '1' }, { header: '2' }, { font: [] }],
-                          [{ list: 'ordered' }, { list: 'bullet' }],
-                          ['bold', 'italic', 'underline'],
-                          ['link'],
-                          [{ align: [] }],
-                          ['image']
-                        ]
-                      }}
-                    />
-                  </FormControl>
-                </FormItem> */}
-              </div>
-              <Button type="submit">Submit</Button>
+              {/* testing Close  */}
             </form>
           </Form>
         </CardContent>
+        <CardFooter
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '1rem'
+          }}
+        >
+          <Button type="submit" onClick={() => handleSubmit()}>
+            Submit
+          </Button>
+        </CardFooter>
       </Card>
     </PageContainer>
   );
