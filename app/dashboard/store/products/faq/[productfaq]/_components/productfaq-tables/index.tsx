@@ -19,13 +19,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { ISliders } from '@/redux/slices/slidersSlice';
 import { updateSlidersData, addEditSliders } from '@/redux/slices/slidersSlice';
-import { CellAction } from '@/app/dashboard/products/faq/[productfaq]/_components/productfaq-tables/cell-action';
 import { addEditFaq, IFaq, updateFaqData } from '@/redux/slices/faqSlice';
 import {
   addEditproductFaq,
   IProductFaq,
   updateproductFaqData
 } from '@/redux/slices/productFaqSlice';
+import { CellAction } from './cell-action';
 
 export default function ProductFaqTable({
   data,
