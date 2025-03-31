@@ -58,12 +58,12 @@ export type IProducts = BaseModel & {
   videotype?: any;
   tax?: any;
   tags?: any;
-  maxorder?: string;
+  maxorder?: boolean;
   maxorder_value?: number;
   minorder?: string;
   minorder_value?: number;
   hsn_code?: string;
-  return_able?: string;
+  return_able?: boolean;
   number_of_days?: number;
   if_cancel?: string;
   cancel_days?: number;
@@ -131,7 +131,7 @@ export const fetchProductsList = createAsyncThunk<
 
       dispatch(fetchProductsStart());
       const response = await fetchApi(
-        `/products/all?page=${page || 1}&limit=${pageSize || 10}&text=${
+        `/store/products/all?page=${page || 1}&limit=${pageSize || 10}&text=${
           keyword || ''
         }&field=${field || ''}&active=${status || ''}&exportData=${exportData}`,
         { method: 'GET' }
@@ -179,13 +179,19 @@ export const addEditProducts = createAsyncThunk<
 
     const reqData: any = {
       name: data.name,
+      title: data.title ? JSON.stringify(data.title) : undefined,
+      description: data.description
+        ? JSON.stringify(data.description)
+        : undefined,
+      manufacture: data.manufacture
+        ? JSON.stringify(data.manufacture)
+        : undefined,
       slug: data.slug,
       active: data.active,
       sequence: data.sequence,
       model_no: data.model_no,
       main_image: data.main_image,
       second_main_image: data.second_main_image,
-      manufacture: data.manufacture,
       meta_tag: data.meta_tag,
       meta_description: data.meta_description,
       meta_title: data.meta_title,
@@ -203,7 +209,7 @@ export const addEditProducts = createAsyncThunk<
       if_cancel: data.if_cancel,
       cancel_days: data.cancel_days,
       is_cod_allowed: data.is_cod_allowed,
-      description: data.description,
+
       sku: data.sku,
       tax:
         typeof data?.tax === 'object' && data?.tax !== null
@@ -251,12 +257,12 @@ export const addEditProducts = createAsyncThunk<
 
     let response;
     if (!entityId) {
-      response = await fetchApi('/products/new', {
+      response = await fetchApi('/store/products/new', {
         method: 'POST',
         body: formData
       });
     } else {
-      response = await fetchApi(`/products/update/${entityId}`, {
+      response = await fetchApi(`/store/products/update/${entityId}`, {
         method: 'PUT',
         body: formData
       });
@@ -287,7 +293,7 @@ export const fetchSingleProducts = createAsyncThunk<
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(fetchSingleProductsStart());
-      const response = await fetchApi(`/products/${entityId}`, {
+      const response = await fetchApi(`/store/products/${entityId}`, {
         method: 'GET'
       });
       if (response?.success) {
@@ -313,7 +319,7 @@ export const deleteProducts = createAsyncThunk<
 >('product/delete', async (id, { dispatch }) => {
   dispatch(deleteProductsStart());
   try {
-    const response = await fetchApi(`/products/delete/${id}`, {
+    const response = await fetchApi(`/store/products/delete/${id}`, {
       method: 'DELETE'
     });
     if (response.success) {
@@ -358,8 +364,10 @@ const productsSlice = createSlice({
     },
     updateProductsData(state, action) {
       const oldData = state.singleProductsState.data;
-      const keyFirst = Object.keys(action.payload)[0];
 
+      console.log('The oldData value is:', oldData);
+      const keyFirst = Object.keys(action.payload)[0];
+      console.log('The keyFirst value is:', keyFirst);
       if (keyFirst.includes('.')) {
         const newData = { ...oldData };
         setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
