@@ -211,7 +211,82 @@ export default function ProductsForm() {
     setAttributes(newAttributes);
   };
 
-  const handleSaveSettings = (e: any) => {};
+  const handleSaveSettings = () => {
+    const formData = pData; // Get current form data
+    console.log('formData in handle Save Setting', formData);
+    const productype = formData?.productype; // Get the product type
+    const stockManagementEnabled = formData?.stockManagement;
+    const stockManagementLevel =
+      formData?.stockManagement?.stock_management_level;
+    let requiredFields: string[] = [];
+
+    // Validation: Ensure Simple Product Fields are filled if product type is "simpleproduct"
+    if (productype === 'simpleproduct') {
+      requiredFields = [
+        'price',
+        'special_price',
+        'weight',
+        'height',
+        'breadth',
+        'length'
+      ];
+      // Additional required fields if stock management is enabled
+      if (stockManagementEnabled) {
+        requiredFields.push('stock_value');
+      }
+    }
+    // Required field for Variable Product if stock management is enabled
+    if (productype === 'variableproduct' && stockManagementEnabled) {
+      requiredFields.push('stock_management_level');
+    }
+    // If stock management level is "product_level", require stock_value and stock_status
+    if (stockManagementLevel === 'product_level') {
+      requiredFields.push('stock_value');
+    }
+    const missingFields = requiredFields.filter(
+      (field) => !formData[field] // Check for empty or undefined fields
+    );
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing  fields required: ${missingFields.join(', ')}`);
+      return;
+    }
+    const extractedData: Partial<IProducts> = {
+      productype,
+      simpleProduct:
+        productype === 'simpleproduct'
+          ? {
+              price: formData?.price,
+              special_price: formData?.special_price,
+              weight: formData?.weight,
+              height: formData?.height,
+              breadth: formData?.breadth,
+              length: formData?.length
+            }
+          : {}, // Only save Simple Product Fields if the product type is "simpleproduct"
+      stockManagement: {
+        stockManagement: formData?.stockManagement,
+        stock_value: formData?.stockManagement?.stock_value,
+        stock_status: formData?.stock_status,
+        stock_management_level:
+          formData?.stockManagement?.stock_management_level
+      }
+    };
+    if (activeTab === 'general') {
+      setGeneralTabData(extractedData); // Save data specific to General tab
+    }
+
+    // Enable the "Attribute" and "Variations" tabs after saving settings
+    setTabsEnabled((prev) => ({
+      ...prev,
+      attribute: true,
+      variations: true
+    }));
+    // Mark settings as saved
+    setSettingsSaved(true);
+
+    toast.success('Settings saved successfully!');
+  };
 
   const handleTabChange = (tab: keyof TabsState) => {
     if (tabsEnabled[tab]) {
@@ -228,6 +303,8 @@ export default function ProductsForm() {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
+
+    console.log('name, vlaue', name, value);
     dispatch(
       updateProductsData({
         [name]:
@@ -242,11 +319,178 @@ export default function ProductsForm() {
     );
   };
 
-  const handleSubmit = () => {
-    if (!cData) {
-      toast.error('Please fill in the required fields.');
+  const handleSubmit = async () => {
+    // Validate required fields
+    let missingFields: string[] = [];
+    let categoriesdata =
+      pData?.categories?.length > 0
+        ? pData?.categories
+        : pData?.categories ?? [];
+    let brand_namedata = pData?.brand_name || pData?.brand_name || ''; // Retain brand
+    let madeIndata = pData?.madeIn || pData?.madeIn || ''; // Retain madeIn
+    let tagsdata = pData?.tags || pData?.tags || ''; // Retain tag
+    let taxdata = pData?.tax || pData?.tax || ''; // Retain tag
+    // Check required fields and add their names to missingFields array if missing
+    if (!pData?.name) missingFields.push('Name');
+    if (!pData?.model_no) missingFields.push('Model Number');
+    if (!pData?.productype) missingFields.push('Product Type');
+    if (!brand_namedata) missingFields.push('Brand Name');
+    if (!madeIndata) missingFields.push('Made In');
+    if (!pData?.meta_title) missingFields.push('Meta Title');
+    if (!pData?.meta_description) missingFields.push('Meta Description');
+    if (!pData?.description) missingFields.push('Description');
+    if (!pData?.meta_tag) missingFields.push('Meta Tag');
+    if (!tagsdata) missingFields.push('Tags');
+    if (!taxdata) missingFields.push('Tax');
+    if (!pData?.hsn_code) missingFields.push('HSN Code');
+    if (!pData?.sku) missingFields.push('SKU');
+    if (!pData?.manufacture) missingFields.push('Manufacture');
+    if (!categoriesdata?.length) missingFields.push('Categories');
+    // if (!mainImage) missingFields.push('Main Image');
+    // if (!secondMainImage) missingFields.push('Second Main Image');
+    // If any fields are missing, show an error message with the field names
+    if (missingFields.length > 0) {
+      toast.error(
+        `The following fields are required: ${missingFields.join(', ')}`
+      );
       return;
     }
+    // If product type is variable, ensure at least one attribute is selected
+    if (
+      pData?.productype === 'variableproduct' &&
+      (!attributes || attributes.length === 0)
+    ) {
+      toast.error('At least one attribute is required for variable products');
+      return;
+    }
+    // Validate video pData? if videotype is selected
+    if (pData?.videotype && !pData?.videodata) {
+      toast.error('Video pData? is required when video type is selected');
+      return;
+    }
+    // Validate video pData? based on videotype
+    if (pData?.videotype) {
+      if (pData?.videotype === 'selfhosted' && !videoFile) {
+        toast.error('Video file is required for self-hosted videos');
+        return;
+      } else if (pData?.videotype !== 'selfhosted' && !pData?.videodata) {
+        toast.error('Video pData? is required when video type is selected');
+        return;
+      }
+    }
+    //valide varitions required
+    if (variations?.length > 0) {
+      let isValid = true;
+      let variationErrors: string[] = [];
+
+      variations.forEach((variation, index) => {
+        let missingVariationFields: string[] = [];
+
+        if (!variation.price) missingVariationFields.push('Price');
+        if (!variation.special_price)
+          missingVariationFields.push('Special Price');
+        if (!variation.weight) missingVariationFields.push('Weight');
+        if (!variation.height) missingVariationFields.push('Height');
+        if (!variation.breadth) missingVariationFields.push('Breadth');
+        if (!variation.length) missingVariationFields.push('Length');
+        if (!variation.sku) missingVariationFields.push('SKU');
+        if (!variation.image) missingVariationFields.push('Image');
+
+        if (
+          generalTabData?.stockManagement?.stock_management_level ===
+          'variable_level'
+        ) {
+          if (!variation.totalStock) missingVariationFields.push('Total Stock');
+          if (!variation.stock_status)
+            missingVariationFields.push('Stock Status');
+        }
+
+        if (missingVariationFields.length > 0) {
+          isValid = false;
+          variationErrors.push(
+            `Variation ${index + 1}: ${missingVariationFields.join(', ')}`
+          );
+        }
+      });
+
+      if (!isValid) {
+        toast.error(
+          `Please fill in the required fields for variations:\n${variationErrors.join(
+            '\n'
+          )}`
+        );
+        return;
+      }
+    }
+
+    const finalVideoData =
+      pData?.videotype === 'selfmadevideo' ? videoFile : pData?.videodata; // Use videodata from the form for Vimeo/YouTube
+
+    let finalVariations = variations;
+    if (pData?.productype === 'simpleproduct') {
+      finalVariations = [
+        {
+          ...generalTabData?.simpleProduct,
+          values: [] // Add any necessary values here
+        }
+      ];
+    }
+    const uploadImageAndUpdate = async () => {
+      for (let i = 0; i < finalVariations.length; i++) {
+        const item = finalVariations[i];
+        const formData = new FormData();
+
+        if (item.image) {
+          const fileType = item?.image?.type?.startsWith('image/')
+            ? 'imagefile'
+            : item?.image?.type?.startsWith('audio/')
+            ? 'audiofile'
+            : 'file';
+
+          formData.append(fileType, item?.image);
+
+          try {
+            const response = await fetchApi('/files', {
+              method: 'POST',
+              body: formData
+            });
+
+            // Update the finalVariations array with the response pData?
+            finalVariations[i] = {
+              ...item,
+              image: response?.result?.imageFileUrl
+            };
+          } catch (error) {
+            console.error('Error uploading file:', error);
+          }
+        }
+      }
+    };
+
+    await uploadImageAndUpdate();
+
+    const attributesToSave = attributes.map((attr: any) => ({
+      type: attr?.type?._id,
+      values: attr?.values.map((value: any) => value?._id)
+    }));
+    dispatch(
+      updateProductsData({
+        ...(pData ?? {}), // Ensure pData is not null
+        ...pData, // Override with new values
+        brand_name: brand_namedata, // Retain brand
+        madeIn: madeIndata, // Retain madeIn
+        tags: tagsdata, // Retain tag
+        tax: taxdata, // Retain tag
+        categories: categoriesdata,
+        variations: finalVariations, // Stringify variations pData?
+        main_image: mainImage ?? '',
+        second_main_image: secondMainImage ?? '',
+        videodata: finalVideoData ?? '',
+        attributes: attributesToSave, // Send only IDs to API
+        other_image: otherImages ?? [], // Add selected images to form data
+        stockManagement: generalTabData?.stockManagement
+      })
+    );
 
     dispatch(addEditProducts(null)).then((response: any) => {
       if (!response?.error) {
@@ -802,7 +1046,7 @@ export default function ProductsForm() {
 
               {/* Testing */}
 
-              {/* <div className="">
+              <div className="">
                 <h4 className="py-2">Additional Info</h4>
                 <div className="inline-flex rounded-md shadow-sm" role="group">
                   <button
@@ -878,8 +1122,9 @@ export default function ProductsForm() {
                         pData={pData}
                       />
                     )}
-                    {((pData as IProducts)?.productype === 'simpleproduct' || 
-                      (pData as IProducts)?.productype === 'variableproduct') && (
+                    {((pData as IProducts)?.productype === 'simpleproduct' ||
+                      (pData as IProducts)?.productype ===
+                        'variableproduct') && (
                       <StockmanagmentProductForm
                         handleInputChange={handleInputChange}
                         handleDropdownChange={handleDropdownChange}
@@ -888,9 +1133,9 @@ export default function ProductsForm() {
                       />
                     )}
 
-
-                    {((pData as IProducts)?.productype === 'simpleproduct' || 
-                      (pData as IProducts)?.productype === 'variableproduct') && (
+                    {((pData as IProducts)?.productype === 'simpleproduct' ||
+                      (pData as IProducts)?.productype ===
+                        'variableproduct') && (
                       <Button
                         type="button"
                         onClick={handleSaveSettings}
@@ -924,7 +1169,7 @@ export default function ProductsForm() {
                     />
                   </div>
                 )}
-              </div> */}
+              </div>
 
               {/* testing Close  */}
             </form>

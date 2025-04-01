@@ -28,7 +28,6 @@ export type IProducts = BaseModel & {
     hi?: string;
   };
   name?: string;
-  slug?: string;
   description?: {
     en?: string;
     hi?: string;
@@ -186,7 +185,6 @@ export const addEditProducts = createAsyncThunk<
       manufacture: data.manufacture
         ? JSON.stringify(data.manufacture)
         : undefined,
-      slug: data.slug,
       active: data.active,
       sequence: data.sequence,
       model_no: data.model_no,

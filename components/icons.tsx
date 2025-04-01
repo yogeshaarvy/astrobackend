@@ -69,7 +69,8 @@ import {
   Atom,
   Building2,
   Earth,
-  MapPinHouseIcon
+  MapPinHouseIcon,
+  Signpost
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -102,6 +103,7 @@ export const Icons = {
   config: Cog,
   notepadDash: NotepadTextDashed,
   omega: Omega,
+  signpost: Signpost,
   home: House,
   atom: Atom,
   list: LayoutList,
