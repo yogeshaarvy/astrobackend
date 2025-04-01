@@ -24,6 +24,7 @@ interface CustomDropdownProps<TFieldValues extends FieldValues> {
   defaultValue?: string | boolean; // Default value for the dropdown
   data?: any[]; // Data for dropdown options
   type?: string;
+  disabled?: boolean;
   required?: boolean;
   className?: string;
   errorMsg?: string;
@@ -35,6 +36,7 @@ const CustomDropdown = <TFieldValues extends FieldValues>({
   name,
   control,
   value,
+  disabled,
   label,
   placeholder = '',
   defaultValue,

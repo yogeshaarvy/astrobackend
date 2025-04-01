@@ -31,6 +31,16 @@ import { fetchTaxList } from '@/redux/slices/taxsSlice';
 import { fetchCategoryList } from '@/redux/slices/store/categoriesSlice';
 import CustomDropdown from '@/utils/CusomDropdown';
 import { Switch } from '@/components/ui/switch';
+import SimpleProductForm from './othercomponents/simpleproductsdrop';
+import StockmanagmentProductForm from './othercomponents/stockmanagement';
+import AttributesForm from './othercomponents/attributes';
+import VariationsForm from './othercomponents/variations';
+
+interface TabsState {
+  general: boolean;
+  attribute: boolean;
+  variations: boolean;
+}
 
 export default function ProductsForm() {
   const router = useRouter();
@@ -45,9 +55,21 @@ export default function ProductsForm() {
     string | null
   >(null);
   const [otherImages, setOtherImages] = useState<File[]>([]);
+  const [variations, setVariations] = useState<any[]>([]);
+  const [generalTabData, setGeneralTabData] = useState({});
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoFileName, setVideoFileName] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('general');
+  const [attributes, setAttributes] = useState<
+    { type: string; values: string[] }[]
+  >([]);
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  const [tabsEnabled, setTabsEnabled] = useState<TabsState>({
+    general: true,
+    attribute: false,
+    variations: false
+  });
 
   const {
     singleProductsState: { loading, data: pData }
@@ -178,6 +200,23 @@ export default function ProductsForm() {
     const file = e.target.files?.[0] || null;
     setVideoFile(file);
     setVideoFileName(file?.name || null);
+  };
+  const handleVariationsChange = (newVariations: any[]) => {
+    setVariations(newVariations);
+  };
+
+  const handleSaveAttributes = (
+    newAttributes: { type: any; values: string[] }[]
+  ) => {
+    setAttributes(newAttributes);
+  };
+
+  const handleSaveSettings = (e: any) => {};
+
+  const handleTabChange = (tab: keyof TabsState) => {
+    if (tabsEnabled[tab]) {
+      setActiveTab(tab);
+    }
   };
 
   const handleDropdownChange = (e: any) => {
@@ -764,128 +803,128 @@ export default function ProductsForm() {
               {/* Testing */}
 
               {/* <div className="">
-                  <h4 className="py-2">Additional Info</h4>
-                  <div className="inline-flex rounded-md shadow-sm" role="group">
-                    <button
-                      type="button"
-                      onClick={() => handleTabChange('general')}
-                      className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                        activeTab === 'general'
+                <h4 className="py-2">Additional Info</h4>
+                <div className="inline-flex rounded-md shadow-sm" role="group">
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange('general')}
+                    className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                      activeTab === 'general'
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
+                    }`}
+                  >
+                    General
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange('attribute')}
+                    disabled={!tabsEnabled.attribute}
+                    className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                      tabsEnabled.attribute
+                        ? activeTab === 'attribute'
                           ? 'bg-gray-900 text-white'
                           : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                      }`}
-                    >
-                      General
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleTabChange('attribute')}
-                      disabled={!tabsEnabled.attribute}
-                      className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                        tabsEnabled.attribute
-                          ? activeTab === 'attribute'
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                          : 'cursor-not-allowed bg-transparent text-gray-500'
-                      }`}
-                    >
-                      Attribute
-                    </button>
-                    {form.getValues('productype') === 'variableproduct' &&
-                      tabsEnabled.variations && (
-                        <button
-                          type="button"
-                          onClick={() => handleTabChange('variations')}
-                          disabled={!tabsEnabled.variations}
-                          className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                            tabsEnabled.variations
-                              ? activeTab === 'variations'
-                                ? 'bg-gray-900 text-white'
-                                : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                              : 'cursor-not-allowed bg-transparent text-gray-500'
-                          }`}
-                        >
-                          Variations
-                        </button>
-                      )}
-                  </div>
-                  {activeTab === 'general' && (
-                    <>
-                      <CustomDropdown
-                        control={form.control}
-                        label="Type of Product*"
-                        name="productype"
-                        placeholder="Select product type"
-                        defaultValue="default"
-                        data={[
-                          { name: 'Simple Product', _id: 'simpleproduct' },
-                          { name: 'Variable Product', _id: 'variableproduct' }
-                        ]}
-                        loading={brandListLoading ?? false}
-                        value={
-                          (pData as IProducts)?.productype ||
-                          form.getValues('productype')
-                        }
-                        onChange={handleDropdownChange}
-                        disabled={settingsSaved} // Disable dropdown if settings are saved
-                      />
-
-                     
-                      {form.getValues('productype') === 'simpleproduct' && (
-                        <SimpleProductForm
-                          handleInputChange={handleInputChange}
-                          disabled={settingsSaved}
-                          entityId={entityId}
-                          pData={pData}
-                        />
-                      )}
-
-                      
-                      {(form.getValues('productype') === 'simpleproduct' ||
-                        form.getValues('productype') === 'variableproduct') && (
-                        <StockmanagmentProductForm
-                          handleInputChange={handleInputChange}
-                          handleDropdownChange={handleDropdownChange}
-                          producttype={form.getValues('productype')}
-                          disabled={settingsSaved}
-                        />
-                      )}
-                      {(form.getValues('productype') === 'simpleproduct' ||
-                        form.getValues('productype') === 'variableproduct') && (
-                        <Button
-                          type="button"
-                          onClick={handleSaveSettings}
-                          className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
-                          disabled={settingsSaved} // Disable button if settings are saved
-                        >
-                          Save Settings
-                        </Button>
-                      )}
-                    </>
-                  )}
-                  {activeTab === 'attribute' && (
-                    <div className="mt-4">
-                      <AttributesForm
-                        onSaveAttributes={handleSaveAttributes}
-                        pData={pData}
-                      />
-                    </div>
-                  )}
-                  {activeTab === 'variations' && (
-                    <div className="mt-4">
-                      <VariationsForm
-                        newAttributes={attributes}
-                        stockmanagemet={
-                          generalTabData?.stockManagement
-                            ?.stock_management_level || ''
-                        }
+                        : 'cursor-not-allowed bg-transparent text-gray-500'
+                    }`}
+                  >
+                    Attribute
+                  </button>
+                  {(pData as IProducts)?.productype === 'variableproduct' &&
+                    tabsEnabled.variations && (
+                      <button
+                        type="button"
+                        onClick={() => handleTabChange('variations')}
+                        disabled={!tabsEnabled.variations}
+                        className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                          tabsEnabled.variations
+                            ? activeTab === 'variations'
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
+                            : 'cursor-not-allowed bg-transparent text-gray-500'
+                        }`}
+                      >
+                        Variations
+                      </button>
+                    )}
+                </div>
+                {activeTab === 'general' && (
+                  <>
+                    <CustomDropdown
+                      label="Type of Product"
+                      name="productype"
+                      required={true}
+                      value={(pData as IProducts)?.productype}
+                      defaultValue={(pData as IProducts)?.productype || ''}
+                      data={[
+                        { name: 'Simple Product', _id: 'simpleproduct' },
+                        { name: 'Variable Product', _id: 'variableproduct' }
+                      ]}
+                      disabled={settingsSaved}
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'productype',
+                            value: value.value
+                          }
+                        })
+                      }
+                    />
+                    {(pData as IProducts)?.productype === 'simpleproduct' && (
+                      <SimpleProductForm
                         handleInputChange={handleInputChange}
-                        onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
+                        disabled={settingsSaved}
+                        entityId={entityId}
                         pData={pData}
                       />
-                    </div>
-                  )}
-                </div> */}
+                    )}
+                    {((pData as IProducts)?.productype === 'simpleproduct' || 
+                      (pData as IProducts)?.productype === 'variableproduct') && (
+                      <StockmanagmentProductForm
+                        handleInputChange={handleInputChange}
+                        handleDropdownChange={handleDropdownChange}
+                        producttype={(pData as IProducts)?.productype}
+                        disabled={settingsSaved}
+                      />
+                    )}
+
+
+                    {((pData as IProducts)?.productype === 'simpleproduct' || 
+                      (pData as IProducts)?.productype === 'variableproduct') && (
+                      <Button
+                        type="button"
+                        onClick={handleSaveSettings}
+                        className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
+                        disabled={settingsSaved} // Disable button if settings are saved
+                      >
+                        Save Settings
+                      </Button>
+                    )}
+                  </>
+                )}
+                {activeTab === 'attribute' && (
+                  <div className="mt-4">
+                    <AttributesForm
+                      onSaveAttributes={handleSaveAttributes}
+                      pData={pData}
+                    />
+                  </div>
+                )}
+                {activeTab === 'variations' && (
+                  <div className="mt-4">
+                    <VariationsForm
+                      newAttributes={attributes}
+                      stockmanagemet={
+                        generalTabData?.stockManagement
+                          ?.stock_management_level || ''
+                      }
+                      handleInputChange={handleInputChange}
+                      onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
+                      pData={pData}
+                    />
+                  </div>
+                )}
+              </div> */}
 
               {/* testing Close  */}
             </form>
