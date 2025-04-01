@@ -131,6 +131,24 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
+    title: 'Home',
+    url: '/dashboard/homes',
+    icon: 'home',
+    isActive: false,
+    items: [
+      {
+        title: 'Slider',
+        url: '/dashboard/homes/banner',
+        icon: 'slider'
+      },
+      {
+        title: 'Config',
+        url: '/dashboard/homes/config',
+        icon: 'config'
+      }
+    ]
+  },
+  {
     title: `Store`,
     url: `#`,
     icon: 'store',
@@ -322,23 +340,23 @@ export const navItems: NavItem[] = [
   {
     title: 'Horoscope',
     url: '/dashboard/horoscope',
-    icon: 'settings',
+    icon: 'omega',
     isActive: false,
     items: [
       {
         title: 'Testimonial',
         url: '/dashboard/horoscope/testimonial',
-        icon: 'general'
+        icon: 'message'
       },
       {
         title: "FAQ's",
         url: '/dashboard/horoscope/faqs',
-        icon: 'general'
+        icon: 'tableContents'
       },
       {
         title: 'Signs',
         url: '/dashboard/horoscope/signs',
-        icon: 'general',
+        icon: 'signpost',
         isActive: false,
         items: [
           {
@@ -351,13 +369,13 @@ export const navItems: NavItem[] = [
       {
         title: 'Other',
         url: '/dashboard/horoscope/other',
-        icon: 'general',
+        icon: 'otherlist',
         isActive: false,
         items: [
           {
             title: 'Config',
             url: '/dashboard/horoscope/other/config',
-            icon: 'general'
+            icon: 'config'
           }
         ]
       }
