@@ -186,7 +186,7 @@ const Page = () => {
                           </>
                         )}
                       </>
-                      <FormLabel>Side Image</FormLabel>
+                      {/* <FormLabel>Side Image</FormLabel>
                       <FileUploader
                         value={sideImage ? [sideImage] : []}
                         onValueChange={(newFiles: any) => {
@@ -215,7 +215,7 @@ const Page = () => {
                             </div>
                           </>
                         )}
-                      </>
+                      </> */}
                     </FormItem>
                   </div>
 
@@ -353,7 +353,7 @@ const Page = () => {
                   <CardHeader className="flex flex-row items-center justify-center gap-5">
                     <CardTitle>2nd Section</CardTitle>
                   </CardHeader>
-                  <div className="space-y-2 pt-0 ">
+                  {/* <div className="space-y-2 pt-0 ">
                     <FormItem className="space-y-3">
                       <FormLabel>Image</FormLabel>
                       <FileUploader
@@ -386,7 +386,7 @@ const Page = () => {
                         )}
                       </>
                     </FormItem>
-                  </div>
+                  </div> */}
 
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
@@ -440,6 +440,41 @@ const Page = () => {
                           </div>
                         </CardContent>
                       </div>
+                      <div>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                          <CardTitle>3rd Section English</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="section3.title.en"
+                              placeholder="Enter your Title "
+                              value={(cData as IPanchang)?.section3?.title?.en}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="section3.description.en"
+                              label="Full Description"
+                              value={
+                                (cData as IPanchang)?.section3?.description?.en
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'section3.description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </div>
                     </TabsContent>
                     <TabsContent value="Hindi">
                       <div>
@@ -480,87 +515,6 @@ const Page = () => {
                           </div>
                         </CardContent>
                       </div>
-                    </TabsContent>
-                  </Tabs>
-                </Card>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-
-      <Card className="mx-auto mb-16 w-full">
-        <CardHeader>
-          <CardTitle className="text-left text-2xl font-bold">
-            3rd Section
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-8"
-            >
-              <div className="flex items-center space-x-2">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-center gap-5">
-                    <CardTitle>3rd Section</CardTitle>
-                  </CardHeader>
-
-                  <Tabs defaultValue="English" className="mt-4 w-full">
-                    <TabsList className="flex w-full space-x-2 p-0">
-                      <TabsTrigger
-                        value="English"
-                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
-                      >
-                        English
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="Hindi"
-                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
-                      >
-                        Hindi
-                      </TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="English">
-                      <div>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <CardTitle>3rd Section English</CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Title</Label>
-                            <Input
-                              name="section3.title.en"
-                              placeholder="Enter your Title "
-                              value={(cData as IPanchang)?.section3?.title?.en}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <CustomTextEditor
-                              name="section3.description.en"
-                              label="Full Description"
-                              value={
-                                (cData as IPanchang)?.section3?.description?.en
-                              }
-                              onChange={(value) =>
-                                handleInputChange({
-                                  target: {
-                                    name: 'section3.description.en',
-                                    value: value,
-                                    type: 'text'
-                                  }
-                                })
-                              }
-                            />
-                          </div>
-                        </CardContent>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="Hindi">
                       <div>
                         <CardHeader className="flex flex-row items-center justify-between">
                           <CardTitle>3rd Section Hindi</CardTitle>
@@ -607,6 +561,54 @@ const Page = () => {
           </Form>
         </CardContent>
       </Card>
+
+      {/* <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            3rd Section
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="flex items-center space-x-2">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-center gap-5">
+                    <CardTitle>3rd Section</CardTitle>
+                  </CardHeader>
+
+                  <Tabs defaultValue="English" className="mt-4 w-full">
+                    <TabsList className="flex w-full space-x-2 p-0">
+                      <TabsTrigger
+                        value="English"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        English
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="Hindi"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        Hindi
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="English">
+                      
+                    </TabsContent>
+                    <TabsContent value="Hindi">
+                      
+                    </TabsContent>
+                  </Tabs>
+                </Card>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card> */}
 
       <CardFooter
         style={{
