@@ -8,8 +8,6 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useSearchParams } from 'next/navigation';
-import EmployeeNotAllwoed from '@/components/not-allowed';
-import { TCurrentEmployee, TCurrentEmployeePermission } from '@/types/globals';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import {
@@ -81,7 +79,7 @@ export default function TestimonialListPage() {
 
           return {
             ID: id,
-            Title: title,
+            Title: title.en,
             Active: active,
             Sequence: sequence
           };
