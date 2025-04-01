@@ -52,6 +52,8 @@ import storegallery from './slices/store/gallerySlice';
 import filterReducer from './slices/store/filtersSlice';
 import astroPoojaReducer from './slices/Configs/astroPoojaSlice';
 import horoscopeReducer from './slices/horoscope/horoscopeSlice';
+import panchangConfigReducer from './slices/panchang/panchangSlice';
+import horoscopetestimonialReducer from './slices/horoscope/testimonialSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -107,7 +109,9 @@ export const makeStore = () => {
       kundliConfig: kundliconfig,
       galleryImage: storegallery,
       astroPoojas: astroPoojaReducer,
-      horoscopeConfig: horoscopeReducer
+      horoscopeConfig: horoscopeReducer,
+      panchangConfig: panchangConfigReducer,
+      horoscopetestimonial: horoscopetestimonialReducer
     }
   });
 };
