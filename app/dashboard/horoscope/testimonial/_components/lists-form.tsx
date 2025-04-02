@@ -30,6 +30,8 @@ import {
   updateTestimonialListData
 } from '@/redux/slices/horoscope/testimonialSlice';
 
+import CustomTextEditor from '@/utils/CustomTextEditor';
+
 export default function ListForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
@@ -154,13 +156,23 @@ export default function ListForm() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="name">review</Label>
-                          <Input
-                            name="review.en"
-                            placeholder="Enter your review"
-                            value={(jData as ITestimonial)?.review?.en || ''}
-                            onChange={handleInputChange}
-                          />
+                          <Label htmlFor="name">Description</Label>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="review.en"
+                              label="Full Description"
+                              value={(jData as ITestimonial)?.review?.en}
+                              onChange={(value: any) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'review.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
                         </div>
                       </CardContent>
                     </>
@@ -262,7 +274,7 @@ export default function ListForm() {
                 )}
 
                 <FormItem className="space-y-3">
-                  <FormLabel>Light Logo</FormLabel>
+                  <FormLabel>Profile Logo</FormLabel>
                   <FileUploader
                     value={profileImage ? [profileImage] : []}
                     onValueChange={(newFiles: any) => {
