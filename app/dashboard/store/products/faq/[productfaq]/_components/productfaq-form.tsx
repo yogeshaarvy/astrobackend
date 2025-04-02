@@ -75,7 +75,9 @@ export default function ProductFaqForm() {
       .then((response) => {
         if (response.payload.success) {
           dispatch(addEditproductFaq({ entityId, productId }));
-          router.push(`/dashboard/products/faq/productFaq?id=${productId}`);
+          router.push(
+            `/dashboard/store/products/faq/productFaq?id=${productId}`
+          );
           toast.success(response.payload.message);
         }
       })

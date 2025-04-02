@@ -55,7 +55,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             onClick={() =>
               router.push(
-                `/dashboard/products/faq/productfaq/edit?id=${data._id}&productId=${productId}`
+                `/dashboard/store/products/faq/productfaq/edit?id=${data._id}&productId=${productId}`
               )
             }
           >
