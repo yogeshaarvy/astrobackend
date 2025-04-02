@@ -4,6 +4,8 @@ import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { RootState } from '@/redux/store';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 
 export type ICategory = BaseModel & {
   _id?: string;
@@ -69,24 +71,24 @@ export const fetchCategoryList = createAsyncThunk<
     page?: number;
     pageSize?: number;
     keyword?: string;
-    field: string;
-    status: string;
-    exportData: string;
-    entityId: string;
+    field?: string;
+    active?: string;
+    exportData?: boolean;
+    entityId?: string;
   } | void,
   { state: RootState }
 >(
   'category/fetchCategoryList',
   async (input, { dispatch, rejectWithValue, getState }) => {
     try {
-      const { page, pageSize, keyword, field, status, exportData, entityId } =
+      const { page, pageSize, keyword, field, active, exportData, entityId } =
         input || {};
       dispatch(fetchCategoryStart());
       const response = await fetchApi(
         `/store/categories/all?page=${page || 1}&limit=${pageSize || 10}&text=${
           keyword || ''
         }&field=${field || ''}&active=${
-          status || ''
+          active || ''
         }&export=${exportData}&entityId=${entityId || ''}`,
         { method: 'GET' }
       );
@@ -94,13 +96,13 @@ export const fetchCategoryList = createAsyncThunk<
       if (response?.success) {
         dispatch(
           fetchCategoryListSuccess({
-            data: response.categoriesdata,
+            data: response.categoryList,
             totalCount: response.totalCount
           })
         );
       } else {
-        // Handle response with no status or an error
-        throw new Error('No status or invalid response');
+        // Handle response with no active or an error
+        throw new Error('No active or invalid response');
       }
       return response;
     } catch (error: any) {
@@ -127,35 +129,40 @@ export const addEditCategory = createAsyncThunk<
     if (!data) {
       return rejectWithValue('Please Provide Details');
     }
-    // let childdata = (data?.child as ICategory) === 'yes' ? 1 : 0
+
+    let clonedData = cloneDeep(data);
+
+    if (clonedData) {
+      clonedData = await processNestedFields(clonedData);
+    }
+
     const formData = new FormData();
     const reqData: any = {
-      name: data.name,
-      title: data.title ? JSON.stringify(data.title) : undefined,
-      short_description: JSON.stringify(data.short_description),
-      long_description: JSON.stringify(data.long_description),
-      light_logo_image: data.light_logo_image,
-      dark_logo_image: data.dark_logo_image,
-      banner_image: data.banner_image,
-      meta_tag: data.meta_tag,
-      meta_description: data.meta_description,
-      meta_title: data.meta_title,
-      active: data.active,
-      slug: data.slug,
-      sequence: data.sequence,
-      child: data.child,
-      show_in_menu: data.show_in_menu,
-      show_in_home: data.show_in_home,
+      name: clonedData.name,
+      title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+      short_description: JSON.stringify(clonedData.short_description),
+      long_description: JSON.stringify(clonedData.long_description),
+      light_logo_image: clonedData.light_logo_image,
+      dark_logo_image: clonedData.dark_logo_image,
+      banner_image: clonedData.banner_image,
+      meta_tag: clonedData.meta_tag,
+      meta_description: clonedData.meta_description,
+      meta_title: clonedData.meta_title,
+      active: clonedData.active,
+      slug: clonedData.slug,
+      sequence: clonedData.sequence,
+      child: clonedData.child,
+      show_in_menu: clonedData.show_in_menu,
+      show_in_home: clonedData.show_in_home,
       tags:
-        typeof data?.tags === 'object' && data?.tags !== null
-          ? data.tags?._id
-          : data.tags,
+        typeof clonedData?.tags === 'object' && clonedData?.tags !== null
+          ? clonedData.tags?._id
+          : clonedData.tags,
       parent:
-        typeof data?.parent === 'object' && data?.parent !== null
-          ? data.parent?._id
-          : data.parent
+        typeof clonedData?.parent === 'object' && clonedData?.parent !== null
+          ? clonedData.parent?._id
+          : clonedData.parent
     };
-
     // Append only defined fields to FormData
     Object.entries(reqData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {

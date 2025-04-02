@@ -6,8 +6,8 @@ import { useCallback, useMemo } from 'react';
 import { fetchCategoryList } from '@/redux/slices/store/categoriesSlice';
 import { useDispatch } from 'react-redux';
 export const FIELD_OPTIONS = [
-  { value: 'name.en', label: 'Name' },
-  { value: 'short_description.en', label: 'Short Deacription' }
+  { value: 'title.en', label: 'Title' },
+  { value: 'slug', label: 'Slug' }
 ];
 export const STATUS_OPTIONS = [
   { value: 'true', label: 'True' },
@@ -28,7 +28,7 @@ export function useCategoryTableFilters() {
     searchParams.field.withOptions({ shallow: false }).withDefault('')
   );
   const [statusFilter, setStatusFilter] = useQueryState(
-    'status',
+    'active',
     searchParams.status.withOptions({ shallow: false }).withDefault('')
   );
 
@@ -41,8 +41,8 @@ export function useCategoryTableFilters() {
     setSearchQuery(null);
     setFieldFilter(null);
     setStatusFilter(null);
-    setPage(1);
-    dispatch(fetchCategoryList());
+    // setPage(1);
+    // dispatch(fetchCategoryList());
   }, [setSearchQuery, setFieldFilter, setPage, setStatusFilter]);
 
   const isAnyFilterActive = useMemo(() => {
