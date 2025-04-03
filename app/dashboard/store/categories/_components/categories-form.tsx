@@ -30,6 +30,7 @@ import CustomReactSelect from '@/utils/CustomReactSelect';
 import { fetchTagList } from '@/redux/slices/store/tagsSlice';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CustomTextEditor from '@/utils/CustomTextEditor';
+import { Switch } from '@/components/ui/switch';
 export default function CategoryForm() {
   const params = useSearchParams();
   const entityId = params?.get('id');
@@ -52,6 +53,7 @@ export default function CategoryForm() {
   const [darklogoImage, setDarkLogo] = React.useState<File | null>(null);
   const [bannerImage, setBannerImage] = React.useState<File | null>(null);
   const allCategories: ICategory[] = cData;
+
   const [files, setFiles] = React.useState<File[]>([]);
   const form = useForm<ICategory>({
     defaultValues: {}
@@ -70,8 +72,8 @@ export default function CategoryForm() {
         pageSize,
         keyword: '',
         field: '',
-        status: '',
-        exportData: 'true',
+        active: '',
+        exportData: true,
         entityId: entityId || ''
       })
     );
@@ -89,17 +91,17 @@ export default function CategoryForm() {
 
   useEffect(() => {
     if (!entityId) {
-      const name = (bData as ICategory)?.name;
+      const name = (bData as ICategory)?.title?.en;
       if (name) {
         const generatedSlug = slugify(name, {
           lower: true,
           strict: true,
           trim: true
         });
-        dispatch(updateCategoryData({ ['name']: generatedSlug }));
+        dispatch(updateCategoryData({ ['slug']: generatedSlug }));
       }
     }
-  }, [(bData as ICategory)?.title, entityId]);
+  }, [(bData as ICategory)?.title?.en, entityId]);
 
   //handle dropdon input changes
   const handleDropdownChange = (e: any) => {
@@ -113,7 +115,6 @@ export default function CategoryForm() {
   // Handle Input Change
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('name is coming', name, value);
     dispatch(
       updateCategoryData({
         [name]:
@@ -145,13 +146,10 @@ export default function CategoryForm() {
   }, [files]);
 
   function onSubmit() {
-    const formData = form.getValues(); // Get all form values
-    dispatch(
-      addEditCategory(entityId || null) // Pass `entityId` to determine if it's a new or existing category
-    )
+    dispatch(addEditCategory(entityId || null))
       .then((response) => {
         if (response.payload.success) {
-          // router.push('/dashboard/store/categories');
+          router.push('/dashboard/store/categories');
           toast.success(response.payload.message);
         }
       })
@@ -197,7 +195,7 @@ export default function CategoryForm() {
                     <CustomTextField
                       name="title.en"
                       // control={form.control}
-                      label="Name"
+                      label="Title"
                       placeholder="Enter your name"
                       value={(bData as ICategory)?.title?.en}
                       onChange={handleInputChange}
@@ -239,7 +237,7 @@ export default function CategoryForm() {
                     <CustomTextField
                       name="title.hi"
                       // control={form.control}
-                      label="Name"
+                      label="Title"
                       placeholder="Enter your name"
                       value={(bData as ICategory)?.title?.hi}
                       onChange={handleInputChange}
@@ -271,18 +269,8 @@ export default function CategoryForm() {
                   </CardContent>
                 </TabsContent>
               </Tabs>
-
-              <CustomTextField
-                name="name"
-                // control={form.control}
-                label="Name"
-                placeholder="Enter your Slug"
-                value={(bData as ICategory)?.name}
-                onChange={handleInputChange}
-              />
               <CustomTextField
                 name="slug"
-                // control={form.control}
                 label="Slug"
                 placeholder="Enter your Slug"
                 value={(bData as ICategory)?.slug}
@@ -308,10 +296,10 @@ export default function CategoryForm() {
                   { name: 'Yes', _id: 'yes' },
                   { name: 'No', _id: 'no' }
                 ]}
-                value={form.getValues('child') || ''}
+                value={(bData as ICategory)?.child || 'no'}
                 onChange={handleDropdownChange}
               />
-              {form.getValues('child') === 'yes' && (
+              {(bData as ICategory)?.child === 'yes' && (
                 <CustomDropdown
                   control={form.control}
                   label="Parent"
@@ -319,18 +307,16 @@ export default function CategoryForm() {
                   // placeholder="Select id parent"
                   defaultValue="default"
                   data={allCategories.map((category) => ({
-                    name: category.name,
+                    title: category?.title?.en,
                     _id: category._id
                   }))}
                   loading={categoryListLoading ?? false}
-                  // value={form.getValues('parent') || ''}
                   value={(bData as ICategory)?.parent}
                   onChange={handleDropdownChange}
                 />
               )}
               <CustomTextField
                 name="meta_tag"
-                // control={form.control}
                 label="Meta Tag"
                 placeholder="Enter your meta tag"
                 value={(bData as ICategory)?.meta_tag}
@@ -338,7 +324,6 @@ export default function CategoryForm() {
               />
               <CustomTextField
                 name="meta_description"
-                // control={form.control}
                 label="Meta Description"
                 placeholder="Enter your meta description"
                 value={(bData as ICategory)?.meta_description}
@@ -347,7 +332,6 @@ export default function CategoryForm() {
               <CustomTextField
                 label="Meta Title"
                 name="meta_title"
-                // control={form.control}
                 placeholder="Enter meta title"
                 onChange={handleInputChange}
                 value={(bData as ICategory)?.meta_title}
@@ -366,43 +350,41 @@ export default function CategoryForm() {
                 value={(bData as ICategory)?.tags}
               />
               {/* </div> */}
-              <div className="my-4 flex items-center">
-                <input
-                  id="show-in-home"
-                  type="checkbox"
-                  checked={form.getValues('show_in_home')} // Bind to form state
-                  className={`h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600`} // Styling for disabled state
-                  onChange={(e) => {
-                    const isChecked = e.target.checked;
-                    form.setValue('show_in_home', isChecked); // Update react-hook-form value
-                    dispatch(updateCategoryData({ show_in_home: isChecked })); // Update Redux state
-                  }}
+              <div className="flex items-center gap-3">
+                <FormLabel>Show In Home </FormLabel>
+                <Switch
+                  className="!m-0"
+                  checked={(bData as ICategory)?.show_in_home}
+                  // onCheckedChange={handleToggle}
+                  onCheckedChange={(checked: any) =>
+                    handleInputChange({
+                      target: {
+                        type: 'checkbox',
+                        name: 'show_in_home',
+                        checked
+                      }
+                    })
+                  }
+                  aria-label="Toggle Active Status"
                 />
-                <label
-                  htmlFor="show-in-home"
-                  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Show In Home Section
-                </label>
               </div>
-              <div className="my-4 flex items-center">
-                <input
-                  id="show-in-menu"
-                  type="checkbox"
-                  checked={form.getValues('show_in_menu')} // Bind to form state
-                  className={`h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600`} // Styling for disabled state
-                  onChange={(e) => {
-                    const isChecked = e.target.checked;
-                    form.setValue('show_in_menu', isChecked); // Update react-hook-form value
-                    dispatch(updateCategoryData({ show_in_menu: isChecked })); // Update Redux state
-                  }}
+              <div className="flex items-center gap-3">
+                <FormLabel>Show In Menu</FormLabel>
+                <Switch
+                  className="!m-0"
+                  checked={(bData as ICategory)?.show_in_menu}
+                  // onCheckedChange={handleToggle}
+                  onCheckedChange={(checked: any) =>
+                    handleInputChange({
+                      target: {
+                        type: 'checkbox',
+                        name: 'show_in_menu',
+                        checked
+                      }
+                    })
+                  }
+                  aria-label="Toggle Active Status"
                 />
-                <label
-                  htmlFor="show-in-menu"
-                  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Show In Menu Section
-                </label>
               </div>
 
               <div className="space-y-2 pt-0 ">
@@ -424,12 +406,12 @@ export default function CategoryForm() {
                     maxSize={1024 * 1024 * 2}
                   />{' '}
                   <>
-                    {typeof (cData as ICategory)?.banner_image === 'string' && (
+                    {typeof (bData as ICategory)?.banner_image === 'string' && (
                       <>
                         <div className="max-h-48 space-y-4">
                           <FileViewCard
                             existingImageURL={
-                              (cData as ICategory)?.banner_image
+                              (bData as ICategory)?.banner_image
                             }
                           />
                         </div>
@@ -455,13 +437,13 @@ export default function CategoryForm() {
                     maxSize={1024 * 1024 * 2}
                   />{' '}
                   <>
-                    {typeof (cData as ICategory)?.light_logo_image ===
+                    {typeof (bData as ICategory)?.light_logo_image ===
                       'string' && (
                       <>
                         <div className="max-h-48 space-y-4">
                           <FileViewCard
                             existingImageURL={
-                              (cData as ICategory)?.light_logo_image
+                              (bData as ICategory)?.light_logo_image
                             }
                           />
                         </div>
@@ -487,13 +469,13 @@ export default function CategoryForm() {
                     maxSize={1024 * 1024 * 2}
                   />{' '}
                   <>
-                    {typeof (cData as ICategory)?.dark_logo_image ===
+                    {typeof (bData as ICategory)?.dark_logo_image ===
                       'string' && (
                       <>
                         <div className="max-h-48 space-y-4">
                           <FileViewCard
                             existingImageURL={
-                              (cData as ICategory)?.dark_logo_image
+                              (bData as ICategory)?.dark_logo_image
                             }
                           />
                         </div>

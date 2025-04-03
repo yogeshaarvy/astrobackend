@@ -82,20 +82,20 @@ export default function CategoryTable({
       enableHiding: false
     },
     {
-      accessorKey: 'name',
-      header: 'NAME'
+      accessorKey: 'title.en',
+      header: 'Title'
     },
     {
       accessorKey: 'slug',
-      header: 'SLUG'
+      header: 'Slug'
     },
     {
       accessorKey: 'sequence',
-      header: 'SEQUENCE'
+      header: 'Sequence'
     },
     {
       accessorKey: 'meta_title',
-      header: 'META TITLE'
+      header: 'Meta Title'
     },
 
     {

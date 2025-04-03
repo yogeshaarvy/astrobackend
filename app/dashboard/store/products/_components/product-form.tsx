@@ -211,83 +211,6 @@ export default function ProductsForm() {
     setAttributes(newAttributes);
   };
 
-  const handleSaveSettings = () => {
-    const formData = pData; // Get current form data
-    console.log('formData in handle Save Setting', formData);
-    const productype = formData?.productype; // Get the product type
-    const stockManagementEnabled = formData?.stockManagement;
-    const stockManagementLevel =
-      formData?.stockManagement?.stock_management_level;
-    let requiredFields: string[] = [];
-
-    // Validation: Ensure Simple Product Fields are filled if product type is "simpleproduct"
-    if (productype === 'simpleproduct') {
-      requiredFields = [
-        'price',
-        'special_price',
-        'weight',
-        'height',
-        'breadth',
-        'length'
-      ];
-      // Additional required fields if stock management is enabled
-      if (stockManagementEnabled) {
-        requiredFields.push('stock_value');
-      }
-    }
-    // Required field for Variable Product if stock management is enabled
-    if (productype === 'variableproduct' && stockManagementEnabled) {
-      requiredFields.push('stock_management_level');
-    }
-    // If stock management level is "product_level", require stock_value and stock_status
-    if (stockManagementLevel === 'product_level') {
-      requiredFields.push('stock_value');
-    }
-    const missingFields = requiredFields.filter(
-      (field) => !formData[field] // Check for empty or undefined fields
-    );
-
-    if (missingFields.length > 0) {
-      toast.error(`Missing  fields required: ${missingFields.join(', ')}`);
-      return;
-    }
-    const extractedData: Partial<IProducts> = {
-      productype,
-      simpleProduct:
-        productype === 'simpleproduct'
-          ? {
-              price: formData?.price,
-              special_price: formData?.special_price,
-              weight: formData?.weight,
-              height: formData?.height,
-              breadth: formData?.breadth,
-              length: formData?.length
-            }
-          : {}, // Only save Simple Product Fields if the product type is "simpleproduct"
-      stockManagement: {
-        stockManagement: formData?.stockManagement,
-        stock_value: formData?.stockManagement?.stock_value,
-        stock_status: formData?.stock_status,
-        stock_management_level:
-          formData?.stockManagement?.stock_management_level
-      }
-    };
-    if (activeTab === 'general') {
-      setGeneralTabData(extractedData); // Save data specific to General tab
-    }
-
-    // Enable the "Attribute" and "Variations" tabs after saving settings
-    setTabsEnabled((prev) => ({
-      ...prev,
-      attribute: true,
-      variations: true
-    }));
-    // Mark settings as saved
-    setSettingsSaved(true);
-
-    toast.success('Settings saved successfully!');
-  };
-
   const handleTabChange = (tab: keyof TabsState) => {
     if (tabsEnabled[tab]) {
       setActiveTab(tab);
@@ -319,35 +242,159 @@ export default function ProductsForm() {
     );
   };
 
+  // Fixed handleSaveSettings function
+  const handleSaveSettings = () => {
+    if (!pData) {
+      toast.error('Product data is not available');
+      return;
+    }
+
+    const formData = { ...pData }; // Create a copy to avoid mutation
+    const productType = formData.productype;
+    const stockManagementEnabled =
+      formData.stockManagement?.stockManagement === true;
+    const stockManagementLevel =
+      formData.stockManagement?.stock_management_level;
+    let requiredFields = [];
+
+    // Validation: Ensure Simple Product Fields are filled if product type is "simpleproduct"
+    if (productType === 'simpleproduct') {
+      requiredFields = [
+        'price',
+        'special_price',
+        'weight',
+        'height',
+        'breadth',
+        'length'
+      ];
+
+      // Additional required fields if stock management is enabled
+      if (stockManagementEnabled) {
+        requiredFields.push('stock_value');
+      }
+    }
+
+    // Required field for Variable Product if stock management is enabled
+    if (productType === 'variableproduct' && stockManagementEnabled) {
+      requiredFields.push('stock_management_level');
+    }
+
+    // If stock management level is "product_level", require stock_value
+    if (stockManagementLevel === 'product_level') {
+      requiredFields.push('stock_value');
+    }
+
+    // Check if required fields exist in formData or within simpleProduct object
+    const missingFields = requiredFields.filter((field) => {
+      if (field === 'stock_value' && stockManagementEnabled) {
+        return !formData.stockManagement?.stock_value;
+      }
+
+      // For simple product fields, check in both root level and simpleProduct object
+      if (
+        [
+          'price',
+          'special_price',
+          'weight',
+          'height',
+          'breadth',
+          'length'
+        ].includes(field)
+      ) {
+        return !(
+          formData[field] ||
+          (formData.simpleProduct && formData.simpleProduct[field])
+        );
+      }
+
+      return !formData[field];
+    });
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    // Extract and structure the data properly
+    const extractedData = {
+      productype: productType,
+      simpleProduct:
+        productType === 'simpleproduct'
+          ? {
+              price: formData.price || formData.simpleProduct?.price,
+              special_price:
+                formData.special_price || formData.simpleProduct?.special_price,
+              weight: formData.weight || formData.simpleProduct?.weight,
+              height: formData.height || formData.simpleProduct?.height,
+              breadth: formData.breadth || formData.simpleProduct?.breadth,
+              length: formData.length || formData.simpleProduct?.length
+            }
+          : {},
+      stockManagement: {
+        stockManagement: stockManagementEnabled,
+        stock_value: formData.stockManagement?.stock_value || '',
+        stock_status:
+          formData.stock_status ||
+          formData.stockManagement?.stock_status ||
+          'instock',
+        stock_management_level: stockManagementLevel || ''
+      }
+    };
+
+    if (activeTab === 'general') {
+      setGeneralTabData(extractedData); // Save data specific to General tab
+    }
+
+    // Enable the "Attribute" and "Variations" tabs after saving settings
+    setTabsEnabled((prev) => ({
+      ...prev,
+      attribute: true,
+      variations: productType === 'variableproduct' // Only enable variations for variable products
+    }));
+
+    // Mark settings as saved
+    setSettingsSaved(true);
+
+    toast.success('Settings saved successfully!');
+  };
+
+  // Fixed handleSubmit function
   const handleSubmit = async () => {
+    if (!pData) {
+      toast.error('Product data is not available');
+      return;
+    }
+
     // Validate required fields
-    let missingFields: string[] = [];
-    let categoriesdata =
-      pData?.categories?.length > 0
-        ? pData?.categories
-        : pData?.categories ?? [];
-    let brand_namedata = pData?.brand_name || pData?.brand_name || ''; // Retain brand
-    let madeIndata = pData?.madeIn || pData?.madeIn || ''; // Retain madeIn
-    let tagsdata = pData?.tags || pData?.tags || ''; // Retain tag
-    let taxdata = pData?.tax || pData?.tax || ''; // Retain tag
-    // Check required fields and add their names to missingFields array if missing
-    if (!pData?.name) missingFields.push('Name');
-    if (!pData?.model_no) missingFields.push('Model Number');
-    if (!pData?.productype) missingFields.push('Product Type');
-    if (!brand_namedata) missingFields.push('Brand Name');
-    if (!madeIndata) missingFields.push('Made In');
-    if (!pData?.meta_title) missingFields.push('Meta Title');
-    if (!pData?.meta_description) missingFields.push('Meta Description');
-    if (!pData?.description) missingFields.push('Description');
-    if (!pData?.meta_tag) missingFields.push('Meta Tag');
-    if (!tagsdata) missingFields.push('Tags');
-    if (!taxdata) missingFields.push('Tax');
-    if (!pData?.hsn_code) missingFields.push('HSN Code');
-    if (!pData?.sku) missingFields.push('SKU');
-    if (!pData?.manufacture) missingFields.push('Manufacture');
-    if (!categoriesdata?.length) missingFields.push('Categories');
-    // if (!mainImage) missingFields.push('Main Image');
-    // if (!secondMainImage) missingFields.push('Second Main Image');
+    let missingFields = [];
+    const categories = pData.categories?.length > 0 ? pData.categories : [];
+    const brandName = pData.brand_name || '';
+    const madeIn = pData.madeIn || '';
+    const tags = pData.tags || '';
+    const tax = pData.tax || '';
+
+    // Check required fields
+    if (!pData.name) missingFields.push('Name');
+    if (!pData.model_no) missingFields.push('Model Number');
+    if (!pData.productype) missingFields.push('Product Type');
+    if (!brandName) missingFields.push('Brand Name');
+    if (!madeIn) missingFields.push('Made In');
+    if (!pData.meta_title) missingFields.push('Meta Title');
+    if (!pData.meta_description) missingFields.push('Meta Description');
+    if (!pData.title?.en) missingFields.push('Title (English)');
+    if (!pData.description?.en) missingFields.push('Description (English)');
+    if (!pData.meta_tag) missingFields.push('Meta Tag');
+    if (!tags) missingFields.push('Tags');
+    if (!tax) missingFields.push('Tax');
+    if (!pData.hsn_code) missingFields.push('HSN Code');
+    if (!pData.sku) missingFields.push('SKU');
+    if (!pData.manufacture?.en) missingFields.push('Manufacture (English)');
+    if (!categories?.length) missingFields.push('Categories');
+
+    // Optional image validation - uncomment if main images are required
+    // if (entityId && !mainImage && !pData.main_image) missingFields.push('Main Image');
+    // if (entityId && !secondMainImage && !pData.second_main_image) missingFields.push('Second Main Image');
+
     // If any fields are missing, show an error message with the field names
     if (missingFields.length > 0) {
       toast.error(
@@ -355,36 +402,38 @@ export default function ProductsForm() {
       );
       return;
     }
+
     // If product type is variable, ensure at least one attribute is selected
     if (
-      pData?.productype === 'variableproduct' &&
+      pData.productype === 'variableproduct' &&
       (!attributes || attributes.length === 0)
     ) {
       toast.error('At least one attribute is required for variable products');
       return;
     }
-    // Validate video pData? if videotype is selected
-    if (pData?.videotype && !pData?.videodata) {
-      toast.error('Video pData? is required when video type is selected');
-      return;
-    }
-    // Validate video pData? based on videotype
-    if (pData?.videotype) {
-      if (pData?.videotype === 'selfhosted' && !videoFile) {
+
+    // Validate video data if videotype is selected
+    if (pData.videotype && pData.videotype !== 'none') {
+      if (
+        pData.videotype === 'selfmadevideo' &&
+        !videoFile &&
+        !pData.videodata
+      ) {
         toast.error('Video file is required for self-hosted videos');
         return;
-      } else if (pData?.videotype !== 'selfhosted' && !pData?.videodata) {
-        toast.error('Video pData? is required when video type is selected');
+      } else if (pData.videotype !== 'selfmadevideo' && !pData.videodata) {
+        toast.error('Video URL is required when video type is selected');
         return;
       }
     }
-    //valide varitions required
-    if (variations?.length > 0) {
+
+    // Validate variations if product is variable and variations exist
+    if (pData.productype === 'variableproduct' && variations?.length > 0) {
       let isValid = true;
-      let variationErrors: string[] = [];
+      let variationErrors = [];
 
       variations.forEach((variation, index) => {
-        let missingVariationFields: string[] = [];
+        let missingVariationFields = [];
 
         if (!variation.price) missingVariationFields.push('Price');
         if (!variation.special_price)
@@ -394,7 +443,11 @@ export default function ProductsForm() {
         if (!variation.breadth) missingVariationFields.push('Breadth');
         if (!variation.length) missingVariationFields.push('Length');
         if (!variation.sku) missingVariationFields.push('SKU');
-        if (!variation.image) missingVariationFields.push('Image');
+
+        // Only validate image if it's a new variation without an existing image URL
+        if (!variation.image && typeof variation.image !== 'string') {
+          missingVariationFields.push('Image');
+        }
 
         if (
           generalTabData?.stockManagement?.stock_management_level ===
@@ -423,11 +476,13 @@ export default function ProductsForm() {
       }
     }
 
+    // Determine video data based on video type
     const finalVideoData =
-      pData?.videotype === 'selfmadevideo' ? videoFile : pData?.videodata; // Use videodata from the form for Vimeo/YouTube
+      pData.videotype === 'selfmadevideo' ? videoFile : pData.videodata;
 
+    // Handle variations based on product type
     let finalVariations = variations;
-    if (pData?.productype === 'simpleproduct') {
+    if (pData.productype === 'simpleproduct') {
       finalVariations = [
         {
           ...generalTabData?.simpleProduct,
@@ -435,69 +490,97 @@ export default function ProductsForm() {
         }
       ];
     }
+
+    // Upload images for variations if needed
     const uploadImageAndUpdate = async () => {
-      for (let i = 0; i < finalVariations.length; i++) {
-        const item = finalVariations[i];
+      // Create a copy of the variations array
+      const updatedVariations = [...finalVariations];
+
+      for (let i = 0; i < updatedVariations.length; i++) {
+        const item = updatedVariations[i];
+
+        // Skip if image is already a string URL or doesn't exist
+        if (!item.image || typeof item.image === 'string') continue;
+
         const formData = new FormData();
 
-        if (item.image) {
-          const fileType = item?.image?.type?.startsWith('image/')
-            ? 'imagefile'
-            : item?.image?.type?.startsWith('audio/')
-            ? 'audiofile'
-            : 'file';
+        // Determine file type for upload
+        const fileType = item.image.type?.startsWith('image/')
+          ? 'imagefile'
+          : item.image.type?.startsWith('audio/')
+          ? 'audiofile'
+          : 'file';
 
-          formData.append(fileType, item?.image);
+        formData.append(fileType, item.image);
 
-          try {
-            const response = await fetchApi('/files', {
-              method: 'POST',
-              body: formData
-            });
+        try {
+          // Make sure fetchApi is defined in your component
+          const response = await fetchApi('/files', {
+            method: 'POST',
+            body: formData
+          });
 
-            // Update the finalVariations array with the response pData?
-            finalVariations[i] = {
+          // Update the variation with the new image URL
+          if (response?.result?.imageFileUrl) {
+            updatedVariations[i] = {
               ...item,
-              image: response?.result?.imageFileUrl
+              image: response.result.imageFileUrl
             };
-          } catch (error) {
-            console.error('Error uploading file:', error);
           }
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          toast.error(`Failed to upload image for variation ${i + 1}`);
         }
       }
+
+      // Update finalVariations with the processed data
+      finalVariations = updatedVariations;
     };
 
-    await uploadImageAndUpdate();
+    // Process variations images
+    if (finalVariations.length > 0) {
+      await uploadImageAndUpdate();
+    }
 
-    const attributesToSave = attributes.map((attr: any) => ({
+    // Format attributes properly for saving
+    const attributesToSave = attributes.map((attr) => ({
       type: attr?.type?._id,
-      values: attr?.values.map((value: any) => value?._id)
+      values: Array.isArray(attr?.values)
+        ? attr.values.map((value) => value?._id)
+        : []
     }));
-    dispatch(
-      updateProductsData({
-        ...(pData ?? {}), // Ensure pData is not null
-        ...pData, // Override with new values
-        brand_name: brand_namedata, // Retain brand
-        madeIn: madeIndata, // Retain madeIn
-        tags: tagsdata, // Retain tag
-        tax: taxdata, // Retain tag
-        categories: categoriesdata,
-        variations: finalVariations, // Stringify variations pData?
-        main_image: mainImage ?? '',
-        second_main_image: secondMainImage ?? '',
-        videodata: finalVideoData ?? '',
-        attributes: attributesToSave, // Send only IDs to API
-        other_image: otherImages ?? [], // Add selected images to form data
-        stockManagement: generalTabData?.stockManagement
-      })
-    );
 
-    dispatch(addEditProducts(null)).then((response: any) => {
+    // Create the final data for submission
+    const finalData = {
+      ...(pData || {}),
+      brand_name: brandName,
+      madeIn: madeIn,
+      tags: tags,
+      tax: tax,
+      categories: categories,
+      variations: finalVariations,
+      attributes: attributesToSave,
+      stockManagement: generalTabData?.stockManagement || pData.stockManagement,
+
+      // Handle main images appropriately
+      main_image: mainImage || pData.main_image || '',
+      second_main_image: secondMainImage || pData.second_main_image || '',
+      videodata: finalVideoData || '',
+      other_image: otherImages || []
+    };
+
+    // Update the product data in Redux
+    dispatch(updateProductsData(finalData));
+
+    // Submit the data to the API
+    dispatch(addEditProducts(null)).then((response) => {
       if (!response?.error) {
         router.push('/dashboard/store/products');
-        toast.success(response?.payload?.message);
+        toast.success(
+          response?.payload?.message || 'Product saved successfully'
+        );
       } else {
-        toast.error(response.payload);
+        toast.error(response.payload || 'Failed to save product');
       }
     });
   };

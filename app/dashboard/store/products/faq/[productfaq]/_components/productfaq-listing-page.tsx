@@ -80,7 +80,7 @@ export default function ProductFaqListingPage() {
 
             {/* Add New Link */}
             <Link
-              href={`/dashboard/products/faq/productfaq/add?productId=${productId}`}
+              href={`/dashboard/store/products/faq/productfaq/add?productId=${productId}`}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

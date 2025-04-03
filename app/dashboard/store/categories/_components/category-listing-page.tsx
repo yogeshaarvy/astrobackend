@@ -5,6 +5,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import Link from 'next/link';
 import CategoeyTable from './categories-table';
 import {
@@ -14,12 +15,25 @@ import {
 } from '@/redux/slices/store/categoriesSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useSearchParams } from 'next/navigation';
+import { TCurrentEmployee, TCurrentEmployeePermission } from '@/types/globals';
+import EmployeeNotAllwoed from '@/components/not-allowed';
+import EmployeeNotAllowedToAdd from '@/components/not-allowed-add';
+import { toast } from 'sonner';
+
+// type TEmployeeListingPage = {
+//   currentEmp: TCurrentEmployee;
+//   empPermissions: TCurrentEmployeePermission;
+// };
 
 export default function CategoryListingPage() {
+// {
+//   currentEmp,
+//   empPermissions
+// }: TEmployeeListingPage
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
-  const status = searchParams.get('status') || '';
+  const active = searchParams.get('active') || '';
   const field = searchParams.get('field') || '';
   const page = parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams.get('limit') ?? '10', 10);
@@ -31,7 +45,6 @@ export default function CategoryListingPage() {
       pagination: { totalCount }
     }
   } = useAppSelector((state) => state.category);
-  let exportData = 'false';
   useEffect(() => {
     dispatch(
       fetchCategoryList({
@@ -39,8 +52,8 @@ export default function CategoryListingPage() {
         pageSize,
         keyword,
         field,
-        status,
-        exportData,
+        active,
+        exportData: true,
         entityId: ''
       })
     );
@@ -59,81 +72,94 @@ export default function CategoryListingPage() {
         pageSize,
         keyword,
         field,
-        status,
-        exportData,
+        active,
+        exportData: true,
         entityId: ''
       })
     );
   };
 
   const handleExport = async () => {
-    try {
-      const response = await dispatch(
-        fetchCategoryList({
-          page: 1,
-          pageSize: 1000,
-          keyword,
-          field,
-          status,
-          exportData: 'true',
-          entityId: ''
-        })
-      ).unwrap(); // Logs resolved payload
-
-      const exportData = response?.categoriesdata || [];
-      if (!exportData.length) {
-        alert('No data available to export');
-        return;
+    dispatch(
+      fetchCategoryList({
+        page,
+        pageSize,
+        keyword,
+        field,
+        active,
+        exportData: true
+      })
+    ).then((response: any) => {
+      if (response?.error) {
+        toast.error("Can't Export The Data Something Went Wrong");
       }
+      const allProductsCategory = response.payload?.categoryList;
+      const fileType =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      const fileExtension = '.xlsx';
+      const fileName = 'product_category';
 
-      const csvContent = [
-        [
-          'ID',
-          'Name',
-          'Slug',
-          'Status',
-          'Parent',
-          'Sequence No.',
-          'Short Description',
-          'Long Description',
-          'Meta tag',
-          'Meta Title',
-          'Meta Description'
-        ],
-        ...exportData.map((item: any) => [
-          item._id,
-          item.name,
-          item.slug,
-          item.active,
-          item.parent,
-          item.sequence,
-          item.short_description,
-          item.long_description,
-          item.meta_tag,
-          item.meta_title,
-          item.meta_description
-        ])
-      ]
-        .map((row) => row.join(','))
-        .join('\n');
+      const ws = XLSX.utils.json_to_sheet(
+        allProductsCategory?.map((row: any) => {
+          const id = row?._id || 'N/A';
+          const active = row?.active || 'false';
+          const createdAt = row?.createdAt
+            ? new Date(row.createdAt).toLocaleDateString('en-GB', {
+                hour12: false
+              })
+            : 'N/A';
+          const updatedAt = row?.updatedAt
+            ? new Date(row.updatedAt).toLocaleDateString('en-GB', {
+                hour12: false
+              })
+            : 'N/A';
+          const Name = row?.name || 'N/A';
+          const Slug = row?.slug || 'N/A';
+          const sequence = row?.sequence || `N/A`;
 
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', 'brand_data.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Error fetching data for export:', error);
-      alert('Failed to export data. Please try again.');
-    }
+          return {
+            ID: id,
+            Name: Name,
+            Slug: Slug,
+            Active: active,
+            Sequence: sequence,
+            MetaTitle: row?.metaTitle,
+            MetaDescription: row?.metaDescription,
+            MetaKeyword: row?.metaKeywords,
+            Created_At: createdAt,
+            Updated_At: updatedAt
+          };
+        })
+      );
+
+      const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+      const data = new Blob([excelBuffer], { type: fileType });
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName + fileExtension;
+      a.click();
+    });
   };
+
+  // if (empPermissions?.permission?.view === false) {
+  //   return (
+  //     <EmployeeNotAllwoed
+  //       cardTitle={'Access Denied'}
+  //       cardDescription={'You do not have permission to view this page'}
+  //       cardContent={
+  //         'If you believe this is an error, please contact your administrator or support team.'
+  //       }
+  //     />
+  //   );
+  // } else {
   return (
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between ">
-          <Heading title={`Categories`} description="" />
+          <Heading title={`Categories (${totalCount})`} description="" />
           {/* {empPermissions.permission.add ? ( */}
           <div>
             <Button
@@ -150,6 +176,9 @@ export default function CategoryListingPage() {
               <Plus className="mr-2 h-4 w-4" /> Add New
             </Link>
           </div>
+          {/* ) : (
+            <EmployeeNotAllowedToAdd />
+          )} */}
         </div>
         <Separator />
         <CategoeyTable
