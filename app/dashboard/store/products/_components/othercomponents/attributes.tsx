@@ -150,9 +150,9 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
           {attributes?.map((attribute, index) => (
             <div key={index} className="grid grid-cols-3 gap-4">
               <CustomReactSelect
-                options={typesQuery ? getFilteredTypesOptions() : []}
+                options={tData}
                 label="Types"
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option?.name?.en}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Types"
                 onInputChange={handleSearchTypes}
@@ -160,18 +160,18 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
                   handleTypeChange(index, selectedOption)
                 }
                 value={attribute?.type || []}
-                isDisabled={!!pData} // Disable field if pData is present
+                // isDisabled={!!pData} // Disable field if pData is present
               />
               <CustomReactSelect
                 options={vData}
                 isMulti
                 label="Values"
-                getOptionLabel={(option) => option.short_name}
+                getOptionLabel={(option) => option?.short_name?.en}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Values"
                 onChange={(e: any) => handleValueChange(index, e)}
                 value={attribute.values || []}
-                isDisabled={!!pData} // Disable field if pData is present
+                // isDisabled={!!pData} // Disable field if pData is present
               />
               <div
                 onClick={() => handleRemoveAttribute(index)}

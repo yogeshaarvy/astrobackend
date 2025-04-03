@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import CustomTextField from '@/utils/CustomTextField';
 import CustomDropdown from '@/utils/CusomDropdown';
+import { fetchApi } from '@/services/utlis/fetchApi';
 
 interface VariationsFormProps {
   newAttributes: any[];
@@ -20,24 +21,7 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
 }) => {
   const form = useFormContext();
   const [combinations, setCombinations] = useState<any[]>([]);
-  const [variationImage, setVariationImage] = React.useState<File | null>(null);
-  const [variationImagePreview, setVariationImagePreview] = React.useState<
-    string | null
-  >(null);
-  // Handle variations Image Upload
-  const handleVariationImageUpload = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0] || null;
-    setVariationImage(file);
-    setVariationImagePreview(file ? URL.createObjectURL(file) : null);
-  };
 
-  // Remove variations Image
-  const handleRemoveVariationImage = () => {
-    setVariationImage(null);
-    setVariationImagePreview(null);
-  };
   // Generate combinations of all values from attributes
   const generateCombinations = (attributes: any[]) => {
     if (attributes.length === 0) return [];
@@ -70,7 +54,8 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
       length: '',
       sku: '',
       totalStock: '',
-      stock_status: ''
+      stock_status: 'true',
+      image: null
     }));
   };
 
@@ -99,6 +84,18 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
     }));
     onVariationsChange(combinationsWithIds);
   };
+
+  const handleImageUpload = async (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    console.log('file 23', file);
+    if (file) {
+      handleFieldChange(index, 'image', file);
+    }
+  };
+
   return (
     <div className="mb-5 pb-5">
       {combinations?.length === 0 ? (
@@ -120,7 +117,7 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                               className="mx-2 rounded-sm border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900"
                               key={`value-${index}-${valueIndex}`}
                             >
-                              {value?.short_name}
+                              {value?.short_name?.en}
                             </div>
                           )
                         )}
@@ -147,19 +144,16 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="Price*"
                           name={`combinations[${index}].price`}
-                          control={form.control}
                           placeholder="Enter price"
                           onChange={(e) =>
                             handleFieldChange(index, 'price', e.target.value)
                           }
                           value={combination.price}
                           type="number"
-                          disabled={!!pData?.variants} // Disable field if pData is present
                         />
                         <CustomTextField
                           label="Special Price*"
                           name={`combinations[${index}].special_price`}
-                          control={form.control}
                           placeholder="Enter special price"
                           onChange={(e) =>
                             handleFieldChange(
@@ -170,26 +164,22 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                           }
                           value={combination.special_price}
                           type="number"
-                          disabled={!!pData?.variants} // Disable field if pData is present
                         />
                         <CustomTextField
                           label="SKU:"
                           name={`combinations[${index}].sku`}
-                          control={form.control}
                           placeholder="Enter SKU"
                           onChange={(e) =>
                             handleFieldChange(index, 'sku', e.target.value)
                           }
                           value={combination.sku}
                           type="text"
-                          disabled={!!pData?.variants} // Disable field if pData is present
                         />
                         {stockmanagemet === 'variable_level' && (
                           <>
                             <CustomTextField
                               label="Total Stock*"
                               name={`combinations[${index}].totalStock`}
-                              control={form.control}
                               placeholder="Enter total stock"
                               onChange={(e) =>
                                 handleFieldChange(
@@ -200,30 +190,7 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                               }
                               value={combination.totalStock}
                               type="number"
-                              disabled={!!pData?.variants} // Disable field if pData is present
                             />
-                            {/* <CustomDropdown
-                              control={form.control}
-                              label="Stock Status*"
-                              name="stock_status"
-                              placeholder="Select stock status"
-                              defaultValue={combination.stock_status || 'true'}
-                              data={[
-                                {
-                                  name: 'In Stock',
-                                  _id: 'true'
-                                },
-                                {
-                                  name: 'Out Of Status',
-                                  _id: 'false'
-                                }
-                              ]}
-                              onChange={(e: any) =>
-                                handleFieldChange(index, 'stock_status', e._id)
-                              }
-                              value={combination.stock_status || 'true'}
-                              disabled={!!pData?.variants} // Disable field if pData is present
-                            /> */}
                             <div className="d-flex">
                               <h6>Stock status*</h6>
                               <select
@@ -252,88 +219,57 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="Weight(kg)*"
                           name={`combinations[${index}].weight`}
-                          control={form.control}
                           placeholder="Enter Weight"
                           onChange={(e) =>
                             handleFieldChange(index, 'weight', e.target.value)
                           }
                           value={combination.weight}
                           type="number"
-                          disabled={!!pData?.variants} // Disable field if pData is present
                         />
                         <CustomTextField
                           label="Height(cms)*"
                           name={`combinations[${index}].height`}
-                          control={form.control}
                           placeholder="Enter height"
                           onChange={(e) =>
                             handleFieldChange(index, 'height', e.target.value)
                           }
                           value={combination.height}
                           type="number"
-                          disabled={!!pData?.variants} // Disable field if pData is present
                         />
                         <CustomTextField
                           label="Breadth(cms)*"
                           name={`combinations[${index}].breadth`}
-                          control={form.control}
                           placeholder="Enter breadth"
                           onChange={(e) =>
                             handleFieldChange(index, 'breadth', e.target.value)
                           }
                           value={combination.breadth}
                           type="number"
-                          disabled={!!pData?.variants} // Disable field if pData is present
                         />
                         <CustomTextField
                           label="Length(cms)*"
                           name={`combinations[${index}].length`}
-                          control={form.control}
                           placeholder="Enter length"
                           onChange={(e) =>
                             handleFieldChange(index, 'length', e.target.value)
                           }
                           value={combination.length}
                           type="number"
-                          disabled={!!pData?.variants} // Disable field if pData is present
                         />
                       </div>
 
-                      {/* Main Image Uploader */}
-                      {/* <div>
+                      {/* Image Uploader */}
+                      <div>
                         <label className="block text-sm font-medium text-gray-700">
-                          Main Image
+                          Image
                         </label>
                         <input
                           type="file"
                           accept="image/*"
-                          onChange={handleVariationImageUpload}
                           className="file:bg-black-100 hover:file:bg-black-100 block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-500"
+                          onChange={(e) => handleImageUpload(index, e)}
                         />
-                        {variationImagePreview && (
-                          <div
-                            className="relative mt-4 "
-                            style={{
-                              display: 'flex',
-                              right: '650px',
-                              justifyContent: 'flex-end'
-                            }}
-                          >
-                            <img
-                              src={variationImagePreview}
-                              alt="Main Preview"
-                              className="h-32 w-32 rounded-md border object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={handleRemoveVariationImage}
-                              className="absolute right-0 top-0 rounded-full bg-white p-1 text-red-500 shadow-md"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        )}
-                      </div> */}
+                      </div>
                     </div>
                   </details>
                 </div>

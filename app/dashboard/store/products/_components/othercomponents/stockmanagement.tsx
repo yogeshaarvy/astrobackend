@@ -2,43 +2,53 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import CustomTextField from '@/utils/CustomTextField';
 import { CustomMultiDropdown } from '@/utils/CustomMultiDropdown';
+import { CardTitle } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { IProducts } from '@/redux/slices/store/productSlice';
 import CustomDropdown from '@/utils/CusomDropdown';
+import { FormLabel } from '@/components/ui/form';
 
 interface StockmanagmentProductFormProps {
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputChange: (e: {
+    target: { name: string; type?: string; checked?: boolean; value?: string };
+  }) => void;
   handleDropdownChange: (value: any) => void;
-  producttype: any;
+  producttype?: string;
   disabled: boolean;
+  pData: any;
 }
 
 const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
   handleInputChange,
   handleDropdownChange,
   producttype,
+  pData,
   disabled
 }) => {
   const form = useFormContext();
-  const stockManagementEnabled = form.watch('stock_management'); // Watch for stock_management checkbox changes
+  const stockManagementEnabled =
+    pData?.stockManagement?.stock_management ?? false;
 
   return (
     <div>
       {/* Enable Stock Management Section */}
       <div className="my-4 flex items-center">
-        <input
-          id="stock-management-checkbox"
-          type="checkbox"
-          {...form.register('stock_management')} // Bind to react-hook-form
-          className={`h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 ${
-            disabled ? 'cursor-not-allowed' : ''
-          }`} // Styling for disabled state
-          disabled={disabled} // Disable checkbox if settings are saved
+        <FormLabel>Enable Stock Management</FormLabel>
+        <Switch
+          className="!m-0"
+          checked={stockManagementEnabled}
+          onCheckedChange={(checked) =>
+            handleInputChange({
+              target: {
+                type: 'checkbox',
+                name: 'stockManagement.stock_management',
+                checked
+              }
+            })
+          }
+          aria-label="Toggle Stock Management"
+          disabled={disabled}
         />
-        <label
-          htmlFor="stock-management-checkbox"
-          className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-        >
-          Enable Stock Management
-        </label>
       </div>
 
       {/* Stock Management Details */}
@@ -61,37 +71,25 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
                   _id: 'variable_level'
                 }
               ]}
-              value={form.getValues('stock_management_level')}
+              value={form.watch('stock_management_level')}
               onChange={handleDropdownChange}
-              disabled={disabled} // Disable dropdown if settings are saved
+              disabled={disabled}
             />
           )}
 
           {(producttype === 'simpleproduct' ||
             (producttype === 'variableproduct' &&
-              form.getValues('stock_management_level') ===
-                'product_level')) && (
+              form.watch('stock_management_level') === 'product_level')) && (
             <div>
               <CustomTextField
                 label="Stock Value*"
                 name="stock_value"
-                control={form.control}
                 placeholder="Enter stock value"
                 type="number"
                 onChange={handleInputChange}
-                value={form.getValues('stock_value')}
-                disabled={disabled} // Disable field if settings are saved
+                value={form.watch('stock_value')}
+                disabled={disabled}
               />
-              {/* <CustomTextField
-                label="SKU"
-                name="sku"
-                control={form.control}
-                placeholder="Enter SKU"
-                type="text"
-                onChange={handleInputChange}
-                value={form.getValues('sku')}
-                disabled={disabled} // Disable field if settings are saved
-              /> */}
               <CustomDropdown
                 control={form.control}
                 label="Stock Status*"
@@ -104,13 +102,13 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
                     _id: 'true'
                   },
                   {
-                    name: 'Out Of Status',
+                    name: 'Out Of Stock',
                     _id: 'false'
                   }
                 ]}
-                value={form.getValues('stock_status')}
+                value={form.watch('stock_status')}
                 onChange={handleDropdownChange}
-                disabled={disabled} // Disable field if settings are saved
+                disabled={disabled}
               />
             </div>
           )}
