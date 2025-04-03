@@ -28,6 +28,7 @@ import {
   IFaq,
   updateListFaqData
 } from '@/redux/slices/panchang/faqSlice';
+import CustomTextEditor from '@/utils/CustomTextEditor';
 
 export default function ListForm() {
   const params = useSearchParams();
@@ -169,12 +170,22 @@ export default function ListForm() {
                             </div>
                             <div className="space-y-1">
                               <Label htmlFor="name">Answer</Label>
-                              <Input
-                                name="answer.en"
-                                placeholder="Enter Your Answer"
-                                value={(bData as IFaq)?.answer?.en}
-                                onChange={handleInputChange}
-                              />
+                              <div className="space-y-1">
+                                <CustomTextEditor
+                                  name="answer.en"
+                                  label="Enter Your Answer"
+                                  value={(bData as IFaq)?.answer?.en}
+                                  onChange={(value: any) =>
+                                    handleInputChange({
+                                      target: {
+                                        name: 'answer.en',
+                                        value: value,
+                                        type: 'text'
+                                      }
+                                    })
+                                  }
+                                />
+                              </div>
                             </div>
                           </CardContent>
                         </>
@@ -194,13 +205,22 @@ export default function ListForm() {
                             </div>
                             <div className="space-y-1">
                               <Label htmlFor="name">Answer</Label>
-                              <Input
-                                name="answer.hi"
-                                placeholder="Enter Your Answer"
-                                // aria-controls={form.control}
-                                value={(bData as IFaq)?.answer?.hi}
-                                onChange={handleInputChange}
-                              />
+                              <div className="space-y-1">
+                                <CustomTextEditor
+                                  name="answer.hi"
+                                  label="Enter Your Answer"
+                                  value={(bData as IFaq)?.answer?.hi}
+                                  onChange={(value: any) =>
+                                    handleInputChange({
+                                      target: {
+                                        name: 'answer.hi',
+                                        value: value,
+                                        type: 'text'
+                                      }
+                                    })
+                                  }
+                                />
+                              </div>
                             </div>
                           </CardContent>
                         </>
