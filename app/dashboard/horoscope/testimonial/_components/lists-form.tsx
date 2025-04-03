@@ -200,13 +200,23 @@ export default function ListForm() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="name"> review</Label>
-                          <Input
-                            name="review.hi"
-                            placeholder="Enter your  review"
-                            value={(jData as ITestimonial)?.review?.hi || ''}
-                            onChange={handleInputChange}
-                          />
+                          <Label htmlFor="name">Description</Label>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="review.hi"
+                              label="Full Description"
+                              value={(jData as ITestimonial)?.review?.hi}
+                              onChange={(value: any) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'review.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
                         </div>
                       </CardContent>
                     </>
