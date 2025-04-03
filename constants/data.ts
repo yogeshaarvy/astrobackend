@@ -287,8 +287,8 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
-        title: 'List',
-        url: '/dashboard/astro-pooja/list',
+        title: 'Packages',
+        url: '/dashboard/astro-pooja/packages',
         icon: 'list'
       },
       {

@@ -54,6 +54,7 @@ import astroPoojaReducer from './slices/Configs/astroPoojaSlice';
 import horoscopeReducer from './slices/horoscope/horoscopeSlice';
 import panchangConfigReducer from './slices/panchang/panchangSlice';
 import horoscopetestimonialReducer from './slices/horoscope/testimonialSlice';
+import astroPackageReducer from './slices/astropooja/packageSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -111,7 +112,8 @@ export const makeStore = () => {
       astroPoojas: astroPoojaReducer,
       horoscopeConfig: horoscopeReducer,
       panchangConfig: panchangConfigReducer,
-      horoscopetestimonial: horoscopetestimonialReducer
+      horoscopetestimonial: horoscopetestimonialReducer,
+      astroPackage: astroPackageReducer
     }
   });
 };
