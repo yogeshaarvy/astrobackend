@@ -502,7 +502,7 @@ export const navItems: NavItem[] = [
     items: [
       {
         title: "FAQ's",
-        url: '/dashboard/panchang/faqs',
+        url: '/dashboard/panchang/faq',
         icon: 'general'
       },
       {
