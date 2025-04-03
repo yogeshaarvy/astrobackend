@@ -143,14 +143,13 @@ export const fetchTestimonialList = createAsyncThunk<
       dispatch(fetchTestimonialListStart());
 
       const response = await fetchApi(
-        `/store/testimonial/all??page=${page || 1}&limit=${
+        `/store/testimonial/all?page=${page || 1}&limit=${
           pageSize || 5
         }&field=${field || ''}&text=${keyword || ''}&active=${
           active || ''
         }&exportData=${exportData || false}`,
         { method: 'GET' }
       );
-
       if (response?.success) {
         if (!input?.exportData) {
           dispatch(

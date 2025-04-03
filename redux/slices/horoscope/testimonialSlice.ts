@@ -144,7 +144,7 @@ export const fetchTestimonialList = createAsyncThunk<
       dispatch(fetchTestimonialListStart());
 
       const response = await fetchApi(
-        `/horoscope/testimonial/all??page=${page || 1}&limit=${
+        `/horoscope/testimonial/all?page=${page || 1}&limit=${
           pageSize || 5
         }&field=${field || ''}&text=${keyword || ''}&active=${
           active || ''

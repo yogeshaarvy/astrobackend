@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Attribute {
-  types: any;
+  type: any;
   values: string[];
 }
 
@@ -21,13 +21,12 @@ const attributesSlice = createSlice({
       state.data = action.payload;
     },
     loadAttributes(state) {
-      // This can be used to load attributes from a persistent store if needed
+      // Placeholder for loading attributes from a persistent store if needed
     }
   }
 });
 
 export const { saveAttributes, loadAttributes } = attributesSlice.actions;
-
-export const selectAttributes = (state: any) => state.attributes.data;
-
+export const selectAttributes = (state: { attributes: AttributesState }) =>
+  state.attributes.data;
 export default attributesSlice.reducer;

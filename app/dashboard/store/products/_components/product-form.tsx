@@ -35,6 +35,7 @@ import SimpleProductForm from './othercomponents/simpleproductsdrop';
 import StockmanagmentProductForm from './othercomponents/stockmanagement';
 import AttributesForm from './othercomponents/attributes';
 import VariationsForm from './othercomponents/variations';
+import { fetchApi } from '@/services/utlis/fetchApi';
 
 interface TabsState {
   general: boolean;
@@ -146,8 +147,6 @@ export default function ProductsForm() {
         pageSize,
         keyword: '',
         field: '',
-        status: 'true',
-        exportData: 'true',
         entityId: ''
       })
     );
@@ -374,22 +373,21 @@ export default function ProductsForm() {
     const tax = pData.tax || '';
 
     // Check required fields
-    if (!pData.name) missingFields.push('Name');
-    if (!pData.model_no) missingFields.push('Model Number');
-    if (!pData.productype) missingFields.push('Product Type');
-    if (!brandName) missingFields.push('Brand Name');
-    if (!madeIn) missingFields.push('Made In');
-    if (!pData.meta_title) missingFields.push('Meta Title');
-    if (!pData.meta_description) missingFields.push('Meta Description');
-    if (!pData.title?.en) missingFields.push('Title (English)');
-    if (!pData.description?.en) missingFields.push('Description (English)');
-    if (!pData.meta_tag) missingFields.push('Meta Tag');
-    if (!tags) missingFields.push('Tags');
-    if (!tax) missingFields.push('Tax');
-    if (!pData.hsn_code) missingFields.push('HSN Code');
-    if (!pData.sku) missingFields.push('SKU');
-    if (!pData.manufacture?.en) missingFields.push('Manufacture (English)');
-    if (!categories?.length) missingFields.push('Categories');
+    // if (!pData.model_no) missingFields.push('Model Number');
+    // if (!pData.productype) missingFields.push('Product Type');
+    // if (!brandName) missingFields.push('Brand Name');
+    // if (!madeIn) missingFields.push('Made In');
+    // if (!pData.meta_title) missingFields.push('Meta Title');
+    // if (!pData.meta_description) missingFields.push('Meta Description');
+    // if (!pData.title?.en) missingFields.push('Title (English)');
+    // if (!pData.description?.en) missingFields.push('Description (English)');
+    // if (!pData.meta_tag) missingFields.push('Meta Tag');
+    // if (!tags) missingFields.push('Tags');
+    // if (!tax) missingFields.push('Tax');
+    // if (!pData.hsn_code) missingFields.push('HSN Code');
+    // if (!pData.sku) missingFields.push('SKU');
+    // if (!pData.manufacture?.en) missingFields.push('Manufacture (English)');
+    // if (!categories?.length) missingFields.push('Categories');
 
     // Optional image validation - uncomment if main images are required
     // if (entityId && !mainImage && !pData.main_image) missingFields.push('Main Image');
@@ -429,8 +427,10 @@ export default function ProductsForm() {
 
     // Validate variations if product is variable and variations exist
     if (pData.productype === 'variableproduct' && variations?.length > 0) {
+      console.log('pData productType on', variations);
       let isValid = true;
-      let variationErrors = [];
+
+      let variationErrors: any = [];
 
       variations.forEach((variation, index) => {
         let missingVariationFields = [];
@@ -695,15 +695,6 @@ export default function ProductsForm() {
                   </CardContent>
                 </TabsContent>
               </Tabs>
-
-              <CustomTextField
-                name="name"
-                label="Name*"
-                placeholder="Enter name"
-                value={(pData as IProducts)?.name}
-                onChange={handleInputChange}
-              />
-
               <CustomTextField
                 name="model_no"
                 label="Model No.*"
@@ -772,7 +763,7 @@ export default function ProductsForm() {
                 options={cData}
                 isMulti
                 label="Categories*"
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.title.en}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Categories"
                 onChange={(e: any) =>
@@ -1213,6 +1204,7 @@ export default function ProductsForm() {
                         handleDropdownChange={handleDropdownChange}
                         producttype={(pData as IProducts)?.productype}
                         disabled={settingsSaved}
+                        pData={pData}
                       />
                     )}
 

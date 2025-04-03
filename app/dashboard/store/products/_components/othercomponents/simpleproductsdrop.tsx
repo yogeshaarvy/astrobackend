@@ -36,7 +36,6 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
         <CustomTextField
           label="Price*"
           name="price"
-          control={form.control}
           placeholder="Enter price"
           onChange={handleInputChange} // Handled by `react-hook-form`
           value={form.getValues('variants?.price')}
@@ -46,7 +45,6 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
         <CustomTextField
           label="Special Price*"
           name="special_price"
-          control={form.control}
           placeholder="Enter special price"
           onChange={handleInputChange} // Handled by `react-hook-form`
           value={form.getValues('variants?.special_price')}
@@ -58,7 +56,6 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
         <CustomTextField
           label="Weight(kg)*"
           name="weight"
-          control={form.control}
           placeholder="Enter weight"
           onChange={handleInputChange} // Handled by `react-hook-form`
           value={form.getValues('variants?.weight')}
@@ -68,7 +65,6 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
         <CustomTextField
           label=" Height(cms)*"
           name="height"
-          control={form.control}
           placeholder="Enter height"
           onChange={handleInputChange} // Handled by `react-hook-form`
           value={form.getValues('variants?.height')}
@@ -78,7 +74,6 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
         <CustomTextField
           label=" Breadth(cms)*"
           name="breadth"
-          control={form.control}
           placeholder="Enter breadth"
           onChange={handleInputChange} // Handled by `react-hook-form`
           value={form.getValues('variants?.breadth')}
@@ -88,7 +83,6 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
         <CustomTextField
           label="Length(cms)*"
           name="length"
-          control={form.control}
           placeholder="Enter length"
           onChange={handleInputChange} // Handled by `react-hook-form`
           value={form.getValues('variants?.length')}
