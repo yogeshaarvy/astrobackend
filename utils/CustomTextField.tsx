@@ -14,6 +14,7 @@ interface CustomTextFieldProps {
   placeholder?: string;
   value?: any;
   type?: string;
+  disabled?: boolean;
   multiple?: boolean;
   className?: string;
   required?: boolean;
@@ -28,6 +29,7 @@ const CustomTextField = ({
   multiple = false,
   value,
   label,
+  disabled,
   placeholder = '',
   type = 'text',
   className,

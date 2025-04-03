@@ -71,7 +71,7 @@ export default function TypesForm() {
     dispatch(addEditTypes(entityId || null))
       .then((response: any) => {
         if (response.payload.success) {
-          // router.push('/dashboard/store/filters/types');
+          router.push('/dashboard/store/filters/types');
           toast.success(response.payload.message);
         }
       })
@@ -138,7 +138,7 @@ export default function TypesForm() {
                   defaultValue="default"
                   data={[
                     { name: 'Text', _id: 'text' },
-                    { name: 'Coluor', _id: 'color' }
+                    { name: 'Color', _id: 'color' }
                   ]}
                   value={form.getValues('type') || ''}
                   onChange={handleDropdownChange}
