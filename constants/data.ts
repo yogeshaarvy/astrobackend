@@ -307,8 +307,8 @@ export const navItems: NavItem[] = [
     ]
   },
   {
-    title: 'Blog',
-    url: '/dashboard/blog',
+    title: 'Blogs',
+    url: '/dashboard/blogs',
     icon: 'notepadDash',
     isActive: false,
     items: [
@@ -330,7 +330,7 @@ export const navItems: NavItem[] = [
         items: [
           {
             title: 'Config',
-            url: '/dashboard/blog/other/config',
+            url: '/dashboard/blogs/other/config',
             icon: 'config'
           }
         ]
