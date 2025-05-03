@@ -70,7 +70,9 @@ import {
   Building2,
   Earth,
   MapPinHouseIcon,
-  Signpost
+  Signpost,
+  FileQuestion,
+  ServerCog
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -141,6 +143,8 @@ export const Icons = {
   returnpolicy: Undo2,
   shippingpolicy: Truck,
   pages: Newspaper,
+  whyChoose: FileQuestion,
+  ourService: ServerCog,
 
   cancel: Ban,
 
