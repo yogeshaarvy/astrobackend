@@ -37,7 +37,7 @@ export default function OurServicesForm() {
   const {
     singleOurServicesState: { loading, data: bData }
   } = useAppSelector((state) => state.ourService);
-  const [bannerImage, setBannerImage] = useState<File | null>(null);
+  const [IconImage, setIconImage] = useState<File | null>(null);
   const [showBannerImage, setShowBannerImage] = useState(true);
   const [showBackgroundColor, setShowBackgroundColor] = useState(false);
   const [showSwitch, setShowSwitch] = useState(true);
@@ -100,15 +100,15 @@ export default function OurServicesForm() {
                 className="space-y-8"
               >
                 <FormItem className="space-y-3">
-                  <FormLabel>Banner Image</FormLabel>
+                  <FormLabel>icon image</FormLabel>
 
                   <FileUploader
-                    value={bannerImage ? [bannerImage] : []}
+                    value={IconImage ? [IconImage] : []}
                     onValueChange={(newFiles: any) => {
-                      setBannerImage(newFiles[0] || null);
+                      setIconImage(newFiles[0] || null);
                       handleInputChange({
                         target: {
-                          name: 'banner_image',
+                          name: 'icon_image',
                           type: 'file',
                           files: newFiles
                         }
