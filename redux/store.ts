@@ -58,6 +58,8 @@ import panchangFaqReducer from './slices/panchang/faqSlice';
 import blogConfigReducer from './slices/Configs/blogsSlice';
 import whyChooseReducer from './slices/home/whyChooseSlice';
 import ourServicesReducer from './slices/home/ourServices';
+import consultanceReducer from './slices/home/consultance';
+import horoscopeiconReducer from './slices/home/horoscope';
 
 export const makeStore = () => {
   return configureStore({
@@ -119,7 +121,9 @@ export const makeStore = () => {
       panchangFaq: panchangFaqReducer,
       blogConfig: blogConfigReducer,
       whyChooseData: whyChooseReducer,
-      ourService: ourServicesReducer
+      ourService: ourServicesReducer,
+      consultance: consultanceReducer,
+      horoscope: horoscopeiconReducer
     }
   });
 };

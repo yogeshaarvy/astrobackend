@@ -72,7 +72,8 @@ import {
   MapPinHouseIcon,
   Signpost,
   FileQuestion,
-  ServerCog
+  ServerCog,
+  BookOpen
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -145,7 +146,7 @@ export const Icons = {
   pages: Newspaper,
   whyChoose: FileQuestion,
   ourService: ServerCog,
-
+  consultance: BookOpen,
   cancel: Ban,
 
   gitHub: ({ ...props }: LucideProps) => (

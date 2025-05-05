@@ -155,6 +155,16 @@ export const navItems: NavItem[] = [
         title: 'Our Service',
         url: '/dashboard/homes/ourServices',
         icon: 'ourService'
+      },
+      {
+        title: 'Consultance',
+        url: '/dashboard/homes/consultance',
+        icon: 'consultance'
+      },
+      {
+        title: 'Horoscope',
+        url: '/dashboard/homes/horoscope',
+        icon: 'consultance'
       }
     ]
   },
