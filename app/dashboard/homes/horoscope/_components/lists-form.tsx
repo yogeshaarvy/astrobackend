@@ -154,6 +154,15 @@ export default function HoroscopeForm() {
                             onChange={handleInputChange}
                           />
                         </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Date</Label>
+                          <Input
+                            name="date.en"
+                            placeholder="Enter your Date"
+                            value={(bData as IHoroscope)?.date?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
                       </CardContent>
                     </>
                   </TabsContent>
@@ -170,6 +179,15 @@ export default function HoroscopeForm() {
                             onChange={handleInputChange}
                           />
                         </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Date</Label>
+                          <Input
+                            name="date.hi"
+                            placeholder="Enter your Date"
+                            value={(bData as IHoroscope)?.date?.hi}
+                            onChange={handleInputChange}
+                          />
+                        </div>
                       </CardContent>
                     </>
                   </TabsContent>
@@ -182,17 +200,6 @@ export default function HoroscopeForm() {
                     placeholder="Enter Sequence"
                     type="number"
                     value={(bData as IHoroscope)?.sequence || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="name">Starting Date</Label>
-                  <Input
-                    name="starting_date.date"
-                    placeholder="Enter Date"
-                    type="number"
-                    value={(bData as IHoroscope)?.starting_date?.date || ''}
                     onChange={handleInputChange}
                   />
                 </div>

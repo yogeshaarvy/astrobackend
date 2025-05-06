@@ -16,13 +16,9 @@ export type IHoroscope = BaseModel & {
   icon_image?: string;
   sequence?: number;
   active?: boolean;
-  starting_date?: {
-    month: String;
-    date: String;
-  };
-  ending_date?: {
-    month: String;
-    date: String;
+  date?: {
+    en?: string;
+    hi?: string;
   };
 };
 
@@ -76,7 +72,8 @@ export const addEditHoroscopeList = createAsyncThunk<
         icon_image: clonedData.icon_image,
         slug: clonedData.slug,
         sequence: clonedData.sequence,
-        active: clonedData.active
+        active: clonedData.active,
+        date: clonedData.date ? JSON.stringify(clonedData.date) : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
