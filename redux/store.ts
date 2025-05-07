@@ -56,6 +56,10 @@ import panchangConfigReducer from './slices/panchang/panchangSlice';
 import horoscopetestimonialReducer from './slices/horoscope/testimonialSlice';
 import panchangFaqReducer from './slices/panchang/faqSlice';
 import blogConfigReducer from './slices/Configs/blogsSlice';
+import whyChooseReducer from './slices/home/whyChooseSlice';
+import ourServicesReducer from './slices/home/ourServices';
+import consultanceReducer from './slices/home/consultance';
+import horoscopeiconReducer from './slices/home/horoscope';
 
 export const makeStore = () => {
   return configureStore({
@@ -115,7 +119,11 @@ export const makeStore = () => {
       panchangConfig: panchangConfigReducer,
       horoscopetestimonial: horoscopetestimonialReducer,
       panchangFaq: panchangFaqReducer,
-      blogConfig: blogConfigReducer
+      blogConfig: blogConfigReducer,
+      whyChooseData: whyChooseReducer,
+      ourService: ourServicesReducer,
+      consultance: consultanceReducer,
+      horoscope: horoscopeiconReducer
     }
   });
 };
