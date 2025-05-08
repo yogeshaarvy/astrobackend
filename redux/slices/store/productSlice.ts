@@ -16,8 +16,6 @@ export type ISimpleProduct = {
 
 export type IStockManagement = {
   stock_management?: boolean;
-  stock_value?: number;
-  stock_status?: string;
   stock_management_level?: string;
 };
 export type IProducts = BaseModel & {
@@ -68,8 +66,7 @@ export type IProducts = BaseModel & {
   cancel_days?: number;
   videodata?: string;
   is_cod_allowed?: boolean;
-  // stock_management?: boolean,
-  // stock_value?: Number,
+
   productype?: string;
   simpleProduct?: ISimpleProduct; // Nested object for Simple Product fields
   stockManagement?: IStockManagement; // Nested object for Stock Management fields
@@ -78,8 +75,9 @@ export type IProducts = BaseModel & {
   variants?: any;
   sku?: string;
   totalStock?: number;
-  stock_status?: string;
   values?: any;
+  stock_value?: number;
+  stock_status?: string;
 };
 
 const initialState = {
@@ -228,12 +226,9 @@ export const addEditProducts = createAsyncThunk<
       other_image: Array.isArray(data.other_image)
         ? data.other_image
         : [data.other_image],
-      // filtertypes: Array.isArray(data.filtertypes)
-      //   ? data.filtertypes
-      //   : [data.filtertypes],
-      // filtervalues: Array.isArray(data.filtervalues)
-      //   ? data.filtervalues
-      //   : [data.filtervalues],
+      stock_value: data.stock_value,
+      stock_status: data.stock_status,
+
       categories: data.categories
         ? data.categories?.map((cat: any) => cat?._id).join(',')
         : [],

@@ -24,12 +24,16 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
   const {
     valuesListState: { loading: valuesListLoading, data: vData = [] }
   } = useAppSelector((state) => state.filter);
+  console.log('t data is ', tData);
+  console.log('v data is ', vData);
+  console.log('p data is ', pData);
   const savedAttributes = useAppSelector(
     (state) => state?.attributesSlice?.data
   ); // Get saved attributes from Redux store
   const [attributes, setAttributes] = useState<
     { type: any; values: string[] }[]
   >(savedAttributes || []);
+  console.log('attributes...........', attributes);
 
   const [typesQuery, setTypesQuery] = useState<string>('');
   const dispatch = useAppDispatch();
@@ -41,7 +45,19 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
       dispatch(loadAttributes()); // Load attributes from Redux store
     }
   }, [dispatch, savedAttributes]);
-
+  // Load types by default when component mounts
+  useEffect(() => {
+    dispatch(
+      fetchTypesList({
+        page,
+        pageSize,
+        keyword: '',
+        field: 'name',
+        status: '',
+        exportData: 'true'
+      })
+    );
+  }, [dispatch, page, pageSize]);
   const debouncedSearchTypes = useCallback(
     debounce((query) => {
       dispatch(
@@ -121,26 +137,26 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
 
   return (
     <div className="mb-5 pb-5">
-      {!pData.attributes && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          {attributes.length > 0 && (
-            <button
-              type="button" // Add this line
-              onClick={handleSaveAttributes}
-              className="my-3 me-4 rounded border border-blue-500 bg-transparent px-4 text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
-            >
-              Save Attributes
-            </button>
-          )}
+      {/* {!pData.attributes && ( */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {attributes.length > 0 && (
           <button
             type="button" // Add this line
-            onClick={handleAddAttributes}
+            onClick={handleSaveAttributes}
             className="my-3 me-4 rounded border border-blue-500 bg-transparent px-4 text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
           >
-            Add Attribute
+            Save Attributes
           </button>
-        </div>
-      )}
+        )}
+        <button
+          type="button" // Add this line
+          onClick={handleAddAttributes}
+          className="my-3 me-4 rounded border border-blue-500 bg-transparent px-4 text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+        >
+          Add Attribute
+        </button>
+      </div>
+      {/* )} */}
       {attributes?.length === 0 ? (
         <div className="text-md border-black-1000 border bg-gray-100 p-3 text-center font-medium font-semibold">
           No Product Attributes Are Added!
@@ -150,7 +166,7 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
           {attributes?.map((attribute, index) => (
             <div key={index} className="grid grid-cols-3 gap-4">
               <CustomReactSelect
-                options={tData}
+                options={getFilteredTypesOptions()}
                 label="Types"
                 getOptionLabel={(option) => option?.name?.en}
                 getOptionValue={(option) => option._id}

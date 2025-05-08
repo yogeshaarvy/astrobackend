@@ -1,35 +1,61 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import CustomTextField from '@/utils/CustomTextField';
+import { useAppDispatch } from '@/redux/hooks';
+import { ISimpleProduct } from '@/redux/slices/store/productSlice';
 
 interface SimpleProductFormProps {
   handleInputChange: any;
   disabled: boolean;
   pData: any;
   entityId: any;
+  onVariationsChange: any;
 }
 
 const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
   handleInputChange,
   disabled,
   pData,
-  entityId
+  entityId,
+  onVariationsChange
 }) => {
   const form = useFormContext(); // Use the form context from the parent
-  React.useEffect(() => {
-    if (entityId && pData && pData?.productype === 'simpleproduct') {
-      form.setValue(
-        'variants?.special_price',
-        pData?.variants[0]?.special_price || 0
-      );
-      form.setValue('variants?.price', pData?.variants[0]?.price || 0);
-      form.setValue('variants?.height', pData?.variants[0]?.height || 0);
-      form.setValue('variants?.weight', pData?.variants[0]?.weight || 0);
-      form.setValue('variants?.breadth', pData?.variants[0]?.breadth || 0);
-      form.setValue('variants?.length', pData?.variants[0]?.length || 0);
+  const dispatch = useAppDispatch();
+  const [variationData, setVariationData] = useState<ISimpleProduct[]>([
+    {
+      price: 0,
+      special_price: 0,
+      weight: 0,
+      height: 0,
+      breadth: 0,
+      length: 0
     }
-  }, [pData, entityId, form]);
+  ]);
+  useEffect(() => {
+    if (pData?.variants?.length > 0) {
+      setVariationData(pData?.variants);
+    }
+  }, [dispatch, pData]);
+  const handleVariationsChange = (index: number, field: string, value: any) => {
+    const updatedCombinations = [...variationData];
+    updatedCombinations[index] = {
+      ...updatedCombinations[index],
+      [field]: value
+    };
+    setVariationData(updatedCombinations);
+    // Extract only the _id from the values
+    const combinationsWithIds = updatedCombinations.map((combination) => ({
+      ...combination,
+      values: []
+    }));
+    // dispatch(
+    //   updateProductsData({
+    //     variations: combinationsWithIds
+    //   })
+    // );
+    onVariationsChange(combinationsWithIds);
+  };
   return (
     <div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -37,19 +63,19 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
           label="Price*"
           name="price"
           placeholder="Enter price"
-          onChange={handleInputChange} // Handled by `react-hook-form`
-          value={form.getValues('variants?.price')}
+          onChange={(e) => handleVariationsChange(0, 'price', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.price}
           type="number"
-          disabled={disabled}
         />
         <CustomTextField
           label="Special Price*"
           name="special_price"
           placeholder="Enter special price"
-          onChange={handleInputChange} // Handled by `react-hook-form`
-          value={form.getValues('variants?.special_price')}
+          onChange={(e) =>
+            handleVariationsChange(0, 'special_price', e.target.value)
+          } // Handled by `react-hook-form`
+          value={variationData[0]?.special_price}
           type="number"
-          disabled={disabled}
         />
       </div>
       <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-4">
@@ -57,37 +83,33 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
           label="Weight(kg)*"
           name="weight"
           placeholder="Enter weight"
-          onChange={handleInputChange} // Handled by `react-hook-form`
-          value={form.getValues('variants?.weight')}
+          onChange={(e) => handleVariationsChange(0, 'weight', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.weight}
           type="number"
-          disabled={disabled}
         />
         <CustomTextField
           label=" Height(cms)*"
           name="height"
           placeholder="Enter height"
-          onChange={handleInputChange} // Handled by `react-hook-form`
-          value={form.getValues('variants?.height')}
+          onChange={(e) => handleVariationsChange(0, 'height', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.height}
           type="number"
-          disabled={disabled}
         />
         <CustomTextField
           label=" Breadth(cms)*"
           name="breadth"
           placeholder="Enter breadth"
-          onChange={handleInputChange} // Handled by `react-hook-form`
-          value={form.getValues('variants?.breadth')}
+          onChange={(e) => handleVariationsChange(0, 'breadth', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.breadth}
           type="number"
-          disabled={disabled}
         />
         <CustomTextField
           label="Length(cms)*"
           name="length"
           placeholder="Enter length"
-          onChange={handleInputChange} // Handled by `react-hook-form`
-          value={form.getValues('variants?.length')}
+          onChange={(e) => handleVariationsChange(0, 'length', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.length}
           type="number"
-          disabled={disabled}
         />
       </div>
     </div>

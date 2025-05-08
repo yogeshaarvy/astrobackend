@@ -9,7 +9,7 @@ interface VariationsFormProps {
   handleInputChange: any;
   stockmanagemet: any;
   pData: any;
-  onVariationsChange: (variations: any[]) => void; // Add a prop for sending variations data to the parent
+  onVariationsChange: (variations: any[]) => void;
 }
 
 const VariationsForm: React.FC<VariationsFormProps> = ({
@@ -21,6 +21,9 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
 }) => {
   const form = useFormContext();
   const [combinations, setCombinations] = useState<any[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>(
+    {}
+  );
 
   // Generate combinations of all values from attributes
   const generateCombinations = (attributes: any[]) => {
@@ -62,6 +65,15 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
   useEffect(() => {
     if (pData && pData?.variants) {
       setCombinations(pData?.variants);
+
+      // Set up image previews for existing images
+      const previews: { [key: number]: string } = {};
+      pData.variants.forEach((variant: any, index: number) => {
+        if (variant.image && typeof variant.image === 'string') {
+          previews[index] = variant.image;
+        }
+      });
+      setImagePreviews(previews);
     } else {
       const newCombinations = generateCombinations(newAttributes);
       setCombinations(newCombinations);
@@ -90,10 +102,39 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    console.log('file 23', file);
+
     if (file) {
+      // Create preview URL for the image
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreviews((prev) => ({
+        ...prev,
+        [index]: previewUrl
+      }));
+
       handleFieldChange(index, 'image', file);
     }
+  };
+
+  const removeImage = (index: number) => {
+    // Remove image from combination and preview
+    const updatedCombinations = [...combinations];
+    updatedCombinations[index] = {
+      ...updatedCombinations[index],
+      image: null
+    };
+    setCombinations(updatedCombinations);
+
+    // Remove preview
+    const updatedPreviews = { ...imagePreviews };
+    delete updatedPreviews[index];
+    setImagePreviews(updatedPreviews);
+
+    // Update parent
+    const combinationsWithIds = updatedCombinations.map((combination) => ({
+      ...combination,
+      values: combination.values.map((value: any) => value._id)
+    }));
+    onVariationsChange(combinationsWithIds);
   };
 
   return (
@@ -175,7 +216,10 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                           value={combination.sku}
                           type="text"
                         />
-                        {stockmanagemet === 'variable_level' && (
+
+                        {(stockmanagemet === 'variable_level' ||
+                          pData?.stockManagement?.stock_management_level.trim() ===
+                            'variable_level') && (
                           <>
                             <CustomTextField
                               label="Total Stock*"
@@ -196,7 +240,7 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                               <select
                                 className="mt-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900"
                                 name={`combinations[${index}].stock_status`}
-                                value={combination.stock_status || 'true'} // Ensure it has a valid value
+                                value={combination.stock_status}
                                 onChange={(e) =>
                                   handleFieldChange(
                                     index,
@@ -204,7 +248,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                                     e.target.value
                                   )
                                 }
-                                disabled={!!pData?.variants} // Disable if pData is present
                               >
                                 <option value="">Select Stock status</option>
                                 <option value="true">In Stock</option>
@@ -258,17 +301,52 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         />
                       </div>
 
-                      {/* Image Uploader */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                      {/* Image Uploader with Preview */}
+                      <div className="mt-4">
+                        <label className="mb-2 block text-sm font-medium text-gray-700">
                           Image
                         </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="file:bg-black-100 hover:file:bg-black-100 block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-500"
-                          onChange={(e) => handleImageUpload(index, e)}
-                        />
+
+                        <div className="flex items-center gap-4">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="file:bg-black-100 hover:file:bg-black-100 block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-500"
+                            onChange={(e) => handleImageUpload(index, e)}
+                          />
+
+                          {imagePreviews[index] && (
+                            <div className="relative">
+                              <div className="relative h-20 w-20 overflow-hidden rounded-md border">
+                                <img
+                                  src={imagePreviews[index]}
+                                  alt="Variation preview"
+                                  className="h-full w-full object-cover"
+                                />
+                                <button
+                                  type="button"
+                                  className="absolute right-0 top-0 rounded-bl-md bg-red-500 p-1 text-white"
+                                  onClick={() => removeImage(index)}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </details>

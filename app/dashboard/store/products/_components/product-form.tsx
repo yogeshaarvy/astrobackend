@@ -108,6 +108,35 @@ export default function ProductsForm() {
   const brands: IBrand[] = bData;
   const page = 1;
   const pageSize = 100000;
+
+  useEffect(() => {
+    if (!pData?.variants) return;
+    if (pData?.variants) {
+      setVariations(pData?.variants);
+    }
+  }, [pData?.variants]);
+  useEffect(() => {
+    if (entityId) {
+      setMainImage(pData?.main_image || '');
+      setSecondMainImage(pData?.second_main_image || '');
+      setAttributes(pData?.attributes || []);
+      // Set initial state for images
+      setMainImagePreview(pData?.main_image || null);
+      setSecondMainImagePreview(pData?.second_main_image || null);
+      setOtherImages(pData?.other_image || []);
+      setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
+      setSettingsSaved(true);
+      setTabsEnabled((prev) => ({
+        ...prev,
+        attribute: true,
+        variations: true
+      }));
+    }
+  }, [pData, dispatch]);
+  console.log('mainimage', mainImage);
+  console.log('secondmainimage', secondMainImage);
+  console.log('mainimagepreview', mainImagePreview);
+  console.log('secondmainimagepreview', secondMainImagePreview);
   useEffect(() => {
     dispatch(fetchCountriesList({ page, pageSize }));
     dispatch(
@@ -151,6 +180,8 @@ export default function ProductsForm() {
       })
     );
   }, [dispatch]);
+  console.log('pData............', pData);
+  console.log('attributes................', attributes);
 
   // Handle Single Image Upload
   const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -226,7 +257,6 @@ export default function ProductsForm() {
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
-    console.log('name, vlaue', name, value);
     dispatch(
       updateProductsData({
         [name]:
@@ -251,99 +281,25 @@ export default function ProductsForm() {
     const formData = { ...pData }; // Create a copy to avoid mutation
     const productType = formData.productype;
     const stockManagementEnabled =
-      formData.stockManagement?.stockManagement === true;
+      formData.stockManagement?.stock_management === true;
     const stockManagementLevel =
       formData.stockManagement?.stock_management_level;
-    let requiredFields = [];
-
-    // Validation: Ensure Simple Product Fields are filled if product type is "simpleproduct"
-    if (productType === 'simpleproduct') {
-      requiredFields = [
-        'price',
-        'special_price',
-        'weight',
-        'height',
-        'breadth',
-        'length'
-      ];
-
-      // Additional required fields if stock management is enabled
-      if (stockManagementEnabled) {
-        requiredFields.push('stock_value');
-      }
-    }
-
-    // Required field for Variable Product if stock management is enabled
-    if (productType === 'variableproduct' && stockManagementEnabled) {
-      requiredFields.push('stock_management_level');
-    }
+    let requiredFields: string[] = [];
 
     // If stock management level is "product_level", require stock_value
-    if (stockManagementLevel === 'product_level') {
-      requiredFields.push('stock_value');
-    }
+    // if (stockManagementLevel === 'product_level') {
+    //   requiredFields.push('stock_value');
+    // }
 
     // Check if required fields exist in formData or within simpleProduct object
-    const missingFields = requiredFields.filter((field) => {
-      if (field === 'stock_value' && stockManagementEnabled) {
-        return !formData.stockManagement?.stock_value;
-      }
-
-      // For simple product fields, check in both root level and simpleProduct object
-      if (
-        [
-          'price',
-          'special_price',
-          'weight',
-          'height',
-          'breadth',
-          'length'
-        ].includes(field)
-      ) {
-        return !(
-          formData[field] ||
-          (formData.simpleProduct && formData.simpleProduct[field])
-        );
-      }
-
-      return !formData[field];
-    });
+    const missingFields = requiredFields.filter(
+      (field) => !formData[field] // Check for empty or undefined fields
+    );
 
     if (missingFields.length > 0) {
       toast.error(`Missing required fields: ${missingFields.join(', ')}`);
       return;
     }
-
-    // Extract and structure the data properly
-    const extractedData = {
-      productype: productType,
-      simpleProduct:
-        productType === 'simpleproduct'
-          ? {
-              price: formData.price || formData.simpleProduct?.price,
-              special_price:
-                formData.special_price || formData.simpleProduct?.special_price,
-              weight: formData.weight || formData.simpleProduct?.weight,
-              height: formData.height || formData.simpleProduct?.height,
-              breadth: formData.breadth || formData.simpleProduct?.breadth,
-              length: formData.length || formData.simpleProduct?.length
-            }
-          : {},
-      stockManagement: {
-        stockManagement: stockManagementEnabled,
-        stock_value: formData.stockManagement?.stock_value || '',
-        stock_status:
-          formData.stock_status ||
-          formData.stockManagement?.stock_status ||
-          'instock',
-        stock_management_level: stockManagementLevel || ''
-      }
-    };
-
-    if (activeTab === 'general') {
-      setGeneralTabData(extractedData); // Save data specific to General tab
-    }
-
     // Enable the "Attribute" and "Variations" tabs after saving settings
     setTabsEnabled((prev) => ({
       ...prev,
@@ -359,40 +315,47 @@ export default function ProductsForm() {
 
   // Fixed handleSubmit function
   const handleSubmit = async () => {
+    if (entityId) {
+      handleSaveSettings();
+    }
     if (!pData) {
       toast.error('Product data is not available');
       return;
     }
 
     // Validate required fields
-    let missingFields = [];
+    let missingFields: string[] = [];
     const categories = pData.categories?.length > 0 ? pData.categories : [];
+    console.log('categoriesdata.......', categories);
+
     const brandName = pData.brand_name || '';
     const madeIn = pData.madeIn || '';
     const tags = pData.tags || '';
     const tax = pData.tax || '';
 
     // Check required fields
-    // if (!pData.model_no) missingFields.push('Model Number');
-    // if (!pData.productype) missingFields.push('Product Type');
-    // if (!brandName) missingFields.push('Brand Name');
-    // if (!madeIn) missingFields.push('Made In');
-    // if (!pData.meta_title) missingFields.push('Meta Title');
-    // if (!pData.meta_description) missingFields.push('Meta Description');
-    // if (!pData.title?.en) missingFields.push('Title (English)');
-    // if (!pData.description?.en) missingFields.push('Description (English)');
-    // if (!pData.meta_tag) missingFields.push('Meta Tag');
-    // if (!tags) missingFields.push('Tags');
-    // if (!tax) missingFields.push('Tax');
-    // if (!pData.hsn_code) missingFields.push('HSN Code');
-    // if (!pData.sku) missingFields.push('SKU');
-    // if (!pData.manufacture?.en) missingFields.push('Manufacture (English)');
-    // if (!categories?.length) missingFields.push('Categories');
+    if (!pData.model_no) missingFields.push('Model Number');
+    if (!pData.productype) missingFields.push('Product Type');
+    if (!brandName) missingFields.push('Brand Name');
+    if (!madeIn) missingFields.push('Made In');
+    if (!pData.meta_title) missingFields.push('Meta Title');
+    if (!pData.meta_description) missingFields.push('Meta Description');
+    if (!pData.title?.en) missingFields.push('Title (English)');
+    if (!pData.title?.hi) missingFields.push('Title (Hindi)');
+    if (!pData.description?.en) missingFields.push('Description (English)');
+    if (!pData.description?.hi) missingFields.push('Description (Hindi)');
+    if (!pData.meta_tag) missingFields.push('Meta Tag');
+    if (!tags) missingFields.push('Tags');
+    if (!tax) missingFields.push('Tax');
+    if (!pData.hsn_code) missingFields.push('HSN Code');
+    if (!pData.sku) missingFields.push('SKU');
+    if (!pData.manufacture?.en) missingFields.push('Manufacture (English)');
+    if (!pData.manufacture?.hi) missingFields.push('Manufacture (Hindi)');
+    if (!categories?.length) missingFields.push('Categories');
 
     // Optional image validation - uncomment if main images are required
-    // if (entityId && !mainImage && !pData.main_image) missingFields.push('Main Image');
-    // if (entityId && !secondMainImage && !pData.second_main_image) missingFields.push('Second Main Image');
-
+    if (!mainImage) missingFields.push('Main Image');
+    if (!secondMainImage) missingFields.push('Second Main Image');
     // If any fields are missing, show an error message with the field names
     if (missingFields.length > 0) {
       toast.error(
@@ -426,8 +389,7 @@ export default function ProductsForm() {
     }
 
     // Validate variations if product is variable and variations exist
-    if (pData.productype === 'variableproduct' && variations?.length > 0) {
-      console.log('pData productType on', variations);
+    if (variations?.length > 0) {
       let isValid = true;
 
       let variationErrors: any = [];
@@ -442,21 +404,17 @@ export default function ProductsForm() {
         if (!variation.height) missingVariationFields.push('Height');
         if (!variation.breadth) missingVariationFields.push('Breadth');
         if (!variation.length) missingVariationFields.push('Length');
-        if (!variation.sku) missingVariationFields.push('SKU');
-
-        // Only validate image if it's a new variation without an existing image URL
-        if (!variation.image && typeof variation.image !== 'string') {
-          missingVariationFields.push('Image');
+        if (pData.productype != 'simpleproduct') {
+          if (!variation.sku) missingVariationFields.push('SKU');
+          if (!variation.image) missingVariationFields.push('Image');
         }
+        // if (
+        //   pData?.stockManagement?.stock_management_level ===
+        //   'product_level'
+        // ) {
+        //   if (!variation.totalStock) missingVariationFields.push('Total Stock');
 
-        if (
-          generalTabData?.stockManagement?.stock_management_level ===
-          'variable_level'
-        ) {
-          if (!variation.totalStock) missingVariationFields.push('Total Stock');
-          if (!variation.stock_status)
-            missingVariationFields.push('Stock Status');
-        }
+        // }
 
         if (missingVariationFields.length > 0) {
           isValid = false;
@@ -482,66 +440,41 @@ export default function ProductsForm() {
 
     // Handle variations based on product type
     let finalVariations = variations;
-    if (pData.productype === 'simpleproduct') {
-      finalVariations = [
-        {
-          ...generalTabData?.simpleProduct,
-          values: [] // Add any necessary values here
-        }
-      ];
-    }
 
     // Upload images for variations if needed
     const uploadImageAndUpdate = async () => {
-      // Create a copy of the variations array
-      const updatedVariations = [...finalVariations];
-
-      for (let i = 0; i < updatedVariations.length; i++) {
-        const item = updatedVariations[i];
-
-        // Skip if image is already a string URL or doesn't exist
-        if (!item.image || typeof item.image === 'string') continue;
-
+      for (let i = 0; i < finalVariations.length; i++) {
+        const item = finalVariations[i];
         const formData = new FormData();
 
-        // Determine file type for upload
-        const fileType = item.image.type?.startsWith('image/')
-          ? 'imagefile'
-          : item.image.type?.startsWith('audio/')
-          ? 'audiofile'
-          : 'file';
+        if (item.image) {
+          const fileType = item?.image?.type?.startsWith('image/')
+            ? 'imagefile'
+            : item?.image?.type?.startsWith('audio/')
+            ? 'audiofile'
+            : 'file';
 
-        formData.append(fileType, item.image);
+          formData.append(fileType, item?.image);
 
-        try {
-          // Make sure fetchApi is defined in your component
-          const response = await fetchApi('/files', {
-            method: 'POST',
-            body: formData
-          });
+          try {
+            const response = await fetchApi('/files', {
+              method: 'POST',
+              body: formData
+            });
 
-          // Update the variation with the new image URL
-          if (response?.result?.imageFileUrl) {
-            updatedVariations[i] = {
+            // Update the finalVariations array with the response data
+            finalVariations[i] = {
               ...item,
-              image: response.result.imageFileUrl
+              image: response?.result?.imageFileUrl
             };
+          } catch (error) {
+            console.error('Error uploading file:', error);
           }
-        } catch (error) {
-          console.error('Error uploading file:', error);
-          toast.error(`Failed to upload image for variation ${i + 1}`);
         }
       }
-
-      // Update finalVariations with the processed data
-      finalVariations = updatedVariations;
     };
 
-    // Process variations images
-    if (finalVariations.length > 0) {
-      await uploadImageAndUpdate();
-    }
-
+    await uploadImageAndUpdate();
     // Format attributes properly for saving
     const attributesToSave = attributes.map((attr) => ({
       type: attr?.type?._id,
@@ -560,8 +493,6 @@ export default function ProductsForm() {
       categories: categories,
       variations: finalVariations,
       attributes: attributesToSave,
-      stockManagement: generalTabData?.stockManagement || pData.stockManagement,
-
       // Handle main images appropriately
       main_image: mainImage || pData.main_image || '',
       second_main_image: secondMainImage || pData.second_main_image || '',
@@ -573,8 +504,8 @@ export default function ProductsForm() {
     dispatch(updateProductsData(finalData));
 
     // Submit the data to the API
-    dispatch(addEditProducts(null)).then((response) => {
-      if (!response?.error) {
+    dispatch(addEditProducts(entityId || null)).then((response) => {
+      if (response?.payload?.success) {
         router.push('/dashboard/store/products');
         toast.success(
           response?.payload?.message || 'Product saved successfully'
@@ -584,7 +515,13 @@ export default function ProductsForm() {
       }
     });
   };
-
+  useEffect(() => {
+    setTabsEnabled((prev) => ({
+      ...prev,
+      attribute: true,
+      variations: true
+    }));
+  }, [dispatch, entityId, pData]);
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
@@ -1134,36 +1071,39 @@ export default function ProductsForm() {
                   >
                     General
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => handleTabChange('attribute')}
-                    disabled={!tabsEnabled.attribute}
-                    className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                      tabsEnabled.attribute
-                        ? activeTab === 'attribute'
-                          ? 'bg-gray-900 text-white'
-                          : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                        : 'cursor-not-allowed bg-transparent text-gray-500'
-                    }`}
-                  >
-                    Attribute
-                  </button>
+
                   {(pData as IProducts)?.productype === 'variableproduct' &&
                     tabsEnabled.variations && (
-                      <button
-                        type="button"
-                        onClick={() => handleTabChange('variations')}
-                        disabled={!tabsEnabled.variations}
-                        className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
-                          tabsEnabled.variations
-                            ? activeTab === 'variations'
-                              ? 'bg-gray-900 text-white'
-                              : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
-                            : 'cursor-not-allowed bg-transparent text-gray-500'
-                        }`}
-                      >
-                        Variations
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => handleTabChange('attribute')}
+                          disabled={!tabsEnabled.attribute}
+                          className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                            tabsEnabled.attribute
+                              ? activeTab === 'attribute'
+                                ? 'bg-gray-900 text-white'
+                                : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
+                              : 'cursor-not-allowed bg-transparent text-gray-500'
+                          }`}
+                        >
+                          Attribute
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleTabChange('variations')}
+                          disabled={!tabsEnabled.variations}
+                          className={`border border-gray-900 px-4 py-2 text-sm font-medium ${
+                            tabsEnabled.variations
+                              ? activeTab === 'variations'
+                                ? 'bg-gray-900 text-white'
+                                : 'bg-transparent text-gray-900 hover:bg-gray-900 hover:text-white'
+                              : 'cursor-not-allowed bg-transparent text-gray-500'
+                          }`}
+                        >
+                          Variations
+                        </button>
+                      </>
                     )}
                 </div>
                 {activeTab === 'general' && (
@@ -1179,14 +1119,7 @@ export default function ProductsForm() {
                         { name: 'Variable Product', _id: 'variableproduct' }
                       ]}
                       disabled={settingsSaved}
-                      onChange={(value) =>
-                        handleInputChange({
-                          target: {
-                            name: 'productype',
-                            value: value.value
-                          }
-                        })
-                      }
+                      onChange={handleDropdownChange}
                     />
                     {(pData as IProducts)?.productype === 'simpleproduct' && (
                       <SimpleProductForm
@@ -1194,14 +1127,15 @@ export default function ProductsForm() {
                         disabled={settingsSaved}
                         entityId={entityId}
                         pData={pData}
+                        onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
                       />
                     )}
+
                     {((pData as IProducts)?.productype === 'simpleproduct' ||
                       (pData as IProducts)?.productype ===
                         'variableproduct') && (
                       <StockmanagmentProductForm
                         handleInputChange={handleInputChange}
-                        handleDropdownChange={handleDropdownChange}
                         producttype={(pData as IProducts)?.productype}
                         disabled={settingsSaved}
                         pData={pData}
@@ -1211,14 +1145,16 @@ export default function ProductsForm() {
                     {((pData as IProducts)?.productype === 'simpleproduct' ||
                       (pData as IProducts)?.productype ===
                         'variableproduct') && (
-                      <Button
-                        type="button"
-                        onClick={handleSaveSettings}
-                        className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
-                        disabled={settingsSaved} // Disable button if settings are saved
-                      >
-                        Save Settings
-                      </Button>
+                      <>
+                        <Button
+                          type="button"
+                          onClick={handleSaveSettings}
+                          className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
+                          // disabled={settingsSaved} // Disable button if settings are saved
+                        >
+                          Save Settings
+                        </Button>
+                      </>
                     )}
                   </>
                 )}
@@ -1235,8 +1171,7 @@ export default function ProductsForm() {
                     <VariationsForm
                       newAttributes={attributes}
                       stockmanagemet={
-                        generalTabData?.stockManagement
-                          ?.stock_management_level || ''
+                        pData?.stockManagement?.stock_management_level
                       }
                       handleInputChange={handleInputChange}
                       onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
