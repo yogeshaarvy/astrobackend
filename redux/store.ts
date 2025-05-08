@@ -60,6 +60,7 @@ import whyChooseReducer from './slices/home/whyChooseSlice';
 import ourServicesReducer from './slices/home/ourServices';
 import consultanceReducer from './slices/home/consultance';
 import horoscopeiconReducer from './slices/home/horoscope';
+import registerImageReducer from './slices/register-imageSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -123,7 +124,8 @@ export const makeStore = () => {
       whyChooseData: whyChooseReducer,
       ourService: ourServicesReducer,
       consultance: consultanceReducer,
-      horoscope: horoscopeiconReducer
+      horoscope: horoscopeiconReducer,
+      registerImage: registerImageReducer
     }
   });
 };

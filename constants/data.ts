@@ -327,6 +327,13 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: 'Auth page Images',
+    url: '/dashboard/register-image',
+    icon: 'medal',
+    isActive: false,
+    items: [] // No child items
+  },
+  {
     title: 'Blogs',
     url: '/dashboard/blogs',
     icon: 'notepadDash',
