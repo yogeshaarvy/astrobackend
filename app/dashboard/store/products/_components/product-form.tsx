@@ -116,22 +116,27 @@ export default function ProductsForm() {
     }
   }, [pData?.variants]);
   useEffect(() => {
-    setMainImage(pData?.main_image || '');
-    setSecondMainImage(pData?.second_main_image || '');
-    setAttributes(pData?.attributes || []);
-    // Set initial state for images
-    setMainImagePreview(pData?.main_image || null);
-    setSecondMainImagePreview(pData?.second_main_image || null);
-    setOtherImages(pData?.other_image || []);
-    setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
-    setSettingsSaved(true);
-    setTabsEnabled((prev) => ({
-      ...prev,
-      attribute: true,
-      variations: true
-    }));
+    if (entityId) {
+      setMainImage(pData?.main_image || '');
+      setSecondMainImage(pData?.second_main_image || '');
+      setAttributes(pData?.attributes || []);
+      // Set initial state for images
+      setMainImagePreview(pData?.main_image || null);
+      setSecondMainImagePreview(pData?.second_main_image || null);
+      setOtherImages(pData?.other_image || []);
+      setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
+      setSettingsSaved(true);
+      setTabsEnabled((prev) => ({
+        ...prev,
+        attribute: true,
+        variations: true
+      }));
+    }
   }, [pData, dispatch]);
-
+  console.log('mainimage', mainImage);
+  console.log('secondmainimage', secondMainImage);
+  console.log('mainimagepreview', mainImagePreview);
+  console.log('secondmainimagepreview', secondMainImagePreview);
   useEffect(() => {
     dispatch(fetchCountriesList({ page, pageSize }));
     dispatch(
@@ -252,7 +257,6 @@ export default function ProductsForm() {
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
-    console.log('name, vlaue', name, value);
     dispatch(
       updateProductsData({
         [name]:
@@ -278,7 +282,6 @@ export default function ProductsForm() {
     const productType = formData.productype;
     const stockManagementEnabled =
       formData.stockManagement?.stock_management === true;
-    console.log('stockManagementEnabled', stockManagementEnabled);
     const stockManagementLevel =
       formData.stockManagement?.stock_management_level;
     let requiredFields: string[] = [];
@@ -338,13 +341,16 @@ export default function ProductsForm() {
     if (!pData.meta_title) missingFields.push('Meta Title');
     if (!pData.meta_description) missingFields.push('Meta Description');
     if (!pData.title?.en) missingFields.push('Title (English)');
+    if (!pData.title?.hi) missingFields.push('Title (Hindi)');
     if (!pData.description?.en) missingFields.push('Description (English)');
+    if (!pData.description?.hi) missingFields.push('Description (Hindi)');
     if (!pData.meta_tag) missingFields.push('Meta Tag');
     if (!tags) missingFields.push('Tags');
     if (!tax) missingFields.push('Tax');
     if (!pData.hsn_code) missingFields.push('HSN Code');
     if (!pData.sku) missingFields.push('SKU');
     if (!pData.manufacture?.en) missingFields.push('Manufacture (English)');
+    if (!pData.manufacture?.hi) missingFields.push('Manufacture (Hindi)');
     if (!categories?.length) missingFields.push('Categories');
 
     // Optional image validation - uncomment if main images are required

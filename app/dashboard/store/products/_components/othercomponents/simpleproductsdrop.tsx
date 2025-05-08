@@ -71,8 +71,10 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
           label="Special Price*"
           name="special_price"
           placeholder="Enter special price"
-          onChange={(e) => handleVariationsChange(0, 'price', e.target.value)} // Handled by `react-hook-form`
-          value={variationData[0]?.price}
+          onChange={(e) =>
+            handleVariationsChange(0, 'special_price', e.target.value)
+          } // Handled by `react-hook-form`
+          value={variationData[0]?.special_price}
           type="number"
         />
       </div>
@@ -81,32 +83,32 @@ const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
           label="Weight(kg)*"
           name="weight"
           placeholder="Enter weight"
-          onChange={(e) => handleVariationsChange(0, 'price', e.target.value)} // Handled by `react-hook-form`
-          value={variationData[0]?.price}
+          onChange={(e) => handleVariationsChange(0, 'weight', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.weight}
           type="number"
         />
         <CustomTextField
           label=" Height(cms)*"
           name="height"
           placeholder="Enter height"
-          onChange={(e) => handleVariationsChange(0, 'price', e.target.value)} // Handled by `react-hook-form`
-          value={variationData[0]?.price}
+          onChange={(e) => handleVariationsChange(0, 'height', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.height}
           type="number"
         />
         <CustomTextField
           label=" Breadth(cms)*"
           name="breadth"
           placeholder="Enter breadth"
-          onChange={(e) => handleVariationsChange(0, 'price', e.target.value)} // Handled by `react-hook-form`
-          value={variationData[0]?.price}
+          onChange={(e) => handleVariationsChange(0, 'breadth', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.breadth}
           type="number"
         />
         <CustomTextField
           label="Length(cms)*"
           name="length"
           placeholder="Enter length"
-          onChange={(e) => handleVariationsChange(0, 'price', e.target.value)} // Handled by `react-hook-form`
-          value={variationData[0]?.price}
+          onChange={(e) => handleVariationsChange(0, 'length', e.target.value)} // Handled by `react-hook-form`
+          value={variationData[0]?.length}
           type="number"
         />
       </div>

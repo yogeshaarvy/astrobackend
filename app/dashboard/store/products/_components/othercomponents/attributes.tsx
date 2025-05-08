@@ -45,7 +45,19 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
       dispatch(loadAttributes()); // Load attributes from Redux store
     }
   }, [dispatch, savedAttributes]);
-
+  // Load types by default when component mounts
+  useEffect(() => {
+    dispatch(
+      fetchTypesList({
+        page,
+        pageSize,
+        keyword: '',
+        field: 'name',
+        status: '',
+        exportData: 'true'
+      })
+    );
+  }, [dispatch, page, pageSize]);
   const debouncedSearchTypes = useCallback(
     debounce((query) => {
       dispatch(
@@ -154,7 +166,7 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
           {attributes?.map((attribute, index) => (
             <div key={index} className="grid grid-cols-3 gap-4">
               <CustomReactSelect
-                options={tData}
+                options={getFilteredTypesOptions()}
                 label="Types"
                 getOptionLabel={(option) => option?.name?.en}
                 getOptionValue={(option) => option._id}
