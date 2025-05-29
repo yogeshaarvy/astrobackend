@@ -149,6 +149,8 @@ const AdditionalInfoSection: React.FC<AdditionalInfoSectionProps> = ({
               handleInputChange={handleInputChange}
               handleDropdownChange={handleDropdownChange}
               producttype={form.getValues('productype')}
+              disabled={false}
+              productStockManagement={form.getValues('stockManagement')}
             />
           )}
           <Button

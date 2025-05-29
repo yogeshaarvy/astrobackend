@@ -19,6 +19,7 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+  console.log('variable product data is...', data);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -54,11 +55,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                   'product_level'
                 ) {
                   router.push(
-                    `/dashboard/inventries/product?productid=${
-                      data._id
-                    }&producttype=${data.productype}&stock_management=${data
-                      ?.stockManagement
-                      ?.stock_management_level}&productname=${data?.name}&variantid=${''}`
+                    `/dashboard/inventries/product?productid=${data._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}&variantid=${data?.variants[0]?._id}`
                   );
                 } else {
                   router.push(
@@ -67,11 +64,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 }
               } else {
                 router.push(
-                  `/dashboard/inventries/product?productid=${
-                    data._id
-                  }&variantid=${''}&producttype=${
-                    data.productype
-                  }&productname=${data?.name}`
+                  `/dashboard/inventries/product?productid=${data._id}&variantid=${data?.variants[0]?._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}`
                 );
               }
             }}

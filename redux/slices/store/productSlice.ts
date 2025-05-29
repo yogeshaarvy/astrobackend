@@ -25,6 +25,7 @@ export type IProducts = BaseModel & {
     en?: string;
     hi?: string;
   };
+  slug?: string;
   name?: string;
   description?: {
     en?: string;

@@ -4,10 +4,15 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { cloneDeep } from 'lodash';
 
 export type ITax = BaseModel & {
   _id?: string;
-  name?: string;
+  name?: {
+    en?: string;
+    hi?: string;
+  };
   rate?: string;
   active?: boolean;
 };
@@ -104,8 +109,14 @@ export const addEditTax = createAsyncThunk<
     }
 
     const formData = new FormData();
+    let clonedData = cloneDeep(data);
+
+    if (clonedData) {
+      clonedData = await processNestedFields(clonedData);
+    }
+
     const reqData: any = {
-      name: data.name,
+      name: clonedData.name ? JSON.stringify(clonedData.name) : undefined,
       rate: data.rate,
       active: data.active
     };

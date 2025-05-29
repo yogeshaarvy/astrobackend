@@ -71,7 +71,7 @@ export default function TagTable({
     },
 
     {
-      accessorKey: 'name',
+      accessorKey: 'name.en',
       header: 'NAME'
     },
 

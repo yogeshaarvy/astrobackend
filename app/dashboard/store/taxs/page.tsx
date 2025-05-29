@@ -11,7 +11,7 @@ type PageProps = {
 };
 
 export const metadata = {
-  title: 'Dashboard : Taxs'
+  title: 'Dashboard : Taxes'
 };
 
 export default async function Page({ searchParams }: PageProps) {

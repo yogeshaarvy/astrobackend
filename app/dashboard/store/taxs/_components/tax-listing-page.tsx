@@ -64,10 +64,11 @@ export default function TaxListingPage() {
 
       // Generate CSV content
       const csvContent = [
-        ['ID', 'Name', 'Rate', 'Active'], // CSV headers
+        ['ID', 'Name (Eng)', 'Name (Hi)', 'Rate', 'Active'], // CSV headers
         ...exportData.map((item: any) => [
           item._id,
-          item.name,
+          item.name.en,
+          item.name.hi,
           item.rate,
           item.active
         ])

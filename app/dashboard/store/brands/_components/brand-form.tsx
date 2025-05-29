@@ -30,6 +30,7 @@ import slugify from 'slugify';
 import ReactQuill from 'react-quill'; // Import Quill
 import 'react-quill/dist/quill.snow.css'; // Import Quill CSS
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { toast } from 'sonner';
 
@@ -47,9 +48,18 @@ export default function BrandForm() {
 
   const form = useForm<IBrand>({
     defaultValues: {
-      name: '',
-      short_description: '',
-      long_description: '',
+      name: {
+        en: '',
+        hi: ''
+      },
+      short_description: {
+        en: '',
+        hi: ''
+      },
+      long_description: {
+        en: '',
+        hi: ''
+      },
       banner_image: '',
       logo_image: '',
       meta_tag: '',
@@ -68,15 +78,16 @@ export default function BrandForm() {
   React.useEffect(() => {
     if (bData && entityId) {
       // const {name, email, phone, countryCode, password, bio , role , permissionType} = bData;
-      form.setValue('name', (bData as IBrand)?.name || '');
+      form.setValue('name.en', (bData as IBrand)?.name?.en || '');
+      form.setValue('name.hi', (bData as IBrand)?.name?.hi || '');
       form.setValue(
-        'short_description',
-        (bData as IBrand)?.short_description || ''
+        'short_description.en',
+        (bData as IBrand)?.short_description?.en || ''
       );
 
       form.setValue(
-        'long_description',
-        (bData as IBrand)?.long_description || ''
+        'long_description.hi',
+        (bData as IBrand)?.long_description?.hi || ''
       );
       form.setValue('sequence', (bData as IBrand)?.sequence || 0);
       form.setValue('meta_title', (bData as IBrand)?.meta_title ?? '');
@@ -160,15 +171,75 @@ export default function BrandForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <Tabs defaultValue="English" className="mt-4 w-full">
+                <TabsList className="flex w-full space-x-2 p-0">
+                  <TabsTrigger
+                    value="English"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    English
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Hindi"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    Hindi
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="English">
+                  {/* <CardHeader className="!px-0">
+                      <CardTitle className="text-lg font-bold ">
+                        ENGLISH-VALUES
+                      </CardTitle>
+                    </CardHeader> */}
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="name.en"
+                      control={form.control}
+                      label="Name (English)"
+                      placeholder="Enter your name"
+                      value={(bData as IBrand)?.name?.en}
+                      onChange={handleInputChange}
+                    />
+                    <CustomTextField
+                      name="short_description.en"
+                      control={form.control}
+                      label="Short description (English)"
+                      value={(bData as IBrand)?.short_description?.en}
+                      placeholder="Enter your short description"
+                      onChange={handleInputChange}
+                    />
+                  </CardContent>
+                </TabsContent>
+
+                <TabsContent value="Hindi">
+                  {/* <CardHeader className="!px-0">
+                      <CardTitle className="text-lg font-bold ">
+                        HINDI-VALUES
+                      </CardTitle>
+                    </CardHeader> */}
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="name.hi"
+                      control={form.control}
+                      label="Name (Hindi)"
+                      placeholder="Enter your name"
+                      value={(bData as IBrand)?.name?.hi}
+                      onChange={handleInputChange}
+                    />
+                    <CustomTextField
+                      name="short_description.hi"
+                      control={form.control}
+                      label="Short description (Hindi)"
+                      value={(bData as IBrand)?.short_description?.hi}
+                      placeholder="Enter your short description"
+                      onChange={handleInputChange}
+                    />
+                  </CardContent>
+                </TabsContent>
+              </Tabs>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <CustomTextField
-                  name="name"
-                  control={form.control}
-                  label="Name"
-                  placeholder="Enter your name"
-                  value={(bData as IBrand)?.name}
-                  onChange={handleInputChange}
-                />
                 <CustomTextField
                   name="sequence"
                   control={form.control}
@@ -177,15 +248,6 @@ export default function BrandForm() {
                   value={(bData as IBrand)?.sequence}
                   onChange={handleInputChange}
                   type="number"
-                />
-
-                <CustomTextField
-                  name="short_description"
-                  control={form.control}
-                  label="Short description"
-                  value={(bData as IBrand)?.short_description}
-                  placeholder="Enter your short description"
-                  onChange={handleInputChange}
                 />
 
                 <CustomTextField

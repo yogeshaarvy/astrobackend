@@ -3,14 +3,25 @@ import { RootState } from '../store';
 import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { cloneDeep } from 'lodash';
 
 export type IBrand = BaseModel & {
   _id?: string;
-  name?: string;
+  name?: {
+    en: string;
+    hi: string;
+  };
   logo_image?: string;
   banner_image?: string;
-  short_description?: string;
-  long_description?: string;
+  short_description?: {
+    en: string;
+    hi: string;
+  };
+  long_description?: {
+    en: string;
+    hi: string;
+  };
   active?: boolean;
   sequence?: number;
   meta_title?: string;
@@ -109,11 +120,18 @@ export const addEditBrand = createAsyncThunk<
     if (!data) {
       return rejectWithValue('Please Provide Details');
     }
+    let clonedData = cloneDeep(data);
+
+    if (clonedData) {
+      clonedData = await processNestedFields(clonedData);
+    }
 
     const formData = new FormData();
     const reqData: any = {
-      name: data.name,
-      short_description: data.short_description,
+      name: clonedData.name ? JSON.stringify(clonedData.name) : undefined,
+      short_description: clonedData.short_description
+        ? JSON.stringify(clonedData.short_description)
+        : undefined,
       long_description: data.long_description,
       logo_image: data.logo_image,
       banner_image: data.banner_image,

@@ -19,6 +19,7 @@ import CustomTextField from '@/utils/CustomTextField';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { toast } from 'sonner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function TaxForm() {
   const params = useSearchParams();
@@ -31,7 +32,10 @@ export default function TaxForm() {
 
   const form = useForm<ITax>({
     defaultValues: {
-      name: '',
+      name: {
+        en: '',
+        hi: ''
+      },
       active: false
     }
   });
@@ -43,7 +47,8 @@ export default function TaxForm() {
 
   React.useEffect(() => {
     if (bData && entityId) {
-      form.setValue('name', (bData as ITax)?.name || '');
+      form.setValue('name.en', (bData as ITax)?.name?.en || '');
+      form.setValue('name.hi', (bData as ITax)?.name?.hi || '');
       form.setValue('rate', (bData as ITax)?.rate || '');
     }
   }, [bData, entityId, form]);
@@ -88,15 +93,59 @@ export default function TaxForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <Tabs defaultValue="English" className="mt-4 w-full">
+                <TabsList className="flex w-full space-x-2 p-0">
+                  <TabsTrigger
+                    value="English"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    English
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Hindi"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    Hindi
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="English">
+                  {/* <CardHeader className="!px-0">
+                      <CardTitle className="text-lg font-bold ">
+                        ENGLISH
+                      </CardTitle>
+                    </CardHeader> */}
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="name.en"
+                      control={form.control}
+                      label="Name (English)"
+                      placeholder="Enter your name"
+                      value={(bData as ITax)?.name?.en}
+                      onChange={handleInputChange}
+                    />
+                  </CardContent>
+                </TabsContent>
+
+                <TabsContent value="Hindi">
+                  {/* <CardHeader className="!px-0">
+                      <CardTitle className="text-lg font-bold ">
+                        HINDI
+                      </CardTitle>
+                    </CardHeader> */}
+                  <CardContent className="space-y-2 p-0">
+                    <CustomTextField
+                      name="name.hi"
+                      control={form.control}
+                      label="Name"
+                      placeholder="Enter your name"
+                      value={(bData as ITax)?.name?.hi}
+                      onChange={handleInputChange}
+                    />
+                  </CardContent>
+                </TabsContent>
+              </Tabs>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <CustomTextField
-                  name="name"
-                  control={form.control}
-                  label="Name"
-                  placeholder="Enter your name"
-                  value={(bData as ITax)?.name}
-                  onChange={handleInputChange}
-                />
                 <CustomTextField
                   name="rate"
                   control={form.control}

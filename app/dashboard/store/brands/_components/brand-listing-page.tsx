@@ -87,12 +87,12 @@ export default function BrandListingPage() {
         ], // CSV headers
         ...exportData.map((item: any) => [
           item._id,
-          item.name,
+          item.name.en,
           item.slug,
           item.active,
           item.sequence,
-          item.short_description,
-          item.long_description,
+          item.short_description.en,
+          item.long_description.en,
           item.meta_tag,
           item.meta_title,
           item.meta_description

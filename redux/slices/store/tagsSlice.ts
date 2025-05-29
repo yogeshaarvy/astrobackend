@@ -4,10 +4,15 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { RootState } from '@/redux/store';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
 
 export type ITag = BaseModel & {
   _id?: string;
-  name?: string;
+  name?: {
+    en?: string;
+    hi?: string;
+  };
   active?: boolean;
 };
 
@@ -103,8 +108,14 @@ export const addEditTag = createAsyncThunk<
     }
 
     const formData = new FormData();
+    let clonedData = cloneDeep(data);
+
+    if (clonedData) {
+      clonedData = await processNestedFields(clonedData);
+    }
+
     const reqData: any = {
-      name: data.name,
+      name: clonedData.name ? JSON.stringify(clonedData.name) : undefined,
       active: data.active
     };
     // Append only defined fields to FormData
