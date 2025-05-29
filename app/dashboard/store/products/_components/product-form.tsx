@@ -95,8 +95,51 @@ export default function ProductsForm() {
     }
   } = useAppSelector((state) => state.countries);
 
-  const form = useForm({
-    defaultValues: {}
+  const form = useForm<IProducts>({
+    defaultValues: {
+      name: '',
+      title: {
+        en: '',
+        hi: ''
+      },
+      slug: '',
+      model_no: '',
+      main_image: '',
+      second_main_image: '',
+      other_image: [],
+      brand_name: '',
+      sequence: 0,
+      price: 0,
+      special_price: 0,
+      categories: [],
+      meta_tag: '',
+      meta_description: '',
+      meta_title: '',
+      madeIn: '',
+      productype: '',
+      videotype: '',
+      tax: '',
+      tags: '',
+      maxorder: false,
+      maxorder_value: 0,
+      minorder: 'false',
+      minorder_value: 0,
+      hsn_code: '',
+      return_able: false,
+      number_of_days: 0,
+      if_cancel: '',
+      cancel_days: 0,
+      videodata: '',
+      sku: '',
+      is_cod_allowed: false,
+      stock_value: 0,
+
+      stock_status: 'true',
+      description: {
+        en: '',
+        hi: ''
+      }
+    }
   });
 
   useEffect(() => {
@@ -115,28 +158,7 @@ export default function ProductsForm() {
       setVariations(pData?.variants);
     }
   }, [pData?.variants]);
-  useEffect(() => {
-    if (entityId) {
-      setMainImage(pData?.main_image || '');
-      setSecondMainImage(pData?.second_main_image || '');
-      setAttributes(pData?.attributes || []);
-      // Set initial state for images
-      setMainImagePreview(pData?.main_image || null);
-      setSecondMainImagePreview(pData?.second_main_image || null);
-      setOtherImages(pData?.other_image || []);
-      setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
-      setSettingsSaved(true);
-      setTabsEnabled((prev) => ({
-        ...prev,
-        attribute: true,
-        variations: true
-      }));
-    }
-  }, [pData, dispatch]);
-  console.log('mainimage', mainImage);
-  console.log('secondmainimage', secondMainImage);
-  console.log('mainimagepreview', mainImagePreview);
-  console.log('secondmainimagepreview', secondMainImagePreview);
+
   useEffect(() => {
     dispatch(fetchCountriesList({ page, pageSize }));
     dispatch(
@@ -180,8 +202,6 @@ export default function ProductsForm() {
       })
     );
   }, [dispatch]);
-  console.log('pData............', pData);
-  console.log('attributes................', attributes);
 
   // Handle Single Image Upload
   const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -254,6 +274,60 @@ export default function ProductsForm() {
     );
   };
 
+  useEffect(() => {
+    if (pData && entityId) {
+      form.setValue('name', pData?.name || '');
+      form.setValue('title.en', pData?.title?.en || '');
+      form.setValue('title.hi', pData?.title?.hi || '');
+      form.setValue('slug', pData?.slug || '');
+      form.setValue('sequence', pData?.sequence || 0);
+      form.setValue('categories', pData?.categories || []); // Set 'categories' as an array
+      form.setValue('manufacture.en', pData?.manufacture?.en || '');
+      form.setValue('manufacture.hi', pData?.manufacture?.hi || '');
+      form.setValue('meta_title', pData?.meta_title || '');
+      form.setValue('meta_description', pData.meta_description || '');
+      form.setValue('meta_tag', pData?.meta_tag || '');
+      form.setValue('brand_name', pData?.brand_name || '');
+      form.setValue('madeIn', pData?.madeIn || '');
+      form.setValue('productype', pData?.productype || '');
+      form.setValue('videotype', pData?.videotype || '');
+      form.setValue('tags', pData?.tags || '');
+      form.setValue('tax', pData?.tax || '');
+      form.setValue('maxorder', pData?.maxorder || false);
+      form.setValue('minorder', pData?.minorder || 'false');
+      form.setValue('minorder_value', pData?.minorder_value || 0);
+      form.setValue('maxorder_value', pData?.maxorder_value || 0);
+      form.setValue('hsn_code', pData?.hsn_code || '');
+      form.setValue('sku', pData?.sku || '');
+      form.setValue('return_able', pData?.return_able || false);
+      form.setValue('number_of_days', pData?.number_of_days || 0);
+      form.setValue('if_cancel', pData?.if_cancel || 'false');
+      form.setValue('cancel_days', pData?.cancel_days || 0);
+      form.setValue('videodata', pData?.videodata || '');
+      form.setValue('description.hi', pData?.description?.hi || '');
+      form.setValue('description.en', pData?.description?.en || '');
+      form.setValue('model_no', pData?.model_no || '');
+      form.setValue('is_cod_allowed', pData?.is_cod_allowed || false); // Initialize the checkbox
+      form.setValue('variants', pData?.variants || null); // Initialize the checkbox
+      form.setValue('stock_status', pData?.stock_status || 'false'); // Initialize the checkbox
+      form.setValue('stock_value', pData?.stock_value || 0); // Initialize the checkbox
+      setMainImage(pData?.main_image || '');
+      setSecondMainImage(pData?.second_main_image || '');
+      setAttributes(pData?.attributes || []);
+      // Set initial state for images
+      setMainImagePreview(pData?.main_image || null);
+      setSecondMainImagePreview(pData?.second_main_image || null);
+      setOtherImages(pData?.other_image || []);
+      setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
+      setSettingsSaved(true);
+      setTabsEnabled((prev) => ({
+        ...prev,
+        attribute: true,
+        variations: true
+      }));
+    }
+  }, [pData, entityId, form]);
+
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
@@ -273,87 +347,75 @@ export default function ProductsForm() {
 
   // Fixed handleSaveSettings function
   const handleSaveSettings = () => {
-    if (!pData) {
-      toast.error('Product data is not available');
-      return;
-    }
-
-    const formData = { ...pData }; // Create a copy to avoid mutation
-    const productType = formData.productype;
-    const stockManagementEnabled =
-      formData.stockManagement?.stock_management === true;
-    const stockManagementLevel =
-      formData.stockManagement?.stock_management_level;
+    const formData = form.getValues(); // Get current form data
+    const productype = formData.productype; // Get the product type
+    const stockManagementEnabled = formData.stock_management;
+    const stockManagementLevel = formData.stock_management_level;
     let requiredFields: string[] = [];
-
-    // If stock management level is "product_level", require stock_value
-    // if (stockManagementLevel === 'product_level') {
-    //   requiredFields.push('stock_value');
-    // }
-
-    // Check if required fields exist in formData or within simpleProduct object
+    // Required field for Variable Product if stock management is enabled
+    if (productype === 'variableproduct' && stockManagementEnabled) {
+      requiredFields.push('stock_management_level');
+    }
     const missingFields = requiredFields.filter(
       (field) => !formData[field] // Check for empty or undefined fields
     );
 
     if (missingFields.length > 0) {
-      toast.error(`Missing required fields: ${missingFields.join(', ')}`);
+      toast.error(`Missing  fields required: ${missingFields.join(', ')}`);
       return;
     }
+
     // Enable the "Attribute" and "Variations" tabs after saving settings
     setTabsEnabled((prev) => ({
       ...prev,
       attribute: true,
-      variations: productType === 'variableproduct' // Only enable variations for variable products
+      variations: true
     }));
-
     // Mark settings as saved
     setSettingsSaved(true);
 
     toast.success('Settings saved successfully!');
   };
-
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
   // Fixed handleSubmit function
-  const handleSubmit = async () => {
+  const onSubmit = async (data: any) => {
     if (entityId) {
       handleSaveSettings();
-    }
-    if (!pData) {
-      toast.error('Product data is not available');
-      return;
     }
 
     // Validate required fields
     let missingFields: string[] = [];
-    const categories = pData.categories?.length > 0 ? pData.categories : [];
-    console.log('categoriesdata.......', categories);
-
-    const brandName = pData.brand_name || '';
-    const madeIn = pData.madeIn || '';
-    const tags = pData.tags || '';
-    const tax = pData.tax || '';
-
-    // Check required fields
-    if (!pData.model_no) missingFields.push('Model Number');
-    if (!pData.productype) missingFields.push('Product Type');
-    if (!brandName) missingFields.push('Brand Name');
-    if (!madeIn) missingFields.push('Made In');
-    if (!pData.meta_title) missingFields.push('Meta Title');
-    if (!pData.meta_description) missingFields.push('Meta Description');
-    if (!pData.title?.en) missingFields.push('Title (English)');
-    if (!pData.title?.hi) missingFields.push('Title (Hindi)');
-    if (!pData.description?.en) missingFields.push('Description (English)');
-    if (!pData.description?.hi) missingFields.push('Description (Hindi)');
-    if (!pData.meta_tag) missingFields.push('Meta Tag');
-    if (!tags) missingFields.push('Tags');
-    if (!tax) missingFields.push('Tax');
-    if (!pData.hsn_code) missingFields.push('HSN Code');
-    if (!pData.sku) missingFields.push('SKU');
-    if (!pData.manufacture?.en) missingFields.push('Manufacture (English)');
-    if (!pData.manufacture?.hi) missingFields.push('Manufacture (Hindi)');
-    if (!categories?.length) missingFields.push('Categories');
-
-    // Optional image validation - uncomment if main images are required
+    let categoriesdata =
+      data.categories?.length > 0 ? data.categories : pData?.categories ?? [];
+    let brand_namedata = data.brand_name || pData?.brand_name || ''; // Retain brand
+    let madeIndata = data.madeIn || pData?.madeIn || ''; // Retain madeIn
+    let tagsdata = data.tags || pData?.tags || ''; // Retain tag
+    let taxdata = data.tax || pData?.tax || ''; // Retain tag
+    // Check required fields and add their names to missingFields array if missing
+    if (!data.name) missingFields.push('Name');
+    if (!data.title?.hi) missingFields.push('TitleHindi');
+    if (!data.title?.en) missingFields.push('TitleEnglish');
+    if (!data.slug) missingFields.push('Slug');
+    if (!data.model_no) missingFields.push('Model Number');
+    if (!data.productype) missingFields.push('Product Type');
+    if (!brand_namedata) missingFields.push('Brand Name');
+    if (!madeIndata) missingFields.push('Made In');
+    if (!data.meta_title) missingFields.push('Meta Title');
+    if (!data.meta_description) missingFields.push('Meta Description');
+    if (!data.description.en) missingFields.push('DescriptionEng');
+    if (!data.description.hi) missingFields.push('DescriptionHi');
+    if (!data.meta_tag) missingFields.push('Meta Tag');
+    if (!tagsdata) missingFields.push('Tags');
+    if (!taxdata) missingFields.push('Tax');
+    if (!data.hsn_code) missingFields.push('HSN Code');
+    if (!data.sku) missingFields.push('SKU');
+    if (!data.manufacture.en) missingFields.push('ManufactureEng');
+    if (!data.manufacture.hi) missingFields.push('ManufactureHi');
+    if (!categoriesdata?.length) missingFields.push('Categories');
     if (!mainImage) missingFields.push('Main Image');
     if (!secondMainImage) missingFields.push('Second Main Image');
     // If any fields are missing, show an error message with the field names
@@ -363,39 +425,36 @@ export default function ProductsForm() {
       );
       return;
     }
-
     // If product type is variable, ensure at least one attribute is selected
     if (
-      pData.productype === 'variableproduct' &&
+      data.productype === 'variableproduct' &&
       (!attributes || attributes.length === 0)
     ) {
       toast.error('At least one attribute is required for variable products');
       return;
     }
-
     // Validate video data if videotype is selected
-    if (pData.videotype && pData.videotype !== 'none') {
-      if (
-        pData.videotype === 'selfmadevideo' &&
-        !videoFile &&
-        !pData.videodata
-      ) {
+    if (data.videotype && !data.videodata) {
+      toast.error('Video data is required when video type is selected');
+      return;
+    }
+    // Validate video data based on videotype
+    if (data.videotype) {
+      if (data.videotype === 'selfhosted' && !videoFile) {
         toast.error('Video file is required for self-hosted videos');
         return;
-      } else if (pData.videotype !== 'selfmadevideo' && !pData.videodata) {
-        toast.error('Video URL is required when video type is selected');
+      } else if (data.videotype !== 'selfhosted' && !data.videodata) {
+        toast.error('Video data is required when video type is selected');
         return;
       }
     }
 
-    // Validate variations if product is variable and variations exist
+    //valide varitions required
     if (variations?.length > 0) {
       let isValid = true;
-
-      let variationErrors: any = [];
-
+      let variationErrors: string[] = [];
       variations.forEach((variation, index) => {
-        let missingVariationFields = [];
+        let missingVariationFields: string[] = [];
 
         if (!variation.price) missingVariationFields.push('Price');
         if (!variation.special_price)
@@ -404,17 +463,10 @@ export default function ProductsForm() {
         if (!variation.height) missingVariationFields.push('Height');
         if (!variation.breadth) missingVariationFields.push('Breadth');
         if (!variation.length) missingVariationFields.push('Length');
-        if (pData.productype != 'simpleproduct') {
+        if (data.productype != 'simpleproduct') {
           if (!variation.sku) missingVariationFields.push('SKU');
           if (!variation.image) missingVariationFields.push('Image');
         }
-        // if (
-        //   pData?.stockManagement?.stock_management_level ===
-        //   'product_level'
-        // ) {
-        //   if (!variation.totalStock) missingVariationFields.push('Total Stock');
-
-        // }
 
         if (missingVariationFields.length > 0) {
           isValid = false;
@@ -434,14 +486,11 @@ export default function ProductsForm() {
       }
     }
 
-    // Determine video data based on video type
     const finalVideoData =
-      pData.videotype === 'selfmadevideo' ? videoFile : pData.videodata;
+      data.videotype === 'selfmadevideo' ? videoFile : data.videodata; // Use videodata from the form for Vimeo/YouTube
 
-    // Handle variations based on product type
     let finalVariations = variations;
 
-    // Upload images for variations if needed
     const uploadImageAndUpdate = async () => {
       for (let i = 0; i < finalVariations.length; i++) {
         const item = finalVariations[i];
@@ -475,45 +524,36 @@ export default function ProductsForm() {
     };
 
     await uploadImageAndUpdate();
-    // Format attributes properly for saving
-    const attributesToSave = attributes.map((attr) => ({
+
+    const attributesToSave = attributes.map((attr: any) => ({
       type: attr?.type?._id,
-      values: Array.isArray(attr?.values)
-        ? attr.values.map((value) => value?._id)
-        : []
+      values: attr?.values.map((value: any) => value?._id)
     }));
-
-    // Create the final data for submission
-    const finalData = {
-      ...(pData || {}),
-      brand_name: brandName,
-      madeIn: madeIn,
-      tags: tags,
-      tax: tax,
-      categories: categories,
-      variations: finalVariations,
-      attributes: attributesToSave,
-      // Handle main images appropriately
-      main_image: mainImage || pData.main_image || '',
-      second_main_image: secondMainImage || pData.second_main_image || '',
-      videodata: finalVideoData || '',
-      other_image: otherImages || []
-    };
-
-    // Update the product data in Redux
-    dispatch(updateProductsData(finalData));
-
-    // Submit the data to the API
-    dispatch(addEditProducts(entityId || null)).then((response) => {
-      if (response?.payload?.success) {
-        router.push('/dashboard/store/products');
-        toast.success(
-          response?.payload?.message || 'Product saved successfully'
-        );
-      } else {
-        toast.error(response.payload || 'Failed to save product');
-      }
-    });
+    dispatch(
+      updateProductsData({
+        ...(pData ?? {}), // Ensure pData is not null
+        ...data, // Override with new values
+        brand_name: brand_namedata, // Retain brand
+        madeIn: madeIndata, // Retain madeIn
+        tags: tagsdata, // Retain tag
+        tax: taxdata, // Retain tag
+        categories: categoriesdata,
+        variations: finalVariations, // Stringify variations data
+        main_image: mainImage ?? '',
+        second_main_image: secondMainImage ?? '',
+        videodata: finalVideoData ?? '',
+        attributes: attributesToSave, // Send only IDs to API
+        other_image: otherImages ?? [] // Add selected images to form data
+      })
+    );
+    dispatch(addEditProducts(entityId || null))
+      .then((response: any) => {
+        if (response.payload.success) {
+          router.push('/dashboard/products');
+          toast.success(response.payload.message);
+        }
+      })
+      .catch((err: any) => toast.error('Error:', err));
   };
   useEffect(() => {
     setTabsEnabled((prev) => ({
@@ -533,9 +573,18 @@ export default function ProductsForm() {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(handleSubmit)}
+              onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-8"
+              onKeyDown={handleKeyDown}
             >
+              <CustomTextField
+                name="name"
+                label="Name*"
+                placeholder="Enter name"
+                value={(pData as IProducts)?.name}
+                onChange={handleInputChange}
+                type="text"
+              />
               <Tabs defaultValue="English" className="mt-4 w-full">
                 <TabsList className="flex w-full space-x-2 p-0">
                   <TabsTrigger

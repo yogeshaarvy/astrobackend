@@ -6,7 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { fetchBrandList } from '@/redux/slices/brandSlice';
 import { useDispatch } from 'react-redux';
 export const FIELD_OPTIONS = [
-  { value: 'name', label: 'Name' },
+  { value: 'name.en', label: 'Name' },
   { value: 'short_description', label: 'Short Deacription' },
   { value: 'long_description', label: 'Long Deacription' },
   { value: 'meta_description', label: 'Meta Deacription' },

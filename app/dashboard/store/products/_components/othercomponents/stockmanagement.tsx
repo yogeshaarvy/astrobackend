@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import CustomTextField from '@/utils/CustomTextField';
-import { CustomMultiDropdown } from '@/utils/CustomMultiDropdown';
-import { CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
+import CustomDropdown from '@/utils/CusomDropdown';
+
+import { useAppDispatch } from '@/redux/hooks';
 import {
-  IProducts,
   IStockManagement,
   updateProductsData
 } from '@/redux/slices/store/productSlice';
-import CustomDropdown from '@/utils/CusomDropdown';
-import { FormLabel } from '@/components/ui/form';
-import { useAppDispatch } from '@/redux/hooks';
 
 interface StockmanagmentProductFormProps {
-  handleInputChange: (e: {
-    target: { name: string; type?: string; checked?: boolean; value?: string };
-  }) => void;
-  producttype?: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  producttype: 'simpleproduct' | 'variableproduct';
   disabled: boolean;
   pData: any;
 }
@@ -25,11 +19,12 @@ interface StockmanagmentProductFormProps {
 const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
   handleInputChange,
   producttype,
-  pData,
-  disabled
+  disabled,
+  pData
 }) => {
   const form = useFormContext();
   const dispatch = useAppDispatch();
+
   const [stockManagement, setStockManagement] = useState<IStockManagement>({
     stock_management: false,
     stock_management_level: 'product_level'
@@ -41,10 +36,12 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
     }
   }, [pData]);
 
-  const handleStockToggleChange = (checked: boolean) => {
+  const handleStockCheckboxChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const updated = {
       ...stockManagement,
-      stock_management: checked
+      stock_management: e.target.checked
     };
     setStockManagement(updated);
     dispatch(updateProductsData({ stockManagement: updated }));
@@ -53,38 +50,49 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
   const handleDropdownStockStatusChange = (e: any) => {
     if (e?.target?.name) {
       const { name, value } = e.target;
-      dispatch(updateProductsData({ [name]: value }));
+      if (name === 'stock_status') {
+        const booleanValue = value === 'true';
+        dispatch(updateProductsData({ [name]: booleanValue }));
+      } else {
+        dispatch(updateProductsData({ [name]: value }));
+      }
     } else if (e?.name && e?.value) {
-      setStockManagement((prev) => {
+      setStockManagement((prev: any) => {
         const updated = { ...prev, [e.name]: e.value };
         dispatch(updateProductsData({ stockManagement: updated }));
         return updated;
       });
     }
   };
+
   return (
     <div>
       {/* Enable Stock Management Section */}
       <div className="my-4 flex items-center">
-        <FormLabel>Enable Stock Management</FormLabel>
-        <Switch
-          className="!m-0"
+        <input
+          id="stock-management-checkbox"
+          type="checkbox"
           checked={stockManagement.stock_management}
-          onCheckedChange={handleStockToggleChange}
-          aria-label="Toggle Stock Management"
+          onChange={handleStockCheckboxChange}
+          className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
         />
+        <label
+          htmlFor="stock-management-checkbox"
+          className="ms-2 text-sm font-medium text-gray-900"
+        >
+          Enable Stock Management
+        </label>
       </div>
 
       {/* Stock Management Details */}
       {stockManagement.stock_management && (
-        <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-1">
+        <div className="mt-4 grid grid-cols-1 gap-6">
           {producttype === 'variableproduct' && (
             <CustomDropdown
               control={form.control}
               label="Choose Stock Management*"
               name="stock_management_level"
               placeholder="Select stock type"
-              defaultValue=""
               data={[
                 {
                   name: 'Product Level (Stock will be managed generally)',
@@ -107,15 +115,17 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
               <CustomTextField
                 label="Stock Value*"
                 name="stock_value"
+                control={form.control}
                 placeholder="Enter stock value"
                 type="number"
                 onChange={handleInputChange}
-                value={(pData as IProducts)?.stock_value}
+                value={form.getValues('stock_value')}
               />
+
               <select
                 className="mt-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900"
                 {...form.register('stock_status')}
-                value={(pData as IProducts)?.stock_status}
+                value={form.getValues('stock_status')}
                 onChange={(e) => {
                   form.setValue('stock_status', e.target.value);
                   handleDropdownStockStatusChange(e);

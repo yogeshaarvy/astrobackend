@@ -27,9 +27,7 @@ export const uploadFile = async (file: File): Promise<string> => {
 };
 
 export const processNestedFields = async (content: any): Promise<any> => {
-  console.log('processNestedFields 1', content);
   const result = { ...content };
-  console.log('processNestedFields', result);
   for (const key of Object.keys(content || {})) {
     if (content[key] instanceof File) {
       // First priority: Check if it's a File
@@ -42,8 +40,6 @@ export const processNestedFields = async (content: any): Promise<any> => {
       result[key] = await processNestedFields(content[key]);
     }
   }
-
-  console.log('resultnext', result);
 
   return result;
 };

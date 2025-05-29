@@ -31,6 +31,11 @@ export default function ProductInventoryTable({
       cell: ({ row }) => new Date(row.original.createdAt).toLocaleString()
     },
     {
+      accessorKey: 'createdBy',
+      header: 'CREATED BY',
+      cell: ({ row }) => row.original.createdBy?.name ?? 'User'
+    },
+    {
       accessorKey: 'value',
       header: 'STOCK',
       cell: ({ row }) => {
@@ -38,8 +43,8 @@ export default function ProductInventoryTable({
         const isCredit = row.original.type.toLowerCase() === 'credit';
 
         return (
-          <span className={isCredit ? 'text-red-500' : 'text-green-500'}>
-            {isCredit ? `-${stockValue}` : `+${stockValue}`}
+          <span className={isCredit ? 'text-green-500' : 'text-red-500'}>
+            {isCredit ? `+${stockValue}` : `-${stockValue}`}
           </span>
         );
       }

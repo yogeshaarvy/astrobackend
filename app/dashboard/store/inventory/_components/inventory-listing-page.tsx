@@ -6,6 +6,7 @@ import { fetchProductsList } from '@/redux/slices/inventoriesSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useSearchParams } from 'next/navigation';
 import { IProducts } from '@/redux/slices/store/productSlice';
+import { useEffect } from 'react';
 
 export default function InventoryListingPage() {
   const dispatch = useAppDispatch();
@@ -25,9 +26,13 @@ export default function InventoryListingPage() {
 
   const productsdata: IProducts[] = productData;
   const handleSearch = ({
-    selectedProductIds
+    selectedProductIds,
+    selectedVariantIds,
+    selectedProductsWithVariants
   }: {
     selectedProductIds: string;
+    selectedVariantIds: any;
+    selectedProductsWithVariants: any;
   }) => {
     dispatch(
       fetchProductsList({
@@ -35,11 +40,21 @@ export default function InventoryListingPage() {
         pageSize,
         keyword,
         exportData,
-        selectedProductIds
+        selectedProductIds,
+        selectedVariantIds
       })
     );
   };
-
+  useEffect(() => {
+    dispatch(
+      fetchProductsList({
+        page,
+        pageSize,
+        keyword,
+        exportData
+      })
+    );
+  }, [page, pageSize, dispatch]);
   return (
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">

@@ -12,6 +12,7 @@ import { fetchProductsList, IInventory } from '@/redux/slices/inventoriesSlice';
 import { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { IProducts } from '@/redux/slices/store/productSlice';
+import { useSearchParams } from 'next/navigation';
 
 export default function InventoryTable({
   data,
@@ -32,20 +33,28 @@ export default function InventoryTable({
   const [ProductsQuery, setProductsQuery] = useState<string>('');
   const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<IInventory[]>(data);
+  const searchParams = useSearchParams();
+  const pageSize = parseInt(searchParams?.get('limit'));
+  const page = parseInt(searchParams?.get('page'));
 
   const handleProductChange = (selectedOption: any) => {
     setSelectedProducts(selectedOption);
   };
   useEffect(() => {
     if (selectedProducts.length <= 0) {
-      dispatch(fetchProductsList());
+      dispatch(
+        fetchProductsList({
+          pageSize,
+          page
+        })
+      );
     }
   }, []);
   const dispatch = useAppDispatch();
   const debouncedSearchProducts = useCallback(
     debounce((query) => {
       if (query.trim()) {
-        dispatch(fetchProductsList({ keyword: query }));
+        dispatch(fetchProductsList({ keyword: query, page, pageSize }));
       }
     }, 800),
     [dispatch]
@@ -64,10 +73,44 @@ export default function InventoryTable({
   };
 
   const handleSearchClick = () => {
-    const selectedIds = selectedProducts
+    // Format the selected products for search including both product IDs and variant IDs
+    const selectedProductsWithVariants = selectedProducts.map(
+      (product: any) => {
+        // Get the variant ID if available
+        const variantId =
+          product.variants && product.variants.length > 0
+            ? product.variants[0]._id // Use the first variant's ID
+            : null;
+
+        return {
+          productId: product._id,
+          variantId: variantId
+        };
+      }
+    );
+
+    // Create a query string of product IDs
+    const selectedProductIds = selectedProducts
       .map((product: any) => product._id)
       .join(',');
-    handleSearch({ selectedProductIds: selectedIds });
+
+    // Create a query string of variant IDs (if available)
+    const selectedVariantIds = selectedProducts
+      .map((product: any) =>
+        product.variants && product.variants.length > 0
+          ? product.variants[0]._id
+          : null
+      )
+      .filter((id) => id !== null)
+      .join(',');
+
+    // Pass both product IDs and variant IDs to the search handler
+    handleSearch({
+      selectedProductIds: selectedProductIds,
+      selectedVariantIds: selectedVariantIds,
+      // Also pass the complete objects in case you need more detailed processing
+      selectedProductsWithVariants: selectedProductsWithVariants
+    });
   };
 
   useEffect(() => {

@@ -1,13 +1,15 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { fetchTypesList } from '@/redux/slices/store/filtersSlice';
-import { fetchValuesList } from '@/redux/slices/store/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomReactSelect from '@/utils/CustomReactSelect';
 import { debounce } from 'lodash';
 import { saveAttributes, loadAttributes } from '@/redux/slices/attributesSlice'; // Import actions
 import { toast } from 'sonner';
+import {
+  fetchTypesList,
+  fetchValuesList
+} from '@/redux/slices/store/filtersSlice';
 
 interface AttributesFormProps {
   onSaveAttributes: any;
@@ -19,45 +21,26 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
   pData
 }) => {
   const {
-    typesListState: { loading: typesListLoading, data: tData = [] }
-  } = useAppSelector((state) => state.filter);
-  const {
+    typesListState: { loading: typesListLoading, data: tData = [] },
     valuesListState: { loading: valuesListLoading, data: vData = [] }
   } = useAppSelector((state) => state.filter);
-  console.log('t data is ', tData);
-  console.log('v data is ', vData);
-  console.log('p data is ', pData);
+
   const savedAttributes = useAppSelector(
     (state) => state?.attributesSlice?.data
   ); // Get saved attributes from Redux store
   const [attributes, setAttributes] = useState<
     { type: any; values: string[] }[]
   >(savedAttributes || []);
-  console.log('attributes...........', attributes);
-
   const [typesQuery, setTypesQuery] = useState<string>('');
   const dispatch = useAppDispatch();
   const page = 1;
   const pageSize = 100000;
-
   useEffect(() => {
     if (!savedAttributes) {
       dispatch(loadAttributes()); // Load attributes from Redux store
     }
   }, [dispatch, savedAttributes]);
-  // Load types by default when component mounts
-  useEffect(() => {
-    dispatch(
-      fetchTypesList({
-        page,
-        pageSize,
-        keyword: '',
-        field: 'name',
-        status: '',
-        exportData: 'true'
-      })
-    );
-  }, [dispatch, page, pageSize]);
+
   const debouncedSearchTypes = useCallback(
     debounce((query) => {
       dispatch(
@@ -82,7 +65,7 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
   // Filter out already selected type
   const getFilteredTypesOptions = () => {
     const selectedTypes = attributes.map((attr) => attr.type._id);
-    return tData.filter((type) => !selectedTypes.includes(type._id));
+    return tData.filter((type: any) => !selectedTypes.includes(type._id));
   };
 
   const handleAddAttributes = () => {
@@ -95,7 +78,6 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
         i === index ? { ...attr, type: selectedTypes, values: [] } : attr
       )
     );
-
     if (selectedTypes) {
       dispatch(
         fetchValuesList({
@@ -137,26 +119,30 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
 
   return (
     <div className="mb-5 pb-5">
-      {/* {!pData.attributes && ( */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        {attributes.length > 0 && (
+        {!pData.attributes && (
+          <>
+            {attributes.length > 0 && (
+              <button
+                type="button" // Add this line
+                onClick={handleSaveAttributes}
+                className="my-3 me-4 rounded border border-blue-500 bg-transparent px-4 text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+              >
+                Save Attributes
+              </button>
+            )}
+          </>
+        )}
+        {!pData.attributes && (
           <button
             type="button" // Add this line
-            onClick={handleSaveAttributes}
+            onClick={handleAddAttributes}
             className="my-3 me-4 rounded border border-blue-500 bg-transparent px-4 text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
           >
-            Save Attributes
+            Add Attribute
           </button>
         )}
-        <button
-          type="button" // Add this line
-          onClick={handleAddAttributes}
-          className="my-3 me-4 rounded border border-blue-500 bg-transparent px-4 text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
-        >
-          Add Attribute
-        </button>
       </div>
-      {/* )} */}
       {attributes?.length === 0 ? (
         <div className="text-md border-black-1000 border bg-gray-100 p-3 text-center font-medium font-semibold">
           No Product Attributes Are Added!
@@ -166,9 +152,9 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
           {attributes?.map((attribute, index) => (
             <div key={index} className="grid grid-cols-3 gap-4">
               <CustomReactSelect
-                options={getFilteredTypesOptions()}
+                options={typesQuery ? getFilteredTypesOptions() : []}
                 label="Types"
-                getOptionLabel={(option) => option?.name?.en}
+                getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Types"
                 onInputChange={handleSearchTypes}
@@ -182,7 +168,7 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
                 options={vData}
                 isMulti
                 label="Values"
-                getOptionLabel={(option) => option?.short_name?.en}
+                getOptionLabel={(option) => option.short_name}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Values"
                 onChange={(e: any) => handleValueChange(index, e)}

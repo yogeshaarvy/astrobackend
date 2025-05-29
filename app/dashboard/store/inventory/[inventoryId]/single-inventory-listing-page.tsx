@@ -5,29 +5,29 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 import ProductInventoryTable from './single-table';
 import {
-  addEditInventory,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
   fetchInventoryList,
   fetchSingleVariation,
   IInventory,
   setInventoryData,
-  updateInventoryData
+  addEditInventory
 } from '@/redux/slices/inventoriesSlice';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import { useSearchParams } from 'next/navigation';
-import { Modal } from '@/components/ui/modal';
-import CustomTextField from '@/utils/CustomTextField';
-import { Form } from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { CardContent } from '@/components/ui/card';
-import CustomDropdown from '@/utils/CusomDropdown';
-import { toast } from 'sonner';
 export default function ProductInventoryListingPage() {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const variantId = searchParams?.get('variantid') || '';
@@ -38,19 +38,32 @@ export default function ProductInventoryListingPage() {
   const page = parseInt(searchParams?.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams?.get('limit') ?? '10', 10);
   let exportData = 'false';
+
+  // State for the add inventory popup
+  const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
+  const [inventoryFormData, setInventoryFormData] = useState({
+    value: '',
+    type: 'credit',
+    message: '',
+    stock_management
+  });
+
   const {
     inventoryListState: {
       loading: inventoryListLoading,
       data: inventoryData = [],
       pagination: { totalCount }
-    }
+    },
+    singleInventoryState: { loading: inventoryLoading, data: iData = [] }
   } = useAppSelector((state) => state.inventories);
+
   const {
     singleVariationState: {
       loading: singleVariationStateLoading,
       data: variationData
     }
   } = useAppSelector((state) => state.inventories);
+
   useEffect(() => {
     dispatch(
       fetchInventoryList({
@@ -60,26 +73,17 @@ export default function ProductInventoryListingPage() {
         variantId,
         producttype,
         stock_management,
-        exportData,
-        startDate,
-        endDate
+        exportData
       })
     );
 
     dispatch(setInventoryData(null));
-  }, [page, pageSize, dispatch]); // Ensure this is run only once when the component mounts
-  const form = useForm<IInventory>({
-    defaultValues: {
-      message: '',
-      value: 0,
-      type: '',
-      productId: productId,
-      variantId: variantId
-    }
-  });
+  }, [page, pageSize, dispatch]);
+
   // You can safely assume `inventoryData` is populated now
   const product_Inventories: IInventory[] = inventoryData;
-  const handleSearch = (startDate: Date | null, endDate: Date | null) => {
+
+  const handleSearch = () => {
     dispatch(
       fetchInventoryList({
         page,
@@ -88,19 +92,67 @@ export default function ProductInventoryListingPage() {
         variantId,
         producttype,
         stock_management,
-        exportData,
-        startDate: startDate ? startDate.toISOString() : null,
-        endDate: endDate ? endDate.toISOString() : null
+        exportData
       })
     );
   };
+
   useEffect(() => {
-    if (variantId == '') {
-    }
     if (variantId) {
       dispatch(fetchSingleVariation(variantId));
     }
-  }, [variantId]);
+  }, [variantId, dispatch]);
+
+  // Handle Add Inventory button click
+  const handleAddInventry = () => {
+    setIsAddInventoryOpen(true);
+  };
+
+  // Handle input changes in the form
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setInventoryFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmitInventory = () => {
+    // Set the inventory data in the Redux store first
+    const inventoryData = {
+      ...inventoryFormData,
+      productId,
+      variationId: variantId
+    };
+
+    // Set the data in Redux state
+    dispatch(setInventoryData(inventoryData));
+
+    // Then call the addEditInventory thunk with null to indicate it's a new entry
+    dispatch(addEditInventory(null))
+      .unwrap()
+      .then((result) => {
+        console.log('Inventory added successfully:', result);
+        // Close the dialog on success
+        setIsAddInventoryOpen(false);
+
+        // Reset the form
+        setInventoryFormData({
+          value: '',
+          type: 'credit',
+          message: '',
+          stock_management: stock_management
+        });
+      })
+      .catch((error) => {
+        console.error('Failed to add inventory:', error);
+        // You might want to display an error message here
+      });
+  };
+
   const handleExport = async () => {
     try {
       // Fetch the export data from the API
@@ -112,12 +164,11 @@ export default function ProductInventoryListingPage() {
           variantId,
           producttype,
           stock_management,
-          exportData: 'true',
-          startDate: startDate ? startDate.toISOString() : null,
-          endDate: endDate ? endDate.toISOString() : null
+          exportData: 'true'
         })
-      ).unwrap(); // Ensure this returns a promise that resolves the data
+      ).unwrap();
       const exportData = exportResponse.InventoriesData;
+
       if (!exportData || exportData.length === 0) {
         alert('No data available to export');
         return;
@@ -125,13 +176,12 @@ export default function ProductInventoryListingPage() {
 
       // Generate CSV content
       const csvContent = [
-        ['ID', 'createdAt', 'Time', 'Stock Type', 'Stock', 'Current Stock'], // CSV headers
-        ...exportData.map((item: any, index: any) => [
-          index + 1,
-          new Date(item.createdAt).toLocaleString(),
-          item.type,
-          item.value,
-          item.current_stock
+        ['ID', 'Name', 'Rate', 'Active'], // CSV headers
+        ...exportData.map((item: any) => [
+          item._id,
+          item.name,
+          item.rate,
+          item.active
         ])
       ]
         .map((row) => row.join(','))
@@ -150,72 +200,16 @@ export default function ProductInventoryListingPage() {
       alert('An error occurred while exporting data.');
     }
   };
-  const handleInputChange = (e: any) => {
-    const { name, value, type, files, checked } = e.target;
 
-    dispatch(
-      updateInventoryData({
-        [name]:
-          type === 'file'
-            ? files?.[0]
-            : type === 'checkbox'
-            ? checked
-            : type === 'number'
-            ? Number(value)
-            : value
-      })
-    );
-  };
-  const handleDropdownChange = (e: any) => {
-    const { name, value } = e;
-
-    dispatch(
-      updateInventoryData({ [name]: value }) // .then(handleReduxResponse());
-    );
-  };
-  let entityId;
-  function onSubmit(data: any) {
-    dispatch(
-      updateInventoryData({
-        ...data, // Override with new values
-        productId: productId,
-        variantId: variantId,
-        stock_management: stock_management
-      })
-    );
-    dispatch(addEditInventory(entityId || null))
-      .then((response: any) => {
-        if (response.payload.success) {
-          setIsModalOpen(false);
-          dispatch(
-            fetchInventoryList({
-              page,
-              pageSize,
-              productId,
-              variantId,
-              producttype,
-              stock_management,
-              exportData,
-              startDate: startDate ? startDate.toISOString() : null,
-              endDate: endDate ? endDate.toISOString() : null
-            })
-          );
-          toast.success(response.payload.message);
-        }
-      })
-      .catch((err: any) => toast.error('Error:', err));
-  }
   return (
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">
         <div className="flex items-start justify-between pr-4">
           <Heading
             title={`${productname}${
-              variationData
-                ? `(${variationData.values
-                    .map((e: any) => e?.short_name)
-                    .join(', ')})`
-                : ''
+              variationData?.values?.map(
+                (e: any) => '(' + e?.short_name + ')'
+              ) || ''
             }`}
             description=""
           />
@@ -229,7 +223,7 @@ export default function ProductInventoryListingPage() {
             </Button>
             <Button
               className={buttonVariants({ variant: 'default' })}
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleAddInventry}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New
             </Button>
@@ -240,62 +234,78 @@ export default function ProductInventoryListingPage() {
           data={product_Inventories}
           totalData={totalCount}
           handleSearch={handleSearch}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          startDate={startDate}
-          endDate={endDate}
         />
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Add New Inventory"
-        description=""
-      >
-        {/* Modal content goes here */}
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <CustomTextField
-                  name="message"
-                  control={form.control}
-                  label="Message"
-                  placeholder="Enter your message"
-                  value={(inventoryData as IInventory)?.message}
-                  onChange={handleInputChange}
-                />
-                <CustomTextField
-                  name="value"
-                  control={form.control}
-                  label="Value"
-                  placeholder="0"
-                  value={(inventoryData as IInventory)?.value}
-                  onChange={handleInputChange}
-                  type="number"
-                />
 
-                <CustomDropdown
-                  control={form.control}
-                  label="Type"
-                  name="type"
-                  placeholder="Select Type"
-                  defaultValue=""
-                  data={[
-                    { name: 'Credit', _id: 'credit' },
-                    { name: 'Debit', _id: 'debit' }
-                  ]}
-                  // loading={brandListLoading ?? false}
-                  value={(inventoryData as IInventory)?.type}
-                  onChange={handleDropdownChange}
-                />
-              </div>
-
-              <Button type="submit">Submit</Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Modal>
+      {/* Add Inventory Dialog/Popup */}
+      <Dialog open={isAddInventoryOpen} onOpenChange={setIsAddInventoryOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Inventory</DialogTitle>
+            <DialogDescription>
+              Enter the inventory details for {productname}
+              {variationData?.values?.map(
+                (e: any) => ' (' + e?.short_name + ')'
+              ) || ''}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="type" className="text-right">
+                Type
+              </Label>
+              <select
+                id="type"
+                name="type"
+                value={inventoryFormData.type}
+                onChange={handleInputChange}
+                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="credit">Credit</option>
+                <option value="debit">Debit</option>
+              </select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="value" className="text-right">
+                Value
+              </Label>
+              <Input
+                id="value"
+                name="value"
+                type="number"
+                value={inventoryFormData.value}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="message" className="text-right">
+                Message
+              </Label>
+              <Input
+                id="message"
+                name="message"
+                value={inventoryFormData.message}
+                onChange={handleInputChange}
+                className="col-span-3"
+                placeholder="Optional inventory note"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsAddInventoryOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="button" onClick={handleSubmitInventory}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageContainer>
   );
 }
