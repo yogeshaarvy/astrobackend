@@ -11,37 +11,37 @@ import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import {
-  fetchAstroPackageList,
-  type IAstroPackage,
-  setAstroPackageData
-} from '@/redux/slices/astropooja/package';
-import AstroPackageTable from './package-tables';
+  fetchHoroscopeDetailList,
+  type IHoroscopeDetail,
+  setHoroscopeDetailData
+} from '@/redux/slices/horoscope/horoscopeDetailSlice';
+import HoroscopeDetailTable from './package-tables';
 
-export default function AstroPackagePage() {
+export default function HoroscopeDetailPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
   const active = searchParams.get('active') || '';
   const field = searchParams.get('field') || '';
-  const astropoojaId = searchParams.get('astropoojaId') || '';
-  console.log('astro poooja list id in ui', astropoojaId);
+  const horoscopesignId = searchParams.get('horoscopesignId') || '';
+  console.log('Horocope list id in ui', horoscopesignId);
   const page = Number.parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = Number.parseInt(searchParams.get('limit') ?? '5', 10);
 
   const {
-    astroPackageList: {
-      loading: astroPackageLoading,
-      data: astropoojaPackage = [],
+    horoscopeDetailList: {
+      loading: horoscopeDetailLoading,
+      data: Horoscope = [],
       pagination: { totalCount }
     }
-  } = useAppSelector((state) => state.astroPackage);
+  } = useAppSelector((state) => state.horoscopeDetail);
 
   useEffect(() => {
-    dispatch(fetchAstroPackageList({ page, pageSize, astropoojaId }));
-    dispatch(setAstroPackageData(null));
+    dispatch(fetchHoroscopeDetailList({ page, pageSize, horoscopesignId }));
+    dispatch(setHoroscopeDetailData(null));
   }, [page, pageSize]);
 
-  const astroPackage: IAstroPackage[] = astropoojaPackage;
+  const HoroscopeDetail: IHoroscopeDetail[] = Horoscope;
 
   const handleSearch = () => {
     if ((!field && keyword) || (!keyword && field)) {
@@ -52,27 +52,27 @@ export default function AstroPackagePage() {
 
   const handleExport = async () => {
     dispatch(
-      fetchAstroPackageList({
+      fetchHoroscopeDetailList({
         page,
         pageSize,
         keyword,
         field,
         active,
-        astropoojaId,
+        horoscopesignId,
         exportData: true
       })
     ).then((response: any) => {
       if (response?.error) {
         toast.error("Can't Export The Data Something Went Wrong");
       }
-      const allAstroPackage = response.payload?.astroPackageList;
+      const allHoroscopeDetail = response.payload?.horoscopeDetailList;
       const fileType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
       const fileExtension = '.xlsx';
-      const fileName = 'astro_package';
+      const fileName = 'horoscope_detail';
 
       const ws = XLSX.utils.json_to_sheet(
-        allAstroPackage?.map((row: any) => {
+        allHoroscopeDetail?.map((row: any) => {
           const id = row?._id || 'N/A';
           const active = row?.active || 'false';
           const createdAt = row?.createdAt
@@ -87,13 +87,11 @@ export default function AstroPackagePage() {
             : 'N/A';
           const title = row?.title || 'N/A';
           const desccription = row?.desccription || 'N/A';
-          const price = row?.price || `N/A`;
 
           return {
             ID: id,
             title: title,
             desccription: desccription,
-            price: price,
             Created_At: createdAt,
             Updated_At: updatedAt
           };
@@ -116,13 +114,13 @@ export default function AstroPackagePage() {
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <Heading title={`Astro Package (${totalCount})`} description="" />
+          <Heading title={`Horoscope Detail (${totalCount})`} description="" />
           <div className="flex gap-5">
             <Button variant="default" onClick={handleExport}>
               Export All
             </Button>
             <Link
-              href={`/dashboard/astro-pooja/packages/add?astropoojaId=${astropoojaId}`}
+              href={`/dashboard/horoscope/detail/add?horoscopesignId=${horoscopesignId}`}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New
@@ -130,8 +128,8 @@ export default function AstroPackagePage() {
           </div>
         </div>
         <Separator />
-        <AstroPackageTable
-          data={astroPackage}
+        <HoroscopeDetailTable
+          data={HoroscopeDetail}
           totalData={totalCount}
           handleSearch={handleSearch}
         />

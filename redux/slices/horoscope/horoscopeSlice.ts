@@ -8,7 +8,7 @@ import { cloneDeep } from 'lodash';
 import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
 
-export type IHoroscope = BaseModel & {
+export type IHoroscopeConfig = BaseModel & {
   metaTitle?: string;
   metaDescription?: string;
   metaKeyword?: string;
@@ -54,7 +54,7 @@ const initialState = {
     data: null,
     loading: null,
     error: null
-  } as BaseState<IHoroscope | null>
+  } as BaseState<IHoroscopeConfig | null>
 };
 
 export const fetchHoroscope = createAsyncThunk<
@@ -69,7 +69,7 @@ export const fetchHoroscope = createAsyncThunk<
       method: 'GET'
     });
     if (response?.success) {
-      dispatch(fetchSingleHoroscopeSuccess(response?.horoscope));
+      dispatch(fetchSingleHoroscopeSuccess(response?.horoscopeconfig));
 
       console.log('fecthaboutHoroscope', response);
       return response;

@@ -51,6 +51,8 @@ import storeConfigReducer from './slices/store/storeconfigSliceTest';
 import storegallery from './slices/store/gallerySlice';
 import filterReducer from './slices/store/filtersSlice';
 import astroPoojaReducer from './slices/Configs/astroPoojaSlice';
+import astropoojaListReducer from './slices/astropooja/list';
+import astroPackageReducer from './slices/astropooja/package';
 import horoscopeReducer from './slices/horoscope/horoscopeSlice';
 import panchangConfigReducer from './slices/panchang/panchangSlice';
 import horoscopetestimonialReducer from './slices/horoscope/testimonialSlice';
@@ -60,6 +62,7 @@ import whyChooseReducer from './slices/home/whyChooseSlice';
 import ourServicesReducer from './slices/home/ourServices';
 import consultanceReducer from './slices/home/consultance';
 import horoscopeiconReducer from './slices/home/horoscope';
+import horoscopedetailReducer from './slices/horoscope/horoscopeDetailSlice';
 import registerImageReducer from './slices/register-imageSlice';
 
 export const makeStore = () => {
@@ -116,6 +119,8 @@ export const makeStore = () => {
       kundliConfig: kundliconfig,
       galleryImage: storegallery,
       astroPoojas: astroPoojaReducer,
+      astropoojaList: astropoojaListReducer,
+      astroPackage: astroPackageReducer,
       horoscopeConfig: horoscopeReducer,
       panchangConfig: panchangConfigReducer,
       horoscopetestimonial: horoscopetestimonialReducer,
@@ -125,6 +130,7 @@ export const makeStore = () => {
       ourService: ourServicesReducer,
       consultance: consultanceReducer,
       horoscope: horoscopeiconReducer,
+      horoscopeDetail: horoscopedetailReducer,
       registerImage: registerImageReducer
     }
   });

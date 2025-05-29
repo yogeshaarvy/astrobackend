@@ -8,25 +8,31 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteHoroscope, IHoroscope } from '@/redux/slices/home/horoscope';
+import { searchParams } from '@/lib/searchparams';
+import {
+  deleteHoroscopeDetail,
+  IHoroscopeDetail
+} from '@/redux/slices/horoscope/horoscopeDetailSlice';
 import { AppDispatch } from '@/redux/store';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 interface CellActionProps {
-  data: IHoroscope;
+  data: IHoroscopeDetail;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+  const searchParams = useSearchParams();
+  const horoscopesignId = searchParams.get('horoscopesignId') || '';
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   const onConfirm = async () => {
-    dispatch(deleteHoroscope(data?._id || ''));
+    dispatch(deleteHoroscopeDetail(data?._id || ''));
     setOpen(false);
   };
 
@@ -51,19 +57,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/homes/horoscope/edit?id=${data._id}`)
-            }
-          >
-            <Edit className="mr-2 h-4 w-4" /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
               router.push(
-                `/dashboard/horoscope/detail/?horoscopesignId=${data._id}`
+                `/dashboard/horosope/detail/edit?id=${data._id}&&horoscopesignId=${horoscopesignId}`
               )
             }
           >
-            <Edit className="mr-2 h-4 w-4" /> Details
+            <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
