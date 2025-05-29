@@ -382,7 +382,7 @@ export default function ProductsForm() {
     }
   };
   // Fixed handleSubmit function
-  const onSubmit = async (data: any) => {
+  const handleSubmit = async (data: any) => {
     if (entityId) {
       handleSaveSettings();
     }
@@ -573,7 +573,7 @@ export default function ProductsForm() {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-8"
               onKeyDown={handleKeyDown}
             >
