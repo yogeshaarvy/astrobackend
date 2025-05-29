@@ -50,14 +50,8 @@ export default function HoroscopeDetailTable({
       maxSize: 700
     },
     {
-      accessorKey: 'description.en',
-      header: 'DESCRIPTION',
-      size: 500,
-      maxSize: 700
-    },
-    {
-      accessorKey: 'price',
-      header: 'PRICE',
+      accessorKey: 'sequence',
+      header: 'SEQUENCE',
       size: 500,
       maxSize: 700
     },

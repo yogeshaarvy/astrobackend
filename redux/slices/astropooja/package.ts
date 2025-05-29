@@ -230,14 +230,14 @@ export const deleteAstroPackage = createAsyncThunk<
   any,
   string,
   { state: RootState }
->('astroPackage/deleteAstroPackage', async (id, { dispatch }) => {
+>('astroPackage/deleteAstroPackage', async (entityId, { dispatch }) => {
   dispatch(deleteAstroPackageStart());
   try {
-    const response = await fetchApi(`/astro-pooja/package/delete/${id}`, {
+    const response = await fetchApi(`/astro-pooja/package/delete/${entityId}`, {
       method: 'DELETE'
     });
     if (response.success) {
-      dispatch(deleteAstroPackageSuccess(id));
+      dispatch(deleteAstroPackageSuccess(entityId));
       dispatch(fetchAstroPackageList());
       toast.success(response?.message || 'AstroPackage deleted successfully');
       return response;
