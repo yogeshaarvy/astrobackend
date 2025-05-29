@@ -1,31 +1,30 @@
 import { DataTable } from '@/components/ui/table/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { useAppDispatch } from '@/redux/hooks';
-import { Checkbox } from '@radix-ui/react-checkbox';
 import { toast } from 'sonner';
 import { CellAction } from './cell-action';
 import { Switch } from '@/components/ui/switch';
-import {
-  FIELD_OPTIONS,
-  STATUS_OPTIONS,
-  useCategoryTableFilters
-} from './use-package-table-filters';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 import { Button } from '@/components/ui/button';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import {
-  addEditAstroPackage,
-  IAstroPackage,
-  updateAstroPackageData
-} from '@/redux/slices/astropooja/package';
+  FIELD_OPTIONS,
+  STATUS_OPTIONS,
+  useListTableFilters
+} from './use-lists-table-filters';
+import {
+  addEditAstropoojaList,
+  IAstropoojaList,
+  updateAstropoojaListData
+} from '@/redux/slices/astropooja/list';
 
-export default function AstroPackageTable({
+export default function AstropoojaListTable({
   data,
   totalData,
   handleSearch
 }: {
-  data: IAstroPackage[];
+  data: IAstropoojaList[];
   totalData: number;
   handleSearch: any;
 }) {
@@ -40,27 +39,21 @@ export default function AstroPackageTable({
     setActiveFilter,
     setPage,
     setSearchQuery
-  } = useCategoryTableFilters();
+  } = useListTableFilters();
 
-  const columns: ColumnDef<IAstroPackage>[] = [
+  const columns: ColumnDef<IAstropoojaList>[] = [
     {
       accessorKey: 'title.en',
-      header: 'TITLE',
+      header: 'Title',
       size: 500,
       maxSize: 700
     },
     {
-      accessorKey: 'description.en',
-      header: 'DESCRIPTION',
-      size: 500,
-      maxSize: 700
+      accessorKey: 'sequence',
+      header: 'Sequence',
+      size: 300
     },
-    {
-      accessorKey: 'price',
-      header: 'PRICE',
-      size: 500,
-      maxSize: 700
-    },
+
     {
       accessorKey: 'active',
       header: 'ACTIVE',
@@ -68,11 +61,9 @@ export default function AstroPackageTable({
         const handleToggle = async (checked: boolean) => {
           const updatedData = { ...row.original, active: checked };
           try {
-            dispatch(updateAstroPackageData(updatedData));
+            dispatch(updateAstropoojaListData(updatedData));
             const result = await dispatch(
-              addEditAstroPackage({
-                entityId: row.original._id || null
-              })
+              addEditAstropoojaList(row.original._id || null)
             ).unwrap();
             toast.success('Status Updated Successfully!');
           } catch (error: any) {
@@ -90,7 +81,6 @@ export default function AstroPackageTable({
         );
       }
     },
-
     {
       header: 'ACTIONS',
       id: 'actions',

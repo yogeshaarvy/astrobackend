@@ -8,7 +8,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteHoroscope, IHoroscope } from '@/redux/slices/home/horoscope';
+import {
+  deleteAstropoojaList,
+  IAstropoojaList
+} from '@/redux/slices/astropooja/list';
 import { AppDispatch } from '@/redux/store';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -16,7 +19,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 interface CellActionProps {
-  data: IHoroscope;
+  data: IAstropoojaList;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -26,7 +29,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const onConfirm = async () => {
-    dispatch(deleteHoroscope(data?._id || ''));
+    dispatch(deleteAstropoojaList(data?._id || ''));
     setOpen(false);
   };
 
@@ -51,7 +54,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/homes/horoscope/edit?id=${data._id}`)
+              router.push(`/dashboard/astro-pooja/list/edit?id=${data._id}`)
             }
           >
             <Edit className="mr-2 h-4 w-4" /> Update
@@ -59,11 +62,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             onClick={() =>
               router.push(
-                `/dashboard/horoscope/detail/?horoscopesignId=${data._id}`
+                `/dashboard/astro-pooja/packages?astropoojaId=${data._id}`
               )
             }
           >
-            <Edit className="mr-2 h-4 w-4" /> Details
+            <Edit className="mr-2 h-4 w-4" /> Package
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete

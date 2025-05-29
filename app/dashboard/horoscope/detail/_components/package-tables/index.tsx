@@ -15,17 +15,17 @@ import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box'
 import { Button } from '@/components/ui/button';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import {
-  addEditAstroPackage,
-  IAstroPackage,
-  updateAstroPackageData
-} from '@/redux/slices/astropooja/package';
+  addEditHoroscopeDetail,
+  IHoroscopeDetail,
+  updateHoroscopeDetailData
+} from '@/redux/slices/horoscope/horoscopeDetailSlice';
 
-export default function AstroPackageTable({
+export default function HoroscopeDetailTable({
   data,
   totalData,
   handleSearch
 }: {
-  data: IAstroPackage[];
+  data: IHoroscopeDetail[];
   totalData: number;
   handleSearch: any;
 }) {
@@ -42,7 +42,7 @@ export default function AstroPackageTable({
     setSearchQuery
   } = useCategoryTableFilters();
 
-  const columns: ColumnDef<IAstroPackage>[] = [
+  const columns: ColumnDef<IHoroscopeDetail>[] = [
     {
       accessorKey: 'title.en',
       header: 'TITLE',
@@ -68,9 +68,9 @@ export default function AstroPackageTable({
         const handleToggle = async (checked: boolean) => {
           const updatedData = { ...row.original, active: checked };
           try {
-            dispatch(updateAstroPackageData(updatedData));
+            dispatch(updateHoroscopeDetailData(updatedData));
             const result = await dispatch(
-              addEditAstroPackage({
+              addEditHoroscopeDetail({
                 entityId: row.original._id || null
               })
             ).unwrap();

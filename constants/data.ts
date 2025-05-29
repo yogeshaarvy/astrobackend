@@ -307,8 +307,8 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
-        title: 'Packages',
-        url: '/dashboard/astro-pooja/packages',
+        title: 'list',
+        url: '/dashboard/astro-pooja/list',
         icon: 'list'
       },
       {
@@ -325,6 +325,13 @@ export const navItems: NavItem[] = [
         ]
       }
     ]
+  },
+  {
+    title: 'Auth page Images',
+    url: '/dashboard/register-image',
+    icon: 'medal',
+    isActive: false,
+    items: [] // No child items
   },
   {
     title: 'Blogs',

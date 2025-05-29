@@ -8,94 +8,83 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useSearchParams } from 'next/navigation';
+import EmployeeNotAllwoed from '@/components/not-allowed';
+import { TCurrentEmployee, TCurrentEmployeePermission } from '@/types/globals';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import {
-  fetchAstroPackageList,
-  type IAstroPackage,
-  setAstroPackageData
-} from '@/redux/slices/astropooja/package';
-import AstroPackageTable from './package-tables';
+  fetchAstropoojaList,
+  IAstropoojaList,
+  setAstropoojaListData
+} from '@/redux/slices/astropooja/list';
+import AstropoojaListTable from './list-tables';
 
-export default function AstroPackagePage() {
+export default function AstropoojaListPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
   const active = searchParams.get('active') || '';
   const field = searchParams.get('field') || '';
-  const astropoojaId = searchParams.get('astropoojaId') || '';
-  console.log('astro poooja list id in ui', astropoojaId);
-  const page = Number.parseInt(searchParams.get('page') ?? '1', 10);
-  const pageSize = Number.parseInt(searchParams.get('limit') ?? '5', 10);
+  const page = parseInt(searchParams.get('page') ?? '1', 10);
+  const pageSize = parseInt(searchParams.get('limit') ?? '5', 10);
 
   const {
-    astroPackageList: {
-      loading: astroPackageLoading,
-      data: astropoojaPackage = [],
+    astropoojaList: {
+      loading: ListLoading,
+      data: astropoojaListData = [],
       pagination: { totalCount }
     }
-  } = useAppSelector((state) => state.astroPackage);
+  } = useAppSelector((state) => state.astropoojaList);
 
   useEffect(() => {
-    dispatch(fetchAstroPackageList({ page, pageSize, astropoojaId }));
-    dispatch(setAstroPackageData(null));
-  }, [page, pageSize]);
+    dispatch(fetchAstropoojaList({ page, pageSize }));
+    dispatch(setAstropoojaListData(null));
+  }, [dispatch, page, pageSize]);
 
-  const astroPackage: IAstroPackage[] = astropoojaPackage;
+  const astropoojaList: IAstropoojaList[] = astropoojaListData;
 
+  console.log('this is the list data of the', astropoojaList);
   const handleSearch = () => {
-    if ((!field && keyword) || (!keyword && field)) {
-      alert('Both keyword and field is required to search with keyword');
+    if (!field || !keyword) {
+      toast.warning(
+        'Both Keyword and Field is required to Search with Keyword'
+      );
     }
-    // dispatch(fetchAstroPackageList({ page, pageSize, keyword, field, active,astropoojaId }))
+    dispatch(fetchAstropoojaList({ page, pageSize, keyword, field, active }));
   };
 
   const handleExport = async () => {
     dispatch(
-      fetchAstroPackageList({
+      fetchAstropoojaList({
         page,
         pageSize,
         keyword,
         field,
         active,
-        astropoojaId,
         exportData: true
       })
     ).then((response: any) => {
       if (response?.error) {
         toast.error("Can't Export The Data Something Went Wrong");
       }
-      const allAstroPackage = response.payload?.astroPackageList;
+      const allAstropoojaList = response.payload?.astropoojaList;
       const fileType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
       const fileExtension = '.xlsx';
-      const fileName = 'astro_package';
+      const fileName = 'astropoojaList';
 
       const ws = XLSX.utils.json_to_sheet(
-        allAstroPackage?.map((row: any) => {
+        allAstropoojaList?.map((row: any) => {
           const id = row?._id || 'N/A';
           const active = row?.active || 'false';
-          const createdAt = row?.createdAt
-            ? new Date(row.createdAt).toLocaleDateString('en-GB', {
-                hour12: false
-              })
-            : 'N/A';
-          const updatedAt = row?.updatedAt
-            ? new Date(row.updatedAt).toLocaleDateString('en-GB', {
-                hour12: false
-              })
-            : 'N/A';
           const title = row?.title || 'N/A';
-          const desccription = row?.desccription || 'N/A';
-          const price = row?.price || `N/A`;
+          const sequence = row?.sequence || `N/A`;
 
           return {
             ID: id,
-            title: title,
-            desccription: desccription,
-            price: price,
-            Created_At: createdAt,
-            Updated_At: updatedAt
+            Title: title,
+            Active: active,
+            Sequence: sequence
           };
         })
       );
@@ -116,13 +105,14 @@ export default function AstroPackagePage() {
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <Heading title={`Astro Package (${totalCount})`} description="" />
+          <Heading title={`Astropooja List (${totalCount})`} description="" />
           <div className="flex gap-5">
             <Button variant="default" onClick={handleExport}>
               Export All
             </Button>
+
             <Link
-              href={`/dashboard/astro-pooja/packages/add?astropoojaId=${astropoojaId}`}
+              href={'/dashboard/astro-pooja/list/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New
@@ -130,8 +120,8 @@ export default function AstroPackagePage() {
           </div>
         </div>
         <Separator />
-        <AstroPackageTable
-          data={astroPackage}
+        <AstropoojaListTable
+          data={astropoojaList}
           totalData={totalCount}
           handleSearch={handleSearch}
         />

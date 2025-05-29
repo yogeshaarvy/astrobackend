@@ -192,7 +192,16 @@ export default function HoroscopeForm() {
                     </>
                   </TabsContent>
                 </Tabs>
-
+                <div className="space-y-1">
+                  <Label htmlFor="name">Slug</Label>
+                  <Input
+                    name="slug"
+                    placeholder="Enter Slug"
+                    type="text"
+                    value={(bData as IHoroscope)?.slug || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
                 <div className="space-y-1">
                   <Label htmlFor="name">Sequence</Label>
                   <Input

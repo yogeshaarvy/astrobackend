@@ -27,7 +27,7 @@ import { toast } from 'sonner';
 import {
   addEditHoroscope,
   fetchHoroscope,
-  IHoroscope,
+  IHoroscopeConfig,
   updateHoroscope
 } from '@/redux/slices/horoscope/horoscopeSlice';
 import CustomTextEditor from '@/utils/CustomTextEditor';
@@ -117,7 +117,7 @@ const Page = () => {
                 // control={form.control}
                 label="Meta Title"
                 placeholder="Enter your Meta Title"
-                value={(cData as IHoroscope)?.metaTitle}
+                value={(cData as IHoroscopeConfig)?.metaTitle}
                 onChange={handleInputChange}
               />
               <CustomTextField
@@ -125,7 +125,7 @@ const Page = () => {
                 // control={form.control}
                 label="Meta Description"
                 placeholder="Enter your Meta Description"
-                value={(cData as IHoroscope)?.metaDescription}
+                value={(cData as IHoroscopeConfig)?.metaDescription}
                 onChange={handleInputChange}
               />
               <CustomTextField
@@ -133,7 +133,7 @@ const Page = () => {
                 // control={form.control}
                 label="Meta keywords"
                 placeholder="Enter your Meta Keywords"
-                value={(cData as IHoroscope)?.metaKeyword}
+                value={(cData as IHoroscopeConfig)?.metaKeyword}
                 onChange={handleInputChange}
               />
             </form>
@@ -173,13 +173,13 @@ const Page = () => {
                         maxSize={1024 * 1024 * 2}
                       />{' '}
                       <>
-                        {typeof (cData as IHoroscope)?.mainSection
+                        {typeof (cData as IHoroscopeConfig)?.mainSection
                           ?.bannerImage === 'string' && (
                           <>
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (cData as IHoroscope)?.mainSection
+                                  (cData as IHoroscopeConfig)?.mainSection
                                     ?.bannerImage
                                 }
                               />
@@ -204,13 +204,14 @@ const Page = () => {
                         maxSize={1024 * 1024 * 2}
                       />{' '}
                       <>
-                        {typeof (cData as IHoroscope)?.mainSection
+                        {typeof (cData as IHoroscopeConfig)?.mainSection
                           ?.sideImage === 'string' && (
                           <>
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (cData as IHoroscope)?.mainSection?.sideImage
+                                  (cData as IHoroscopeConfig)?.mainSection
+                                    ?.sideImage
                                 }
                               />
                             </div>
@@ -245,7 +246,8 @@ const Page = () => {
                               name="mainSection.title.en"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IHoroscope)?.mainSection?.title?.en
+                                (cData as IHoroscopeConfig)?.mainSection?.title
+                                  ?.en
                               }
                               onChange={handleInputChange}
                             />
@@ -256,8 +258,8 @@ const Page = () => {
                               name="mainSection.description.en"
                               placeholder="Enter your Description"
                               value={
-                                (cData as IHoroscope)?.mainSection?.description
-                                  ?.en
+                                (cData as IHoroscopeConfig)?.mainSection
+                                  ?.description?.en
                               }
                               onChange={handleInputChange}
                             />
@@ -275,7 +277,8 @@ const Page = () => {
                               name="mainSection.title.hi"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IHoroscope)?.mainSection?.title?.hi
+                                (cData as IHoroscopeConfig)?.mainSection?.title
+                                  ?.hi
                               }
                               onChange={handleInputChange}
                             />
@@ -286,8 +289,8 @@ const Page = () => {
                               name="mainSection.description.hi"
                               placeholder="Enter your Description"
                               value={
-                                (cData as IHoroscope)?.mainSection?.description
-                                  ?.hi
+                                (cData as IHoroscopeConfig)?.mainSection
+                                  ?.description?.hi
                               }
                               onChange={handleInputChange}
                             />
@@ -303,14 +306,18 @@ const Page = () => {
                       <Input
                         type="color"
                         name="mainSection.textColor"
-                        value={(cData as IHoroscope)?.mainSection?.textColor}
+                        value={
+                          (cData as IHoroscopeConfig)?.mainSection?.textColor
+                        }
                         onChange={handleInputChange}
                         className="h-10 w-12 cursor-pointer p-1"
                       />
                       <Input
                         type="text"
                         name="mainSection.textColor"
-                        value={(cData as IHoroscope)?.mainSection?.textColor}
+                        value={
+                          (cData as IHoroscopeConfig)?.mainSection?.textColor
+                        }
                         // onChange={handleInputChange}
                         placeholder="Enter color hex code"
                         className="flex-1"
@@ -326,7 +333,8 @@ const Page = () => {
                         { name: 'Right', _id: 'right' }
                       ]}
                       value={
-                        (cData as IHoroscope)?.mainSection?.textAlignment || ''
+                        (cData as IHoroscopeConfig)?.mainSection
+                          ?.textAlignment || ''
                       }
                       onChange={handleDropdownChange}
                     />
@@ -373,13 +381,13 @@ const Page = () => {
                         maxSize={1024 * 1024 * 2}
                       />{' '}
                       <>
-                        {typeof (cData as IHoroscope)?.section2?.image ===
+                        {typeof (cData as IHoroscopeConfig)?.section2?.image ===
                           'string' && (
                           <>
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (cData as IHoroscope)?.section2?.image
+                                  (cData as IHoroscopeConfig)?.section2?.image
                                 }
                               />
                             </div>
@@ -417,7 +425,9 @@ const Page = () => {
                             <Input
                               name="section2.title.en"
                               placeholder="Enter your Title "
-                              value={(cData as IHoroscope)?.section2?.title?.en}
+                              value={
+                                (cData as IHoroscopeConfig)?.section2?.title?.en
+                              }
                               onChange={handleInputChange}
                             />
                           </div>
@@ -426,7 +436,8 @@ const Page = () => {
                               name="section2.description.en"
                               label="Full Description"
                               value={
-                                (cData as IHoroscope)?.section2?.description?.en
+                                (cData as IHoroscopeConfig)?.section2
+                                  ?.description?.en
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -455,7 +466,8 @@ const Page = () => {
                               name="section2.title.hi"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IHoroscope)?.section2?.title?.hi || ''
+                                (cData as IHoroscopeConfig)?.section2?.title
+                                  ?.hi || ''
                               }
                               onChange={handleInputChange}
                             />
@@ -465,8 +477,8 @@ const Page = () => {
                               name="section2.description.hi"
                               label="Full Description"
                               value={
-                                (cData as IHoroscope)?.section2?.description
-                                  ?.hi || ''
+                                (cData as IHoroscopeConfig)?.section2
+                                  ?.description?.hi || ''
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -536,7 +548,9 @@ const Page = () => {
                             <Input
                               name="section3.title.en"
                               placeholder="Enter your Title "
-                              value={(cData as IHoroscope)?.section3?.title?.en}
+                              value={
+                                (cData as IHoroscopeConfig)?.section3?.title?.en
+                              }
                               onChange={handleInputChange}
                             />
                           </div>
@@ -545,7 +559,8 @@ const Page = () => {
                               name="section3.description.en"
                               label="Full Description"
                               value={
-                                (cData as IHoroscope)?.section3?.description?.en
+                                (cData as IHoroscopeConfig)?.section3
+                                  ?.description?.en
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -574,7 +589,8 @@ const Page = () => {
                               name="section3.title.hi"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IHoroscope)?.section3?.title?.hi || ''
+                                (cData as IHoroscopeConfig)?.section3?.title
+                                  ?.hi || ''
                               }
                               onChange={handleInputChange}
                             />
@@ -584,8 +600,8 @@ const Page = () => {
                               name="section3.description.hi"
                               label="Full Description"
                               value={
-                                (cData as IHoroscope)?.section3?.description
-                                  ?.hi || ''
+                                (cData as IHoroscopeConfig)?.section3
+                                  ?.description?.hi || ''
                               }
                               onChange={(value) =>
                                 handleInputChange({

@@ -15,11 +15,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import React, { useEffect, useState } from 'react';
 import {
-  addEditAstroPackage,
-  fetchSingleAstroPackage,
-  IAstroPackage,
-  updateAstroPackageData
-} from '@/redux/slices/astropooja/package';
+  addEditHoroscopeDetail,
+  fetchSingleHoroscopeDetail,
+  IHoroscopeDetail,
+  updateHoroscopeDetailData
+} from '@/redux/slices/horoscope/horoscopeDetailSlice';
 import { FileUploader, FileViewCard } from '@/components/file-uploader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
@@ -30,23 +30,23 @@ import CustomTextEditor from '@/utils/CustomTextEditor';
 export default function AstroPackageForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
-  const astropoojaId = params.get('astropoojaId');
+  const horoscopesignId = params.get('horoscopesignId');
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const {
-    singleAstroPackageState: { loading, data: bData }
-  } = useAppSelector((state) => state.astroPackage);
+    singleHoroscopeDetailState: { loading, data: bData }
+  } = useAppSelector((state) => state.horoscopeDetail);
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [showBannerImage, setShowBannerImage] = useState(true);
   const [showBackgroundColor, setShowBackgroundColor] = useState(false);
   const [showSwitch, setShowSwitch] = useState(true);
 
-  const form = useForm<IAstroPackage>({});
+  const form = useForm<IHoroscopeDetail>({});
 
   useEffect(() => {
     if (entityId) {
-      dispatch(fetchSingleAstroPackage(entityId));
+      dispatch(fetchSingleHoroscopeDetail(entityId));
     }
   }, [entityId]);
 
@@ -54,7 +54,7 @@ export default function AstroPackageForm() {
     const { name, value, type, files, checked } = e.target;
 
     dispatch(
-      updateAstroPackageData({
+      updateHoroscopeDetailData({
         [name]:
           type === 'file'
             ? files?.[0]
@@ -71,12 +71,12 @@ export default function AstroPackageForm() {
     e.preventDefault();
 
     try {
-      dispatch(addEditAstroPackage({ entityId, astropoojaId })).then(
+      dispatch(addEditHoroscopeDetail({ entityId, horoscopesignId })).then(
         (response: any) => {
-          console.log('this is vjdsvn', astropoojaId);
+          console.log('this is vjdsvn', horoscopesignId);
           if (!response?.error) {
             router.push(
-              `/dashboard/astro-pooja/packages?packageId=${astropoojaId}`
+              `/dashboard/horosope/detail?detailId=${horoscopesignId}`
             );
             toast.success(response?.payload?.message);
           } else {
@@ -93,7 +93,7 @@ export default function AstroPackageForm() {
     const { name, value } = e;
 
     dispatch(
-      updateAstroPackageData({ [name]: value }) // .then(handleReduxResponse());
+      updateHoroscopeDetailData({ [name]: value }) // .then(handleReduxResponse());
     );
   };
 
@@ -102,7 +102,7 @@ export default function AstroPackageForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Astro Package List Information
+            Horoscope Detail List Information
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -112,6 +112,37 @@ export default function AstroPackageForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
+                <FormItem className="space-y-3">
+                  <FormLabel>Banner Image</FormLabel>
+
+                  <FileUploader
+                    value={bannerImage ? [bannerImage] : []}
+                    onValueChange={(newFiles: any) => {
+                      setBannerImage(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'banner_image',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+
+                  {typeof (bData as IHoroscopeDetail)?.banner_image ===
+                    'string' && (
+                    <div className="max-h-48 space-y-4">
+                      <FileViewCard
+                        existingImageURL={
+                          (bData as IHoroscopeDetail)?.banner_image
+                        }
+                      />
+                    </div>
+                  )}
+                </FormItem>
+
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
                     <TabsTrigger
@@ -136,19 +167,24 @@ export default function AstroPackageForm() {
                           <Input
                             name="title.en"
                             placeholder="Enter your Title"
-                            value={(bData as IAstroPackage)?.title?.en}
+                            value={(bData as IHoroscopeDetail)?.title?.en}
                             onChange={handleInputChange}
                           />
                         </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="name">Description</Label>
-                          <Input
-                            name="description.en"
-                            placeholder="Enter your Description"
-                            value={(bData as IAstroPackage)?.description?.en}
-                            onChange={handleInputChange}
-                          />
-                        </div>
+                        <CustomTextEditor
+                          name="description.en"
+                          label="Full Description"
+                          value={(bData as IHoroscopeDetail)?.description?.en}
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'description.en',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
                       </CardContent>
                     </>
                   </TabsContent>
@@ -161,31 +197,35 @@ export default function AstroPackageForm() {
                           <Input
                             name="title.hi"
                             placeholder="Enter your Title"
-                            value={(bData as IAstroPackage)?.title?.hi}
+                            value={(bData as IHoroscopeDetail)?.title?.hi}
                             onChange={handleInputChange}
                           />
                         </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="name">Description</Label>
-                          <Input
-                            name="description.hi"
-                            placeholder="Enter your Description"
-                            value={(bData as IAstroPackage)?.description?.hi}
-                            onChange={handleInputChange}
-                          />
-                        </div>
+                        <CustomTextEditor
+                          name="description.hi"
+                          label="Full Description"
+                          value={(bData as IHoroscopeDetail)?.description?.hi}
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'description.hi',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
                       </CardContent>
                     </>
                   </TabsContent>
                 </Tabs>
-
                 <div className="space-y-1">
-                  <Label htmlFor="name">Price</Label>
+                  <Label htmlFor="name">Sequence</Label>
                   <Input
-                    name="price"
+                    name="sequence"
                     placeholder="Enter Sequence"
                     type="number"
-                    value={(bData as IAstroPackage)?.price || ''}
+                    value={(bData as IHoroscopeDetail)?.sequence || ''}
                     onChange={handleInputChange}
                   />
                 </div>
