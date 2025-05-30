@@ -81,12 +81,12 @@ export const addEditHoroscopeList = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        response = await fetchApi('horoscope/sign/create', {
+        response = await fetchApi('/horoscope/sign/create', {
           method: 'POST',
           body: formData
         });
       } else {
-        response = await fetchApi(`horoscope/sign/update/${entityId}`, {
+        response = await fetchApi(`/horoscope/sign/update/${entityId}`, {
           method: 'PUT',
           body: formData
         });
@@ -129,7 +129,7 @@ export const fetchHoroscopeList = createAsyncThunk<
       dispatch(fetchHoroscopeListStart());
 
       const response = await fetchApi(
-        `/home/Horoscope/all?page=${page || 1}&limit=${pageSize || 10}&field=${
+        `/Horoscope/sign/all?page=${page || 1}&limit=${pageSize || 10}&field=${
           field || ''
         }&text=${keyword || ''}&active=${active || ''}&exportData=${
           exportData || false
