@@ -58,7 +58,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             onClick={() =>
               router.push(
-                `/dashboard/horosope/detail/edit?id=${data._id}&&horoscopesignId=${horoscopesignId}`
+                `/dashboard/horoscope/prediction/edit?id=${data._id}&&horoscopesignId=${horoscopesignId}`
               )
             }
           >

@@ -65,7 +65,7 @@ export default function HoroscopeDetailPage() {
       if (response?.error) {
         toast.error("Can't Export The Data Something Went Wrong");
       }
-      const allHoroscopeDetail = response.payload?.horoscopeDetailList;
+      const allHoroscopeDetail = response.payload?.horoscopePredictionList;
       const fileType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
       const fileExtension = '.xlsx';
@@ -114,13 +114,16 @@ export default function HoroscopeDetailPage() {
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <Heading title={`Horoscope Detail (${totalCount})`} description="" />
+          <Heading
+            title={`Horoscope Prediction (${totalCount})`}
+            description=""
+          />
           <div className="flex gap-5">
             <Button variant="default" onClick={handleExport}>
               Export All
             </Button>
             <Link
-              href={`/dashboard/horoscope/detail/add?horoscopesignId=${horoscopesignId}`}
+              href={`/dashboard/horoscope/prediction/add?horoscopesignId=${horoscopesignId}`}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

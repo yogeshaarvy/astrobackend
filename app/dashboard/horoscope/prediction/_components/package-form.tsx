@@ -62,6 +62,8 @@ export default function AstroPackageForm() {
             ? checked
             : type === 'number'
             ? Number(value)
+            : type === 'date'
+            ? value // or new Date(value) if you want a Date object
             : value
       })
     );
@@ -76,7 +78,7 @@ export default function AstroPackageForm() {
           console.log('this is vjdsvn', horoscopesignId);
           if (!response?.error) {
             router.push(
-              `/dashboard/horosope/detail?detailId=${horoscopesignId}`
+              `/dashboard/horoscope/prediction?horoscopesignId=${horoscopesignId}`
             );
             toast.success(response?.payload?.message);
           } else {
@@ -102,7 +104,7 @@ export default function AstroPackageForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Horoscope Detail List Information
+            Prediction Information
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -112,36 +114,39 @@ export default function AstroPackageForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
-                <FormItem className="space-y-3">
-                  <FormLabel>Banner Image</FormLabel>
-
-                  <FileUploader
-                    value={bannerImage ? [bannerImage] : []}
-                    onValueChange={(newFiles: any) => {
-                      setBannerImage(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'banner_image',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
+                <div className="space-y-1">
+                  <Label htmlFor="start_date">Start Date</Label>
+                  <Input
+                    name="start_date"
+                    placeholder="Enter Start Date"
+                    type="date"
+                    value={
+                      (bData as IHoroscopeDetail)?.start_date
+                        ? new Date((bData as IHoroscopeDetail).start_date)
+                            .toISOString()
+                            .split('T')[0]
+                        : ''
+                    }
+                    onChange={handleInputChange}
                   />
+                </div>
 
-                  {typeof (bData as IHoroscopeDetail)?.banner_image ===
-                    'string' && (
-                    <div className="max-h-48 space-y-4">
-                      <FileViewCard
-                        existingImageURL={
-                          (bData as IHoroscopeDetail)?.banner_image
-                        }
-                      />
-                    </div>
-                  )}
-                </FormItem>
+                <div className="space-y-1">
+                  <Label htmlFor="end_date">End Date</Label>
+                  <Input
+                    name="end_date"
+                    placeholder="Enter End Date"
+                    type="date"
+                    value={
+                      (bData as IHoroscopeDetail)?.end_date
+                        ? new Date((bData as IHoroscopeDetail).end_date)
+                            .toISOString()
+                            .split('T')[0]
+                        : ''
+                    }
+                    onChange={handleInputChange}
+                  />
+                </div>
 
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
@@ -219,16 +224,6 @@ export default function AstroPackageForm() {
                     </>
                   </TabsContent>
                 </Tabs>
-                <div className="space-y-1">
-                  <Label htmlFor="name">Sequence</Label>
-                  <Input
-                    name="sequence"
-                    placeholder="Enter Sequence"
-                    type="number"
-                    value={(bData as IHoroscopeDetail)?.sequence || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
               </form>
             </Form>
           </div>

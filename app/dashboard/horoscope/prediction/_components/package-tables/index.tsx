@@ -50,11 +50,26 @@ export default function HoroscopeDetailTable({
       maxSize: 700
     },
     {
-      accessorKey: 'sequence',
-      header: 'SEQUENCE',
+      accessorKey: 'start_date',
+      header: 'START DATE',
       size: 500,
-      maxSize: 700
+      maxSize: 700,
+      cell: ({ getValue }) => {
+        const date = new Date(getValue());
+        return date.toLocaleDateString(); // Formats to just date (e.g., MM/DD/YYYY)
+      }
     },
+    {
+      accessorKey: 'end_date',
+      header: 'END DATE',
+      size: 500,
+      maxSize: 700,
+      cell: ({ getValue }) => {
+        const date = new Date(getValue());
+        return date.toLocaleDateString();
+      }
+    },
+
     {
       accessorKey: 'active',
       header: 'ACTIVE',

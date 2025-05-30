@@ -151,6 +151,26 @@ export default function HoroscopeForm() {
                     </div>
                   )}
                 </FormItem>
+                <div className="space-y-1">
+                  <Label htmlFor="name">Slug</Label>
+                  <Input
+                    name="slug"
+                    placeholder="Enter Slug"
+                    type="text"
+                    value={(bData as IHoroscope)?.slug || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="name">Sequence</Label>
+                  <Input
+                    name="sequence"
+                    placeholder="Enter Sequence"
+                    type="number"
+                    value={(bData as IHoroscope)?.sequence || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
                     <TabsTrigger
@@ -199,26 +219,6 @@ export default function HoroscopeForm() {
                     </>
                   </TabsContent>
                 </Tabs>
-                <div className="space-y-1">
-                  <Label htmlFor="name">Slug</Label>
-                  <Input
-                    name="slug"
-                    placeholder="Enter Slug"
-                    type="text"
-                    value={(bData as IHoroscope)?.slug || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="name">Sequence</Label>
-                  <Input
-                    name="sequence"
-                    placeholder="Enter Sequence"
-                    type="number"
-                    value={(bData as IHoroscope)?.sequence || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
               </form>
             </Form>
           </div>

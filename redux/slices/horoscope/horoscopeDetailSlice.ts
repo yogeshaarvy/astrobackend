@@ -16,8 +16,8 @@ export type IHoroscopeDetail = BaseModel & {
     en?: string;
     hi?: string;
   };
-  banner_image?: string;
-  sequence?: number;
+  start_date?: string;
+  end_date?: string;
   active?: boolean;
   sign_id?:
     | string
@@ -64,7 +64,7 @@ export const addEditHoroscopeDetail = createAsyncThunk<
     { entityId, horoscopesignId },
     { dispatch, rejectWithValue, getState }
   ) => {
-    console.log('entity id is', entityId);
+    console.log('entity id is', horoscopesignId);
     try {
       const {
         horoscopeDetail: {
@@ -89,9 +89,9 @@ export const addEditHoroscopeDetail = createAsyncThunk<
         description: clonedData.description
           ? JSON.stringify(clonedData.description)
           : undefined,
-        banner_image: clonedData.banner_image,
+        start_date: clonedData?.start_date,
+        end_date: clonedData?.end_date,
         sign_id: horoscopesignId,
-        sequence: clonedData.sequence,
         active: clonedData.active
       };
 
@@ -178,8 +178,8 @@ export const fetchHoroscopeDetailList = createAsyncThunk<
         if (!input?.exportData) {
           dispatch(
             fetchHoroscopeDetailListSuccess({
-              data: response.horoscopeDetailList,
-              totalCount: response.totalHoroscopeDetail
+              data: response.horoscopePredictionList,
+              totalCount: response.totalCount
             })
           );
         } else {
