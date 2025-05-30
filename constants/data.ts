@@ -160,11 +160,6 @@ export const navItems: NavItem[] = [
         title: 'Consultance',
         url: '/dashboard/homes/consultance',
         icon: 'consultance'
-      },
-      {
-        title: 'Horoscope',
-        url: '/dashboard/homes/horoscope',
-        icon: 'consultance'
       }
     ]
   },
@@ -383,15 +378,7 @@ export const navItems: NavItem[] = [
       {
         title: 'Signs',
         url: '/dashboard/horoscope/signs',
-        icon: 'signpost',
-        isActive: false,
-        items: [
-          {
-            title: 'Aries',
-            url: '/dashboard/horoscope/signs/aries',
-            icon: 'general'
-          }
-        ]
+        icon: 'consultance'
       },
       {
         title: 'Other',

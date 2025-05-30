@@ -112,7 +112,7 @@ export default function HoroscopeListPage() {
             </Button>
 
             <Link
-              href={'/dashboard/homes/horoscope/add'}
+              href={'/dashboard/horoscope/signs/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

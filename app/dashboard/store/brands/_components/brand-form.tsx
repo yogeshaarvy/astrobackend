@@ -300,7 +300,7 @@ export default function BrandForm() {
               </FormItem>
 
               <FormItem className="space-y-3">
-                <FormLabel>Dark Logo</FormLabel>
+                <FormLabel>Logo</FormLabel>
                 <FileUploader
                   value={logoImage ? [logoImage] : []}
                   onValueChange={(newFiles: any) => {
@@ -329,7 +329,7 @@ export default function BrandForm() {
                 </>
               </FormItem>
               <FormItem className="space-y-3">
-                <FormLabel>Dark Logo</FormLabel>
+                <FormLabel>Banner Image</FormLabel>
                 <FileUploader
                   value={bannerImage ? [bannerImage] : []}
                   onValueChange={(newFiles: any) => {
