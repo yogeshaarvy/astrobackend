@@ -95,51 +95,8 @@ export default function ProductsForm() {
     }
   } = useAppSelector((state) => state.countries);
 
-  const form = useForm<IProducts>({
-    defaultValues: {
-      name: '',
-      title: {
-        en: '',
-        hi: ''
-      },
-      slug: '',
-      model_no: '',
-      main_image: '',
-      second_main_image: '',
-      other_image: [],
-      brand_name: '',
-      sequence: 0,
-      price: 0,
-      special_price: 0,
-      categories: [],
-      meta_tag: '',
-      meta_description: '',
-      meta_title: '',
-      madeIn: '',
-      productype: '',
-      videotype: '',
-      tax: '',
-      tags: '',
-      maxorder: false,
-      maxorder_value: 0,
-      minorder: 'false',
-      minorder_value: 0,
-      hsn_code: '',
-      return_able: false,
-      number_of_days: 0,
-      if_cancel: '',
-      cancel_days: 0,
-      videodata: '',
-      sku: '',
-      is_cod_allowed: false,
-      stock_value: 0,
-
-      stock_status: 'true',
-      description: {
-        en: '',
-        hi: ''
-      }
-    }
+  const form = useForm({
+    defaultValues: {}
   });
 
   useEffect(() => {
@@ -151,14 +108,6 @@ export default function ProductsForm() {
   const brands: IBrand[] = bData;
   const page = 1;
   const pageSize = 100000;
-
-  useEffect(() => {
-    if (!pData?.variants) return;
-    if (pData?.variants) {
-      setVariations(pData?.variants);
-    }
-  }, [pData?.variants]);
-
   useEffect(() => {
     dispatch(fetchCountriesList({ page, pageSize }));
     dispatch(
@@ -203,6 +152,24 @@ export default function ProductsForm() {
     );
   }, [dispatch]);
 
+  useEffect(() => {
+    if (entityId) {
+      setMainImage(pData?.main_image || '');
+      setSecondMainImage(pData?.second_main_image || '');
+      setAttributes(pData?.attributes || []);
+      // Set initial state for images
+      setMainImagePreview(pData?.main_image || null);
+      setSecondMainImagePreview(pData?.second_main_image || null);
+      setOtherImages(pData?.other_image || []);
+      setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
+      setSettingsSaved(true);
+      setTabsEnabled((prev) => ({
+        ...prev,
+        attribute: true,
+        variations: true
+      }));
+    }
+  }, [pData, dispatch]);
   // Handle Single Image Upload
   const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -274,60 +241,6 @@ export default function ProductsForm() {
     );
   };
 
-  useEffect(() => {
-    if (pData && entityId) {
-      form.setValue('name', pData?.name || '');
-      form.setValue('title.en', pData?.title?.en || '');
-      form.setValue('title.hi', pData?.title?.hi || '');
-      form.setValue('slug', pData?.slug || '');
-      form.setValue('sequence', pData?.sequence || 0);
-      form.setValue('categories', pData?.categories || []); // Set 'categories' as an array
-      form.setValue('manufacture.en', pData?.manufacture?.en || '');
-      form.setValue('manufacture.hi', pData?.manufacture?.hi || '');
-      form.setValue('meta_title', pData?.meta_title || '');
-      form.setValue('meta_description', pData.meta_description || '');
-      form.setValue('meta_tag', pData?.meta_tag || '');
-      form.setValue('brand_name', pData?.brand_name || '');
-      form.setValue('madeIn', pData?.madeIn || '');
-      form.setValue('productype', pData?.productype || '');
-      form.setValue('videotype', pData?.videotype || '');
-      form.setValue('tags', pData?.tags || '');
-      form.setValue('tax', pData?.tax || '');
-      form.setValue('maxorder', pData?.maxorder || false);
-      form.setValue('minorder', pData?.minorder || 'false');
-      form.setValue('minorder_value', pData?.minorder_value || 0);
-      form.setValue('maxorder_value', pData?.maxorder_value || 0);
-      form.setValue('hsn_code', pData?.hsn_code || '');
-      form.setValue('sku', pData?.sku || '');
-      form.setValue('return_able', pData?.return_able || false);
-      form.setValue('number_of_days', pData?.number_of_days || 0);
-      form.setValue('if_cancel', pData?.if_cancel || 'false');
-      form.setValue('cancel_days', pData?.cancel_days || 0);
-      form.setValue('videodata', pData?.videodata || '');
-      form.setValue('description.hi', pData?.description?.hi || '');
-      form.setValue('description.en', pData?.description?.en || '');
-      form.setValue('model_no', pData?.model_no || '');
-      form.setValue('is_cod_allowed', pData?.is_cod_allowed || false); // Initialize the checkbox
-      form.setValue('variants', pData?.variants || null); // Initialize the checkbox
-      form.setValue('stock_status', pData?.stock_status || 'false'); // Initialize the checkbox
-      form.setValue('stock_value', pData?.stock_value || 0); // Initialize the checkbox
-      setMainImage(pData?.main_image || '');
-      setSecondMainImage(pData?.second_main_image || '');
-      setAttributes(pData?.attributes || []);
-      // Set initial state for images
-      setMainImagePreview(pData?.main_image || null);
-      setSecondMainImagePreview(pData?.second_main_image || null);
-      setOtherImages(pData?.other_image || []);
-      setImagePreviews(pData?.other_image?.map((img: string) => img) || []);
-      setSettingsSaved(true);
-      setTabsEnabled((prev) => ({
-        ...prev,
-        attribute: true,
-        variations: true
-      }));
-    }
-  }, [pData, entityId, form]);
-
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
@@ -347,15 +260,22 @@ export default function ProductsForm() {
 
   // Fixed handleSaveSettings function
   const handleSaveSettings = () => {
-    const formData = form.getValues(); // Get current form data
-    const productype = formData.productype; // Get the product type
-    const stockManagementEnabled = formData.stock_management;
-    const stockManagementLevel = formData.stock_management_level;
-    let requiredFields: string[] = [];
-    // Required field for Variable Product if stock management is enabled
-    if (productype === 'variableproduct' && stockManagementEnabled) {
-      requiredFields.push('stock_management_level');
+    if (!pData) {
+      toast.error('Product data is not available');
+      return;
     }
+
+    const formData = { ...pData }; // Create a copy to avoid mutation
+    const productType = formData.productype;
+    const stockManagementEnabled =
+      formData.stockManagement?.stock_management === true;
+    const stockManagementLevel =
+      formData.stockManagement?.stock_management_level;
+    let requiredFields: any[] = [];
+    // if (productType === 'variableproduct' && stockManagementEnabled) {
+    //   requiredFields.push('stock_management_level');
+    // }
+
     const missingFields = requiredFields.filter(
       (field) => !formData[field] // Check for empty or undefined fields
     );
@@ -369,55 +289,33 @@ export default function ProductsForm() {
     setTabsEnabled((prev) => ({
       ...prev,
       attribute: true,
-      variations: true
+      variations: true // Only enable variations for variable products
     }));
+
     // Mark settings as saved
     setSettingsSaved(true);
 
     toast.success('Settings saved successfully!');
   };
-  const handleKeyDown = (e: any) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-    }
-  };
+
   // Fixed handleSubmit function
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async () => {
     if (entityId) {
       handleSaveSettings();
     }
+    if (!pData) {
+      toast.error('Product data is not available');
+      return;
+    }
 
     // Validate required fields
-    let missingFields: string[] = [];
-    let categoriesdata =
-      data.categories?.length > 0 ? data.categories : pData?.categories ?? [];
-    let brand_namedata = data.brand_name || pData?.brand_name || ''; // Retain brand
-    let madeIndata = data.madeIn || pData?.madeIn || ''; // Retain madeIn
-    let tagsdata = data.tags || pData?.tags || ''; // Retain tag
-    let taxdata = data.tax || pData?.tax || ''; // Retain tag
-    // Check required fields and add their names to missingFields array if missing
-    if (!data.name) missingFields.push('Name');
-    if (!data.title?.hi) missingFields.push('TitleHindi');
-    if (!data.title?.en) missingFields.push('TitleEnglish');
-    if (!data.slug) missingFields.push('Slug');
-    if (!data.model_no) missingFields.push('Model Number');
-    if (!data.productype) missingFields.push('Product Type');
-    if (!brand_namedata) missingFields.push('Brand Name');
-    if (!madeIndata) missingFields.push('Made In');
-    if (!data.meta_title) missingFields.push('Meta Title');
-    if (!data.meta_description) missingFields.push('Meta Description');
-    if (!data.description.en) missingFields.push('DescriptionEng');
-    if (!data.description.hi) missingFields.push('DescriptionHi');
-    if (!data.meta_tag) missingFields.push('Meta Tag');
-    if (!tagsdata) missingFields.push('Tags');
-    if (!taxdata) missingFields.push('Tax');
-    if (!data.hsn_code) missingFields.push('HSN Code');
-    if (!data.sku) missingFields.push('SKU');
-    if (!data.manufacture.en) missingFields.push('ManufactureEng');
-    if (!data.manufacture.hi) missingFields.push('ManufactureHi');
-    if (!categoriesdata?.length) missingFields.push('Categories');
-    if (!mainImage) missingFields.push('Main Image');
-    if (!secondMainImage) missingFields.push('Second Main Image');
+    let missingFields: any[] = [];
+    const categories = pData.categories?.length > 0 ? pData.categories : [];
+    const brandName = pData.brand_name || '';
+    const madeIn = pData.madeIn || '';
+    const tags = pData.tags || '';
+    const tax = pData.tax || '';
+
     // If any fields are missing, show an error message with the field names
     if (missingFields.length > 0) {
       toast.error(
@@ -425,36 +323,39 @@ export default function ProductsForm() {
       );
       return;
     }
+
     // If product type is variable, ensure at least one attribute is selected
     if (
-      data.productype === 'variableproduct' &&
+      pData.productype === 'variableproduct' &&
       (!attributes || attributes.length === 0)
     ) {
       toast.error('At least one attribute is required for variable products');
       return;
     }
+
     // Validate video data if videotype is selected
-    if (data.videotype && !data.videodata) {
-      toast.error('Video data is required when video type is selected');
-      return;
-    }
-    // Validate video data based on videotype
-    if (data.videotype) {
-      if (data.videotype === 'selfhosted' && !videoFile) {
+    if (pData.videotype && pData.videotype !== 'none') {
+      if (
+        pData.videotype === 'selfmadevideo' &&
+        !videoFile &&
+        !pData.videodata
+      ) {
         toast.error('Video file is required for self-hosted videos');
         return;
-      } else if (data.videotype !== 'selfhosted' && !data.videodata) {
-        toast.error('Video data is required when video type is selected');
+      } else if (pData.videotype !== 'selfmadevideo' && !pData.videodata) {
+        toast.error('Video URL is required when video type is selected');
         return;
       }
     }
 
-    //valide varitions required
+    // Validate variations if product is variable and variations exist
     if (variations?.length > 0) {
       let isValid = true;
-      let variationErrors: string[] = [];
+
+      let variationErrors: any[] = [];
+
       variations.forEach((variation, index) => {
-        let missingVariationFields: string[] = [];
+        let missingVariationFields: any[] = [];
 
         if (!variation.price) missingVariationFields.push('Price');
         if (!variation.special_price)
@@ -463,7 +364,7 @@ export default function ProductsForm() {
         if (!variation.height) missingVariationFields.push('Height');
         if (!variation.breadth) missingVariationFields.push('Breadth');
         if (!variation.length) missingVariationFields.push('Length');
-        if (data.productype != 'simpleproduct') {
+        if (pData.productype != 'simpleproduct') {
           if (!variation.sku) missingVariationFields.push('SKU');
           if (!variation.image) missingVariationFields.push('Image');
         }
@@ -486,14 +387,21 @@ export default function ProductsForm() {
       }
     }
 
+    // Determine video data based on video type
     const finalVideoData =
-      data.videotype === 'selfmadevideo' ? videoFile : data.videodata; // Use videodata from the form for Vimeo/YouTube
+      pData.videotype === 'selfmadevideo' ? videoFile : pData.videodata;
 
+    // Handle variations based on product type
     let finalVariations = variations;
 
+    // Upload images for variations if needed
     const uploadImageAndUpdate = async () => {
-      for (let i = 0; i < finalVariations.length; i++) {
-        const item = finalVariations[i];
+      // Create a copy of the variations array
+      const updatedVariations = [...finalVariations];
+
+      for (let i = 0; i < updatedVariations.length; i++) {
+        const item = updatedVariations[i];
+
         const formData = new FormData();
 
         if (item.image) {
@@ -521,47 +429,55 @@ export default function ProductsForm() {
           }
         }
       }
+
+      // Update finalVariations with the processed data
+      // finalVariations = updatedVariations;
     };
+
+    // Process variations images
 
     await uploadImageAndUpdate();
 
-    const attributesToSave = attributes.map((attr: any) => ({
+    // Format attributes properly for saving
+    const attributesToSave = attributes.map((attr) => ({
       type: attr?.type?._id,
       values: attr?.values.map((value: any) => value?._id)
     }));
-    dispatch(
-      updateProductsData({
-        ...(pData ?? {}), // Ensure pData is not null
-        ...data, // Override with new values
-        brand_name: brand_namedata, // Retain brand
-        madeIn: madeIndata, // Retain madeIn
-        tags: tagsdata, // Retain tag
-        tax: taxdata, // Retain tag
-        categories: categoriesdata,
-        variations: finalVariations, // Stringify variations data
-        main_image: mainImage ?? '',
-        second_main_image: secondMainImage ?? '',
-        videodata: finalVideoData ?? '',
-        attributes: attributesToSave, // Send only IDs to API
-        other_image: otherImages ?? [] // Add selected images to form data
-      })
-    );
-    dispatch(addEditProducts(entityId || null))
-      .then((response: any) => {
-        if (response.payload.success) {
-          router.push('/dashboard/products');
-          toast.success(response.payload.message);
-        }
-      })
-      .catch((err: any) => toast.error('Error:', err));
+
+    // Create the final data for submission
+    const finalData = {
+      ...(pData || {}),
+      brand_name: brandName,
+      madeIn: madeIn,
+      tags: tags,
+      tax: tax,
+      categories: categories,
+      variations: finalVariations,
+      attributes: attributesToSave,
+      // Handle main images appropriately
+      main_image: mainImage || pData.main_image || '',
+      second_main_image: secondMainImage || pData.second_main_image || '',
+      videodata: finalVideoData || '',
+      other_image: otherImages || []
+    };
+
+    // Update the product data in Redux
+    dispatch(updateProductsData(finalData));
+
+    // Submit the data to the API
+    dispatch(addEditProducts(entityId || null)).then((response) => {
+      console.log('response of add edit product is', response);
+      if (!response?.error) {
+        router.push('/dashboard/store/products');
+        toast.success(
+          response?.payload?.message || 'Product saved successfully'
+        );
+      } else {
+        toast.error(response.payload || 'Failed to save product');
+      }
+    });
   };
-  useEffect(() => {
-    setTabsEnabled((prev) => ({
-      ...prev,
-      attribute: true,
-      variations: true
-    }));
-  }, [dispatch, entityId, pData]);
+
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
@@ -575,13 +491,20 @@ export default function ProductsForm() {
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-8"
-              onKeyDown={handleKeyDown}
             >
               <CustomTextField
-                name="name"
-                label="Name*"
-                placeholder="Enter name"
-                value={(pData as IProducts)?.name}
+                name="sequence"
+                label="Sequence*"
+                placeholder="Enter your sequence"
+                value={(pData as IProducts)?.sequence}
+                onChange={handleInputChange}
+                type="number"
+              />
+              <CustomTextField
+                name="slug"
+                label="Slug*"
+                placeholder="Enter slug"
+                value={(pData as IProducts)?.slug}
                 onChange={handleInputChange}
                 type="text"
               />
@@ -602,15 +525,15 @@ export default function ProductsForm() {
                 </TabsList>
 
                 <TabsContent value="English">
-                  <CardHeader className="!px-0">
+                  {/* <CardHeader className="!px-0">
                     <CardTitle className="text-lg font-bold ">
                       ENGLISH-PRODUCT
                     </CardTitle>
-                  </CardHeader>
+                  </CardHeader> */}
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
                       name="title.en"
-                      label="Title*"
+                      label="Title (English)*"
                       placeholder="Enter title"
                       value={(pData as IProducts)?.title?.en}
                       onChange={handleInputChange}
@@ -618,7 +541,7 @@ export default function ProductsForm() {
 
                     <CustomTextField
                       name="manufacture.en"
-                      label="Manufacture*"
+                      label="Manufacture (English)*"
                       placeholder="Enter manufacture"
                       value={(pData as IProducts)?.manufacture?.en}
                       onChange={handleInputChange}
@@ -626,7 +549,7 @@ export default function ProductsForm() {
 
                     <CustomTextEditor
                       name="description.en"
-                      label="Full Description"
+                      label="Full Description (English)"
                       value={(pData as IProducts)?.description?.en}
                       onChange={(value) =>
                         handleInputChange({
@@ -642,15 +565,15 @@ export default function ProductsForm() {
                 </TabsContent>
 
                 <TabsContent value="Hindi">
-                  <CardHeader className="!px-0">
+                  {/* <CardHeader className="!px-0">
                     <CardTitle className="text-lg font-bold ">
                       HINDI-PRODUCT
                     </CardTitle>
-                  </CardHeader>
+                  </CardHeader> */}
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
                       name="title.hi"
-                      label="Tilte*"
+                      label="Tilte (Hindi)*"
                       placeholder="Enter Title"
                       value={(pData as IProducts)?.title?.hi}
                       onChange={handleInputChange}
@@ -658,7 +581,7 @@ export default function ProductsForm() {
 
                     <CustomTextField
                       name="manufacture.hi"
-                      label="Manufacture*"
+                      label="Manufacture (Hindi)*"
                       placeholder="Enter manufacture"
                       value={(pData as IProducts)?.manufacture?.hi}
                       onChange={handleInputChange}
@@ -666,7 +589,7 @@ export default function ProductsForm() {
 
                     <CustomTextEditor
                       name="description.hi"
-                      label="Full Description"
+                      label="Full Description (Hindi)"
                       value={(pData as IProducts)?.description?.hi}
                       onChange={(value) =>
                         handleInputChange({
@@ -710,14 +633,7 @@ export default function ProductsForm() {
                 onChange={handleInputChange}
                 value={(pData as IProducts)?.meta_title}
               />
-              <CustomTextField
-                name="sequence"
-                label="Sequence*"
-                placeholder="Enter your sequence"
-                value={(pData as IProducts)?.sequence}
-                onChange={handleInputChange}
-                type="number"
-              />
+
               <CustomReactSelect
                 options={brands}
                 label="Brand Name*"
@@ -881,6 +797,7 @@ export default function ProductsForm() {
                   aria-label="Toggle Active Status"
                 />
               </div>
+              {/* Main Image Uploader */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Main Image*
@@ -915,6 +832,7 @@ export default function ProductsForm() {
                   </div>
                 )}
               </div>
+              {/*Second Main Image Uploader */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Second Main Image*
@@ -949,6 +867,8 @@ export default function ProductsForm() {
                   </div>
                 )}
               </div>
+              {/* Multiple Image Upload */}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Upload Other Images
@@ -1120,7 +1040,6 @@ export default function ProductsForm() {
                   >
                     General
                   </button>
-
                   {(pData as IProducts)?.productype === 'variableproduct' &&
                     tabsEnabled.variations && (
                       <>
@@ -1138,6 +1057,7 @@ export default function ProductsForm() {
                         >
                           Attribute
                         </button>
+
                         <button
                           type="button"
                           onClick={() => handleTabChange('variations')}
@@ -1168,7 +1088,14 @@ export default function ProductsForm() {
                         { name: 'Variable Product', _id: 'variableproduct' }
                       ]}
                       disabled={settingsSaved}
-                      onChange={handleDropdownChange}
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'productype',
+                            value: value.value
+                          }
+                        })
+                      }
                     />
                     {(pData as IProducts)?.productype === 'simpleproduct' && (
                       <SimpleProductForm
@@ -1179,7 +1106,6 @@ export default function ProductsForm() {
                         onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
                       />
                     )}
-
                     {((pData as IProducts)?.productype === 'simpleproduct' ||
                       (pData as IProducts)?.productype ===
                         'variableproduct') && (
@@ -1195,14 +1121,16 @@ export default function ProductsForm() {
                       (pData as IProducts)?.productype ===
                         'variableproduct') && (
                       <>
-                        <Button
-                          type="button"
-                          onClick={handleSaveSettings}
-                          className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
-                          // disabled={settingsSaved} // Disable button if settings are saved
-                        >
-                          Save Settings
-                        </Button>
+                        {!entityId && (
+                          <Button
+                            type="button"
+                            onClick={handleSaveSettings}
+                            className="border-white-900 my-4 border bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 hover:text-white focus:z-10 focus:bg-blue-900 focus:text-white "
+                            // disabled={settingsSaved} // Disable button if settings are saved
+                          >
+                            Save Settings
+                          </Button>
+                        )}
                       </>
                     )}
                   </>
@@ -1220,7 +1148,8 @@ export default function ProductsForm() {
                     <VariationsForm
                       newAttributes={attributes}
                       stockmanagemet={
-                        pData?.stockManagement?.stock_management_level
+                        generalTabData?.stockManagement
+                          ?.stock_management_level || ''
                       }
                       handleInputChange={handleInputChange}
                       onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm

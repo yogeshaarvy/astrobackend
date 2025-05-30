@@ -71,8 +71,6 @@ export default function ProductsListingPage() {
         [
           'ID',
           'Name',
-          'Title (Eng)',
-          'Title (Hi)',
           'Active',
           'Slug',
           'Sequence',
@@ -90,8 +88,6 @@ export default function ProductsListingPage() {
           let returnarray = [
             item._id,
             item?.name,
-            item?.title?.en,
-            item?.title?.hi,
             item?.active,
             item?.slug,
             item?.sequence,

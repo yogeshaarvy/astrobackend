@@ -1,13 +1,18 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import CustomTextField from '@/utils/CustomTextField';
-import CustomDropdown from '@/utils/CusomDropdown';
-
-import { useAppDispatch } from '@/redux/hooks';
+import { CustomMultiDropdown } from '@/utils/CustomMultiDropdown';
+import { CardTitle } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import {
+  IProducts,
   IStockManagement,
   updateProductsData
 } from '@/redux/slices/store/productSlice';
+import CustomDropdown from '@/utils/CusomDropdown';
+import { FormLabel } from '@/components/ui/form';
+import { useAppDispatch } from '@/redux/hooks';
 
 interface StockmanagmentProductFormProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -57,7 +62,7 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
         dispatch(updateProductsData({ [name]: value }));
       }
     } else if (e?.name && e?.value) {
-      setStockManagement((prev: any) => {
+      setStockManagement((prev) => {
         const updated = { ...prev, [e.name]: e.value };
         dispatch(updateProductsData({ stockManagement: updated }));
         return updated;
@@ -86,13 +91,14 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
 
       {/* Stock Management Details */}
       {stockManagement.stock_management && (
-        <div className="mt-4 grid grid-cols-1 gap-6">
+        <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-1">
           {producttype === 'variableproduct' && (
             <CustomDropdown
               control={form.control}
               label="Choose Stock Management*"
               name="stock_management_level"
               placeholder="Select stock type"
+              defaultValue=""
               data={[
                 {
                   name: 'Product Level (Stock will be managed generally)',
@@ -114,18 +120,17 @@ const StockmanagmentProductForm: React.FC<StockmanagmentProductFormProps> = ({
             <div>
               <CustomTextField
                 label="Stock Value*"
-                name="stock_value"
-                control={form.control}
+                name="totalStock"
                 placeholder="Enter stock value"
                 type="number"
                 onChange={handleInputChange}
-                value={form.getValues('stock_value')}
+                value={pData?.totalStock}
+                disabled={disabled}
               />
-
               <select
                 className="mt-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900"
                 {...form.register('stock_status')}
-                value={form.getValues('stock_status')}
+                value={pData?.stock_status}
                 onChange={(e) => {
                   form.setValue('stock_status', e.target.value);
                   handleDropdownStockStatusChange(e);

@@ -9,22 +9,21 @@ interface VariationsFormProps {
   handleInputChange: any;
   stockmanagemet: any;
   pData: any;
-  onVariationsChange: (variations: any[]) => void;
+  onVariationsChange: (variations: any[]) => void; // Add a prop for sending variations data to the parent
 }
 
 const VariationsForm: React.FC<VariationsFormProps> = ({
   newAttributes,
   handleInputChange,
   stockmanagemet,
-  onVariationsChange,
-  pData
+  pData,
+  onVariationsChange
 }) => {
   const form = useFormContext();
   const [combinations, setCombinations] = useState<any[]>([]);
   const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>(
     {}
   );
-
   // Generate combinations of all values from attributes
   const generateCombinations = (attributes: any[]) => {
     if (attributes.length === 0) return [];
@@ -96,10 +95,7 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
         [field]: value
       };
     }
-    // updatedCombinations[index] = {
-    //   ...updatedCombinations[index],
-    //   [field]: value
-    // };
+
     setCombinations(updatedCombinations);
     // Extract only the _id from the values
     const combinationsWithIds = updatedCombinations.map((combination) => ({
@@ -148,7 +144,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
     }));
     onVariationsChange(combinationsWithIds);
   };
-
   return (
     <div className="mb-5 pb-5">
       {combinations?.length === 0 ? (
@@ -170,7 +165,7 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                               className="mx-2 rounded-sm border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900"
                               key={`value-${index}-${valueIndex}`}
                             >
-                              {value?.short_name}
+                              {value?.short_name?.en}
                             </div>
                           )
                         )}
@@ -197,7 +192,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="Price*"
                           name={`combinations[${index}].price`}
-                          control={form.control}
                           placeholder="Enter price"
                           onChange={(e) =>
                             handleFieldChange(index, 'price', e.target.value)
@@ -208,7 +202,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="Special Price*"
                           name={`combinations[${index}].special_price`}
-                          control={form.control}
                           placeholder="Enter special price"
                           onChange={(e) =>
                             handleFieldChange(
@@ -223,7 +216,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="SKU:"
                           name={`combinations[${index}].sku`}
-                          control={form.control}
                           placeholder="Enter SKU"
                           onChange={(e) =>
                             handleFieldChange(index, 'sku', e.target.value)
@@ -231,15 +223,11 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                           value={combination.sku}
                           type="text"
                         />
-
-                        {(stockmanagemet === 'variable_level' ||
-                          pData?.stockManagement?.stock_management_level.trim() ===
-                            'variable_level') && (
+                        {stockmanagemet === 'variable_level' && (
                           <>
                             <CustomTextField
                               label="Total Stock*"
                               name={`combinations[${index}].totalStock`}
-                              control={form.control}
                               placeholder="Enter total stock"
                               onChange={(e) =>
                                 handleFieldChange(
@@ -256,16 +244,15 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                               <select
                                 className="mt-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900"
                                 name={`combinations[${index}].stock_status`}
-                                value={
-                                  combination.stock_status ? 'true' : 'false'
-                                }
+                                value={combination.stock_status || 'true'} // Ensure it has a valid value
                                 onChange={(e) =>
                                   handleFieldChange(
                                     index,
                                     'stock_status',
-                                    e.target.value === 'true'
+                                    e.target.value
                                   )
                                 }
+                                disabled={!!pData?.variants} // Disable if pData is present
                               >
                                 <option value="">Select Stock status</option>
                                 <option value="true">In Stock</option>
@@ -278,9 +265,8 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
 
                       <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-4">
                         <CustomTextField
-                          label="Weight(kg)*"
+                          label="Weight(g)*"
                           name={`combinations[${index}].weight`}
-                          control={form.control}
                           placeholder="Enter Weight"
                           onChange={(e) =>
                             handleFieldChange(index, 'weight', e.target.value)
@@ -291,7 +277,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="Height(cms)*"
                           name={`combinations[${index}].height`}
-                          control={form.control}
                           placeholder="Enter height"
                           onChange={(e) =>
                             handleFieldChange(index, 'height', e.target.value)
@@ -302,7 +287,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="Breadth(cms)*"
                           name={`combinations[${index}].breadth`}
-                          control={form.control}
                           placeholder="Enter breadth"
                           onChange={(e) =>
                             handleFieldChange(index, 'breadth', e.target.value)
@@ -313,7 +297,6 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
                         <CustomTextField
                           label="Length(cms)*"
                           name={`combinations[${index}].length`}
-                          control={form.control}
                           placeholder="Enter length"
                           onChange={(e) =>
                             handleFieldChange(index, 'length', e.target.value)

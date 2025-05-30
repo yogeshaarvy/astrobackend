@@ -77,7 +77,6 @@ export type IProducts = BaseModel & {
   sku?: string;
   totalStock?: number;
   values?: any;
-  stock_value?: number;
   stock_status?: string;
 };
 
@@ -177,6 +176,7 @@ export const addEditProducts = createAsyncThunk<
 
     const reqData: any = {
       name: data.name,
+      slug: data.slug,
       title: data.title ? JSON.stringify(data.title) : undefined,
       description: data.description
         ? JSON.stringify(data.description)
@@ -227,7 +227,7 @@ export const addEditProducts = createAsyncThunk<
       other_image: Array.isArray(data.other_image)
         ? data.other_image
         : [data.other_image],
-      stock_value: data.stock_value,
+      totalStock: data.totalStock,
       stock_status: data.stock_status,
 
       categories: data.categories
