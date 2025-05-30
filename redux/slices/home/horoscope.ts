@@ -13,13 +13,10 @@ export type IHoroscope = BaseModel & {
     hi?: string;
   };
   slug?: string;
-  icon_image?: string;
+  light_icon?: string;
+  dark_icon?: string;
   sequence?: number;
   active?: boolean;
-  date?: {
-    en?: string;
-    hi?: string;
-  };
 };
 
 const initialState = {
@@ -69,11 +66,11 @@ export const addEditHoroscopeList = createAsyncThunk<
       const formData = new FormData();
       const reqData: any = {
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
-        icon_image: clonedData.icon_image,
+        dark_icon: clonedData.dark_icon,
+        light_icon: clonedData.light_icon,
         slug: clonedData.slug,
         sequence: clonedData.sequence,
-        active: clonedData.active,
-        date: clonedData.date ? JSON.stringify(clonedData.date) : undefined
+        active: clonedData.active
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
@@ -84,12 +81,12 @@ export const addEditHoroscopeList = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        response = await fetchApi('/home/horoscope/create', {
+        response = await fetchApi('/horoscope/sign/create', {
           method: 'POST',
           body: formData
         });
       } else {
-        response = await fetchApi(`/home/horoscope/update/${entityId}`, {
+        response = await fetchApi(`/horoscope/sign/update/${entityId}`, {
           method: 'PUT',
           body: formData
         });
@@ -132,7 +129,7 @@ export const fetchHoroscopeList = createAsyncThunk<
       dispatch(fetchHoroscopeListStart());
 
       const response = await fetchApi(
-        `/home/Horoscope/all?page=${page || 1}&limit=${pageSize || 10}&field=${
+        `/Horoscope/sign/all?page=${page || 1}&limit=${pageSize || 10}&field=${
           field || ''
         }&text=${keyword || ''}&active=${active || ''}&exportData=${
           exportData || false
@@ -173,7 +170,7 @@ export const fetchSingleHoroscopeList = createAsyncThunk<
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(fetchSingleHoroscopeListStart());
-      const response = await fetchApi(`/home/horoscope/get/${entityId}`, {
+      const response = await fetchApi(`/horoscope/sign/get/${entityId}`, {
         method: 'GET'
       });
       if (response?.success) {
@@ -200,7 +197,7 @@ export const deleteHoroscope = createAsyncThunk<
 >('brand/delete', async (id, { dispatch }) => {
   dispatch(deleteHoroscopeStart());
   try {
-    const response = await fetchApi(`/home/horoscope/delete/${id}`, {
+    const response = await fetchApi(`/horoscope/sign/delete/${id}`, {
       method: 'DELETE'
     });
     if (response.success) {

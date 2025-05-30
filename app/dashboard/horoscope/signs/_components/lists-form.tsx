@@ -37,10 +37,8 @@ export default function HoroscopeForm() {
   const {
     singleHoroscopeState: { loading, data: bData }
   } = useAppSelector((state) => state.horoscope);
-  const [IconImage, setIconImage] = useState<File | null>(null);
-  const [showBannerImage, setShowBannerImage] = useState(true);
-  const [showBackgroundColor, setShowBackgroundColor] = useState(false);
-  const [showSwitch, setShowSwitch] = useState(true);
+  const [darkIcon, setdarkIcon] = useState<File | null>(null);
+  const [lightIcon, setlightIcon] = useState<File | null>(null);
 
   const form = useForm<IHoroscope>({});
 
@@ -73,7 +71,7 @@ export default function HoroscopeForm() {
     try {
       dispatch(addEditHoroscopeList(entityId)).then((response: any) => {
         if (!response?.error) {
-          router.push('/dashboard/homes/horoscope');
+          router.push('/dashboard/horoscope/signs');
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -100,15 +98,15 @@ export default function HoroscopeForm() {
                 className="space-y-8"
               >
                 <FormItem className="space-y-3">
-                  <FormLabel>icon image</FormLabel>
+                  <FormLabel>Dark logo</FormLabel>
 
                   <FileUploader
-                    value={IconImage ? [IconImage] : []}
+                    value={darkIcon ? [darkIcon] : []}
                     onValueChange={(newFiles: any) => {
-                      setIconImage(newFiles[0] || null);
+                      setdarkIcon(newFiles[0] || null);
                       handleInputChange({
                         target: {
-                          name: 'icon_image',
+                          name: 'dark_icon',
                           type: 'file',
                           files: newFiles
                         }
@@ -118,10 +116,37 @@ export default function HoroscopeForm() {
                     maxSize={1024 * 1024 * 2}
                   />
 
-                  {typeof (bData as IHoroscope)?.icon_image === 'string' && (
+                  {typeof (bData as IHoroscope)?.dark_icon === 'string' && (
                     <div className="max-h-48 space-y-4">
                       <FileViewCard
-                        existingImageURL={(bData as IHoroscope)?.icon_image}
+                        existingImageURL={(bData as IHoroscope)?.dark_icon}
+                      />
+                    </div>
+                  )}
+                </FormItem>
+                <FormItem className="space-y-3">
+                  <FormLabel>Dark logo</FormLabel>
+
+                  <FileUploader
+                    value={lightIcon ? [lightIcon] : []}
+                    onValueChange={(newFiles: any) => {
+                      setlightIcon(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'light_icon',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+
+                  {typeof (bData as IHoroscope)?.light_icon === 'string' && (
+                    <div className="max-h-48 space-y-4">
+                      <FileViewCard
+                        existingImageURL={(bData as IHoroscope)?.light_icon}
                       />
                     </div>
                   )}
@@ -154,15 +179,6 @@ export default function HoroscopeForm() {
                             onChange={handleInputChange}
                           />
                         </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="name">Date</Label>
-                          <Input
-                            name="date.en"
-                            placeholder="Enter your Date"
-                            value={(bData as IHoroscope)?.date?.en}
-                            onChange={handleInputChange}
-                          />
-                        </div>
                       </CardContent>
                     </>
                   </TabsContent>
@@ -176,15 +192,6 @@ export default function HoroscopeForm() {
                             name="title.hi"
                             placeholder="Enter your Title"
                             value={(bData as IHoroscope)?.title?.hi}
-                            onChange={handleInputChange}
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="name">Date</Label>
-                          <Input
-                            name="date.hi"
-                            placeholder="Enter your Date"
-                            value={(bData as IHoroscope)?.date?.hi}
                             onChange={handleInputChange}
                           />
                         </div>
