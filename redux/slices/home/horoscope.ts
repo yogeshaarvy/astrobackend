@@ -15,6 +15,7 @@ export type IHoroscope = BaseModel & {
   slug?: string;
   light_icon?: string;
   dark_icon?: string;
+  banner_image?: string;
   sequence?: number;
   active?: boolean;
 };
@@ -68,6 +69,7 @@ export const addEditHoroscopeList = createAsyncThunk<
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         dark_icon: clonedData.dark_icon,
         light_icon: clonedData.light_icon,
+        banner_image: clonedData.banner_image,
         slug: clonedData.slug,
         sequence: clonedData.sequence,
         active: clonedData.active

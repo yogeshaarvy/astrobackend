@@ -39,6 +39,7 @@ export default function HoroscopeForm() {
   } = useAppSelector((state) => state.horoscope);
   const [darkIcon, setdarkIcon] = useState<File | null>(null);
   const [lightIcon, setlightIcon] = useState<File | null>(null);
+  const [bannerImage, setbannerImage] = useState<File | null>(null);
 
   const form = useForm<IHoroscope>({});
 
@@ -98,6 +99,33 @@ export default function HoroscopeForm() {
                 className="space-y-8"
               >
                 <FormItem className="space-y-3">
+                  <FormLabel>Banner Image</FormLabel>
+
+                  <FileUploader
+                    value={bannerImage ? [bannerImage] : []}
+                    onValueChange={(newFiles: any) => {
+                      setbannerImage(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'banner_image',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+
+                  {typeof (bData as IHoroscope)?.banner_image === 'string' && (
+                    <div className="max-h-48 space-y-4">
+                      <FileViewCard
+                        existingImageURL={(bData as IHoroscope)?.banner_image}
+                      />
+                    </div>
+                  )}
+                </FormItem>
+                <FormItem className="space-y-3">
                   <FormLabel>Dark logo</FormLabel>
 
                   <FileUploader
@@ -125,7 +153,7 @@ export default function HoroscopeForm() {
                   )}
                 </FormItem>
                 <FormItem className="space-y-3">
-                  <FormLabel>Dark logo</FormLabel>
+                  <FormLabel>Light logo</FormLabel>
 
                   <FileUploader
                     value={lightIcon ? [lightIcon] : []}
