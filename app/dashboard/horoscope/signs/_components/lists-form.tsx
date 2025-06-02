@@ -227,10 +227,27 @@ export default function HoroscopeForm() {
                             onChange={handleInputChange}
                           />
                         </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Short Description</Label>
+                          <Input
+                            name="short_description.en"
+                            placeholder="Enter your Short Description"
+                            value={(bData as IHoroscope)?.short_description?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Full Description</Label>
+                          <Input
+                            name="full_description.en"
+                            placeholder="Enter your Full Description"
+                            value={(bData as IHoroscope)?.full_description?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
                       </CardContent>
                     </>
                   </TabsContent>
-
                   <TabsContent value="Hindi">
                     <>
                       <CardContent className="space-y-2 p-0">
@@ -240,6 +257,24 @@ export default function HoroscopeForm() {
                             name="title.hi"
                             placeholder="Enter your Title"
                             value={(bData as IHoroscope)?.title?.hi}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Short Description</Label>
+                          <Input
+                            name="short_description.hi"
+                            placeholder="Enter your Short Description"
+                            value={(bData as IHoroscope)?.short_description?.hi}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Full Description</Label>
+                          <Input
+                            name="full_description.hi"
+                            placeholder="Enter your Full Description"
+                            value={(bData as IHoroscope)?.full_description?.hi}
                             onChange={handleInputChange}
                           />
                         </div>

@@ -12,6 +12,14 @@ export type IHoroscope = BaseModel & {
     en?: string;
     hi?: string;
   };
+  short_description?: {
+    en?: string;
+    hi?: string;
+  };
+  full_description?: {
+    en?: string;
+    hi?: string;
+  };
   slug?: string;
   light_icon?: string;
   dark_icon?: string;
@@ -67,6 +75,12 @@ export const addEditHoroscopeList = createAsyncThunk<
       const formData = new FormData();
       const reqData: any = {
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
+        short_description: clonedData.short_description
+          ? JSON.stringify(clonedData.short_description)
+          : undefined,
+        full_description: clonedData.full_description
+          ? JSON.stringify(clonedData.full_description)
+          : undefined,
         dark_icon: clonedData.dark_icon,
         light_icon: clonedData.light_icon,
         banner_image: clonedData.banner_image,
