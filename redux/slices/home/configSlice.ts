@@ -11,6 +11,38 @@ export type IConfig = BaseModel & {
   metaDescription?: string;
   metaKeyword?: string;
   name?: string;
+  ourServices?: {
+    divide_Image?: string;
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+  };
+  horoscopeForest?: {
+    divide_Image?: string;
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+  };
+  latestArticles?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+  };
+  talkToAstrologer?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+  };
+  vedMantraJaap?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+  };
 };
 
 const initialState = {
@@ -78,7 +110,22 @@ export const addEditConfigPage = createAsyncThunk<
       metaTitle: clonedData.metaTitle,
       metaDescription: clonedData.metaDescription,
       metaKeyword: clonedData.metaKeyword,
-      name: clonedData.name
+      name: clonedData.name,
+      ourServices: clonedData.ourServices
+        ? JSON.stringify(clonedData.ourServices)
+        : undefined,
+      horoscopeForest: clonedData.horoscopeForest
+        ? JSON.stringify(clonedData.horoscopeForest)
+        : undefined,
+      latestArticles: clonedData.latestArticles
+        ? JSON.stringify(clonedData.latestArticles)
+        : undefined,
+      talkToAstrologer: clonedData.talkToAstrologer
+        ? JSON.stringify(clonedData.talkToAstrologer)
+        : undefined,
+      vedMantraJaap: clonedData.vedMantraJaap
+        ? JSON.stringify(clonedData.vedMantraJaap)
+        : undefined
     };
     Object.entries(reqData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {

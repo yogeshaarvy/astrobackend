@@ -25,6 +25,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import CustomTextField from '@/utils/CustomTextField';
+import { title } from 'process';
 
 const Page = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +35,7 @@ const Page = () => {
 
   const [darkLogo, setDarkLogo] = useState<File | null>(null);
   const [lightLogo, setLightLogo] = useState<File | null>(null);
+  const [divide_Image, setDivide_Image] = React.useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchConfig(null));
@@ -131,6 +133,265 @@ const Page = () => {
                       value={(cData as IConfig)?.name || ''}
                       onChange={handleInputChange}
                     />
+                    {/* <CustomTextField
+                      name="ourServices"
+                      label='Our Services'
+                      placeholder="Enter your Our Services"
+                      value={(cData as IConfig)?.ourServices?.title?.en || ''}
+                    /> */}
+
+                    <FormItem className="space-y-3">
+                      <FormLabel>Our Services</FormLabel>
+
+                      <FileUploader
+                        value={divide_Image ? [divide_Image] : []}
+                        onValueChange={(newFiles: any) => {
+                          setDivide_Image(newFiles[0] || null);
+                          handleInputChange({
+                            target: {
+                              name: 'divide_Image',
+                              type: 'file',
+                              files: newFiles
+                            }
+                          });
+                        }}
+                        accept={{ 'image/*': [] }}
+                        maxSize={1024 * 1024 * 2}
+                      />
+
+                      {typeof (cData as IConfig)?.ourServices?.divide_Image ===
+                        'string' && (
+                        <div className="max-h-48 space-y-4">
+                          <FileViewCard
+                            existingImageURL={
+                              (cData as IConfig)?.ourServices?.divide_Image
+                            }
+                          />
+                        </div>
+                      )}
+                    </FormItem>
+
+                    {/* horoforest */}
+
+                    {/* <CustomTextField
+                      name="horoscopeForest"
+                      label="Horoscope Forest"
+                      placeholder="Enter your Horoscope Forest"
+                      value={(cData as IConfig)?.horoscopeForest?.title?.en || ''}
+                    /> */}
+
+                    <FormItem className="space-y-3">
+                      <FormLabel>HoroscopeForest</FormLabel>
+
+                      <FileUploader
+                        value={divide_Image ? [divide_Image] : []}
+                        onValueChange={(newFiles: any) => {
+                          setDivide_Image(newFiles[0] || null);
+                          handleInputChange({
+                            target: {
+                              name: 'divide_Image',
+                              type: 'file',
+                              files: newFiles
+                            }
+                          });
+                        }}
+                        accept={{ 'image/*': [] }}
+                        maxSize={1024 * 1024 * 2}
+                      />
+
+                      {typeof (cData as IConfig)?.ourServices?.divide_Image ===
+                        'string' && (
+                        <div className="max-h-48 space-y-4">
+                          <FileViewCard
+                            existingImageURL={
+                              (cData as IConfig)?.ourServices?.divide_Image
+                            }
+                          />
+                        </div>
+                      )}
+                    </FormItem>
+
+                    <Tabs defaultValue="English" className="mt-4 w-full">
+                      <TabsList className="flex w-full space-x-2 p-0">
+                        <TabsTrigger
+                          value="English"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          English
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="Hindi"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          Hindi
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="English">
+                        <>
+                          <CardContent className="space-y-2 p-0">
+                            <div className="space-y-1">
+                              <Label htmlFor="name">Latest Articles</Label>
+                              <Input
+                                name="title.en"
+                                placeholder="Enter your Latest Articles"
+                                value={
+                                  (cData as IConfig)?.latestArticles?.title?.en
+                                }
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          </CardContent>
+                        </>
+                      </TabsContent>
+
+                      <TabsContent value="Hindi">
+                        <>
+                          <CardContent className="space-y-2 p-0">
+                            <div className="space-y-1">
+                              <Label htmlFor="name">Latest Articles</Label>
+                              <Input
+                                name="title.hi"
+                                placeholder="Enter your LatestArticles"
+                                value={
+                                  (cData as IConfig)?.latestArticles?.title?.hi
+                                }
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          </CardContent>
+                        </>
+                      </TabsContent>
+                    </Tabs>
+
+                    {/* <CustomTextField
+                      name="latestArticles"
+                      label="Latest Articles"
+                      placeholder="Enter your Latest Articles"
+                      value={(cData as IConfig)?.latestArticles?.title?.en || ''}
+                    /> */}
+
+                    <Tabs defaultValue="English" className="mt-4 w-full">
+                      <TabsList className="flex w-full space-x-2 p-0">
+                        <TabsTrigger
+                          value="English"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          English
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="Hindi"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          Hindi
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="English">
+                        <>
+                          <CardContent className="space-y-2 p-0">
+                            <div className="space-y-1">
+                              <Label htmlFor="name">Talk To Astrologer</Label>
+                              <Input
+                                name="title.en"
+                                placeholder="Enter your Talk To Astrologer"
+                                value={
+                                  (cData as IConfig)?.talkToAstrologer?.title
+                                    ?.en
+                                }
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          </CardContent>
+                        </>
+                      </TabsContent>
+
+                      <TabsContent value="Hindi">
+                        <>
+                          <CardContent className="space-y-2 p-0">
+                            <div className="space-y-1">
+                              <Label htmlFor="name">Talk To Astrologer</Label>
+                              <Input
+                                name="title.hi"
+                                placeholder="Enter your Talk To Astrologer"
+                                value={
+                                  (cData as IConfig)?.talkToAstrologer?.title
+                                    ?.hi
+                                }
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          </CardContent>
+                        </>
+                      </TabsContent>
+                    </Tabs>
+
+                    {/* <CustomTextField
+                      name="talkToAstrologer"
+                      label="Talk To Astrologer"
+                      placeholder='Enter your Talk To Astrologer'
+                      value={(cData as IConfig)?.talkToAstrologer?.title?.en || ''}
+                    /> */}
+
+                    <Tabs defaultValue="English" className="mt-4 w-full">
+                      <TabsList className="flex w-full space-x-2 p-0">
+                        <TabsTrigger
+                          value="English"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          English
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="Hindi"
+                          className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                        >
+                          Hindi
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="English">
+                        <>
+                          <CardContent className="space-y-2 p-0">
+                            <div className="space-y-1">
+                              <Label htmlFor="name">Ved Mantra Jaap</Label>
+                              <Input
+                                name="title.en"
+                                placeholder="Enter your Ved Mantra Jaap"
+                                value={
+                                  (cData as IConfig)?.vedMantraJaap?.title?.en
+                                }
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          </CardContent>
+                        </>
+                      </TabsContent>
+
+                      <TabsContent value="Hindi">
+                        <>
+                          <CardContent className="space-y-2 p-0">
+                            <div className="space-y-1">
+                              <Label htmlFor="name">Ved Mantra Jaap</Label>
+                              <Input
+                                name="title.hi"
+                                placeholder="Enter your Ved Mantra Jaap"
+                                value={
+                                  (cData as IConfig)?.vedMantraJaap?.title?.hi
+                                }
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          </CardContent>
+                        </>
+                      </TabsContent>
+                    </Tabs>
+
+                    {/* <CustomTextField
+                      name="vedMantraJaap"
+                      label="Ved Mantra Jaap"
+                      placeholder='Enter your Ved Mantra Jaap'
+                      value={(cData as IConfig)?.vedMantraJaap?.title?.en || ''}
+                    /> */}
                   </form>
                 </Form>
               </CardContent>
