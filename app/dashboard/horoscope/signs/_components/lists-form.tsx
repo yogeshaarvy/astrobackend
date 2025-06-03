@@ -39,6 +39,7 @@ export default function HoroscopeForm() {
   } = useAppSelector((state) => state.horoscope);
   const [darkIcon, setdarkIcon] = useState<File | null>(null);
   const [lightIcon, setlightIcon] = useState<File | null>(null);
+  const [bannerImage, setbannerImage] = useState<File | null>(null);
 
   const form = useForm<IHoroscope>({});
 
@@ -98,6 +99,33 @@ export default function HoroscopeForm() {
                 className="space-y-8"
               >
                 <FormItem className="space-y-3">
+                  <FormLabel>Banner Image</FormLabel>
+
+                  <FileUploader
+                    value={bannerImage ? [bannerImage] : []}
+                    onValueChange={(newFiles: any) => {
+                      setbannerImage(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'banner_image',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+
+                  {typeof (bData as IHoroscope)?.banner_image === 'string' && (
+                    <div className="max-h-48 space-y-4">
+                      <FileViewCard
+                        existingImageURL={(bData as IHoroscope)?.banner_image}
+                      />
+                    </div>
+                  )}
+                </FormItem>
+                <FormItem className="space-y-3">
                   <FormLabel>Dark logo</FormLabel>
 
                   <FileUploader
@@ -125,7 +153,7 @@ export default function HoroscopeForm() {
                   )}
                 </FormItem>
                 <FormItem className="space-y-3">
-                  <FormLabel>Dark logo</FormLabel>
+                  <FormLabel>Light logo</FormLabel>
 
                   <FileUploader
                     value={lightIcon ? [lightIcon] : []}
@@ -199,10 +227,27 @@ export default function HoroscopeForm() {
                             onChange={handleInputChange}
                           />
                         </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Short Description</Label>
+                          <Input
+                            name="short_description.en"
+                            placeholder="Enter your Short Description"
+                            value={(bData as IHoroscope)?.short_description?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Full Description</Label>
+                          <Input
+                            name="full_description.en"
+                            placeholder="Enter your Full Description"
+                            value={(bData as IHoroscope)?.full_description?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
                       </CardContent>
                     </>
                   </TabsContent>
-
                   <TabsContent value="Hindi">
                     <>
                       <CardContent className="space-y-2 p-0">
@@ -212,6 +257,24 @@ export default function HoroscopeForm() {
                             name="title.hi"
                             placeholder="Enter your Title"
                             value={(bData as IHoroscope)?.title?.hi}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Short Description</Label>
+                          <Input
+                            name="short_description.hi"
+                            placeholder="Enter your Short Description"
+                            value={(bData as IHoroscope)?.short_description?.hi}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Full Description</Label>
+                          <Input
+                            name="full_description.hi"
+                            placeholder="Enter your Full Description"
+                            value={(bData as IHoroscope)?.full_description?.hi}
                             onChange={handleInputChange}
                           />
                         </div>

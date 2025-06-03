@@ -396,6 +396,11 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: 'Calendar',
+    url: '/dashboard/calendar',
+    icon: 'settings'
+  },
+  {
     title: 'Kundli',
     url: '/dashboard/kundli',
     icon: 'atom',

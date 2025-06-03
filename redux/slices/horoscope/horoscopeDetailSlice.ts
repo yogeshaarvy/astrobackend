@@ -64,7 +64,6 @@ export const addEditHoroscopeDetail = createAsyncThunk<
     { entityId, horoscopesignId },
     { dispatch, rejectWithValue, getState }
   ) => {
-    console.log('entity id is', horoscopesignId);
     try {
       const {
         horoscopeDetail: {
