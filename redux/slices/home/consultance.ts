@@ -31,8 +31,8 @@ export type IConsultance = BaseModel & {
       hi?: string;
     };
     buttonLink?: string;
+    active?: boolean;
   };
-  active?: boolean;
 };
 
 const initialState = {
@@ -100,8 +100,7 @@ export const addEditConsultance = createAsyncThunk<
       const reqData: any = {
         mainSection: clonedData.mainSection
           ? JSON.stringify(clonedData.mainSection)
-          : undefined,
-        active: clonedData.active
+          : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {

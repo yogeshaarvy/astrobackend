@@ -103,8 +103,6 @@ const Page = () => {
     dispatch(updateHomeKundli({ [name]: value }));
   };
 
-  console.log('The sideImage type value is:', hkData);
-
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">

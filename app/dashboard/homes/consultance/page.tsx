@@ -37,22 +37,25 @@ import CustomDropdown from '@/utils/CusomDropdown';
 const Page = () => {
   const dispatch = useAppDispatch();
   const {
-    consultanceState: { loading, data: cData = [] }
+    consultanceState: { loading, data: cData }
   } = useAppSelector((state) => state.consultance);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
   const [sideImage, setsideImage] = React.useState<File | null>(null);
-  const [rightImage, setrightImage] = React.useState<File | null>(null);
-
-  console.log('The loading value is:', loading, cData);
 
   useEffect(() => {
     dispatch(fetchConsultance(null));
   }, []);
-  console.log('The cData value is:', cData);
   const form = useForm({
     defaultValues: {}
   });
+
   const [isChecked, setIsChecked] = useState(false);
+  useEffect(() => {
+    if (cData?.mainSection?.active !== undefined) {
+      setIsChecked(cData.mainSection.active);
+    }
+  }, [cData?.mainSection?.active]);
+
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
     console.log('e-value', name, value);
@@ -68,7 +71,7 @@ const Page = () => {
             : value
       })
     );
-    if (type === 'checkbox' && name === 'active') {
+    if (type === 'checkbox' && name === 'mainSection.active') {
       setIsChecked(checked);
     }
   };
@@ -77,7 +80,7 @@ const Page = () => {
     setIsChecked(updatedStatus);
     dispatch(
       updateConsultance({
-        active: updatedStatus
+        'mainSection.active': updatedStatus
       })
     );
     dispatch(addEditConsultance(null)).then((response: any) => {
@@ -112,8 +115,6 @@ const Page = () => {
       updateConsultance({ [name]: value }) // .then(handleReduxResponse());
     );
   };
-
-  console.log('The bannerImage type value is:', cData);
 
   return (
     <PageContainer scrollable>
