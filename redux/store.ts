@@ -65,6 +65,8 @@ import horoscopeiconReducer from './slices/home/horoscope';
 import horoscopedetailReducer from './slices/horoscope/horoscopeDetailSlice';
 import registerImageReducer from './slices/register-imageSlice';
 import calendarReducer from './slices/calendar';
+import homeKundliReducer from './slices/home/kundli';
+import homeVibhorReducer from './slices/home/vibhor';
 
 export const makeStore = () => {
   return configureStore({
@@ -133,7 +135,9 @@ export const makeStore = () => {
       horoscope: horoscopeiconReducer,
       horoscopeDetail: horoscopedetailReducer,
       registerImage: registerImageReducer,
-      calendar: calendarReducer
+      calendar: calendarReducer,
+      homeKundli: homeKundliReducer,
+      homeVibhor: homeVibhorReducer
     }
   });
 };

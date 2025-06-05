@@ -160,6 +160,16 @@ export const navItems: NavItem[] = [
         title: 'Consultance',
         url: '/dashboard/homes/consultance',
         icon: 'consultance'
+      },
+      {
+        title: 'Kundli',
+        url: '/dashboard/homes/kundli',
+        icon: 'atom'
+      },
+      {
+        title: 'Vibhor',
+        url: '/dashboard/homes/vibhor',
+        icon: 'atom'
       }
     ]
   },

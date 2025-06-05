@@ -31,8 +31,8 @@ export type IWhyChoose = BaseModel & {
       hi?: string;
     };
     buttonLink?: string;
+    active?: boolean;
   };
-  active?: boolean;
 };
 
 const initialState = {
@@ -56,7 +56,6 @@ export const fetchWhyChoose = createAsyncThunk<
     });
     if (response?.success) {
       dispatch(fetchSingleWhyChooseSuccess(response?.whyChoose));
-      console.log('fetchWhyChoose', response);
       return response;
     } else {
       const errorMsg = response?.message || 'Failed to fetch Why Choose data';
@@ -102,8 +101,7 @@ export const addEditWhyChoose = createAsyncThunk<
       const reqData: any = {
         mainSection: clonedData.mainSection
           ? JSON.stringify(clonedData.mainSection)
-          : undefined,
-        active: clonedData.active
+          : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {

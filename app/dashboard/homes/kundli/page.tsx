@@ -1,9 +1,5 @@
 'use client';
-import {
-  FileCard,
-  FileUploader,
-  FileViewCard
-} from '@/components/file-uploader';
+import { FileUploader, FileViewCard } from '@/components/file-uploader';
 import PageContainer from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,49 +11,46 @@ import {
 } from '@/components/ui/card';
 import { Form, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import slugify from 'slugify';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  addEditWhyChoose,
-  fetchWhyChoose,
-  IWhyChoose,
-  updateWhyChoose
-} from '@/redux/slices/home/whyChooseSlice';
+  addEditHomeKundli,
+  fetchHomeKundli,
+  type IHomeKundli,
+  updateHomeKundli
+} from '@/redux/slices/home/kundli';
 import CustomTextEditor from '@/utils/CustomTextEditor';
-import CustomTextField from '@/utils/CustomTextField';
 import CustomDropdown from '@/utils/CusomDropdown';
 
 const Page = () => {
   const dispatch = useAppDispatch();
   const {
-    whyChooseState: { loading, data: cData }
-  } = useAppSelector((state) => state.whyChooseData);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
-  const [sideImage, setsideImage] = React.useState<File | null>(null);
+    homeKundliState: { loading, data: hkData }
+  } = useAppSelector((state) => state.homeKundli);
+  const [sideImage, setSideImage] = React.useState<File | null>(null);
 
   useEffect(() => {
-    dispatch(fetchWhyChoose(null));
+    dispatch(fetchHomeKundli(null));
   }, []);
   const form = useForm({
     defaultValues: {}
   });
+
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => {
-    if (cData?.mainSection?.active !== undefined) {
-      setIsChecked(cData.mainSection.active);
+    if (hkData?.mainSection?.active !== undefined) {
+      setIsChecked(hkData.mainSection.active);
     }
-  }, [cData?.mainSection?.active]);
+  }, [hkData?.mainSection?.active]);
+
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
     dispatch(
-      updateWhyChoose({
+      updateHomeKundli({
         [name]:
           type === 'file'
             ? files[0]
@@ -72,17 +65,18 @@ const Page = () => {
       setIsChecked(checked);
     }
   };
+
   const handleToggleChange = () => {
     const updatedStatus = !isChecked;
     setIsChecked(updatedStatus);
     dispatch(
-      updateWhyChoose({
+      updateHomeKundli({
         'mainSection.active': updatedStatus
       })
     );
-    dispatch(addEditWhyChoose(null)).then((response: any) => {
+    dispatch(addEditHomeKundli(null)).then((response: any) => {
       if (!response?.error) {
-        toast.success(response?.payload?.message);
+        toast.success('Home Kundli status updated successfully');
       } else {
         toast.error(response.payload);
       }
@@ -91,11 +85,10 @@ const Page = () => {
 
   const handleSubmit = () => {
     try {
-      dispatch(addEditWhyChoose(null)).then((response: any) => {
+      dispatch(addEditHomeKundli(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
-
-          toast.success(response?.payload?.message);
+          setSideImage(null);
+          toast.success('Home Kundli data updated successfully');
         } else {
           toast.error(response.payload);
         }
@@ -107,18 +100,17 @@ const Page = () => {
 
   const handleDropdownChange = (e: any) => {
     const { name, value } = e;
-
-    dispatch(
-      updateWhyChoose({ [name]: value }) // .then(handleReduxResponse());
-    );
+    dispatch(updateHomeKundli({ [name]: value }));
   };
+
+  console.log('The sideImage type value is:', hkData);
 
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Main Section
+            Home Kundli - Main Section
           </CardTitle>
           <label className="inline-flex cursor-pointer items-center">
             <input
@@ -142,44 +134,13 @@ const Page = () => {
             >
               <div className="flex items-center space-x-2">
                 <Tabs className="mt-4 w-full">
-                  <div className="space-y-2 pt-0 ">
+                  <div className="space-y-2 pt-0">
                     <FormItem className="space-y-3">
-                      <FormLabel>Banner Image</FormLabel>
-                      <FileUploader
-                        value={bannerImage ? [bannerImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setbannerImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'mainSection.bannerImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as IWhyChoose)?.mainSection
-                          ?.bannerImage === 'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as IWhyChoose)?.mainSection
-                                    ?.bannerImage
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </>
                       <FormLabel>Side Image</FormLabel>
                       <FileUploader
                         value={sideImage ? [sideImage] : []}
                         onValueChange={(newFiles: any) => {
-                          setsideImage(newFiles[0] || null);
+                          setSideImage(newFiles[0] || null);
                           handleInputChange({
                             target: {
                               name: 'mainSection.sideImage',
@@ -190,15 +151,16 @@ const Page = () => {
                         }}
                         accept={{ 'image/*': [] }}
                         maxSize={1024 * 1024 * 2}
-                      />{' '}
+                      />
                       <>
-                        {typeof (cData as IWhyChoose)?.mainSection
+                        {typeof (hkData as IHomeKundli)?.mainSection
                           ?.sideImage === 'string' && (
                           <>
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (cData as IWhyChoose)?.mainSection?.sideImage
+                                  (hkData as IHomeKundli)?.mainSection
+                                    ?.sideImage
                                 }
                               />
                             </div>
@@ -206,6 +168,23 @@ const Page = () => {
                         )}
                       </>
                     </FormItem>
+                  </div>
+
+                  <div className="mt-4 space-y-3">
+                    <CustomDropdown
+                      label="Image Alignment"
+                      name="mainSection.imageAlignment"
+                      defaultValue="right"
+                      data={[
+                        { name: 'Left', _id: 'left' },
+                        { name: 'Right', _id: 'right' }
+                      ]}
+                      value={
+                        (hkData as IHomeKundli)?.mainSection?.imageAlignment ||
+                        'right'
+                      }
+                      onChange={handleDropdownChange}
+                    />
                   </div>
 
                   <Tabs defaultValue="English" className="mt-4 w-full">
@@ -228,23 +207,11 @@ const Page = () => {
                       <>
                         <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
-                            <Label htmlFor="name">Main Title</Label>
-                            <Input
-                              name="mainSection.mainTitle.en"
-                              placeholder="Enter your Main Title"
-                              value={
-                                (cData as IWhyChoose)?.mainSection?.mainTitle
-                                  ?.en
-                              }
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="space-y-1">
                             <CustomTextEditor
                               name="mainSection.title.en"
-                              label="Full Description"
+                              label="Title"
                               value={
-                                (cData as IWhyChoose)?.mainSection?.title?.en
+                                (hkData as IHomeKundli)?.mainSection?.title?.en
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -260,10 +227,10 @@ const Page = () => {
                           <div className="space-y-1">
                             <CustomTextEditor
                               name="mainSection.description.en"
-                              label="Full Description"
+                              label="Description"
                               value={
-                                (cData as IWhyChoose)?.mainSection?.description
-                                  ?.en
+                                (hkData as IHomeKundli)?.mainSection
+                                  ?.description?.en
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -276,6 +243,18 @@ const Page = () => {
                               }
                             />
                           </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="buttonTitle">Button Title</Label>
+                            <Input
+                              name="mainSection.buttonTitle.en"
+                              placeholder="Enter Button Title"
+                              value={
+                                (hkData as IHomeKundli)?.mainSection
+                                  ?.buttonTitle?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
                         </CardContent>
                       </>
                     </TabsContent>
@@ -284,23 +263,11 @@ const Page = () => {
                       <>
                         <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
-                            <Label htmlFor="name">Main Title</Label>
-                            <Input
-                              name="mainSection.mainTitle.hi"
-                              placeholder="Enter your Main Title"
-                              value={
-                                (cData as IWhyChoose)?.mainSection?.mainTitle
-                                  ?.hi
-                              }
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="space-y-1">
                             <CustomTextEditor
                               name="mainSection.title.hi"
-                              label="Full Description"
+                              label="Title"
                               value={
-                                (cData as IWhyChoose)?.mainSection?.title?.hi
+                                (hkData as IHomeKundli)?.mainSection?.title?.hi
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -316,10 +283,10 @@ const Page = () => {
                           <div className="space-y-1">
                             <CustomTextEditor
                               name="mainSection.description.hi"
-                              label="Full Description"
+                              label="Description"
                               value={
-                                (cData as IWhyChoose)?.mainSection?.description
-                                  ?.hi
+                                (hkData as IHomeKundli)?.mainSection
+                                  ?.description?.hi
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -332,98 +299,32 @@ const Page = () => {
                               }
                             />
                           </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="buttonTitle">Button Title</Label>
+                            <Input
+                              name="mainSection.buttonTitle.hi"
+                              placeholder="Enter Button Title"
+                              value={
+                                (hkData as IHomeKundli)?.mainSection
+                                  ?.buttonTitle?.hi
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
                         </CardContent>
                       </>
                     </TabsContent>
                   </Tabs>
 
-                  <div className="mt-4 space-y-3">
-                    <Label htmlFor="textColour">Text Color</Label>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="color"
-                        name="mainSection.textColor"
-                        value={(cData as IWhyChoose)?.mainSection?.textColor}
-                        onChange={handleInputChange}
-                        className="h-10 w-12 cursor-pointer p-1"
-                      />
-                      <Input
-                        type="text"
-                        name="mainSection.textColor"
-                        value={(cData as IWhyChoose)?.mainSection?.textColor}
-                        // onChange={handleInputChange}
-                        placeholder="Enter color hex code"
-                        className="flex-1"
-                      />
-                    </div>
-                    <CustomDropdown
-                      label="Text Alignment"
-                      name="mainSection.textAlignment"
-                      defaultValue="left"
-                      data={[
-                        { name: 'Left', _id: 'left' },
-                        { name: 'Right', _id: 'right' }
-                      ]}
-                      value={
-                        (cData as IWhyChoose)?.mainSection?.textAlignment || ''
-                      }
-                      onChange={handleDropdownChange}
-                    />
-                  </div>
                   <div className="mt-4 space-y-1">
-                    <Label htmlFor="name" className="space-x-3">
-                      Button Status
-                    </Label>
-                    <Switch
-                      className="!m-0"
-                      checked={(cData as IWhyChoose)?.mainSection?.buttonStatus}
-                      onCheckedChange={(checked: any) =>
-                        handleInputChange({
-                          target: {
-                            type: 'checkbox',
-                            name: 'mainSection.buttonStatus',
-                            checked
-                          }
-                        })
-                      }
-                      aria-label="Toggle Active Status"
+                    <Label htmlFor="buttonLink">Button Link</Label>
+                    <Input
+                      name="mainSection.buttonLink"
+                      placeholder="Enter Button Link"
+                      value={(hkData as IHomeKundli)?.mainSection?.buttonLink}
+                      onChange={handleInputChange}
                     />
                   </div>
-                  {(cData as IWhyChoose)?.mainSection?.buttonStatus && (
-                    <>
-                      <div className="!mt-3">
-                        <Label htmlFor="name">Button English Title</Label>
-                        <Input
-                          name="mainSection.buttonTitle.en"
-                          placeholder="Enter English Button Titlte"
-                          value={
-                            (cData as IWhyChoose)?.mainSection?.buttonTitle?.en
-                          }
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className="!mt-3">
-                        <Label htmlFor="name">Button Hindi Title</Label>
-                        <Input
-                          name="mainSection.buttonTitle.hi"
-                          placeholder="Enter Hindi Button Titlte"
-                          value={
-                            (cData as IWhyChoose)?.mainSection?.buttonTitle?.hi
-                          }
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className="!mt-3">
-                        <Label htmlFor="name">Button Link</Label>
-                        <Input
-                          name="mainSection.buttonLink"
-                          placeholder="Enter Button Link"
-                          value={(cData as IWhyChoose)?.mainSection?.buttonLink}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </>
-                  )}
                 </Tabs>
               </div>
             </form>

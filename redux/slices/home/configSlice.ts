@@ -12,8 +12,12 @@ export type IConfig = BaseModel & {
   metaKeyword?: string;
   name?: string;
   ourServices?: {
-    divide_Image?: string;
+    dividerImage?: string;
     title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
       en?: string;
       hi?: string;
     };
@@ -24,9 +28,27 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
   };
   latestArticles?: {
     title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+  };
+  ourProducts?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
       en?: string;
       hi?: string;
     };
@@ -36,9 +58,17 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
   };
   vedMantraJaap?: {
     title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
       en?: string;
       hi?: string;
     };
@@ -116,6 +146,9 @@ export const addEditConfigPage = createAsyncThunk<
         : undefined,
       horoscopeForest: clonedData.horoscopeForest
         ? JSON.stringify(clonedData.horoscopeForest)
+        : undefined,
+      ourProducts: clonedData.ourProducts
+        ? JSON.stringify(clonedData.ourProducts)
         : undefined,
       latestArticles: clonedData.latestArticles
         ? JSON.stringify(clonedData.latestArticles)

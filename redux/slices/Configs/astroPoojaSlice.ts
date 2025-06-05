@@ -104,8 +104,6 @@ export const addEditAstroPooja = createAsyncThunk<
         return rejectWithValue('Please Provide Details');
       }
 
-      console.log('The data value in the slice is:', data);
-
       let clonedData = cloneDeep(data);
 
       if (clonedData) {
