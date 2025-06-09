@@ -332,6 +332,32 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: 'Vibhor',
+    url: '/dashboard/vibhor',
+    icon: 'temple',
+    isActive: false,
+    items: [
+      {
+        title: 'Packages',
+        url: '/dashboard/vibhor/vibhorpackage',
+        icon: 'general'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/vibhor/other',
+        isActive: false,
+        icon: 'otherlist',
+        items: [
+          {
+            title: 'Config',
+            url: '/dashboard/vibhor/other/config',
+            icon: 'config'
+          }
+        ]
+      }
+    ]
+  },
+  {
     title: 'Auth page Images',
     url: '/dashboard/register-image',
     icon: 'medal',
