@@ -170,6 +170,11 @@ export const navItems: NavItem[] = [
         title: 'Vibhor',
         url: '/dashboard/homes/vibhor',
         icon: 'atom'
+      },
+      {
+        title: 'News Letter',
+        url: '/dashboard/homes/newsletter',
+        icon: 'settings'
       }
     ]
   },
@@ -615,11 +620,6 @@ export const navItems: NavItem[] = [
         icon: 'general'
       }
     ]
-  },
-  {
-    title: 'News Letter',
-    url: '/dashboard/news-letter',
-    icon: 'settings'
   },
   {
     title: 'Writer Consultant',
