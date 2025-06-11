@@ -473,7 +473,7 @@ export default function ProductsForm() {
           response?.payload?.message || 'Product saved successfully'
         );
       } else {
-        toast.error(response.payload || 'Failed to save product');
+        toast.error(response?.payload || 'Failed to save product');
       }
     });
   };
