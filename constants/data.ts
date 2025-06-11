@@ -412,11 +412,6 @@ export const navItems: NavItem[] = [
         icon: 'message'
       },
       {
-        title: "FAQ's",
-        url: '/dashboard/horoscope/faqs',
-        icon: 'tableContents'
-      },
-      {
         title: 'Signs',
         url: '/dashboard/horoscope/signs',
         icon: 'consultance'
@@ -453,11 +448,6 @@ export const navItems: NavItem[] = [
         icon: 'tableContents'
       },
       {
-        title: 'Testimonial',
-        url: '/dashboard/kundli/testimonial',
-        icon: 'message'
-      },
-      {
         title: 'Other',
         url: '/dashboard/kundli/other',
         icon: 'otherlist',
@@ -474,29 +464,24 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Match Making',
-    url: '/dashboard/match-making',
+    url: '/dashboard/matchmaking',
     icon: 'settings',
     isActive: false,
     items: [
       {
-        title: "FAQ's",
-        url: '/dashboard/match-making/faqs',
-        icon: 'general'
-      },
-      {
-        title: 'Testimonial',
-        url: '/dashboard/match-making/testimonial',
-        icon: 'general'
-      },
-      {
         title: 'Other',
-        url: '/dashboard/match-making/other',
+        url: '/dashboard/matchmaking/others',
         icon: 'general',
         isActive: false,
         items: [
           {
             title: 'Config',
-            url: '/dashboard/match-making/other/config',
+            url: '/dashboard/matchmaking/others/config',
+            icon: 'general'
+          },
+          {
+            title: 'Testimonial',
+            url: '/dashboard/matchmaking/others/testimonial',
             icon: 'general'
           }
         ]
@@ -560,16 +545,6 @@ export const navItems: NavItem[] = [
     icon: 'settings',
     isActive: false,
     items: [
-      {
-        title: "FAQ's",
-        url: '/dashboard/panchang/faq',
-        icon: 'general'
-      },
-      {
-        title: 'Testimonial',
-        url: '/dashboard/panchang/testimonial',
-        icon: 'general'
-      },
       {
         title: 'Other',
         url: '/dashboard/panchang/other',

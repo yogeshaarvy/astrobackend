@@ -1,52 +1,53 @@
 'use client';
-import { useForm } from 'react-hook-form';
+import {
+  FileCard,
+  FileUploader,
+  FileViewCard
+} from '@/components/file-uploader';
+import PageContainer from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
-import { Form, FormItem, FormLabel } from '@/components/ui/form';
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
-  CardFooter
+  CardFooter,
+  CardHeader,
+  CardTitle
 } from '@/components/ui/card';
-import PageContainer from '@/components/layout/page-container';
+import { Form, FormItem, FormLabel } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
 import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import {
-  addEditAstroPackage,
-  fetchSingleAstroPackage,
-  IAstroPackage,
-  updateAstroPackageData
-} from '@/redux/slices/astropooja/package';
-import { FileUploader, FileViewCard } from '@/components/file-uploader';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import CustomDropdown from '@/utils/CusomDropdown';
+  addEditMatchMakingTestimonialList,
+  fetchSingleMatchMakingTestimonialList,
+  IMatchMakingTestimonial,
+  updateMatchMakingTestimonialListData
+} from '@/redux/slices/matchmaking/testimonial';
+
 import CustomTextEditor from '@/utils/CustomTextEditor';
-export default function AstroPackageForm() {
+
+export default function ListForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
-  const astropoojaId = params.get('astropoojaId');
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const {
-    singleAstroPackageState: { loading, data: bData }
-  } = useAppSelector((state) => state.astroPackage);
-  const [bannerImage, setBannerImage] = useState<File | null>(null);
-  const [showBannerImage, setShowBannerImage] = useState(true);
-  const [showBackgroundColor, setShowBackgroundColor] = useState(false);
-  const [showSwitch, setShowSwitch] = useState(true);
+    singleMatchMakingTestimonialState: { data: jData }
+  } = useAppSelector((state) => state.matchMakingTestimonial);
+  console.log('this is falana dhimkana', jData);
 
-  const form = useForm<IAstroPackage>({});
+  const form = useForm({});
 
   useEffect(() => {
     if (entityId) {
-      dispatch(fetchSingleAstroPackage(entityId));
+      dispatch(fetchSingleMatchMakingTestimonialList(entityId));
     }
   }, [entityId]);
 
@@ -54,10 +55,10 @@ export default function AstroPackageForm() {
     const { name, value, type, files, checked } = e.target;
 
     dispatch(
-      updateAstroPackageData({
+      updateMatchMakingTestimonialListData({
         [name]:
           type === 'file'
-            ? files?.[0]
+            ? files[0]
             : type === 'checkbox'
             ? checked
             : type === 'number'
@@ -66,17 +67,13 @@ export default function AstroPackageForm() {
       })
     );
   };
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     try {
-      dispatch(addEditAstroPackage({ entityId, astropoojaId })).then(
+      dispatch(addEditMatchMakingTestimonialList(entityId)).then(
         (response: any) => {
-          console.log('this is vjdsvn', astropoojaId);
           if (!response?.error) {
-            router.push(
-              `/dashboard/astro-pooja/packages?packageId=${astropoojaId}`
-            );
+            router.push('/dashboard/matchmaking/others/testimonial');
             toast.success(response?.payload?.message);
           } else {
             toast.error(response.payload);
@@ -88,20 +85,12 @@ export default function AstroPackageForm() {
     }
   };
 
-  const handleDropdownChange = (e: any) => {
-    const { name, value } = e;
-
-    dispatch(
-      updateAstroPackageData({ [name]: value }) // .then(handleReduxResponse());
-    );
-  };
-
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Astro Package List Information
+            Testimonial List
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -135,18 +124,46 @@ export default function AstroPackageForm() {
                           <Input
                             name="title.en"
                             placeholder="Enter your Title"
-                            value={(bData as IAstroPackage)?.title?.en}
+                            value={
+                              (jData as IMatchMakingTestimonial)?.title?.en ||
+                              ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">subtitle</Label>
+                          <Input
+                            name="subtitle.en"
+                            placeholder="Enter subtitlee"
+                            value={
+                              (jData as IMatchMakingTestimonial)?.subtitle
+                                ?.en || ''
+                            }
                             onChange={handleInputChange}
                           />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="name">Description</Label>
-                          <Input
-                            name="description.en"
-                            placeholder="Enter your Description"
-                            value={(bData as IAstroPackage)?.description?.en}
-                            onChange={handleInputChange}
-                          />
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="description.en"
+                              label="Full Description"
+                              value={
+                                (jData as IMatchMakingTestimonial)?.description
+                                  ?.en
+                              }
+                              onChange={(value: any) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
                         </div>
                       </CardContent>
                     </>
@@ -160,18 +177,46 @@ export default function AstroPackageForm() {
                           <Input
                             name="title.hi"
                             placeholder="Enter your Title"
-                            value={(bData as IAstroPackage)?.title?.hi}
+                            value={
+                              (jData as IMatchMakingTestimonial)?.title?.hi ||
+                              ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Subtitle</Label>
+                          <Input
+                            name="subtitle.hi"
+                            placeholder="Enter Subtitle"
+                            value={
+                              (jData as IMatchMakingTestimonial)?.subtitle
+                                ?.hi || ''
+                            }
                             onChange={handleInputChange}
                           />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="name">Description</Label>
-                          <Input
-                            name="description.hi"
-                            placeholder="Enter your Description"
-                            value={(bData as IAstroPackage)?.description?.hi}
-                            onChange={handleInputChange}
-                          />
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="description.hi"
+                              label="Full Description"
+                              value={
+                                (jData as IMatchMakingTestimonial)?.description
+                                  ?.hi
+                              }
+                              onChange={(value: any) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'description.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
                         </div>
                       </CardContent>
                     </>
@@ -179,12 +224,12 @@ export default function AstroPackageForm() {
                 </Tabs>
 
                 <div className="space-y-1">
-                  <Label htmlFor="name">Price</Label>
+                  <Label htmlFor="name">Sequence</Label>
                   <Input
-                    name="price"
+                    name="sequence"
                     placeholder="Enter Sequence"
                     type="number"
-                    value={(bData as IAstroPackage)?.price || ''}
+                    value={(jData as IMatchMakingTestimonial)?.sequence || ''}
                     onChange={handleInputChange}
                   />
                 </div>
