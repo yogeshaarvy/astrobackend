@@ -170,6 +170,11 @@ export const navItems: NavItem[] = [
         title: 'Vibhor',
         url: '/dashboard/homes/vibhor',
         icon: 'atom'
+      },
+      {
+        title: 'News Letter',
+        url: '/dashboard/homes/newsletter',
+        icon: 'settings'
       }
     ]
   },
@@ -325,6 +330,32 @@ export const navItems: NavItem[] = [
           {
             title: 'Config',
             url: '/dashboard/astro-pooja/other/config',
+            icon: 'config'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Vibhor',
+    url: '/dashboard/vibhor',
+    icon: 'temple',
+    isActive: false,
+    items: [
+      {
+        title: 'Packages',
+        url: '/dashboard/vibhor/vibhorpackage',
+        icon: 'general'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/vibhor/other',
+        isActive: false,
+        icon: 'otherlist',
+        items: [
+          {
+            title: 'Config',
+            url: '/dashboard/vibhor/other/config',
             icon: 'config'
           }
         ]
@@ -589,11 +620,6 @@ export const navItems: NavItem[] = [
         icon: 'general'
       }
     ]
-  },
-  {
-    title: 'News Letter',
-    url: '/dashboard/news-letter',
-    icon: 'settings'
   },
   {
     title: 'Writer Consultant',

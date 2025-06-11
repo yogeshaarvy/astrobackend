@@ -67,6 +67,8 @@ import registerImageReducer from './slices/register-imageSlice';
 import calendarReducer from './slices/calendar';
 import homeKundliReducer from './slices/home/kundli';
 import homeVibhorReducer from './slices/home/vibhor';
+import vibhorConfigReducer from './slices/Configs/vibhorConfigSlice';
+import vibhorPackageReducer from './slices/vibhorPackageSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -137,7 +139,9 @@ export const makeStore = () => {
       registerImage: registerImageReducer,
       calendar: calendarReducer,
       homeKundli: homeKundliReducer,
-      homeVibhor: homeVibhorReducer
+      homeVibhor: homeVibhorReducer,
+      vibhorConfig: vibhorConfigReducer,
+      vibhorPackage: vibhorPackageReducer
     }
   });
 };
