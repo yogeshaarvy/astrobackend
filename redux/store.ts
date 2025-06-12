@@ -69,6 +69,7 @@ import homeKundliReducer from './slices/home/kundli';
 import homeVibhorReducer from './slices/home/vibhor';
 import vibhorConfigReducer from './slices/Configs/vibhorConfigSlice';
 import vibhorPackageReducer from './slices/vibhorPackageSlice';
+import requestReducer from './slices/astrologer_requestsSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -109,6 +110,7 @@ export const makeStore = () => {
       blogsPost: blogsPostReducer,
       newsletter: newsletterReducer,
       promoCodesdata: promoCodesReducer,
+      requestsData: requestReducer,
       inventories: InventoryReducer,
       productfaq: productfaqReducer,
       allusers: allUsersReducer,
