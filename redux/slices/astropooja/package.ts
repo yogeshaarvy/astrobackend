@@ -115,7 +115,7 @@ export const addEditAstroPackage = createAsyncThunk<
           body: formData
         });
       }
-
+      console.log('response of update and ADDD API ID', response);
       if (response?.success) {
         dispatch(addEditAstroPackageSuccess());
         dispatch(fetchAstroPackageList());

@@ -72,10 +72,9 @@ export default function AstroPackageForm() {
     try {
       dispatch(addEditAstroPackage({ entityId, astropoojaId })).then(
         (response: any) => {
-          console.log('this is vjdsvn', astropoojaId);
           if (!response?.error) {
             router.push(
-              `/dashboard/astro-pooja/packages?packageId=${astropoojaId}`
+              `/dashboard/astro-pooja/packages?astropoojaId=${astropoojaId}`
             );
             toast.success(response?.payload?.message);
           } else {

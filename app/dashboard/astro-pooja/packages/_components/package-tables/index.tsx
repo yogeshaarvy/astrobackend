@@ -75,6 +75,7 @@ export default function AstroPackageTable({
               })
             ).unwrap();
             toast.success('Status Updated Successfully!');
+            // window.location.reload()
           } catch (error: any) {
             console.error('Error updating active status:', error);
             toast.error('Failed to Update Status');

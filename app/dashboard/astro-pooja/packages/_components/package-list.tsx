@@ -24,7 +24,6 @@ export default function AstroPackagePage() {
   const active = searchParams.get('active') || '';
   const field = searchParams.get('field') || '';
   const astropoojaId = searchParams.get('astropoojaId') || '';
-  console.log('astro poooja list id in ui', astropoojaId);
   const page = Number.parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = Number.parseInt(searchParams.get('limit') ?? '5', 10);
 
@@ -102,7 +101,6 @@ export default function AstroPackagePage() {
 
       const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
       const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-
       const data = new Blob([excelBuffer], { type: fileType });
       const url = URL.createObjectURL(data);
       const a = document.createElement('a');
