@@ -39,6 +39,7 @@ export const fetchNewsLetter = createAsyncThunk<
     keyword?: string;
     field?: string;
     status?: string;
+    limit: number;
     exportData?: boolean;
   },
   { state: RootState }
@@ -52,11 +53,12 @@ export const fetchNewsLetter = createAsyncThunk<
         keyword = '',
         field = '',
         status = '',
+        limit = 10,
         exportData = false
       } = input || {};
       dispatch(fetchNewsletterStart());
       const response = await fetchApi(
-        `/newsletter/get?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}`,
+        `/newsletter/get?page=${page}&pageSize=${pageSize}&text=${keyword}&field=${field}&active=${status}&export=${exportData}&limit=${limit}`,
         { method: 'GET' }
       );
       if (response?.success) {

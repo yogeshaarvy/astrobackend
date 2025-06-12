@@ -25,11 +25,11 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  addEditAstroPooja,
-  fetchAstroPooja,
-  IAstroPooja,
-  updateAstroPooja
-} from '@/redux/slices/Configs/astroPoojaSlice';
+  addEditMatchMaking,
+  fetchMatchMaking,
+  IMatchMaking,
+  updateMatchMaking
+} from '@/redux/slices/matchmaking/config';
 import CustomTextEditor from '@/utils/CustomTextEditor';
 import CustomTextField from '@/utils/CustomTextField';
 import CustomDropdown from '@/utils/CusomDropdown';
@@ -37,17 +37,19 @@ import CustomDropdown from '@/utils/CusomDropdown';
 const Page = () => {
   const dispatch = useAppDispatch();
   const {
-    astropoojaState: { loading, data: cData = [] }
-  } = useAppSelector((state) => state.astroPoojas);
+    matchMakingState: { loading, data: cData = [] }
+  } = useAppSelector((state) => state.matchMaking);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
   const [image, setimage] = React.useState<File | null>(null);
 
   console.log('The loading value is:', loading, cData);
 
   useEffect(() => {
-    dispatch(fetchAstroPooja(null));
-  }, []);
+    dispatch(fetchMatchMaking(null));
+  }, [dispatch]);
+
   console.log('The cData value is:', cData);
+
   const form = useForm({
     defaultValues: {}
   });
@@ -56,7 +58,7 @@ const Page = () => {
     const { name, value, type, files, checked } = e.target;
     console.log('e-value', name, value);
     dispatch(
-      updateAstroPooja({
+      updateMatchMaking({
         [name]:
           type === 'file'
             ? files[0]
@@ -71,7 +73,7 @@ const Page = () => {
 
   const handleSubmit = () => {
     try {
-      dispatch(addEditAstroPooja(null)).then((response: any) => {
+      dispatch(addEditMatchMaking(null)).then((response: any) => {
         if (!response?.error) {
           setbannerImage(null);
           setimage(null);
@@ -88,7 +90,7 @@ const Page = () => {
   const handleDropdownChange = (e: any) => {
     const { name, value } = e;
 
-    dispatch(updateAstroPooja({ [name]: value }));
+    dispatch(updateMatchMaking({ [name]: value }));
   };
 
   console.log('The bannerImage type value is:', cData);
@@ -98,7 +100,7 @@ const Page = () => {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Astro Config List
+            MatchMaking Config
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -107,36 +109,32 @@ const Page = () => {
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-8"
             >
-              {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2"> */}
-
               <CustomTextField
                 name="metaTitle"
-                // control={form.control}
                 label="Meta Title"
                 placeholder="Enter your Meta Title"
-                value={(cData as IAstroPooja)?.metaTitle}
+                value={(cData as IMatchMaking)?.metaTitle || ''}
                 onChange={handleInputChange}
               />
               <CustomTextField
                 name="metaDescription"
-                // control={form.control}
                 label="Meta Description"
                 placeholder="Enter your Meta Description"
-                value={(cData as IAstroPooja)?.metaDescription}
+                value={(cData as IMatchMaking)?.metaDescription || ''}
                 onChange={handleInputChange}
               />
               <CustomTextField
                 name="metaKeyword"
-                // control={form.control}
                 label="Meta keywords"
                 placeholder="Enter your Meta Keywords"
-                value={(cData as IAstroPooja)?.metaKeyword}
+                value={(cData as IMatchMaking)?.metaKeyword || ''}
                 onChange={handleInputChange}
               />
             </form>
           </Form>
         </CardContent>
       </Card>
+
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
@@ -151,7 +149,7 @@ const Page = () => {
             >
               <div className="flex items-center space-x-2">
                 <Tabs className="mt-4 w-full">
-                  <div className="space-y-2 pt-0 ">
+                  <div className="space-y-2 pt-0">
                     <FormItem className="space-y-3">
                       <FormLabel>Banner Image</FormLabel>
                       <FileUploader
@@ -168,22 +166,17 @@ const Page = () => {
                         }}
                         accept={{ 'image/*': [] }}
                         maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as IAstroPooja)?.mainSection
-                          ?.bannerImage === 'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as IAstroPooja)?.mainSection
-                                    ?.bannerImage
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </>
+                      />
+                      {typeof (cData as IMatchMaking)?.mainSection
+                        ?.bannerImage === 'string' && (
+                        <div className="max-h-48 space-y-4">
+                          <FileViewCard
+                            existingImageURL={
+                              (cData as IMatchMaking)?.mainSection?.bannerImage
+                            }
+                          />
+                        </div>
+                      )}
                     </FormItem>
                   </div>
 
@@ -204,63 +197,61 @@ const Page = () => {
                     </TabsList>
 
                     <TabsContent value="English">
-                      <>
-                        <CardContent className="space-y-2 p-0">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Title</Label>
-                            <Input
-                              name="mainSection.title.en"
-                              placeholder="Enter your Title"
-                              value={
-                                (cData as IAstroPooja)?.mainSection?.title?.en
-                              }
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Description</Label>
-                            <Input
-                              name="mainSection.description.en"
-                              placeholder="Enter your Description"
-                              value={
-                                (cData as IAstroPooja)?.mainSection?.description
-                                  ?.en
-                              }
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </CardContent>
-                      </>
+                      <CardContent className="space-y-2 p-0">
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Title</Label>
+                          <Input
+                            name="mainSection.title.en"
+                            placeholder="Enter your Title"
+                            value={
+                              (cData as IMatchMaking)?.mainSection?.title?.en ||
+                              ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Description</Label>
+                          <Input
+                            name="mainSection.description.en"
+                            placeholder="Enter your Description"
+                            value={
+                              (cData as IMatchMaking)?.mainSection?.description
+                                ?.en || ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </CardContent>
                     </TabsContent>
 
                     <TabsContent value="Hindi">
-                      <>
-                        <CardContent className="space-y-2 p-0">
-                          <div className="space-y-1">
-                            <Label htmlFor="name">Title</Label>
-                            <Input
-                              name="mainSection.title.hi"
-                              placeholder="Enter your Title"
-                              value={
-                                (cData as IAstroPooja)?.mainSection?.title?.hi
-                              }
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor="name"> Description</Label>
-                            <Input
-                              name="mainSection.description.hi"
-                              placeholder="Enter your Description"
-                              value={
-                                (cData as IAstroPooja)?.mainSection?.description
-                                  ?.hi
-                              }
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </CardContent>
-                      </>
+                      <CardContent className="space-y-2 p-0">
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Title</Label>
+                          <Input
+                            name="mainSection.title.hi"
+                            placeholder="Enter your Title"
+                            value={
+                              (cData as IMatchMaking)?.mainSection?.title?.hi ||
+                              ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Description</Label>
+                          <Input
+                            name="mainSection.description.hi"
+                            placeholder="Enter your Description"
+                            value={
+                              (cData as IMatchMaking)?.mainSection?.description
+                                ?.hi || ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </CardContent>
                     </TabsContent>
                   </Tabs>
 
@@ -270,15 +261,20 @@ const Page = () => {
                       <Input
                         type="color"
                         name="mainSection.textColor"
-                        value={(cData as IAstroPooja)?.mainSection?.textColor}
+                        value={
+                          (cData as IMatchMaking)?.mainSection?.textColor ||
+                          '#000000'
+                        }
                         onChange={handleInputChange}
                         className="h-10 w-12 cursor-pointer p-1"
                       />
                       <Input
                         type="text"
                         name="mainSection.textColor"
-                        value={(cData as IAstroPooja)?.mainSection?.textColor}
-                        // onChange={handleInputChange}
+                        value={
+                          (cData as IMatchMaking)?.mainSection?.textColor || ''
+                        }
+                        onChange={handleInputChange}
                         placeholder="Enter color hex code"
                         className="flex-1"
                       />
@@ -293,7 +289,8 @@ const Page = () => {
                         { name: 'Right', _id: 'right' }
                       ]}
                       value={
-                        (cData as IAstroPooja)?.mainSection?.textAlignment || ''
+                        (cData as IMatchMaking)?.mainSection?.textAlignment ||
+                        ''
                       }
                       onChange={handleDropdownChange}
                     />
@@ -304,6 +301,7 @@ const Page = () => {
           </Form>
         </CardContent>
       </Card>
+
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
@@ -317,7 +315,7 @@ const Page = () => {
               className="space-y-8"
             >
               <div className="flex items-center space-x-2">
-                <Card>
+                <Card className="w-full">
                   <CardHeader className="flex flex-row items-center justify-center gap-5">
                     <CardTitle>2nd Section</CardTitle>
                   </CardHeader>
@@ -351,7 +349,8 @@ const Page = () => {
                               name="section2.title.en"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IAstroPooja)?.section2?.title?.en
+                                (cData as IMatchMaking)?.section2?.title?.en ||
+                                ''
                               }
                               onChange={handleInputChange}
                             />
@@ -361,8 +360,8 @@ const Page = () => {
                               name="section2.description.en"
                               label="Full Description"
                               value={
-                                (cData as IAstroPooja)?.section2?.description
-                                  ?.en
+                                (cData as IMatchMaking)?.section2?.description
+                                  ?.en || ''
                               }
                               onChange={(value) =>
                                 handleInputChange({
@@ -378,6 +377,7 @@ const Page = () => {
                         </CardContent>
                       </div>
                     </TabsContent>
+
                     <TabsContent value="Hindi">
                       <div>
                         <CardHeader className="flex flex-row items-center justify-between">
@@ -391,7 +391,7 @@ const Page = () => {
                               name="section2.title.hi"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IAstroPooja)?.section2?.title?.hi ||
+                                (cData as IMatchMaking)?.section2?.title?.hi ||
                                 ''
                               }
                               onChange={handleInputChange}
@@ -402,7 +402,7 @@ const Page = () => {
                               name="section2.description.hi"
                               label="Full Description"
                               value={
-                                (cData as IAstroPooja)?.section2?.description
+                                (cData as IMatchMaking)?.section2?.description
                                   ?.hi || ''
                               }
                               onChange={(value) =>
@@ -426,6 +426,7 @@ const Page = () => {
           </Form>
         </CardContent>
       </Card>
+
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
@@ -438,42 +439,8 @@ const Page = () => {
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-8"
             >
-              <div className="space-y-2 pt-0 ">
-                <FormItem className="space-y-3">
-                  <FormLabel>3rd Section Image</FormLabel>
-                  <FileUploader
-                    value={image ? [image] : []}
-                    onValueChange={(newFiles: any) => {
-                      setimage(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'section3.image',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
-                  />{' '}
-                  <>
-                    {typeof (cData as IAstroPooja)?.section3?.image ===
-                      'string' && (
-                      <>
-                        <div className="max-h-48 space-y-4">
-                          <FileViewCard
-                            existingImageURL={
-                              (cData as IAstroPooja)?.section3?.image
-                            }
-                          />
-                        </div>
-                      </>
-                    )}
-                  </>
-                </FormItem>
-              </div>
               <div className="flex items-center space-x-2">
-                <Card>
+                <Card className="w-full">
                   <CardHeader className="flex flex-row items-center justify-center gap-5">
                     <CardTitle>3rd Section</CardTitle>
                   </CardHeader>
@@ -507,7 +474,7 @@ const Page = () => {
                               name="section3.title.en"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IAstroPooja)?.section3?.title?.en ||
+                                (cData as IMatchMaking)?.section3?.title?.en ||
                                 ''
                               }
                               onChange={handleInputChange}
@@ -518,7 +485,7 @@ const Page = () => {
                               name="section3.description.en"
                               label="Full Description"
                               value={
-                                (cData as IAstroPooja)?.section3?.description
+                                (cData as IMatchMaking)?.section3?.description
                                   ?.en || ''
                               }
                               onChange={(value) =>
@@ -535,6 +502,7 @@ const Page = () => {
                         </CardContent>
                       </div>
                     </TabsContent>
+
                     <TabsContent value="Hindi">
                       <div>
                         <CardHeader className="flex flex-row items-center justify-between">
@@ -548,7 +516,7 @@ const Page = () => {
                               name="section3.title.hi"
                               placeholder="Enter your Title"
                               value={
-                                (cData as IAstroPooja)?.section3?.title?.hi ||
+                                (cData as IMatchMaking)?.section3?.title?.hi ||
                                 ''
                               }
                               onChange={handleInputChange}
@@ -559,7 +527,7 @@ const Page = () => {
                               name="section3.description.hi"
                               label="Full Description"
                               value={
-                                (cData as IAstroPooja)?.section3?.description
+                                (cData as IMatchMaking)?.section3?.description
                                   ?.hi || ''
                               }
                               onChange={(value) =>
@@ -583,6 +551,163 @@ const Page = () => {
           </Form>
         </CardContent>
       </Card>
+
+      <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            4th Section
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="space-y-2 pt-0">
+                <FormItem className="space-y-3">
+                  <FormLabel>4th Section Image</FormLabel>
+                  <FileUploader
+                    value={image ? [image] : []}
+                    onValueChange={(newFiles: any) => {
+                      setimage(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'section4.image',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+                  {typeof (cData as IMatchMaking)?.section4?.image ===
+                    'string' && (
+                    <div className="max-h-48 space-y-4">
+                      <FileViewCard
+                        existingImageURL={
+                          (cData as IMatchMaking)?.section4?.image
+                        }
+                      />
+                    </div>
+                  )}
+                </FormItem>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Card className="w-full">
+                  <CardHeader className="flex flex-row items-center justify-center gap-5">
+                    <CardTitle>4th Section</CardTitle>
+                  </CardHeader>
+
+                  <Tabs defaultValue="English" className="mt-4 w-full">
+                    <TabsList className="flex w-full space-x-2 p-0">
+                      <TabsTrigger
+                        value="English"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        English
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="Hindi"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        Hindi
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="English">
+                      <div>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                          <CardTitle>4th Section English</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="section4.title.en"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IMatchMaking)?.section4?.title?.en ||
+                                ''
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="section4.description.en"
+                              label="Full Description"
+                              value={
+                                (cData as IMatchMaking)?.section4?.description
+                                  ?.en || ''
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'section4.description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="Hindi">
+                      <div>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                          <CardTitle>4th Section Hindi</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="section4.title.hi"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IMatchMaking)?.section4?.title?.hi ||
+                                ''
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="section4.description.hi"
+                              label="Full Description"
+                              value={
+                                (cData as IMatchMaking)?.section4?.description
+                                  ?.hi || ''
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'section4.description.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </Card>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
       <CardFooter
         style={{
           display: 'flex',
@@ -591,7 +716,7 @@ const Page = () => {
         }}
       >
         <Button type="submit" onClick={() => handleSubmit()}>
-          Submit
+          {loading ? 'Saving...' : 'Submit'}
         </Button>
       </CardFooter>
     </PageContainer>

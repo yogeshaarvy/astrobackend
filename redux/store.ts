@@ -70,6 +70,8 @@ import homeVibhorReducer from './slices/home/vibhor';
 import vibhorConfigReducer from './slices/Configs/vibhorConfigSlice';
 import vibhorPackageReducer from './slices/vibhorPackageSlice';
 import requestReducer from './slices/astrologer_requestsSlice';
+import matchMakingReducer from './slices/matchmaking/config';
+import matchMakingTestimonialReducer from './slices/matchmaking/testimonial';
 
 export const makeStore = () => {
   return configureStore({
@@ -143,7 +145,9 @@ export const makeStore = () => {
       homeKundli: homeKundliReducer,
       homeVibhor: homeVibhorReducer,
       vibhorConfig: vibhorConfigReducer,
-      vibhorPackage: vibhorPackageReducer
+      vibhorPackage: vibhorPackageReducer,
+      matchMaking: matchMakingReducer,
+      matchMakingTestimonial: matchMakingTestimonialReducer
     }
   });
 };
