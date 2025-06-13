@@ -72,7 +72,7 @@ import vibhorPackageReducer from './slices/vibhorPackageSlice';
 import requestReducer from './slices/astrologer_requestsSlice';
 import matchMakingReducer from './slices/matchmaking/config';
 import matchMakingTestimonialReducer from './slices/matchmaking/testimonial';
-
+import allordersReducer from './slices/store/allordersSlice';
 export const makeStore = () => {
   return configureStore({
     reducer: {
@@ -147,7 +147,8 @@ export const makeStore = () => {
       vibhorConfig: vibhorConfigReducer,
       vibhorPackage: vibhorPackageReducer,
       matchMaking: matchMakingReducer,
-      matchMakingTestimonial: matchMakingTestimonialReducer
+      matchMakingTestimonial: matchMakingTestimonialReducer,
+      allorders: allordersReducer
     }
   });
 };
