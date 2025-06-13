@@ -344,39 +344,10 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
             <div class="info-box">
               <div class="info-title">SHIP TO</div>
               <div class="address-card">
-                <p class="name">${
-                  orderData?.user?.name ||
-                  orderData?.addressData?.firstname ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.address1 ||
-                  orderData?.addressData?.address1 ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.address2 ||
-                  orderData?.addressData?.address2 ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.state?.name ||
-                  orderData?.addressData?.state?.name ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.pinCode ||
-                  orderData?.addressData?.pinCode ||
-                  ''
-                }</p>
-                <p>📞 ${
-                  orderData?.shippingAddress?.phone ||
-                  orderData?.addressData?.phone ||
-                  ''
-                }</p>
-                <p>✉️ ${
-                  orderData?.user?.email || orderData?.addressData?.email || ''
-                }</p>
+                <p class="name">${orderData?.user?.name || ''}</p>
+               
+                <p>📞 ${orderData?.user?.phone || ''}</p>
+                <p>✉️ ${orderData?.user?.email || ''}</p>
               </div>
             </div>
   
@@ -394,14 +365,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                     'MMM DD, YYYY'
                   )}</span>
                 </div>
-                <div class="payment-info">
-                  <span class="label">Payment Method:</span>
-                  <span class="value">${
-                    orderData?.paymentMethod?.toLowerCase() === 'cod'
-                      ? 'COD'
-                      : 'ONLINE'
-                  }</span>
-                </div>
+               
                 <div class="amount-paid">
                   <span class="label">Amount Paid:</span>
                   <span class="value">₹ ${orderData?.paidAmount?.toFixed(
@@ -419,61 +383,19 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
               <thead>
                 <tr>
                   <th>ITEM</th>
-                  <th>QTY</th>
                   <th>PRICE</th>
-                  <th>TOTAL</th>
                 </tr>
               </thead>
               <tbody>
-                ${orderData?.products
-                  ?.map((product: any) => {
-                    return `<tr>
                       <td>
-                        ${product?.productId?.title?.en}
-                        ${
-                          product?.variantId &&
-                          product?.variantId?.values &&
-                          product?.variantId?.values?.length > 0
-                            ? `<div style="font-size: 12px; color: #666; margin-top: 4px; font-weight: normal;">
-                                ${product?.variantId?.values
-                                  ?.map((val: any) => val.full_name?.en)
-                                  .join(', ')}
-                              </div>`
-                            : ''
-                        }
+                        ${orderData?.product?.title?.en}                      
                       </td>
-                      <td>${product?.quantity}</td>
-                      <td>₹ ${
-                        product?.totalAmount / product?.quantity?.toFixed(2)
-                      }</td>
-                      <td>₹ ${product?.totalAmount?.toFixed(2)}</td>
-                    </tr>`;
-                  })
-                  .join('')}
               </tbody>
             </table>
   
             <!-- Totals Section -->
             <div class="totals-section">
               <div class="totals-table">
-                <div class="total-row">
-                  <span>Subtotal:</span>
-                  <span>₹ ${calculateSubtotal().toFixed(2)}</span>
-                </div>
-                <div class="total-row">
-                  <span>Shipping:</span>
-                  <span>₹ ${(orderData?.shippingCharges || 0).toFixed(2)}</span>
-                </div>
-                <div class="total-row">
-                  <span>Discount:</span>
-                  <span>₹ ${(orderData?.discount || 0).toFixed(2)}</span>
-                </div>
-                <div class="total-row">
-                  <span>Additional Discount:</span>
-                  <span>₹ ${(orderData?.additionalDiscount || 0).toFixed(
-                    2
-                  )}</span>
-                </div>
                 <div class="total-row">
                   <span>Total Amount:</span>
                   <span>₹ ${orderData?.paidAmount?.toFixed(2)}</span>
@@ -540,17 +462,6 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
     }
   };
 
-  // Helper function to calculate subtotal
-  function calculateSubtotal() {
-    let subtotal = 0;
-    orderData?.products?.forEach((product: any) => {
-      subtotal += product.totalAmount;
-    });
-    return subtotal;
-  }
-  const handleShipRocketOrder = () => {
-    dispatch(createShiprocketOrder({ orderId: orderData?._id }) as any);
-  };
   return (
     <PageContainer scrollable>
       <div className="container mx-auto max-w-6xl p-6">
@@ -587,32 +498,6 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                   <span className=" text-sm">Order Id:</span>
                   <Badge variant="outline"># {orderData?.orderId}</Badge>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm"> Payment Status:</span>
-                  <Badge
-                    className={`${
-                      orderData?.status === 'pending'
-                        ? 'bg-yellow-500 text-white'
-                        : orderData?.status === 'success'
-                        ? 'bg-green-500 text-white'
-                        : orderData?.status === 'cancelled'
-                        ? 'bg-red-500 text-white'
-                        : 'bg-blue-500 text-white'
-                    }`}
-                  >
-                    {orderData?.status}
-                  </Badge>
-                </div>
-                {orderData?.orderStatus === 'processing' && (
-                  <div className="flex items-center gap-2">
-                    <button
-                      className="rounded-md bg-amber-700 p-1 px-3 text-white"
-                      onClick={handleShipRocketOrder}
-                    >
-                      Create Shiprocket Order
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
             {orderData?.transactionId && (
@@ -623,7 +508,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
             )}
 
             {/* Order Status Update Section */}
-            <div className="mt-4 flex flex-col gap-2">
+            {/* <div className="mt-4 flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">
                   Update Order Status:
@@ -669,10 +554,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
               </div>
               {!orderData?.transactionId && (
                 <div className="relative">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm">Update Payment Status:</p>
-                    <input type="checkbox" onChange={() => setCheck(!check)} />
-                  </div>
+                 
                   {check && (
                     <div className=" absolute flex items-center gap-2 rounded-sm border bg-gray-100 p-3 shadow-md">
                       <Input
@@ -692,7 +574,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                   )}
                 </div>
               )}
-            </div>
+            </div> */}
           </CardHeader>
 
           <CardContent>
@@ -719,114 +601,6 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                   </p>
                 </div>
               </div>
-
-              {/*  Billing Address */}
-              {orderData?.billingAddress && (
-                <div>
-                  <h3 className="mb-2 text-lg font-semibold">
-                    Billing Information
-                  </h3>
-                  <div className="space-y-1">
-                    <p>
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.firstname
-                      }
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.lastname
-                      }
-                    </p>
-                    <p>
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.phone
-                      }
-                    </p>
-                    <p>
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.address1
-                      }
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.address2
-                      }
-                    </p>
-                    <p>
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.city?.name
-                      }
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.state?.name
-                      }
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.country?.name
-                      }
-                      {
-                        (
-                          orderData?.billingAddress ??
-                          orderData?.shippingAddress
-                        )?.pincode
-                      }
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Shipping Address */}
-              <div>
-                <h3 className="mb-2 text-lg font-semibold">
-                  Shipping Information
-                </h3>
-                {orderData?.shippingAddress ? (
-                  <div className="space-y-1">
-                    <p>
-                      {orderData?.shippingAddress?.firstname}
-                      {orderData?.shippingAddress?.lastname}
-                    </p>
-                    <p>{orderData?.shippingAddress?.phone}</p>
-                    <p>{orderData?.shippingAddress?.address1}</p>
-                    <p>{orderData?.shippingAddress?.address2}</p>
-                    <p>
-                      {orderData?.shippingAddress?.city?.name}
-                      {orderData?.shippingAddress?.state?.name}
-                      {orderData?.shippingAddress?.country?.name}
-                      {orderData?.shippingAddress?.pincode}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    <p>{orderData?.addressData?.firstname}</p>
-                    <p>{orderData?.addressData?.phone}</p>
-                    <p>{orderData?.addressData?.address1}</p>
-                    <p>{orderData?.addressData?.address2}</p>
-                    <p>
-                      {orderData?.addressData?.state?.name}
-                      {orderData?.addressData?.pinCode}
-                    </p>
-                  </div>
-                )}
-              </div>
             </div>
 
             <Separator className="my-6" />
@@ -841,46 +615,26 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                   <TableRow>
                     <TableHead className="w-1/4">Product</TableHead>
 
-                    <TableHead className="w-1/4 text-center">
-                      Quantity
-                    </TableHead>
                     <TableHead className="w-1/4 text-right">Price</TableHead>
-                    <TableHead className="w-1/4 text-right">Subtotal</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orderData?.products?.map((product: any) => (
-                    <TableRow
-                      key={product?._id}
-                      className="border-b border-gray-200 hover:bg-gray-50"
-                    >
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">
-                            {product?.productId?.title?.en} (
-                            {product?.variantId &&
-                              product?.variantId?.values &&
-                              product?.variantId?.values
-                                ?.map((val: any) => val.full_name?.en || '')
-                                .join(', ')}
-                            )
-                          </div>
-                          {/* <div className="text-sm text-muted-foreground">
+                  <TableRow className="border-b border-gray-200 hover:bg-gray-50">
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">
+                          {orderData?.product?.title?.en}
+                        </div>
+                        {/* <div className="text-sm text-muted-foreground">
                             SKU: {product?.sku}
                           </div> */}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {product?.quantity}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        ₹{product?.totalAmount / product?.quantity?.toFixed(2)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        ₹{product?.totalAmount.toFixed(2)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="text-right">
+                      ₹{orderData?.paidAmount}
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </div>
@@ -898,31 +652,9 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                 </button>
               </div>
               <div className="w-64 space-y-2">
-                {/* <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>₹{orderData?.totals?.subtotal?.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>₹{orderData?.totals?.tax?.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>₹{orderData?.totals?.shipping?.toFixed(2)}</span>
-              </div> */}
-                {/* <Separator /> */}
-
-                <div className="flex justify-between ">
-                  <span>Discount</span>
-                  <span>₹{orderData?.discount?.toFixed(2) || 0}</span>
-                </div>
-                <div className="flex justify-between ">
-                  <span>Additional Discount</span>
-                  <span>₹{orderData?.additionalDiscount?.toFixed(2) || 0}</span>
-                </div>
                 <div className="flex justify-between font-bold">
                   <span>Total</span>
-                  <span>₹{orderData?.paidAmount?.toFixed(2)}</span>
+                  <span>₹{orderData?.paidAmount}</span>
                 </div>
               </div>
             </div>

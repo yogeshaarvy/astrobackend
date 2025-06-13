@@ -83,7 +83,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
       <button
         onClick={() => {
-          router.push(`/dashboard/orders/store/${data?.orderId}`);
+          router.push(`/dashboard/orders/pooja/${data?.orderId}`);
         }}
       >
         <Eye className="text-sm text-gray-400" />

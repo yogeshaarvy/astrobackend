@@ -1,9 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import OrderDetailsPage from './orderdetails';
+import OrderDetailsPage from './poojaorderdetails';
 import { useAppDispatch } from '@/redux/hooks';
 import { usePathname } from 'next/navigation';
-import { fetchSingleOrderList } from '@/redux/slices/store/allordersSlice';
+import { fetchSingleOrderList } from '@/redux/slices/astropooja/poojaorders';
 
 const Page = () => {
   const dispatch = useAppDispatch();
@@ -14,12 +14,12 @@ const Page = () => {
 
   useEffect(() => {
     if (!orderId) return; // Prevents unnecessary API calls if orderId is missing
-
     dispatch(fetchSingleOrderList(orderId)).then((res) => {
       setOrderDetails(res.payload?.order || null);
     });
   }, [dispatch, orderId]); // Added orderId as a dependency
 
+  console.log('order deatils data is ......', orderDetails);
   return (
     <div>
       <OrderDetailsPage orderData={orderDetails} />

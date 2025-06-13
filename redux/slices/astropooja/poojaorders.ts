@@ -15,7 +15,7 @@ import { RootState } from '@/redux/store';
 export type IAllOrdersList = BaseModel & {
   //   ?: number;
   images?: string;
-  product?: string;
+  product?: any;
   status?: any;
   user?: any;
   addressData?: any;
@@ -25,17 +25,15 @@ export type IAllOrdersList = BaseModel & {
   createdAt?: any;
   orderStatus?: any;
   paymentMethod?: any;
-  additionalDiscount?: any;
-  discount?: any;
-  shippingCharges?: any;
+
   transactionId?: any;
-  shippingAddress?: any;
+
   paidAmount?: any;
 };
 
 // Initial state
 const initialState = {
-  AllOrdersState: {
+  AllPoojaOrdersState: {
     data: [],
     loading: false,
     error: null,
@@ -95,7 +93,7 @@ export const fetchAllOrdersList = createAsyncThunk<
 
       dispatch(fetchAllOrdersListStart());
       const response = await fetchApi(
-        `/order/all?page=${page}&pageSize=${pageSize}&export=${exportData}&orderStatus=${orderStatus}&paymentStatus=${paymentStatus}&startDate=${startDate}&endDate=${endDate}&email=${
+        `/pooja_order/all?page=${page}&pageSize=${pageSize}&export=${exportData}&orderStatus=${orderStatus}&paymentStatus=${paymentStatus}&startDate=${startDate}&endDate=${endDate}&email=${
           email ?? ''
         }&orderNo=${orderNo ?? ''}`,
         { method: 'GET' }
@@ -103,7 +101,7 @@ export const fetchAllOrdersList = createAsyncThunk<
       if (response?.success) {
         dispatch(
           fetchAllOrdersListSuccess({
-            data: response.orders,
+            data: response.poojaOrders,
             totalCount: response.totalCount
           })
         );
@@ -129,9 +127,14 @@ export const fetchSingleOrderList = createAsyncThunk<
   async (orderId, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(fetchSingleOrderListStart());
-      const response = await fetchApi(`/order/getsingleorder/${orderId}`, {
-        method: 'GET'
-      });
+      const response = await fetchApi(
+        `/pooja_order/getsingleorder/${orderId}`,
+        {
+          method: 'GET'
+        }
+      );
+      console.log('response of single pooja orders data....', response);
+
       if (response?.success) {
         dispatch(fetchSingleOrderListSuccess(response?.order));
         return response;
@@ -158,7 +161,7 @@ export const updateOrder = async ({
   orderStatus: any;
 }) => {
   try {
-    const response = await fetchApi(`/order/updateorder/${orderId}`, {
+    const response = await fetchApi(`/pooja_order/updateorder/${orderId}`, {
       body: { transactionId, orderStatus },
       method: 'PUT'
     });
@@ -182,7 +185,7 @@ export const fetchMonthlyOrders = createAsyncThunk<{ state: RootState }>(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       dispatch(fetchMonthlyOrdersStart());
-      const response = await fetchApi(`/order/monthly-sales`, {
+      const response = await fetchApi(`/pooja_order/monthly-sales`, {
         method: 'GET'
       });
       if (response?.success) {
@@ -206,7 +209,7 @@ export const fetchMonthlyOrders = createAsyncThunk<{ state: RootState }>(
 //create shiprocket order
 export const createShiprocketOrder = async (orderId: any) => {
   try {
-    const response = await fetchApi(`/order/shiprocket-order`, {
+    const response = await fetchApi(`/pooja_order/shiprocket-order`, {
       body: { orderId },
       method: 'POST'
     });
@@ -225,23 +228,23 @@ export const createShiprocketOrder = async (orderId: any) => {
   }
 };
 // Slice
-const allordersListSlice = createSlice({
+const poojaOrdersListSlice = createSlice({
   name: 'all orders',
   initialState,
   reducers: {
     fetchAllOrdersListStart(state) {
-      state.AllOrdersState.loading = true;
-      state.AllOrdersState.error = null;
+      state.AllPoojaOrdersState.loading = true;
+      state.AllPoojaOrdersState.error = null;
     },
     fetchAllOrdersListSuccess(state, action) {
       const { data, totalCount } = action.payload;
-      state.AllOrdersState.data = data;
-      state.AllOrdersState.pagination.totalCount = totalCount;
-      state.AllOrdersState.loading = false;
+      state.AllPoojaOrdersState.data = data;
+      state.AllPoojaOrdersState.pagination.totalCount = totalCount;
+      state.AllPoojaOrdersState.loading = false;
     },
     fetchAllOrdersListFailure(state, action) {
-      state.AllOrdersState.loading = false;
-      state.AllOrdersState.error = action.payload;
+      state.AllPoojaOrdersState.loading = false;
+      state.AllPoojaOrdersState.error = action.payload;
     },
 
     fetchSingleOrderListStart(state) {
@@ -284,6 +287,6 @@ export const {
   fetchMonthlyOrdersStart,
   fetchMonthlyOrdersSuccess,
   fetchMonthlyOrdersFailure
-} = allordersListSlice.actions;
+} = poojaOrdersListSlice.actions;
 
-export default allordersListSlice.reducer;
+export default poojaOrdersListSlice.reducer;
