@@ -651,8 +651,8 @@ export const navItems: NavItem[] = [
         icon: 'general'
       },
       {
-        title: 'Written Consultancy',
-        url: '/dashboard/orders/written-consultancy',
+        title: 'Vibhor',
+        url: '/dashboard/orders/vibhor-packages',
         icon: 'general'
       }
     ]
