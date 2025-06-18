@@ -76,6 +76,7 @@ import allordersReducer from './slices/store/allordersSlice';
 import poojaOrdersReducer from './slices/astropooja/poojaorders';
 import vibhorOrdersReducer from './slices/vibhor/ordersSlice';
 import projectFaqReducer from './slices/projectFaqSlice';
+import languageDataReducer from './slices/languageDataSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -155,7 +156,8 @@ export const makeStore = () => {
       allorders: allordersReducer,
       allpoojsorders: poojaOrdersReducer,
       allvibhororders: vibhorOrdersReducer,
-      projectfaq: projectFaqReducer
+      projectfaq: projectFaqReducer,
+      languageData: languageDataReducer
     }
   });
 };
