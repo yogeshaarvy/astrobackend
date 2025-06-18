@@ -103,7 +103,7 @@ export default function RequestForm() {
     try {
       dispatch(addEditRequest(entityId || null)).then((response: any) => {
         if (!response?.error) {
-          // router.push('/dashboard/astrologers/approved');
+          router.push('/dashboard/astrologers/approved');
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
