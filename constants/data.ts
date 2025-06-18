@@ -500,6 +500,16 @@ export const navItems: NavItem[] = [
         icon: 'general'
       },
       {
+        title: 'Approved',
+        url: '/dashboard/astrologers/approved',
+        icon: 'general'
+      },
+      {
+        title: 'Rejected',
+        url: '/dashboard/astrologers/rejected',
+        icon: 'general'
+      },
+      {
         title: 'List',
         url: '/dashboard/astrologers/list',
         icon: 'general',

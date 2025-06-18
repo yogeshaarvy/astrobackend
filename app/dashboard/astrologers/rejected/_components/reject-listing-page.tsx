@@ -6,7 +6,7 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import RequestedTable from './register-tables';
+import RejectedTable from './reject-tables';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -16,11 +16,11 @@ import {
   setRequestData
 } from '@/redux/slices/astrologersSlice';
 
-export default function RequestedListingPage() {
+export default function RejectedListingPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
-  const status = 'pending'; // Assuming you want to filter by requested status'';
+  const status = 'rejected'; // Assuming you want to filter by rejected status
   const active = searchParams.get('status') || '';
   const field = searchParams.get('field') || '';
   const page = parseInt(searchParams.get('page') ?? '1', 10);
@@ -28,7 +28,7 @@ export default function RequestedListingPage() {
   let exportData = 'false';
   const {
     astrologersListState: {
-      loading: requestListLoading,
+      loading: RejectListLoading,
       data: tData = [],
       pagination: { totalCount }
     }
@@ -41,7 +41,7 @@ export default function RequestedListingPage() {
         pageSize,
         keyword,
         field,
-        status: 'pending',
+        status: 'rejected',
         exportData,
         active
       })
@@ -58,7 +58,7 @@ export default function RequestedListingPage() {
         pageSize,
         keyword,
         field,
-        status: 'pending',
+        status: 'rejected',
         exportData,
         active
       })
@@ -74,7 +74,7 @@ export default function RequestedListingPage() {
           pageSize,
           keyword,
           field,
-          status: 'pending',
+          status: 'rejected',
           exportData: 'true',
           active
         })
@@ -117,7 +117,7 @@ export default function RequestedListingPage() {
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">
         <div className="flex items-start justify-between pr-4">
-          <Heading title={`Requested Astrologers`} description="" />
+          <Heading title={`Rejected Astrologers`} description="" />
           <div className="flex items-center">
             {/* <Button
               className="mx-5 py-4"
@@ -135,7 +135,7 @@ export default function RequestedListingPage() {
           </div>
         </div>
         <Separator />
-        <RequestedTable
+        <RejectedTable
           data={requestData}
           totalData={totalCount}
           handleSearch={handleSearch}

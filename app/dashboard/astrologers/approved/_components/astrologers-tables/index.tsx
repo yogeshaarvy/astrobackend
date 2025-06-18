@@ -11,14 +11,14 @@ import {
   STATUS_OPTIONS,
   FIELD_OPTIONS,
   useRequestTableFilters
-} from './use-requested-table-filters';
+} from './use-astrologers-table-filters';
 import { Button } from '@/components/ui/button';
 import {
   addEditRequest,
   IRequest,
   updateRequestData
 } from '@/redux/slices/astrologersSlice';
-import RequestStatusSelect from './RequestStatusSelect';
+import RequestStatusSelect from './AstrologersStatusSelect';
 import { CellAction } from './cell-action';
 
 export default function RequestTable({
@@ -160,13 +160,13 @@ export default function RequestTable({
           filterValue={fieldFilter}
         />
 
-        {/* <DataTableFilterBox
+        <DataTableFilterBox
           filterKey="status"
           title="Filter By Status"
           options={STATUS_OPTIONS}
           setFilterValue={setStatusFilter}
           filterValue={statusFilter}
-        /> */}
+        />
         <Button variant="outline" onClick={handleSearch}>
           Search
         </Button>

@@ -69,7 +69,7 @@ import homeKundliReducer from './slices/home/kundli';
 import homeVibhorReducer from './slices/home/vibhor';
 import vibhorConfigReducer from './slices/Configs/vibhorConfigSlice';
 import vibhorPackageReducer from './slices/vibhorPackageSlice';
-import requestReducer from './slices/astrologer_requestsSlice';
+import astrologersReducer from './slices/astrologersSlice';
 import matchMakingReducer from './slices/matchmaking/config';
 import matchMakingTestimonialReducer from './slices/matchmaking/testimonial';
 import allordersReducer from './slices/store/allordersSlice';
@@ -115,7 +115,7 @@ export const makeStore = () => {
       blogsPost: blogsPostReducer,
       newsletter: newsletterReducer,
       promoCodesdata: promoCodesReducer,
-      requestsData: requestReducer,
+      astrologersData: astrologersReducer,
       inventories: InventoryReducer,
       productfaq: productfaqReducer,
       allusers: allUsersReducer,

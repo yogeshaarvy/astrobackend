@@ -193,7 +193,6 @@ export default function RequestForm() {
               <CustomReactSelect
                 options={skillsList}
                 label="Skills"
-                isMulti
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option._id}
                 placeholder="Select skills"
@@ -216,7 +215,6 @@ export default function RequestForm() {
               <CustomReactSelect
                 options={languageList}
                 label="Languages"
-                isMulti
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Languages"

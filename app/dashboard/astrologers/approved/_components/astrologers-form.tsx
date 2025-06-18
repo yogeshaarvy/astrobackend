@@ -55,6 +55,7 @@ export default function RequestForm() {
   const {
     singleRequestState: { data: requestData }
   } = useAppSelector((state) => state.astrologersData);
+  console.log('requestData..............', requestData);
 
   const form = useForm({});
   const [Image, setImage] = React.useState<File | null>(null);
@@ -65,8 +66,24 @@ export default function RequestForm() {
     }
   }, [entityId]);
 
+  const getSelectedSkill = () => {
+    const skillValues = (requestData as IRequest)?.skills || [];
+    return skillsList.filter((skill) => skillValues.includes(skill._id));
+  };
+
+  const getSelectedLanguage = () => {
+    const languageValues = (requestData as IRequest)?.languages || [];
+    return languageList.filter((lang) => languageValues.includes(lang._id));
+  };
+
   const handleInputChange = (e: any) => {
-    const { name, value, type, files, checked } = e.target;
+    const { name, value, type, files, checked } = e.target || {};
+
+    // For array values from react-select (multi-select)
+    if (Array.isArray(value)) {
+      dispatch(updateRequestData({ [name]: value }));
+      return;
+    }
 
     dispatch(
       updateRequestData({
@@ -86,7 +103,7 @@ export default function RequestForm() {
     try {
       dispatch(addEditRequest(entityId || null)).then((response: any) => {
         if (!response?.error) {
-          router.push('/dashboard/astrologers/requested');
+          // router.push('/dashboard/astrologers/approved');
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -108,16 +125,6 @@ export default function RequestForm() {
     return gendersList.find((gender) => gender._id === genderValue) || null;
   };
 
-  const getSelectedSkill = () => {
-    const skillValue = (requestData as IRequest)?.skills;
-    return skillsList.find((skill) => skill._id === skillValue) || null;
-  };
-
-  const getSelectedLanguage = () => {
-    const languageValue = (requestData as IRequest)?.languages;
-    return languageList.find((lang) => lang._id === languageValue) || null;
-  };
-
   // Format date for input field
   const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
@@ -130,7 +137,7 @@ export default function RequestForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Requested Astrologer
+            Astrologer
           </CardTitle>
         </CardHeader>
 
@@ -190,20 +197,7 @@ export default function RequestForm() {
                 }
                 value={getSelectedGender()}
               />
-              <CustomReactSelect
-                options={skillsList}
-                label="Skills"
-                isMulti
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option._id}
-                placeholder="Select skills"
-                onChange={(e: any) =>
-                  handleInputChange({
-                    target: { name: 'skills', value: e?._id }
-                  })
-                }
-                value={getSelectedSkill()}
-              />
+
               <CustomTextField
                 name="dob"
                 label="DOB"
@@ -214,15 +208,36 @@ export default function RequestForm() {
               />
 
               <CustomReactSelect
+                options={skillsList}
+                label="Skills"
+                isMulti
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option._id}
+                placeholder="Select skills"
+                onChange={(selectedOptions: any) =>
+                  handleInputChange({
+                    target: {
+                      name: 'skills',
+                      value: selectedOptions?.map((opt: any) => opt._id) || []
+                    }
+                  })
+                }
+                value={getSelectedSkill()}
+              />
+
+              <CustomReactSelect
                 options={languageList}
                 label="Languages"
                 isMulti
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Languages"
-                onChange={(e: any) =>
+                onChange={(selectedOptions: any) =>
                   handleInputChange({
-                    target: { name: 'languages', value: e?._id }
+                    target: {
+                      name: 'languages',
+                      value: selectedOptions?.map((opt: any) => opt._id) || []
+                    }
                   })
                 }
                 value={getSelectedLanguage()}

@@ -53,7 +53,7 @@ export function useRequestTableFilters() {
 
     setStatusFilter(null);
     setPage(1);
-    dispatch(fetchAstrologersList({ status: 'pending' }));
+    dispatch(fetchAstrologersList({ status: 'rejected' }));
   }, [setSearchQuery, setPage, setStatusFilter, setFieldFilter, dispatch]);
 
   const isAnyFilterActive = useMemo(() => {

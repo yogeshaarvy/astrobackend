@@ -22,7 +22,7 @@ export type IRequest = BaseModel & {
 };
 
 const initialState = {
-  requestListState: {
+  astrologersListState: {
     data: [],
     loading: false,
     error: null,
@@ -49,7 +49,7 @@ const initialState = {
   } as BaseState<IRequest | null>
 };
 
-export const fetchRequestList = createAsyncThunk<
+export const fetchAstrologersList = createAsyncThunk<
   any,
   {
     page?: number;
@@ -58,28 +58,29 @@ export const fetchRequestList = createAsyncThunk<
     field: string;
     status: string;
     exportData: string;
+    active?: string;
   } | void,
   { state: RootState }
 >(
-  'request/fetchRequestList',
+  'request/fetchastrologersList',
   async (input, { dispatch, rejectWithValue, getState }) => {
     try {
-      const { page, pageSize, keyword, field, status, exportData } =
+      const { page, pageSize, keyword, field, status, exportData, active } =
         input || {};
 
-      dispatch(fetchRequestStart());
+      dispatch(fetchAstrologersStart());
       const response = await fetchApi(
         `/astrodetails/all?page=${page || 1}&limit=${pageSize || 10}&text=${
           keyword || ''
         }&field=${field || ''}&status=${status || ''}&export=${
           exportData || ''
-        }`,
+        }&active=${active || ''}`,
         { method: 'GET' }
       );
       // Check if the API response is valid and has the expected data
       if (response?.success) {
         dispatch(
-          fetchRequestListSuccess({
+          fetchAstrologersListSuccess({
             data: response.astroDetial,
             totalCount: response.totalCount
           })
@@ -91,7 +92,7 @@ export const fetchRequestList = createAsyncThunk<
       return response;
     } catch (error: any) {
       const errorMsg = error?.message ?? 'Something Went Wrong!!';
-      dispatch(fetchRequestFailure(errorMsg));
+      dispatch(fetchAstrologersFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
   }
@@ -103,7 +104,7 @@ export const addEditRequest = createAsyncThunk<
 >('request/add', async (entityId, { dispatch, rejectWithValue, getState }) => {
   try {
     const {
-      requestsData: {
+      astrologersData: {
         singleRequestState: { data }
       }
     } = getState();
@@ -148,7 +149,7 @@ export const addEditRequest = createAsyncThunk<
     }
     if (response?.success) {
       dispatch(addEditRequestSuccess());
-      dispatch(fetchRequestList());
+      dispatch(fetchAstrologersList());
       return response;
     } else {
       const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
@@ -201,7 +202,7 @@ export const deleteRequest = createAsyncThunk<
     });
     if (response.success) {
       dispatch(deleteRequestSuccess(id));
-      dispatch(fetchRequestList());
+      dispatch(fetchAstrologersList());
       toast.success('Request deleted successfuly');
       return response;
     } else {
@@ -219,20 +220,20 @@ const requestSlice = createSlice({
   name: 'requests',
   initialState,
   reducers: {
-    fetchRequestStart(state) {
-      state.requestListState.loading = true;
-      state.requestListState.error = null;
+    fetchAstrologersStart(state) {
+      state.astrologersListState.loading = true;
+      state.astrologersListState.error = null;
     },
-    fetchRequestListSuccess(state, action) {
-      state.requestListState.loading = false;
+    fetchAstrologersListSuccess(state, action) {
+      state.astrologersListState.loading = false;
       const { data, totalCount } = action.payload;
-      state.requestListState.data = data;
-      state.requestListState.pagination.totalCount = totalCount;
-      state.requestListState.error = null;
+      state.astrologersListState.data = data;
+      state.astrologersListState.pagination.totalCount = totalCount;
+      state.astrologersListState.error = null;
     },
-    fetchRequestFailure(state, action) {
-      state.requestListState.loading = false;
-      state.requestListState.error = action.payload;
+    fetchAstrologersFailure(state, action) {
+      state.astrologersListState.loading = false;
+      state.astrologersListState.error = action.payload;
     },
     setRequestData(state, action) {
       state.singleRequestState.data = action.payload;
@@ -281,9 +282,9 @@ const requestSlice = createSlice({
 });
 
 export const {
-  fetchRequestStart,
-  fetchRequestListSuccess,
-  fetchRequestFailure,
+  fetchAstrologersStart,
+  fetchAstrologersListSuccess,
+  fetchAstrologersFailure,
   addEditRequestStart,
   addEditRequestSuccess,
   addEditRequestFailure,
