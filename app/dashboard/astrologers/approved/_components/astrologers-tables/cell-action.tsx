@@ -50,6 +50,51 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/dashboard/astrologers/list/profiles?id=${data._id}`)
+            }
+          >
+            Profiles
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/dashboard/astrologers/list/packages?id=${data._id}`)
+            }
+          >
+            Packages
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/dashboard/astrologers/list/packages?id=${data._id}`)
+            }
+          >
+            Availability
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/dashboard/astrologers/list/rating?id=${data._id}`)
+            }
+          >
+            Rating
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(
+                `/dashboard/astrologers/list/followers?id=${data._id}`
+              )
+            }
+          >
+            Followers
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/dashboard/astrologers/list/history?id=${data._id}`)
+            }
+          >
+            History
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

@@ -19,6 +19,8 @@ export type IRequest = BaseModel & {
   password?: string;
   image?: any;
   status?: string;
+  active?: boolean;
+  showinhome?: boolean;
 };
 
 const initialState = {
@@ -126,8 +128,11 @@ export const addEditRequest = createAsyncThunk<
       phone: data.phone || '',
       password: data.password || '',
       image: data.image || null,
-      status: data.status || 'pending'
+      status: data.status || 'pending',
+      active: data.active,
+      showinhome: data.showinhome
     };
+    console.log('req data is ', reqData);
     // Append only defined fields to FormData
     Object.entries(reqData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
