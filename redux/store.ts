@@ -75,6 +75,8 @@ import matchMakingTestimonialReducer from './slices/matchmaking/testimonial';
 import allordersReducer from './slices/store/allordersSlice';
 import poojaOrdersReducer from './slices/astropooja/poojaorders';
 import vibhorOrdersReducer from './slices/vibhor/ordersSlice';
+import projectFaqReducer from './slices/projectFaqSlice';
+import languageDataReducer from './slices/languageDataSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -153,7 +155,9 @@ export const makeStore = () => {
       matchMakingTestimonial: matchMakingTestimonialReducer,
       allorders: allordersReducer,
       allpoojsorders: poojaOrdersReducer,
-      allvibhororders: vibhorOrdersReducer
+      allvibhororders: vibhorOrdersReducer,
+      projectfaq: projectFaqReducer,
+      languageData: languageDataReducer
     }
   });
 };

@@ -743,7 +743,7 @@ export const navItems: NavItem[] = [
           },
           {
             title: "FAQ's",
-            url: '/dashboard/settings/pages/faqs',
+            url: '/dashboard/settings/pages/project-faq',
             icon: 'general'
           },
           {
