@@ -686,6 +686,11 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: 'News letter subscribers',
+    url: '/dashboard/newsletter',
+    icon: 'settings'
+  },
+  {
     title: 'Settings',
     url: '/dashboard/settings',
     icon: 'settings',
