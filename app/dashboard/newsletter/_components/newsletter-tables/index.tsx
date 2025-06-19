@@ -14,13 +14,12 @@ import { Switch } from '@/components/ui/switch';
 import {
   STATUS_OPTIONS,
   FIELD_OPTIONS,
-  useFaqTableFilters,
   useNewsletterTableFilters
 } from './use-newsletter-table-filters';
 import { Button } from '@/components/ui/button';
 import { ISliders } from '@/redux/slices/slidersSlice';
 import { updateSlidersData, addEditSliders } from '@/redux/slices/slidersSlice';
-import { CellAction } from '@/app/dashboard/home/about/_components/about-tables/cell-action';
+// import { CellAction } from '@/app/dashboard/home/about/_components/about-tables/cell-action';
 import { addEditFaq, IFaq, updateFaqData } from '@/redux/slices/faqSlice';
 import {
   addEditHomeAboutList,

@@ -43,51 +43,51 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    sequence: data.sequence,
-    icon: data.icon,
-    title: data.title,
-    status: data.status
-  });
-  const [imagePreview, setImagePreview] = useState<string | null>(data.icon);
+  // const [formData, setFormData] = useState({
+  //   sequence: data.sequence,
+  //   icon: data.icon,
+  //   title: data.title,
+  //   status: data.status
+  // });
+  // const [imagePreview, setImagePreview] = useState<string | null>(data.icon);
 
-  const onConfirm = async () => {
-    dispatch(deleteHomeAboutList(data?._id || ''));
-    setOpen(false);
-  };
+  // const onConfirm = async () => {
+  //   dispatch(deleteHomeAboutList(data?._id || ''));
+  //   setOpen(false);
+  // };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, icon: file });
-      // setFormData({ ...formData, icon: URL.createObjectURL(file) });
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     setFormData({ ...formData, icon: file });
+  //     // setFormData({ ...formData, icon: URL.createObjectURL(file) });
+  //     setImagePreview(URL.createObjectURL(file));
+  //   }
+  // };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formDataToSend = new FormData();
-    formDataToSend.append('sequence', formData.sequence.toString());
-    formDataToSend.append('title', formData.title);
-    formDataToSend.append('status', formData.status.toString());
-    if (formData.icon) {
-      formDataToSend.append('icon', formData.icon);
-    }
-    dispatch(
-      addEditHomeAboutList({ formData: formDataToSend, entityId: data._id })
-    );
-    setOpen1(false);
-  };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const formDataToSend = new FormData();
+  //   formDataToSend.append('sequence', formData.sequence.toString());
+  //   formDataToSend.append('title', formData.title);
+  //   formDataToSend.append('status', formData.status.toString());
+  //   if (formData.icon) {
+  //     formDataToSend.append('icon', formData.icon);
+  //   }
+  //   dispatch(
+  //     addEditHomeAboutList({ formData: formDataToSend, entityId: data._id })
+  //   );
+  //   setOpen1(false);
+  // };
 
   return (
     <>
-      <AlertModal
+      {/* <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
         loading={loading}
-      />
+      /> */}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -118,9 +118,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DialogHeader>
             <DialogTitle>Add New Item</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Sequence Input */}
-            <div>
+          {/* <form onSubmit={handleSubmit} className="space-y-4"> */}
+          {/* Sequence Input */}
+          {/* <div>
               <Label htmlFor="sequence">Sequence</Label>
               <Input
                 id="sequence"
@@ -131,10 +131,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 }
                 required
               />
-            </div>
+            </div> */}
 
-            {/* Icon Input (File) */}
-            <div>
+          {/* Icon Input (File) */}
+          {/* <div>
               <Label htmlFor="icon">Icon (Image)</Label>
               <Input
                 id="icon"
@@ -150,10 +150,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                   className="mt-2 h-20 w-20 rounded-lg shadow-md"
                 />
               )}
-            </div>
+            </div> */}
 
-            {/* Title Input */}
-            <div>
+          {/* Title Input */}
+          {/* <div>
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
@@ -168,7 +168,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <DialogFooter>
               <Button type="submit">Save</Button>
             </DialogFooter>
-          </form>
+          </form> */}
         </DialogContent>
       </Dialog>
     </>
