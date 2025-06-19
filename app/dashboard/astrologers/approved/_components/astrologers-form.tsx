@@ -55,6 +55,7 @@ export default function RequestForm() {
   const {
     singleRequestState: { data: requestData }
   } = useAppSelector((state) => state.astrologersData);
+  console.log('requestData..............', requestData);
 
   const form = useForm({});
   const [Image, setImage] = React.useState<File | null>(null);
@@ -102,7 +103,7 @@ export default function RequestForm() {
     try {
       dispatch(addEditRequest(entityId || null)).then((response: any) => {
         if (!response?.error) {
-          router.push('/dashboard/astrologers/requested');
+          router.push('/dashboard/astrologers/approved');
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -136,7 +137,7 @@ export default function RequestForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Requested Astrologer
+            Astrologer
           </CardTitle>
         </CardHeader>
 

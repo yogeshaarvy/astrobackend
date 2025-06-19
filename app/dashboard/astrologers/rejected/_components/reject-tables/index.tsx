@@ -11,7 +11,7 @@ import {
   STATUS_OPTIONS,
   FIELD_OPTIONS,
   useRequestTableFilters
-} from './use-requested-table-filters';
+} from './use-rejected-table-filters';
 import { Button } from '@/components/ui/button';
 import {
   addEditRequest,

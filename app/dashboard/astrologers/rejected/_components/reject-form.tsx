@@ -64,7 +64,6 @@ export default function RequestForm() {
       dispatch(fetchSingleRequest(entityId));
     }
   }, [entityId]);
-
   const getSelectedSkill = () => {
     const skillValues = (requestData as IRequest)?.skills || [];
     return skillsList.filter((skill) => skillValues.includes(skill._id));
@@ -241,7 +240,6 @@ export default function RequestForm() {
                 }
                 value={getSelectedLanguage()}
               />
-
               <FormItem className="space-y-3">
                 <FormLabel>Astrologer Image</FormLabel>
                 <FileUploader

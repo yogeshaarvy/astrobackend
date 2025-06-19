@@ -11,15 +11,18 @@ import {
   STATUS_OPTIONS,
   FIELD_OPTIONS,
   useRequestTableFilters
-} from './use-requested-table-filters';
+} from './use-astrologers-table-filters';
 import { Button } from '@/components/ui/button';
 import {
   addEditRequest,
   IRequest,
   updateRequestData
 } from '@/redux/slices/astrologersSlice';
-import RequestStatusSelect from './RequestStatusSelect';
+import RequestStatusSelect from './AstrologersStatusSelect';
 import { CellAction } from './cell-action';
+import { Switch } from '@/components/ui/switch';
+import { toast } from 'sonner';
+import { useAppDispatch } from '@/redux/hooks';
 
 export default function RequestTable({
   data,
@@ -41,6 +44,7 @@ export default function RequestTable({
     setPage,
     setSearchQuery
   } = useRequestTableFilters();
+  const dispatch = useAppDispatch();
 
   const columns: ColumnDef<IRequest>[] = [
     {
@@ -138,6 +142,60 @@ export default function RequestTable({
       cell: ({ row }) => <RequestStatusSelect request={row.original} />
     },
     {
+      accessorKey: 'active',
+      header: 'ACTIVE',
+      cell: ({ row }) => {
+        const handleToggle = async (checked: boolean) => {
+          const updatedData = { ...row.original, active: checked };
+          try {
+            dispatch(updateRequestData(updatedData));
+            const result = await dispatch(
+              addEditRequest(row.original._id || null)
+            ).unwrap();
+            toast.success('Status Updated Successfully!');
+          } catch (error: any) {
+            console.error('Error updating active status:', error);
+            toast.error('Failed to Update Status');
+          }
+        };
+
+        return (
+          <Switch
+            checked={row.original.active}
+            onCheckedChange={handleToggle}
+            aria-label="Toggle Active Status"
+          />
+        );
+      }
+    },
+    {
+      accessorKey: 'showinhome',
+      header: 'SHOW IN HOME',
+      cell: ({ row }) => {
+        const handleToggle = async (checked: boolean) => {
+          const updatedData = { ...row.original, active: checked };
+          try {
+            dispatch(updateRequestData(updatedData));
+            const result = await dispatch(
+              addEditRequest(row.original._id || null)
+            ).unwrap();
+            toast.success('Show In Home Status Updated Successfully!');
+          } catch (error: any) {
+            console.error('Error updating showinhome status:', error);
+            toast.error('Failed to Update Home Status');
+          }
+        };
+
+        return (
+          <Switch
+            checked={row.original.showinhome}
+            onCheckedChange={handleToggle}
+            aria-label="Toggle home Status"
+          />
+        );
+      }
+    },
+    {
       header: 'ACTIONS',
       id: 'actions',
       cell: ({ row }) => <CellAction data={row.original} />
@@ -160,13 +218,13 @@ export default function RequestTable({
           filterValue={fieldFilter}
         />
 
-        {/* <DataTableFilterBox
+        <DataTableFilterBox
           filterKey="status"
           title="Filter By Status"
           options={STATUS_OPTIONS}
           setFilterValue={setStatusFilter}
           filterValue={statusFilter}
-        /> */}
+        />
         <Button variant="outline" onClick={handleSearch}>
           Search
         </Button>

@@ -500,42 +500,14 @@ export const navItems: NavItem[] = [
         icon: 'general'
       },
       {
-        title: 'List',
-        url: '/dashboard/astrologers/list',
-        icon: 'general',
-        isActive: false,
-        items: [
-          {
-            title: 'Profiles',
-            url: '/dashboard/astrologers/list/profiles',
-            icon: 'general'
-          },
-          {
-            title: 'Packages',
-            url: '/dashboard/astrologers/list/packages',
-            icon: 'general'
-          },
-          {
-            title: 'Availability',
-            url: '/dashboard/astrologers/list/availability',
-            icon: 'general'
-          },
-          {
-            title: 'Rating',
-            url: '/dashboard/astrologers/list/rating',
-            icon: 'general'
-          },
-          {
-            title: 'Followers',
-            url: '/dashboard/astrologers/list/followers',
-            icon: 'general'
-          },
-          {
-            title: 'History',
-            url: '/dashboard/astrologers/list/history',
-            icon: 'general'
-          }
-        ]
+        title: 'Approved',
+        url: '/dashboard/astrologers/approved',
+        icon: 'general'
+      },
+      {
+        title: 'Rejected',
+        url: '/dashboard/astrologers/rejected',
+        icon: 'general'
       }
     ]
   },
