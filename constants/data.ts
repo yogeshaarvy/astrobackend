@@ -697,6 +697,11 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
+        title: 'Expertise',
+        url: '/dashboard/settings/expertise',
+        icon: 'general'
+      },
+      {
         title: 'Pages',
         url: '/dashboard/settings/pages',
         icon: 'general',
