@@ -1,23 +1,23 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchApi } from '@/services/utlis/fetchApi';
-
-import { BaseModel, BaseState, PaginationState } from '@/types/globals';
-import { toast } from 'sonner';
 import { RootState } from '@/redux/store';
-import { cloneDeep } from 'lodash';
+import { fetchApi } from '@/services/utlis/fetchApi';
+import { BaseModel, BaseState, PaginationState } from '@/types/globals';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { cloneDeep } from 'lodash';
+import { toast } from 'sonner';
 
 export type ISkills = BaseModel & {
-  _id?: string;
   name?: {
     en?: string;
     hi?: string;
   };
+  sequence?: number;
   active?: boolean;
 };
 
 const initialState = {
-  skillListState: {
+  SkillsList: {
     data: [],
     loading: false,
     error: null,
@@ -31,77 +31,15 @@ const initialState = {
     data: null,
     loading: null,
     error: null
-  } as BaseState<ISkills | null>,
-  currentSkillState: {
-    data: null,
-    loading: null,
-    error: null
-  } as BaseState<ISkills | null>,
-  addEditSkillState: {
-    data: null,
-    loading: null,
-    error: null
   } as BaseState<ISkills | null>
 };
 
-export const fetchSkillsList = createAsyncThunk<
-  any,
-  {
-    page?: number;
-    pageSize?: number;
-    keyword?: string;
-    field?: string;
-    status?: string;
-    active?: string;
-    exportData?: string;
-  } | void,
-  { state: RootState }
->(
-  'skill/fetchSkillsList',
-  async (input, { dispatch, rejectWithValue, getState }) => {
-    try {
-      const { page, pageSize, keyword, field, status, exportData } =
-        input || {};
-
-      dispatch(fetchSkillStart());
-      const response = await fetchApi(
-        `/skills/all?page=${page || 1}&limit=${pageSize || 10}&text=${
-          keyword || ''
-        }&field=${field || ''}&active=${status || ''}&export=${
-          exportData || ''
-        }`,
-        { method: 'GET' }
-      );
-
-      // Check if the API response is valid and has the expected data
-      if (response?.success) {
-        dispatch(
-          fetchSkillListSuccess({
-            data: response.SkillsData,
-            totalCount: response.totalCount
-          })
-        );
-        return response;
-      } else {
-        // Handle response with no success or an error
-        const errorMsg = response?.message || 'Failed to fetch skills';
-        dispatch(fetchSkillFailure(errorMsg));
-        return rejectWithValue(errorMsg);
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message ?? 'Something Went Wrong!!';
-      dispatch(fetchSkillFailure(errorMsg));
-      return rejectWithValue(errorMsg);
-    }
-  }
-);
-
-export const addEditSkills = createAsyncThunk<
+export const addEditSkillsList = createAsyncThunk<
   any,
   string | null,
   { state: RootState }
 >(
-  'skill/addEdit',
+  'skills/addEditSkillsList',
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
       const {
@@ -110,24 +48,23 @@ export const addEditSkills = createAsyncThunk<
         }
       } = getState();
 
-      dispatch(addEditSkillStart());
+      dispatch(addEditSkillsListStart());
 
       if (!data) {
-        const errorMsg = 'Please Provide Details';
-        dispatch(addEditSkillFailure(errorMsg));
-        return rejectWithValue(errorMsg);
+        return rejectWithValue('Please Provide Details');
       }
 
-      const formData = new FormData();
       let clonedData = cloneDeep(data);
 
       if (clonedData) {
         clonedData = await processNestedFields(clonedData);
       }
 
+      const formData = new FormData();
       const reqData: any = {
         name: clonedData.name ? JSON.stringify(clonedData.name) : undefined,
-        active: data.active
+        sequence: clonedData.sequence,
+        active: clonedData.active
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
@@ -138,13 +75,11 @@ export const addEditSkills = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        // Create new skill
         response = await fetchApi('/skills/new', {
           method: 'POST',
           body: formData
         });
       } else {
-        // Update existing skill
         response = await fetchApi(`/skills/update/${entityId}`, {
           method: 'PUT',
           body: formData
@@ -152,195 +87,223 @@ export const addEditSkills = createAsyncThunk<
       }
 
       if (response?.success) {
-        const successMsg = entityId
-          ? 'Skills updated successfully'
-          : 'Skills created successfully';
-
-        dispatch(
-          addEditSkillSuccess(response.skill || response.existingSkills)
-        );
+        dispatch(addEditSkillsListSuccess());
         dispatch(fetchSkillsList());
-        toast.success(successMsg);
         return response;
       } else {
-        const errorMsg = response?.message || 'Something Went Wrong!!';
-        dispatch(addEditSkillFailure(errorMsg));
-        toast.error(errorMsg);
+        const errorMsg = response?.message ?? 'Something Went Wrong!!';
+        dispatch(addEditSkillsListFailure(errorMsg));
         return rejectWithValue(errorMsg);
       }
     } catch (error: any) {
       const errorMsg = error?.message ?? 'Something Went Wrong!!';
-      dispatch(addEditSkillFailure(errorMsg));
-      toast.error(errorMsg);
+      dispatch(addEditSkillsListFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
   }
 );
 
-export const fetchSingleSkills = createAsyncThunk<
+export const fetchSkillsList = createAsyncThunk<
+  any,
+  {
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    field?: string;
+    active?: string;
+    exportData?: boolean;
+  } | void,
+  { state: RootState }
+>(
+  'skills/fetchSkillsList',
+  async (input, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const { page, pageSize, keyword, field, active, exportData } =
+        input || {};
+      dispatch(fetchSkillsListStart());
+
+      const response = await fetchApi(
+        `/skills/all?page=${page || 1}&limit=${pageSize || 10}&field=${
+          field || ''
+        }&text=${keyword || ''}&active=${active || ''}&exportData=${
+          exportData || false
+        }`,
+        { method: 'GET' }
+      );
+
+      if (response?.success) {
+        if (!input?.exportData) {
+          dispatch(
+            fetchSkillsListSuccess({
+              data: response.skills,
+              totalCount: response.totalSkillsCount
+            })
+          );
+        } else {
+          dispatch(fetchSkillsExportLoading(false));
+        }
+
+        return response;
+      } else {
+        throw new Error('No Status Or Invalid Response');
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message ?? 'Something Went Wrong!!';
+      dispatch(fetchSkillsListFailure(errorMsg));
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
+export const fetchSingleSkillsList = createAsyncThunk<
   any,
   string | null,
   { state: RootState }
 >(
-  'skill/fetchSingleSkills',
+  'skills/fetchSingleSkills',
   async (entityId, { dispatch, rejectWithValue, getState }) => {
     try {
-      if (!entityId) {
-        const errorMsg = 'Skill ID is required';
-        dispatch(fetchSingleSkillFailure(errorMsg));
-        return rejectWithValue(errorMsg);
-      }
-
-      dispatch(fetchSingleSkillStart());
+      dispatch(fetchSingleSkillsListStart());
       const response = await fetchApi(`/skills/single/${entityId}`, {
         method: 'GET'
       });
-
       if (response?.success) {
-        dispatch(fetchSingleSkillSuccess(response?.skilldata));
+        dispatch(fetchSingleSkillsListSuccess(response?.skills));
+
         return response;
       } else {
-        const errorMsg = response?.message || 'No Skill found';
-        dispatch(fetchSingleSkillFailure(errorMsg));
+        let errorMsg = response?.message || 'Something Went Wrong';
+        dispatch(fetchSingleSkillsListFailure(errorMsg));
         return rejectWithValue(errorMsg);
       }
     } catch (error: any) {
-      const errorMsg = error?.message || 'Something Went Wrong';
-      dispatch(fetchSingleSkillFailure(errorMsg));
+      let errorMsg = error?.message || 'Something Went Wrong';
+      dispatch(fetchSingleSkillsListFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
   }
 );
 
 export const deleteSkills = createAsyncThunk<any, string, { state: RootState }>(
-  'skill/delete',
-  async (id, { dispatch, rejectWithValue }) => {
+  'skills/delete',
+  async (id, { dispatch }) => {
+    dispatch(deleteSkillsStart());
     try {
-      if (!id) {
-        const errorMsg = 'Skill ID is required';
-        dispatch(deleteSkillFailure(errorMsg));
-        toast.error(errorMsg);
-        return rejectWithValue(errorMsg);
-      }
-
-      dispatch(deleteSkillStart());
       const response = await fetchApi(`/skills/delete/${id}`, {
         method: 'DELETE'
       });
-
-      if (response?.success) {
-        dispatch(deleteSkillSuccess(id));
+      if (response.success) {
+        dispatch(deleteSkillsSuccess(id));
         dispatch(fetchSkillsList());
-        toast.success('Skills deleted successfully');
+        toast.success('Skill deleted successfully');
         return response;
       } else {
-        const errorMsg = response?.message || 'Skills not found';
-        dispatch(deleteSkillFailure(errorMsg));
+        let errorMsg = response?.data?.message || 'Something Went Wrong';
         toast.error(errorMsg);
-        return rejectWithValue(errorMsg);
+        dispatch(deleteSkillsFailure(errorMsg));
       }
     } catch (error: any) {
-      const errorMsg = error?.message || 'Failed to delete skill';
-      dispatch(deleteSkillFailure(errorMsg));
-      toast.error(errorMsg);
-      return rejectWithValue(errorMsg);
+      dispatch(deleteSkillsFailure(error.message || 'Failed to delete skill'));
+      toast.error(error.message);
     }
   }
 );
 
-const skillSlice = createSlice({
+const skillsSlice = createSlice({
   name: 'skills',
   initialState,
   reducers: {
-    fetchSkillStart(state) {
-      state.skillListState.loading = true;
-      state.skillListState.error = null;
-    },
-    fetchSkillListSuccess(state, action) {
-      state.skillListState.loading = false;
-      const { data, totalCount } = action.payload;
-      state.skillListState.data = data;
-      state.skillListState.pagination.totalCount = totalCount;
-      state.skillListState.error = null;
-    },
-    fetchSkillFailure(state, action) {
-      state.skillListState.loading = false;
-      state.skillListState.error = action.payload;
-    },
-    setSkillData(state, action) {
+    setSkillsListData(state, action) {
       state.singleSkillState.data = action.payload;
     },
-    updateSkillData(state, action) {
+    updateSkillsListData(state, action) {
       const oldData = state.singleSkillState.data;
-      state.singleSkillState.data = { ...oldData, ...action.payload };
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.singleSkillState.data = newData;
+      } else {
+        state.singleSkillState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     },
-    clearSkillData(state) {
-      state.singleSkillState.data = null;
-      state.singleSkillState.error = null;
-    },
-    addEditSkillStart(state) {
-      state.addEditSkillState.loading = true;
-      state.addEditSkillState.error = null;
-    },
-    addEditSkillSuccess(state, action) {
-      state.addEditSkillState.loading = false;
-      state.addEditSkillState.data = action.payload;
-      state.addEditSkillState.error = null;
-      // Clear the form data after successful submission
-      state.singleSkillState.data = null;
-    },
-    addEditSkillFailure(state, action) {
-      state.addEditSkillState.loading = false;
-      state.addEditSkillState.error = action.payload;
-    },
-    fetchSingleSkillStart(state) {
+    addEditSkillsListStart(state) {
       state.singleSkillState.loading = true;
       state.singleSkillState.error = null;
     },
-    fetchSingleSkillSuccess(state, action) {
+    addEditSkillsListSuccess(state) {
+      state.singleSkillState.loading = false;
+      state.singleSkillState.error = null;
+    },
+    addEditSkillsListFailure(state, action) {
+      state.singleSkillState.loading = false;
+      state.singleSkillState.error = action.payload;
+    },
+    fetchSkillsListStart(state) {
+      state.SkillsList.loading = true;
+      state.SkillsList.error = null;
+    },
+    fetchSkillsListSuccess(state, action) {
+      state.SkillsList.loading = false;
+      const { data, totalCount } = action.payload;
+      state.SkillsList.data = data;
+      state.SkillsList.pagination.totalCount = totalCount;
+      state.SkillsList.error = null;
+    },
+    fetchSkillsListFailure(state, action) {
+      state.SkillsList.loading = false;
+      state.SkillsList.error = action.payload;
+    },
+    fetchSingleSkillsListStart(state) {
+      state.singleSkillState.loading = true;
+      state.singleSkillState.error = null;
+    },
+    fetchSingleSkillsListFailure(state, action) {
+      state.singleSkillState.loading = false;
+      state.singleSkillState.error = action.payload;
+    },
+    fetchSingleSkillsListSuccess(state, action) {
       state.singleSkillState.loading = false;
       state.singleSkillState.data = action.payload;
       state.singleSkillState.error = null;
     },
-    fetchSingleSkillFailure(state, action) {
+    deleteSkillsStart(state) {
+      state.singleSkillState.loading = true;
+      state.singleSkillState.error = null;
+    },
+    deleteSkillsSuccess(state, action) {
+      state.singleSkillState.loading = false;
+    },
+    deleteSkillsFailure(state, action) {
       state.singleSkillState.loading = false;
       state.singleSkillState.error = action.payload;
     },
-    deleteSkillStart(state) {
-      state.skillListState.loading = true;
-      state.skillListState.error = null;
-    },
-    deleteSkillSuccess(state, action) {
-      state.skillListState.loading = false;
-      // Remove the deleted skill from the list
-      state.skillListState.data = (state.skillListState.data ?? []).filter(
-        (skill: ISkills) => skill._id !== action.payload
-      );
-      state.skillListState.pagination.totalCount -= 1;
-    },
-    deleteSkillFailure(state, action) {
-      state.skillListState.loading = false;
-      state.skillListState.error = action.payload;
+    fetchSkillsExportLoading(state, action) {
+      state.SkillsList.loading = action.payload;
     }
   }
 });
 
 export const {
-  fetchSkillStart,
-  fetchSkillListSuccess,
-  fetchSkillFailure,
-  addEditSkillStart,
-  addEditSkillSuccess,
-  addEditSkillFailure,
-  setSkillData,
-  updateSkillData,
-  clearSkillData,
-  fetchSingleSkillStart,
-  fetchSingleSkillSuccess,
-  fetchSingleSkillFailure,
-  deleteSkillStart,
-  deleteSkillFailure,
-  deleteSkillSuccess
-} = skillSlice.actions;
+  setSkillsListData,
+  fetchSkillsExportLoading,
+  fetchSkillsListFailure,
+  fetchSkillsListStart,
+  fetchSkillsListSuccess,
+  fetchSingleSkillsListFailure,
+  fetchSingleSkillsListStart,
+  fetchSingleSkillsListSuccess,
+  addEditSkillsListFailure,
+  addEditSkillsListStart,
+  addEditSkillsListSuccess,
+  deleteSkillsStart,
+  deleteSkillsSuccess,
+  updateSkillsListData,
+  deleteSkillsFailure
+} = skillsSlice.actions;
 
-export default skillSlice.reducer;
+export default skillsSlice.reducer;

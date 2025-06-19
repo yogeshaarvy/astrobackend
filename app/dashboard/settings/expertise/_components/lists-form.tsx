@@ -23,9 +23,9 @@ import { toast } from 'sonner';
 import { debounce } from 'lodash';
 import {
   ISkills,
-  fetchSingleSkills,
-  addEditSkills,
-  updateSkillData
+  fetchSingleSkillsList,
+  addEditSkillsList,
+  updateSkillsListData
 } from '@/redux/slices/skillsSlice';
 
 export default function ListForm() {
@@ -37,18 +37,19 @@ export default function ListForm() {
     singleSkillState: { data: bData }
   } = useAppSelector((state) => state.skills);
 
-  const form = useForm({});
+  console.log('bData', bData);
+  const form = useForm<ISkills>({});
 
   useEffect(() => {
     if (entityId) {
-      dispatch(fetchSingleSkills(entityId));
+      dispatch(fetchSingleSkillsList(entityId));
     }
   }, [entityId]);
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
     dispatch(
-      updateSkillData({
+      updateSkillsListData({
         [name]:
           type === 'file'
             ? files[0]
@@ -60,34 +61,15 @@ export default function ListForm() {
       })
     );
   };
-  const handleSubmit = () => {
-    const requiredFields: (keyof ISkills)[] = ['name'];
-
-    const missingFields = requiredFields.filter(
-      (field) => !(bData as ISkills)?.[field]
-    );
-
-    if (missingFields.length > 0) {
-      const fieldLabels: { [key in keyof ISkills]?: string } = {
-        name: 'Name'
-      };
-
-      const missingFieldLabels = missingFields.map(
-        (field) => fieldLabels[field] || field
-      );
-      toast.error(
-        `Please fill the required fields: ${missingFieldLabels.join(', ')}`
-      );
-      return;
-    }
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
 
     try {
-      dispatch(addEditSkills(entityId || null)).then((response: any) => {
+      dispatch(addEditSkillsList(entityId)).then((response: any) => {
         if (!response?.error) {
           router.push('/dashboard/settings/expertise');
           toast.success(response?.payload?.message);
         } else {
-          console.log('error');
           toast.error(response.payload);
         }
       });
@@ -179,7 +161,7 @@ export default function ListForm() {
             marginBottom: '1rem'
           }}
         >
-          <Button type="submit" onClick={() => handleSubmit()}>
+          <Button type="submit" onClick={(e: any) => handleSubmit(e)}>
             Submit
           </Button>
         </CardFooter>
