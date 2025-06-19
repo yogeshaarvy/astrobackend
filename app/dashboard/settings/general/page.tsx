@@ -218,6 +218,15 @@ const Page = () => {
                           />
                         </div>
                         <div className="space-y-1">
+                          <Label htmlFor="name">Whatsapp No</Label>
+                          <Input
+                            name="whatsapp_no.contact"
+                            placeholder="Enter your Whatsapp No"
+                            value={(cData as ISetting)?.contactUs?.whatsapp_no}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
                           <Label htmlFor="name">E-Mail</Label>
                           <Input
                             name="contactUs.eMail"
