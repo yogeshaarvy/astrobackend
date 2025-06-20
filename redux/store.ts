@@ -78,6 +78,7 @@ import vibhorOrdersReducer from './slices/vibhor/ordersSlice';
 import projectFaqReducer from './slices/projectFaqSlice';
 import languageDataReducer from './slices/languageDataSlice';
 import skillsReducer from './slices/skillsSlice';
+import astroRegisterConfigReducer from './slices/astroregisterconfig';
 
 export const makeStore = () => {
   return configureStore({
@@ -159,7 +160,8 @@ export const makeStore = () => {
       allvibhororders: vibhorOrdersReducer,
       projectfaq: projectFaqReducer,
       languageData: languageDataReducer,
-      skills: skillsReducer
+      skills: skillsReducer,
+      astroRegisterConfig: astroRegisterConfigReducer
     }
   });
 };
