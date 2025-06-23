@@ -19,6 +19,7 @@ const VariationsForm: React.FC<VariationsFormProps> = ({
   pData,
   onVariationsChange
 }) => {
+  console.log('stockmanagemet', stockmanagemet);
   const form = useFormContext();
   const [combinations, setCombinations] = useState<any[]>([]);
   const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>(

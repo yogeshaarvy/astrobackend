@@ -57,7 +57,6 @@ export default function ProductsForm() {
   >(null);
   const [otherImages, setOtherImages] = useState<File[]>([]);
   const [variations, setVariations] = useState<any[]>([]);
-  const [generalTabData, setGeneralTabData] = useState({});
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoFileName, setVideoFileName] = useState<string | null>(null);
@@ -1148,8 +1147,8 @@ export default function ProductsForm() {
                     <VariationsForm
                       newAttributes={attributes}
                       stockmanagemet={
-                        generalTabData?.stockManagement
-                          ?.stock_management_level || ''
+                        (pData as IProducts)?.stockManagement
+                          ?.stock_management_level
                       }
                       handleInputChange={handleInputChange}
                       onVariationsChange={handleVariationsChange} // Pass the handler to VariationsForm
