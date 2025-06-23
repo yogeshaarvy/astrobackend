@@ -30,7 +30,7 @@ const Page = () => {
   const {
     settingState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.settings);
-
+  console.log('this is the cData', cData);
   const [darkLogo, setDarkLogo] = useState<File | null>(null);
   const [lightLogo, setLightLogo] = useState<File | null>(null);
 
@@ -214,6 +214,16 @@ const Page = () => {
                             name="contactUs.contact"
                             placeholder="Enter your Contact"
                             value={(cData as ISetting)?.contactUs?.contact}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Whatsapp No</Label>
+                          <Input
+                            name="contactUs.whatsapp_no"
+                            type="number"
+                            placeholder="Enter your Whatsapp No"
+                            value={(cData as ISetting)?.contactUs?.whatsapp_no}
                             onChange={handleInputChange}
                           />
                         </div>

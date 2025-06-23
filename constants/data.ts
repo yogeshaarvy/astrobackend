@@ -717,6 +717,11 @@ export const navItems: NavItem[] = [
             title: 'Astrologer Policy',
             url: '/dashboard/settings/pages/astrologer-policy',
             icon: 'general'
+          },
+          {
+            title: 'Astrologer Config',
+            url: '/dashboard/settings/pages/astroregisterconfig',
+            icon: 'general'
           }
         ]
       },

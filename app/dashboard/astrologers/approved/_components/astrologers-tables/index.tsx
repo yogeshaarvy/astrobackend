@@ -108,10 +108,6 @@ export default function RequestTable({
       header: 'PHONE'
     },
     {
-      accessorKey: 'phoneType',
-      header: 'PHONE TYPE'
-    },
-    {
       accessorKey: 'gender',
       header: 'GENDER'
     },

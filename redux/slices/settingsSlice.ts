@@ -36,6 +36,7 @@ export type ISetting = BaseModel & {
     };
     address?: string;
     contact?: string;
+    whatsapp_no?: string;
     eMail?: string;
   };
 };

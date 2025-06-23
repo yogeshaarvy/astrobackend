@@ -32,10 +32,6 @@ export default function RequestForm() {
     { name: 'Hindi', _id: 'hindi' },
     { name: 'English', _id: 'english' }
   ];
-  const phoneTypes = [
-    { name: 'Android', _id: 'android' },
-    { name: 'IOS', _id: 'ios' }
-  ];
   const gendersList = [
     { name: 'Female', _id: 'female' },
     { name: 'Male', _id: 'male' },
@@ -115,10 +111,6 @@ export default function RequestForm() {
   };
 
   // Helper functions to find selected options
-  const getSelectedPhoneType = () => {
-    const phoneTypeValue = (requestData as IRequest)?.phoneType;
-    return phoneTypes.find((type) => type._id === phoneTypeValue) || null;
-  };
 
   const getSelectedGender = () => {
     const genderValue = (requestData as IRequest)?.gender;
@@ -170,19 +162,6 @@ export default function RequestForm() {
                 type="number"
                 value={(requestData as IRequest)?.phone || ''}
                 onChange={handleInputChange}
-              />
-              <CustomReactSelect
-                options={phoneTypes}
-                label="Phone Type"
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option._id}
-                placeholder="Select phoneType"
-                onChange={(e: any) =>
-                  handleInputChange({
-                    target: { name: 'phoneType', value: e?._id }
-                  })
-                }
-                value={getSelectedPhoneType()}
               />
               <CustomReactSelect
                 options={gendersList}

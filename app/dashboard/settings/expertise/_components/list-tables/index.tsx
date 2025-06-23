@@ -15,8 +15,8 @@ import {
 } from './use-lists-table-filters';
 import {
   ISkills,
-  addEditSkills,
-  updateSkillData
+  addEditSkillsList,
+  updateSkillsListData
 } from '@/redux/slices/skillsSlice';
 
 export default function ListSkillsTable({
@@ -43,7 +43,7 @@ export default function ListSkillsTable({
 
   const columns: ColumnDef<ISkills>[] = [
     {
-      accessorKey: 'name',
+      accessorKey: 'name.en',
       header: 'Name',
       size: 500,
       maxSize: 700
@@ -60,9 +60,9 @@ export default function ListSkillsTable({
         const handleToggle = async (checked: boolean) => {
           const updatedData = { ...row.original, active: checked };
           try {
-            dispatch(updateSkillData(updatedData));
+            dispatch(updateSkillsListData(updatedData));
             const result = await dispatch(
-              addEditSkills(row.original._id || null)
+              addEditSkillsList(row.original._id || null)
             ).unwrap();
             toast.success('Status Updated Successfully!');
           } catch (error: any) {

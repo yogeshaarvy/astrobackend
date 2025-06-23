@@ -13,7 +13,6 @@ export type IRequest = BaseModel & {
   gender?: string;
   languages?: any[];
   skills?: any[];
-  phoneType?: string;
   email?: string;
   phone?: string;
   password?: string;
@@ -123,7 +122,6 @@ export const addEditRequest = createAsyncThunk<
       gender: data.gender || '',
       languages: JSON.stringify(data.languages) || [],
       skills: JSON.stringify(data.skills) || [],
-      phoneType: data.phoneType || '',
       email: data.email || '',
       phone: data.phone || '',
       password: data.password || '',

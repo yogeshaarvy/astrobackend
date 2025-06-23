@@ -13,7 +13,7 @@ import * as XLSX from 'xlsx';
 import {
   ISkills,
   fetchSkillsList,
-  setSkillData
+  setSkillsListData
 } from '@/redux/slices/skillsSlice';
 import ListSkillsTable from './list-tables';
 
@@ -28,7 +28,7 @@ export default function SkillsPage() {
   const pageSize = parseInt(searchParams.get('limit') ?? '5', 10);
 
   const {
-    skillListState: {
+    SkillsList: {
       loading: ListLoading,
       data: storeData = [],
       pagination: { totalCount }
@@ -37,7 +37,7 @@ export default function SkillsPage() {
 
   useEffect(() => {
     dispatch(fetchSkillsList({ page, pageSize }));
-    dispatch(setSkillData(null));
+    dispatch(setSkillsListData(null));
   }, [page, pageSize]);
 
   const list = storeData;
@@ -59,7 +59,7 @@ export default function SkillsPage() {
         keyword,
         field,
         active,
-        exportData: 'true'
+        exportData: true
       })
     ).then((response: any) => {
       if (response?.error) {
