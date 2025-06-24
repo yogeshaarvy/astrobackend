@@ -20,6 +20,7 @@ export type IAstropoojaList = BaseModel & {
   thumbnail_image?: string;
   sequence?: number;
   active?: boolean;
+  popular?: boolean;
 };
 
 const initialState = {
@@ -75,7 +76,8 @@ export const addEditAstropoojaList = createAsyncThunk<
         thumbnail_image: clonedData.thumbnail_image,
         slug: clonedData.slug,
         sequence: clonedData.sequence,
-        active: clonedData.active
+        active: clonedData.active,
+        popular: clonedData.popular
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
