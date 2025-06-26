@@ -25,10 +25,10 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  addEditCalendar,
-  fetchCalendar,
-  ICalendar,
-  updateCalendarData
+  addEditCalendarConfig,
+  fetchCalendarConfig,
+  ICalendarConfig,
+  updateCalendarConfig
 } from '@/redux/slices/calenderSlice';
 import CustomTextEditor from '@/utils/CustomTextEditor';
 import CustomTextField from '@/utils/CustomTextField';
@@ -37,14 +37,14 @@ import CustomDropdown from '@/utils/CusomDropdown';
 const Page = () => {
   const dispatch = useAppDispatch();
   const {
-    calendarState: { loading, data: cData = [] }
+    calendarConfigState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.calendarConfig);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
 
   console.log('The loading value is:', loading, cData);
 
   useEffect(() => {
-    dispatch(fetchCalendar(null));
+    dispatch(fetchCalendarConfig(null));
   }, []);
   console.log('The cData value is:', cData);
   const form = useForm({
@@ -55,7 +55,7 @@ const Page = () => {
     const { name, value, type, files, checked } = e.target;
     console.log('e-value', name, value);
     dispatch(
-      updateCalendarData({
+      updateCalendarConfig({
         [name]:
           type === 'file'
             ? files[0]
@@ -70,7 +70,7 @@ const Page = () => {
 
   const handleSubmit = () => {
     try {
-      dispatch(addEditCalendar(null)).then((response: any) => {
+      dispatch(addEditCalendarConfig(null)).then((response: any) => {
         if (!response?.error) {
           setbannerImage(null);
           toast.success(response?.payload?.message);
@@ -86,7 +86,7 @@ const Page = () => {
   const handleDropdownChange = (e: any) => {
     const { name, value } = e;
 
-    dispatch(updateCalendarData({ [name]: value }));
+    dispatch(updateCalendarConfig({ [name]: value }));
   };
 
   console.log('The bannerImage type value is:', cData);
@@ -96,7 +96,7 @@ const Page = () => {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Astro Config List
+            Calendar Config List
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -112,7 +112,7 @@ const Page = () => {
                 // control={form.control}
                 label="Meta Title"
                 placeholder="Enter your Meta Title"
-                value={(cData as ICalendar)?.metaTitle}
+                value={(cData as ICalendarConfig)?.metaTitle}
                 onChange={handleInputChange}
               />
               <CustomTextField
@@ -120,15 +120,15 @@ const Page = () => {
                 // control={form.control}
                 label="Meta Description"
                 placeholder="Enter your Meta Description"
-                value={(cData as ICalendar)?.metaDescription}
+                value={(cData as ICalendarConfig)?.metaDescription}
                 onChange={handleInputChange}
               />
               <CustomTextField
-                name="metaKeyword"
+                name="metaKeywords"
                 // control={form.control}
                 label="Meta keywords"
                 placeholder="Enter your Meta Keywords"
-                value={(cData as ICalendar)?.metaKeywords}
+                value={(cData as ICalendarConfig)?.metaKeyword}
                 onChange={handleInputChange}
               />
             </form>
@@ -168,13 +168,14 @@ const Page = () => {
                         maxSize={1024 * 1024 * 2}
                       />{' '}
                       <>
-                        {typeof (cData as ICalendar)?.mainSection
+                        {typeof (cData as ICalendarConfig)?.mainSection
                           ?.bannerImage === 'string' && (
                           <>
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (cData as ICalendar)?.mainSection?.bannerImage
+                                  (cData as ICalendarConfig)?.mainSection
+                                    ?.bannerImage
                                 }
                               />
                             </div>
@@ -209,7 +210,8 @@ const Page = () => {
                               name="mainSection.title.en"
                               placeholder="Enter your Title"
                               value={
-                                (cData as ICalendar)?.mainSection?.title?.en
+                                (cData as ICalendarConfig)?.mainSection?.title
+                                  ?.en
                               }
                               onChange={handleInputChange}
                             />
@@ -220,8 +222,8 @@ const Page = () => {
                               name="mainSection.description.en"
                               placeholder="Enter your Description"
                               value={
-                                (cData as ICalendar)?.mainSection?.description
-                                  ?.en
+                                (cData as ICalendarConfig)?.mainSection
+                                  ?.description?.en
                               }
                               onChange={handleInputChange}
                             />
@@ -239,7 +241,8 @@ const Page = () => {
                               name="mainSection.title.hi"
                               placeholder="Enter your Title"
                               value={
-                                (cData as ICalendar)?.mainSection?.title?.hi
+                                (cData as ICalendarConfig)?.mainSection?.title
+                                  ?.hi
                               }
                               onChange={handleInputChange}
                             />
@@ -250,8 +253,8 @@ const Page = () => {
                               name="mainSection.description.hi"
                               placeholder="Enter your Description"
                               value={
-                                (cData as ICalendar)?.mainSection?.description
-                                  ?.hi
+                                (cData as ICalendarConfig)?.mainSection
+                                  ?.description?.hi
                               }
                               onChange={handleInputChange}
                             />
@@ -267,14 +270,18 @@ const Page = () => {
                       <Input
                         type="color"
                         name="mainSection.textColor"
-                        value={(cData as ICalendar)?.mainSection?.textColor}
+                        value={
+                          (cData as ICalendarConfig)?.mainSection?.textColor
+                        }
                         onChange={handleInputChange}
                         className="h-10 w-12 cursor-pointer p-1"
                       />
                       <Input
                         type="text"
                         name="mainSection.textColor"
-                        value={(cData as ICalendar)?.mainSection?.textColor}
+                        value={
+                          (cData as ICalendarConfig)?.mainSection?.textColor
+                        }
                         // onChange={handleInputChange}
                         placeholder="Enter color hex code"
                         className="flex-1"
@@ -290,7 +297,8 @@ const Page = () => {
                         { name: 'Right', _id: 'right' }
                       ]}
                       value={
-                        (cData as ICalendar)?.mainSection?.textAlignment || ''
+                        (cData as ICalendarConfig)?.mainSection
+                          ?.textAlignment || ''
                       }
                       onChange={handleDropdownChange}
                     />

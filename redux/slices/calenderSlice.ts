@@ -1,15 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { fetchApi } from '@/services/utlis/fetchApi';
+
 import { BaseModel, BaseState } from '@/types/globals';
 import { toast } from 'sonner';
 import { cloneDeep } from 'lodash';
 import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 
-export type ICalendar = BaseModel & {
+export type ICalendarConfig = BaseModel & {
   metaTitle?: string;
   metaDescription?: string;
-  metaKeywords?: string;
+  metaKeyword?: string;
   mainSection?: {
     bannerImage?: string;
     title?: {
@@ -26,56 +28,59 @@ export type ICalendar = BaseModel & {
 };
 
 const initialState = {
-  calendarState: {
+  calendarConfigState: {
     data: null,
-    loading: false,
+    loading: null,
     error: null
-  } as BaseState<ICalendar | null>
+  } as BaseState<ICalendarConfig | null>
 };
 
-export const fetchCalendar = createAsyncThunk<
+export const fetchCalendarConfig = createAsyncThunk<
   any,
   string | null,
   { state: RootState }
->('calendar/fetchData', async (_, { dispatch, rejectWithValue }) => {
+>('midbanner/fetchData', async (_, { dispatch, rejectWithValue }) => {
   try {
-    dispatch(fetchSingleCalendarStart());
-    const response = await fetchApi('/calendar/get', {
+    dispatch(fetchSingleCalendarConfigStart());
+
+    const response = await fetchApi('/calendar/config/get', {
       method: 'GET'
     });
     if (response?.success) {
-      dispatch(fetchSingleCalendarSuccess(response));
+      dispatch(fetchSingleCalendarConfigSuccess(response?.calendarConfig));
+
+      console.log('fectaboutAbout', response);
       return response;
     } else {
-      const errorMsg = response?.message || 'Failed to fetch calendar data';
-      dispatch(fetchSingleCalendarFailure(errorMsg));
+      const errorMsg = response?.message || 'Failed to fetch description';
+      dispatch(fetchSingleCalendarConfigFailure(errorMsg));
       return rejectWithValue(errorMsg);
     }
   } catch (error: any) {
-    const errorMsg = error?.message || 'Something went wrong';
-    dispatch(fetchSingleCalendarFailure(errorMsg));
+    const errorMsg = error?.message || 'Something Went Wrong';
+    dispatch(fetchSingleCalendarConfigFailure(errorMsg));
     return rejectWithValue(errorMsg);
   }
 });
 
-export const addEditCalendar = createAsyncThunk<
+export const addEditCalendarConfig = createAsyncThunk<
   any,
   null,
   { state: RootState }
 >(
-  'calendar/addEditCalendar',
+  'midbanner/addEditCalendarConfig',
   async (_, { dispatch, rejectWithValue, getState }) => {
     try {
       const {
         calendarConfig: {
-          calendarState: { data }
+          calendarConfigState: { data }
         }
       } = getState();
 
-      dispatch(fetchSingleCalendarStart());
+      dispatch(addEditCalendarConfigStart());
 
       if (!data) {
-        return rejectWithValue('Please provide details');
+        return rejectWithValue('Please Provide Details');
       }
 
       let clonedData = cloneDeep(data);
@@ -86,12 +91,12 @@ export const addEditCalendar = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
-        metaTitle: clonedData?.metaTitle ? clonedData.metaTitle : undefined,
-        metaDescription: clonedData?.metaDescription
+        metaTitle: clonedData.metaTitle ? clonedData.metaTitle : undefined,
+        metaDescription: clonedData.metaDescription
           ? clonedData.metaDescription
           : undefined,
-        metaKeywords: clonedData?.metaKeywords
-          ? clonedData.metaKeywords
+        metaKeyword: clonedData.metaKeyword
+          ? clonedData.metaKeyword
           : undefined,
         mainSection: clonedData.mainSection
           ? JSON.stringify(clonedData.mainSection)
@@ -104,96 +109,94 @@ export const addEditCalendar = createAsyncThunk<
         }
       });
 
-      const response = await fetchApi('/calendar/save', {
+      const response = await fetchApi('/calendar/config/createorupdate', {
         method: 'POST',
         body: formData
       });
 
       if (response?.success) {
-        dispatch(fetchSingleCalendarSuccess(response));
-        toast.success('Calendar updated successfully');
+        dispatch(addEditCalendarConfigSuccess());
+        dispatch(setCalendarConfig(null));
+        dispatch(fetchCalendarConfig(null)); // Re-fetch to update the latest data
         return response;
       } else {
-        const errorMsg = response?.message || 'Failed to save calendar';
-        dispatch(fetchSingleCalendarFailure(errorMsg));
+        const errorMsg = response?.message || 'Failed to save description';
+        dispatch(addEditCalendarConfigFailure(errorMsg));
         toast.error(errorMsg);
         return rejectWithValue(errorMsg);
       }
     } catch (error: any) {
-      const errorMsg = error?.message || 'Something went wrong';
-      dispatch(fetchSingleCalendarFailure(errorMsg));
+      const errorMsg = error?.message || 'Something Went Wrong';
+      dispatch(addEditCalendarConfigFailure(errorMsg));
       toast.error(errorMsg);
       return rejectWithValue(errorMsg);
     }
   }
 );
 
-const calendarSlice = createSlice({
-  name: 'calendar',
+const calendarConfigSlice = createSlice({
+  name: 'calendarConfig',
   initialState,
   reducers: {
-    fetchSingleCalendarStart: (state) => {
-      state.calendarState.loading = true;
-      state.calendarState.error = null;
+    fetchCalendarConfigStart(state) {
+      state.calendarConfigState.loading = true;
+      state.calendarConfigState.error = null;
     },
-    fetchSingleCalendarSuccess: (state, action) => {
-      state.calendarState.loading = false;
-      state.calendarState.data = action.payload.data;
-      state.calendarState.error = null;
+    addEditCalendarConfigStart(state) {
+      state.calendarConfigState.loading = true;
+      state.calendarConfigState.error = null;
     },
-    fetchSingleCalendarFailure: (state, action) => {
-      state.calendarState.loading = false;
-      state.calendarState.error = action.payload;
+    addEditCalendarConfigSuccess(state) {
+      state.calendarConfigState.loading = false;
+      state.calendarConfigState.error = null;
     },
-    updateCalendarData: (state, action) => {
-      if (state.calendarState.data) {
-        state.calendarState.data = {
-          ...state.calendarState.data,
+    setCalendarConfig(state, action) {
+      state.calendarConfigState.data = action.payload;
+    },
+    addEditCalendarConfigFailure(state, action) {
+      state.calendarConfigState.loading = false;
+      state.calendarConfigState.error = action.payload;
+    },
+    fetchSingleCalendarConfigStart(state) {
+      state.calendarConfigState.loading = true;
+      state.calendarConfigState.error = null;
+    },
+    fetchSingleCalendarConfigSuccess(state, action) {
+      state.calendarConfigState.loading = false;
+      state.calendarConfigState.data = action.payload;
+      state.calendarConfigState.error = null;
+    },
+    fetchSingleCalendarConfigFailure(state, action) {
+      state.calendarConfigState.loading = false;
+      state.calendarConfigState.error = action.payload;
+    },
+    updateCalendarConfig(state, action) {
+      const oldData = state.calendarConfigState.data;
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.calendarConfigState.data = newData;
+      } else {
+        state.calendarConfigState.data = {
+          ...oldData,
           ...action.payload
         };
       }
-    },
-    clearCalendarError: (state) => {
-      state.calendarState.error = null;
     }
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCalendar.pending, (state) => {
-        state.calendarState.loading = true;
-        state.calendarState.error = null;
-      })
-      .addCase(fetchCalendar.fulfilled, (state, action) => {
-        state.calendarState.loading = false;
-        state.calendarState.data = action.payload.data;
-        state.calendarState.error = null;
-      })
-      .addCase(fetchCalendar.rejected, (state, action) => {
-        state.calendarState.loading = false;
-        state.calendarState.error = action.payload as string;
-      })
-      .addCase(addEditCalendar.pending, (state) => {
-        state.calendarState.loading = true;
-        state.calendarState.error = null;
-      })
-      .addCase(addEditCalendar.fulfilled, (state, action) => {
-        state.calendarState.loading = false;
-        state.calendarState.data = action.payload.data;
-        state.calendarState.error = null;
-      })
-      .addCase(addEditCalendar.rejected, (state, action) => {
-        state.calendarState.loading = false;
-        state.calendarState.error = action.payload as string;
-      });
   }
 });
 
 export const {
-  fetchSingleCalendarStart,
-  fetchSingleCalendarSuccess,
-  fetchSingleCalendarFailure,
-  updateCalendarData,
-  clearCalendarError
-} = calendarSlice.actions;
+  addEditCalendarConfigStart,
+  addEditCalendarConfigSuccess,
+  addEditCalendarConfigFailure,
+  setCalendarConfig,
+  updateCalendarConfig,
+  fetchSingleCalendarConfigStart,
+  fetchSingleCalendarConfigSuccess,
+  fetchSingleCalendarConfigFailure
+} = calendarConfigSlice.actions;
 
-export default calendarSlice.reducer;
+export default calendarConfigSlice.reducer;
