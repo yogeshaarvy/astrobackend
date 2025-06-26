@@ -408,7 +408,9 @@ export const fetchAvailabilityList = createAsyncThunk<
       const { page, pageSize, astroId } = input || {};
       dispatch(fetchAvailabilityStart());
       const response = await fetchApi(
-        `/availability/all/${astroId}?page=${page}&limit=${pageSize}`,
+        `/availability/all/${astroId}?page=${page || 1}&limit=${
+          pageSize || 10
+        }`,
         { method: 'GET' }
       );
       // Check if the API response is valid and has the expected data
@@ -452,7 +454,8 @@ export const addEditAvailability = createAsyncThunk<
       const formData = new FormData();
       const reqData: any = {
         availability: JSON.stringify(data.availability) || [],
-        astroId: data.astroId
+        astroId: data.astroId,
+        title: data.title
       };
       // Append only defined fields to FormData
       Object.entries(reqData).forEach(([key, value]) => {
@@ -474,7 +477,7 @@ export const addEditAvailability = createAsyncThunk<
       }
       if (response?.success) {
         dispatch(addEditAvailabilitySuccess());
-        dispatch(fetchAvailabilityList());
+        dispatch(fetchAvailabilityList({ astroId: data.astroId }));
         return response;
       } else {
         const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
