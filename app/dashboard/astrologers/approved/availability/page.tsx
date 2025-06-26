@@ -58,6 +58,7 @@ const AstrologerAvailabilities = () => {
 
   const [formData, setFormData] = useState({
     astroId,
+    title: '',
     availability: [
       {
         day: 'Monday',
@@ -102,7 +103,8 @@ const AstrologerAvailabilities = () => {
           ]
         }
       ],
-      astroId
+      astroId,
+      title: ''
     });
   };
 
@@ -143,7 +145,8 @@ const AstrologerAvailabilities = () => {
     setEditingItem(item);
     setFormData({
       availability: item.availability,
-      astroId
+      astroId,
+      title: item?.title
     });
     setShowAddForm(true);
   };
@@ -375,7 +378,7 @@ const AstrologerAvailabilities = () => {
                             size={20}
                           />
                           <h3 className="truncate text-base font-semibold sm:text-lg">
-                            Availability Schedule #{itemIndex + 1}
+                            {item?.title}
                           </h3>
                         </div>
                         <div className="flex flex-shrink-0 gap-2">
@@ -530,6 +533,23 @@ const AstrologerAvailabilities = () => {
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
+                    <div className="flex-1">
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Title
+                      </label>
+                      <Input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            title: e.target.value
+                          }))
+                        }
+                        placeholder="Test"
+                        min="1"
+                      />
+                    </div>
                     <div className="mb-4 flex items-center justify-between">
                       <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
                         <Calendar className="text-blue-600" size={20} />
