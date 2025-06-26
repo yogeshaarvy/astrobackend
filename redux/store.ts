@@ -65,6 +65,7 @@ import horoscopeiconReducer from './slices/home/horoscope';
 import horoscopedetailReducer from './slices/horoscope/horoscopeDetailSlice';
 import registerImageReducer from './slices/register-imageSlice';
 import calendarReducer from './slices/calendar';
+import calendarConfigReducer from './slices/calenderSlice';
 import homeKundliReducer from './slices/home/kundli';
 import homeVibhorReducer from './slices/home/vibhor';
 import vibhorConfigReducer from './slices/Configs/vibhorConfigSlice';
@@ -149,6 +150,7 @@ export const makeStore = () => {
       horoscopeDetail: horoscopedetailReducer,
       registerImage: registerImageReducer,
       calendar: calendarReducer,
+      calendarConfig: calendarConfigReducer,
       homeKundli: homeKundliReducer,
       homeVibhor: homeVibhorReducer,
       vibhorConfig: vibhorConfigReducer,
