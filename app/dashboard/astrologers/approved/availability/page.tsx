@@ -66,7 +66,7 @@ const AstrologerAvailabilities = () => {
           {
             slottype: '',
             startTime: '',
-            time: ''
+            slotno: 0
           }
         ]
       }
@@ -98,7 +98,7 @@ const AstrologerAvailabilities = () => {
             {
               slottype: slotsData.length > 0 ? (slotsData[0] as any)._id : '',
               startTime: '',
-              time: ''
+              slotno: 0
             }
           ]
         }
@@ -239,7 +239,7 @@ const AstrologerAvailabilities = () => {
             {
               slottype: slotsData.length > 0 ? (slotsData[0] as any)._id : '',
               startTime: '',
-              time: ''
+              slotno: 0
             }
           ]
         }
@@ -276,7 +276,7 @@ const AstrologerAvailabilities = () => {
                   slottype:
                     slotsData.length > 0 ? (slotsData[0] as any)._id : '',
                   startTime: '',
-                  time: ''
+                  slotno: 0
                 }
               ]
             }
@@ -339,10 +339,7 @@ const AstrologerAvailabilities = () => {
                 </p>
               </div>
               <div className="flex-shrink-0">
-                <Button
-                  onClick={handleAddNew}
-                  className="bg-blue-600 px-3 py-2 text-sm hover:bg-blue-700"
-                >
+                <Button onClick={handleAddNew}>
                   <Plus size={16} className="mr-1" />
                   <span className="hidden sm:inline">Add</span>
                   <span className="sm:hidden">+</span>
@@ -417,7 +414,9 @@ const AstrologerAvailabilities = () => {
                                 <TableHead className="w-[100px]">
                                   Time
                                 </TableHead>
-                                <TableHead className="w-[80px]">Min</TableHead>
+                                <TableHead className="w-[80px]">
+                                  No Of Slots
+                                </TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -464,7 +463,7 @@ const AstrologerAvailabilities = () => {
                                             variant="outline"
                                             className="whitespace-nowrap px-1 py-0.5 text-[10px]"
                                           >
-                                            {slot.time}
+                                            {slot?.slotno}
                                           </Badge>
                                         </TableCell>
                                       </TableRow>
@@ -673,20 +672,20 @@ const AstrologerAvailabilities = () => {
 
                                   <div className="flex-1">
                                     <label className="mb-1 block text-sm font-medium text-gray-700">
-                                      Duration (min)
+                                      Number Of slots
                                     </label>
                                     <Input
                                       type="number"
-                                      value={slot.time}
+                                      value={slot.slotno}
                                       onChange={(e) =>
                                         updateSlot(
                                           dayIndex,
                                           slotIndex,
-                                          'time',
+                                          'slotno',
                                           e.target.value
                                         )
                                       }
-                                      placeholder="e.g., 30, 60"
+                                      placeholder="e.g., 1,3"
                                       min="1"
                                     />
                                   </div>
@@ -714,10 +713,7 @@ const AstrologerAvailabilities = () => {
                   </div>
 
                   <div className="flex gap-4 border-t pt-4">
-                    <Button
-                      type="submit"
-                      className="bg-blue-600 hover:bg-blue-700"
-                    >
+                    <Button type="submit">
                       <Save size={16} className="mr-2" />
                       {editingItem ? 'Update Availability' : 'Add Availability'}
                     </Button>
