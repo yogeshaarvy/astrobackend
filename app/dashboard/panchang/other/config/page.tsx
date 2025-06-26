@@ -186,36 +186,6 @@ const Page = () => {
                           </>
                         )}
                       </>
-                      {/* <FormLabel>Side Image</FormLabel>
-                      <FileUploader
-                        value={sideImage ? [sideImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setsideImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'mainSection.sideImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as IPanchang)?.mainSection?.sideImage ===
-                          'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as IPanchang)?.mainSection?.sideImage
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </> */}
                     </FormItem>
                   </div>
 
@@ -350,44 +320,6 @@ const Page = () => {
             >
               <div className="flex items-center space-x-2">
                 <Card>
-                  {/* <CardHeader className="flex flex-row items-center justify-center gap-5">
-                    <CardTitle>2nd Section</CardTitle>
-                  </CardHeader> */}
-                  {/* <div className="space-y-2 pt-0 ">
-                    <FormItem className="space-y-3">
-                      <FormLabel>Image</FormLabel>
-                      <FileUploader
-                        value={rightImage ? [rightImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setrightImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'section2.image',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as IPanchang)?.section2?.image ===
-                          'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as IPanchang)?.section2?.image
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </>
-                    </FormItem>
-                  </div> */}
-
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
                       <TabsTrigger
@@ -475,6 +407,57 @@ const Page = () => {
                           </div>
                         </CardContent>
                       </div>
+
+                      <div>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                          <CardTitle>Hindu Calander English</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="hindu_calendar.title.en"
+                              placeholder="Enter your Title "
+                              value={
+                                (cData as IPanchang)?.hindu_calendar?.title?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="hindu_calendar.description.en"
+                              label="Full Description"
+                              value={
+                                (cData as IPanchang)?.hindu_calendar
+                                  ?.description?.en
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'hindu_calendar.description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Table Title</Label>
+                            <Input
+                              name="hindu_calendar.table_title.en"
+                              placeholder="Enter Table Title "
+                              value={
+                                (cData as IPanchang)?.hindu_calendar
+                                  ?.table_title?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </CardContent>
+                      </div>
                     </TabsContent>
                     <TabsContent value="Hindi">
                       <div>
@@ -549,6 +532,57 @@ const Page = () => {
                                   }
                                 })
                               }
+                            />
+                          </div>
+                        </CardContent>
+                      </div>
+                      <div>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                          <CardTitle>Hindu Calander Hindi</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="hindu_calendar.title.hi"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IPanchang)?.hindu_calendar?.title
+                                  ?.hi || ''
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="hindu_calendar.description.hi"
+                              label="Full Description"
+                              value={
+                                (cData as IPanchang)?.hindu_calendar
+                                  ?.description?.hi || ''
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'hindu_calendar.description.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Table Title</Label>
+                            <Input
+                              name="hindu_calendar.table_title.hi"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IPanchang)?.hindu_calendar
+                                  ?.table_title?.hi || ''
+                              }
+                              onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>

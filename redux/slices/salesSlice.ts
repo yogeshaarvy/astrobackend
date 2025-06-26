@@ -38,6 +38,12 @@ export type ISales = BaseModel & {
       hi?: string;
     };
   };
+  links?: {
+    leftLink?: string;
+    rightLink?: string;
+    upperLink?: string;
+    lowerLink?: string;
+  };
 };
 
 const initialState = {
@@ -112,7 +118,8 @@ export const addEditSales = createAsyncThunk<any, null, { state: RootState }>(
           : undefined,
         titles: clonedData.titles
           ? JSON.stringify(clonedData.titles)
-          : undefined
+          : undefined,
+        links: clonedData.links ? JSON.stringify(clonedData.links) : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {

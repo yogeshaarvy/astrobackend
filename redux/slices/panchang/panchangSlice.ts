@@ -47,6 +47,20 @@ export type IPanchang = BaseModel & {
       hi?: string;
     };
   };
+  hindu_calendar?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    table_title?: {
+      en?: string;
+      hi?: string;
+    };
+  };
 };
 
 const initialState = {
@@ -130,6 +144,9 @@ export const addEditPanchang = createAsyncThunk<
           : undefined,
         section3: clonedData.section3
           ? JSON.stringify(clonedData.section3)
+          : undefined,
+        hindu_calendar: clonedData.hindu_calendar
+          ? JSON.stringify(clonedData.hindu_calendar)
           : undefined
       };
 

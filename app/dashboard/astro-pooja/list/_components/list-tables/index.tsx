@@ -81,6 +81,34 @@ export default function AstropoojaListTable({
         );
       }
     },
+
+    {
+      accessorKey: 'popular',
+      header: 'POPULAR',
+      cell: ({ row }) => {
+        const handleToggle = async (checked: boolean) => {
+          const updatedData = { ...row.original, popular: checked };
+          try {
+            dispatch(updateAstropoojaListData(updatedData));
+            const result = await dispatch(
+              addEditAstropoojaList(row.original._id || null)
+            ).unwrap();
+            toast.success('This is Popular Successfully!');
+          } catch (error: any) {
+            console.error('Error updating popular status:', error);
+            toast.error('Failed to popular Status');
+          }
+        };
+
+        return (
+          <Switch
+            checked={row.original.popular}
+            onCheckedChange={handleToggle}
+            aria-label="Toggle Popular Status"
+          />
+        );
+      }
+    },
     {
       header: 'ACTIONS',
       id: 'actions',

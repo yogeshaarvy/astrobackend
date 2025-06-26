@@ -433,8 +433,28 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Calendar',
-    url: '/dashboard/calendar',
-    icon: 'settings'
+    url: '/dashboard/calendar-data',
+    icon: 'settings',
+    items: [
+      {
+        title: 'Config',
+        url: '/dashboard/calendar-data/config',
+        icon: 'tableContents'
+      },
+      {
+        title: 'Other',
+        url: '/dashboard/calendar-data',
+        icon: 'config',
+        isActive: false,
+        items: [
+          {
+            title: 'Calender Events',
+            url: '/dashboard/calendar-data/others/calendar',
+            icon: 'tableContents'
+          }
+        ]
+      }
+    ]
   },
   {
     title: 'Kundli',
