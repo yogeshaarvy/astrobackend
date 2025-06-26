@@ -53,10 +53,21 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/astrologers/list/profiles?id=${data._id}`)
+              router.push(
+                `/dashboard/astrologers/approved/slots?id=${data._id}`
+              )
             }
           >
-            Profiles
+            Slots
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(
+                `/dashboard/astrologers/approved/availability?id=${data._id}`
+              )
+            }
+          >
+            Availability
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
@@ -65,13 +76,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             Packages
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(`/dashboard/astrologers/list/packages?id=${data._id}`)
-            }
-          >
-            Availability
-          </DropdownMenuItem>
+
           <DropdownMenuItem
             onClick={() =>
               router.push(`/dashboard/astrologers/list/rating?id=${data._id}`)

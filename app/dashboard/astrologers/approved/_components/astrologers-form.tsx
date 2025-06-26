@@ -32,6 +32,20 @@ export default function RequestForm() {
     { name: 'Hindi', _id: 'hindi' },
     { name: 'English', _id: 'english' }
   ];
+  const educationsList = [
+    { name: 'Primary School', _id: 'primary_school' },
+    { name: 'Middle School', _id: 'middle_school' },
+    { name: 'High School / Secondary', _id: 'high_school' },
+    { name: 'Higher Secondary / Intermediate / 12th', _id: 'higher_secondary' },
+    { name: 'Diploma', _id: 'diploma' },
+    { name: 'Bachelor’s Degree', _id: 'bachelor' },
+    { name: 'Master’s Degree', _id: 'master' },
+    { name: 'M.Phil', _id: 'mphil' },
+    { name: 'Ph.D.', _id: 'phd' },
+    { name: 'Postdoctoral', _id: 'postdoc' },
+    { name: 'Other', _id: 'other' }
+  ];
+
   const gendersList = [
     { name: 'Female', _id: 'female' },
     { name: 'Male', _id: 'male' },
@@ -51,7 +65,6 @@ export default function RequestForm() {
   const {
     singleRequestState: { data: requestData }
   } = useAppSelector((state) => state.astrologersData);
-  console.log('requestData..............', requestData);
 
   const form = useForm({});
   const [Image, setImage] = React.useState<File | null>(null);
@@ -70,6 +83,10 @@ export default function RequestForm() {
   const getSelectedLanguage = () => {
     const languageValues = (requestData as IRequest)?.languages || [];
     return languageList.filter((lang) => languageValues.includes(lang._id));
+  };
+  const getSelectedEducation = () => {
+    const educationValues = (requestData as IRequest)?.education || [];
+    return educationsList.filter((ed) => educationValues.includes(ed._id));
   };
 
   const handleInputChange = (e: any) => {
@@ -220,6 +237,39 @@ export default function RequestForm() {
                   })
                 }
                 value={getSelectedLanguage()}
+              />
+              <CustomTextField
+                name="expierience"
+                label="Expierience In Years"
+                placeholder="Enter your expierience"
+                type="number"
+                value={(requestData as IRequest)?.expierience || 0}
+                onChange={handleInputChange}
+              />
+              <CustomTextField
+                name="charges"
+                label="Charges In Rupees"
+                placeholder="Enter your charges"
+                type="number"
+                value={(requestData as IRequest)?.charges || 0}
+                onChange={handleInputChange}
+              />
+              <CustomReactSelect
+                options={educationsList}
+                label="Education"
+                // isMulti
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option._id}
+                placeholder="Select Education"
+                onChange={(selectedOptions: any) =>
+                  handleInputChange({
+                    target: {
+                      name: 'education',
+                      value: selectedOptions?.map((opt: any) => opt._id) || []
+                    }
+                  })
+                }
+                value={getSelectedEducation()}
               />
 
               <FormItem className="space-y-3">
