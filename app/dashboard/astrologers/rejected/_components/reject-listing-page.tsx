@@ -33,7 +33,6 @@ export default function RejectedListingPage() {
       pagination: { totalCount }
     }
   } = useAppSelector((state) => state.astrologersData);
-  console.log('requestes data is ', tData);
   useEffect(() => {
     dispatch(
       fetchAstrologersList({

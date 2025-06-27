@@ -29,8 +29,9 @@ export type IRequest = BaseModel & {
     price: number;
   }[];
   availability?: {
-    day: string;
-    slots: string[];
+    day?: string;
+    title?: string;
+    slots?: string[];
   }[];
 };
 
@@ -157,7 +158,7 @@ export const addEditRequest = createAsyncThunk<
       languages: JSON.stringify(data.languages) || [],
       skills: JSON.stringify(data.skills) || [],
       pricing: [{ duration: 15, price: '' }],
-      availability: [{ day: 'Monday', slots: [''] }],
+      availability: data.availability,
       email: data.email || '',
       phone: data.phone || '',
       password: data.password || '',
