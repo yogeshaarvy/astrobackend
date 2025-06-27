@@ -23,16 +23,11 @@ export type IRequest = BaseModel & {
   showinhome?: boolean;
   education?: any;
   expierience?: number;
-  charges?: number;
-  pricing?: {
-    duration: number;
-    price: number;
-  }[];
-  availability?: {
-    day?: string;
-    title?: string;
-    slots?: string[];
-  }[];
+  day?: string;
+  title?: string;
+  slotno?: any;
+  startTime?: any;
+  slottype?: any;
 };
 
 const initialState = {
@@ -158,7 +153,7 @@ export const addEditRequest = createAsyncThunk<
       languages: JSON.stringify(data.languages) || [],
       skills: JSON.stringify(data.skills) || [],
       pricing: [{ duration: 15, price: '' }],
-      availability: data.availability,
+
       email: data.email || '',
       phone: data.phone || '',
       password: data.password || '',
@@ -457,9 +452,11 @@ export const addEditAvailability = createAsyncThunk<
       }
       const formData = new FormData();
       const reqData: any = {
-        availability: JSON.stringify(data.availability) || [],
-        astroId: data.astroId,
-        title: data.title
+        day: data.day,
+        startTime: data.startTime,
+        slotno: data.slotno,
+        slottype: data.slottype,
+        astroId: data.astroId
       };
       // Append only defined fields to FormData
       Object.entries(reqData).forEach(([key, value]) => {
@@ -484,11 +481,13 @@ export const addEditAvailability = createAsyncThunk<
         dispatch(fetchAvailabilityList({ astroId: data.astroId }));
         return response;
       } else {
+        console.log('inside else respns', response);
         const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
         dispatch(addEditAvailabilityFailure(errorMsg));
         return rejectWithValue(errorMsg);
       }
     } catch (error: any) {
+      console.log('seconf else reponw ');
       const errorMsg = error?.message ?? 'Something Went Wrong!!';
       dispatch(addEditAvailabilityFailure(errorMsg));
       return rejectWithValue(errorMsg);
