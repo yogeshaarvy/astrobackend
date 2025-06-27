@@ -30,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import {
   addEditAvailability,
   fetchAvailabilityList,
@@ -97,6 +98,37 @@ const AstrologerAvailabilities = () => {
     return timeString;
   };
 
+  const handleToggleUpdate = async (
+    slotId: string,
+    availabilityId: string,
+    field: 'active' | 'status',
+    value: boolean
+  ) => {
+    try {
+      // You can implement your API call here to update the specific slot
+      console.log(
+        `Updating slot ${slotId} in availability ${availabilityId}: ${field} = ${value}`
+      );
+
+      // Example API call structure:
+      // await dispatch(updateSlotStatus({ slotId, availabilityId, field, value }));
+
+      toast.success(`Slot ${field} updated successfully`);
+
+      // Refresh the data
+      const result = await dispatch(
+        fetchAvailabilityList({
+          page: 1,
+          pageSize: pagination.limit,
+          astroId: astroId ?? ''
+        })
+      ).unwrap();
+    } catch (error) {
+      console.error(`Error updating slot ${field}:`, error);
+      toast.error(`Failed to update slot ${field}`);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       astroId,
@@ -138,25 +170,6 @@ const AstrologerAvailabilities = () => {
     setShowAddForm(true);
     setEditingItem(null);
     resetForm();
-  };
-
-  const handleEdit = (item: any) => {
-    setEditingItem(item);
-    setFormData({
-      astroId,
-      day: item?.day,
-      slottype: item?.slottype,
-      startTime: item?.startTime,
-      slotno: item?.slotno
-    });
-    setShowAddForm(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this availability?')) {
-      // Implement delete functionality
-      console.log('Deleting:', id);
-    }
   };
 
   const handleLoadMore = async () => {
@@ -294,7 +307,6 @@ const AstrologerAvailabilities = () => {
                               {item?.day}
                             </h3>
                             <p className="text-sm text-gray-600">
-                              {/* {getSlotTitleById(item?.slottype)} • */}
                               {item?.slots?.length || 0} time slots
                             </p>
                           </div>
@@ -304,11 +316,10 @@ const AstrologerAvailabilities = () => {
 
                     <CardContent className="px-4 sm:px-6">
                       <div className="w-full overflow-x-auto">
-                        <div className="min-w-[600px]">
+                        <div className="min-w-[800px]">
                           <Table className="w-full">
                             <TableHeader>
                               <TableRow className="bg-gray-50">
-                                {/* <TableHead className="w-[100px] font-semibold">Day</TableHead> */}
                                 <TableHead className="w-[120px] font-semibold">
                                   Start Time
                                 </TableHead>
@@ -319,9 +330,14 @@ const AstrologerAvailabilities = () => {
                                   Duration
                                 </TableHead>
                                 <TableHead className="w-[100px] font-semibold">
-                                  Changes
+                                  Price
                                 </TableHead>
-                                {/* <TableHead className="font-semibold">Status</TableHead> */}
+                                <TableHead className="w-[80px] font-semibold">
+                                  Active
+                                </TableHead>
+                                <TableHead className="w-[80px] font-semibold">
+                                  Status
+                                </TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -332,17 +348,6 @@ const AstrologerAvailabilities = () => {
                                       key={slot._id || slotIndex}
                                       className="hover:bg-gray-50"
                                     >
-                                      {/* {slotIndex === 0 && (
-                                      <TableCell className="p-3 font-medium border-r" rowSpan={item.slots.length}>
-                                        <Badge
-                                          variant="outline"
-                                          className="whitespace-nowrap bg-blue-100 px-2 py-1 text-xs text-blue-800 font-medium"
-                                        >
-                                          {item?.day}
-                                        </Badge>
-                                      </TableCell>
-                                    )}
-                                     */}
                                       <TableCell className="p-3">
                                         <div className="flex items-center gap-1">
                                           <Clock
@@ -350,7 +355,7 @@ const AstrologerAvailabilities = () => {
                                             className="text-green-600"
                                           />
                                           <span className="text-sm font-medium text-green-700">
-                                            {formatTime(slot?.startTime)}
+                                            {formatTime(slot.startTime)}
                                           </span>
                                         </div>
                                       </TableCell>
@@ -361,7 +366,7 @@ const AstrologerAvailabilities = () => {
                                             className="text-red-600"
                                           />
                                           <span className="text-sm font-medium text-red-700">
-                                            {formatTime(slot?.endTime)}
+                                            {formatTime(slot.endTime)}
                                           </span>
                                         </div>
                                       </TableCell>
@@ -397,20 +402,44 @@ const AstrologerAvailabilities = () => {
                                           <IndianRupee
                                             size={14}
                                             className="text-green-600"
-                                          />{' '}
+                                          />
                                           <span className="text-black-700 text-sm font-medium">
                                             {slot?.price}
                                           </span>
                                         </div>
                                       </TableCell>
-                                      {/* <TableCell className="p-3">
-                                      <Badge
-                                        variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200 text-xs"
-                                      >
-                                        Available
-                                      </Badge>
-                                    </TableCell> */}
+                                      <TableCell className="">
+                                        <div className="flex items-center justify-center">
+                                          <Switch
+                                            checked={slot?.active ?? true}
+                                            onCheckedChange={(checked) =>
+                                              handleToggleUpdate(
+                                                slot._id,
+                                                item._id,
+                                                'active',
+                                                checked
+                                              )
+                                            }
+                                            className="data-[state=checked]:bg-green-500"
+                                          />
+                                        </div>
+                                      </TableCell>
+                                      <TableCell className="">
+                                        <div className="flex items-center justify-center">
+                                          <Switch
+                                            checked={slot?.status ?? true}
+                                            onCheckedChange={(checked) =>
+                                              handleToggleUpdate(
+                                                slot._id,
+                                                item._id,
+                                                'status',
+                                                checked
+                                              )
+                                            }
+                                            className="data-[state=checked]:bg-blue-500"
+                                          />
+                                        </div>
+                                      </TableCell>
                                     </TableRow>
                                   )
                                 )
@@ -435,7 +464,7 @@ const AstrologerAvailabilities = () => {
                                   </TableCell>
                                   <TableCell
                                     className="p-3 text-center text-gray-500"
-                                    colSpan={4}
+                                    colSpan={6}
                                   >
                                     No time slots configured
                                   </TableCell>
