@@ -124,7 +124,7 @@ const Page = () => {
                 onChange={handleInputChange}
               />
               <CustomTextField
-                name="metaKeywords"
+                name="metaKeyword"
                 // control={form.control}
                 label="Meta keywords"
                 placeholder="Enter your Meta Keywords"

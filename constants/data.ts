@@ -742,6 +742,11 @@ export const navItems: NavItem[] = [
             title: 'Astrologer Config',
             url: '/dashboard/settings/pages/astroregisterconfig',
             icon: 'general'
+          },
+          {
+            title: 'Why Choose',
+            url: '/dashboard/settings/pages/whyChoose',
+            icon: 'general'
           }
         ]
       },

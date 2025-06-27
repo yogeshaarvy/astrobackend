@@ -80,6 +80,7 @@ import projectFaqReducer from './slices/projectFaqSlice';
 import languageDataReducer from './slices/languageDataSlice';
 import skillsReducer from './slices/skillsSlice';
 import astroRegisterConfigReducer from './slices/astroregisterconfig';
+import whyChooseConfigReducer from './slices/whyChooseSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -163,7 +164,8 @@ export const makeStore = () => {
       projectfaq: projectFaqReducer,
       languageData: languageDataReducer,
       skills: skillsReducer,
-      astroRegisterConfig: astroRegisterConfigReducer
+      astroRegisterConfig: astroRegisterConfigReducer,
+      whyChooseConfig: whyChooseConfigReducer
     }
   });
 };
