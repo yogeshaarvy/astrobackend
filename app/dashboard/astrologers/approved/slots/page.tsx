@@ -37,7 +37,8 @@ const SlotAdminPanel = () => {
   }
   const [editingSlot, setEditingSlot] = useState<Slot | null>(null);
   const [formData, setFormData] = useState({
-    pricing: [{ duration: 5, price: '' }],
+    duration: 5,
+    price: '',
     title: ''
   });
 
@@ -51,7 +52,8 @@ const SlotAdminPanel = () => {
 
   const resetForm = () => {
     setFormData({
-      pricing: [{ duration: 5, price: '' }],
+      duration: 5,
+      price: '',
       title: ''
     });
   };
@@ -129,14 +131,33 @@ const SlotAdminPanel = () => {
   // Add or Update Slot
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    // Prepare slot payload (add more fields as needed)
+
+    // Validation: Check if title is provided
+    if (!formData.title.trim()) {
+      alert('Please enter a slot title');
+      return;
+    }
+
+    // Validation: Check if duration and price are provided
+    if (!formData.duration || formData.duration <= 0) {
+      alert('Please enter a valid duration');
+      return;
+    }
+
+    if (!formData.price || Number(formData.price) <= 0) {
+      alert('Please enter a valid price');
+      return;
+    }
+
+    // Prepare slot payload
     const slotPayload = {
       ...editingSlot,
-      pricing: formData.pricing.filter((p) => p.price),
-      title: formData.title,
+      duration: Number(formData.duration),
+      price: formData.price,
+      title: formData.title.trim(),
       astroId
-      // Add other fields from formData if needed
     };
+
     // Set slot data in slice for thunk
     dispatch(setSlotsData(slotPayload));
     // Call add or update thunk
@@ -149,34 +170,24 @@ const SlotAdminPanel = () => {
     await loadInitialSlots();
   };
 
-  const addPricingTier = () => {
+  const handleTitleChange = (value: string) => {
     setFormData((prev) => ({
       ...prev,
-      pricing: [...prev.pricing, { duration: 15, price: '' }],
-      title: prev.title
+      title: value
     }));
   };
 
-  const removePricingTier = (index: any) => {
+  const handleDurationChange = (value: string) => {
     setFormData((prev) => ({
       ...prev,
-      pricing: prev.pricing.filter((_, i) => i !== index),
-      title: prev.title
+      duration: Number(value)
     }));
   };
 
-  const updatePricing = (index: any, field: any, value: any) => {
+  const handlePriceChange = (value: string) => {
     setFormData((prev) => ({
       ...prev,
-      pricing: prev.pricing.map((p, i) =>
-        i === index
-          ? {
-              ...p,
-              [field]: field === 'price' ? value : Number.parseInt(value)
-            }
-          : p
-      ),
-      title: prev.title
+      price: value
     }));
   };
 
@@ -189,8 +200,9 @@ const SlotAdminPanel = () => {
   const handleEditSlot = (slot: any) => {
     setEditingSlot(slot);
     setFormData({
-      pricing: slot.pricing,
-      title: slot.title
+      duration: slot.duration || 5,
+      price: slot.price || '',
+      title: slot.title || ''
     });
     setShowAddForm(true);
   };
@@ -290,18 +302,15 @@ const SlotAdminPanel = () => {
                                     className="text-green-600"
                                   />
                                   <p className="text-sm font-medium text-gray-700">
-                                    Pricing Tiers
+                                    Pricing
                                   </p>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
-                                  {slot.pricing?.map((price: any, idx: any) => (
-                                    <span
-                                      key={idx}
-                                      className="rounded-full bg-green-100 px-3 py-1.5 text-sm font-medium text-green-800"
-                                    >
-                                      {price.duration} min - ₹{price.price}
+                                  {slot.duration && slot.price ? (
+                                    <span className="rounded-full bg-green-100 px-3 py-1.5 text-sm font-medium text-green-800">
+                                      {slot.duration} min - ₹{slot.price}
                                     </span>
-                                  )) || (
+                                  ) : (
                                     <span className="text-sm text-gray-500">
                                       No pricing set
                                     </span>
@@ -392,87 +401,74 @@ const SlotAdminPanel = () => {
                 <h2 className="mb-6 text-2xl font-bold text-gray-800">
                   {editingSlot ? 'Edit Slot' : 'Add New Slot'}
                 </h2>
-                <div className="space-y-6">
-                  {/* Pricing Section */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Title Section */}
                   <div>
-                    <div className="mb-4 flex items-center justify-between">
-                      <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-                        <IndianRupee size={20} className="text-green-600" />
-                        Pricing Tiers
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={addPricingTier}
-                        className="rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600 transition-colors hover:bg-green-200"
-                      >
-                        Add Tier
-                      </button>
+                    <label className="mb-2 block text-lg font-semibold text-gray-800">
+                      Slot Title *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 p-3 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter slot title (e.g., Quick Consultation, Premium Reading)"
+                      required
+                    />
+                  </div>
+
+                  {/* Pricing Section */}
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                      <label className="mb-2 block text-lg font-semibold text-gray-800">
+                        Duration (minutes) *
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.duration}
+                        onChange={(e) => handleDurationChange(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 p-3 text-base focus:border-transparent focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter duration in minutes"
+                        min="1"
+                        step="1"
+                        required
+                      />
                     </div>
-                    <div className="max-h-60 space-y-3 overflow-y-auto">
-                      {formData.pricing.map((pricing, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-3 rounded-lg bg-gray-50 p-3"
-                        >
-                          <div className="flex-1">
-                            <label className="mb-1 block text-xs text-gray-600">
-                              Duration (minutes)
-                            </label>
-                            <input
-                              type="number"
-                              value={pricing.duration}
-                              onChange={(e) =>
-                                updatePricing(index, 'duration', e.target.value)
-                              }
-                              className="w-full rounded border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
-                              placeholder="Enter duration"
-                              min="0"
-                              step="1"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <label className="mb-1 block text-xs text-gray-600">
-                              Price (₹)
-                            </label>
-                            <input
-                              type="number"
-                              value={pricing.price}
-                              onChange={(e) =>
-                                updatePricing(index, 'price', e.target.value)
-                              }
-                              className="w-full rounded border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
-                              placeholder="Enter price"
-                              min="0"
-                              step="0.01"
-                            />
-                          </div>
-                          {formData.pricing.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removePricingTier(index)}
-                              className="rounded p-1 text-red-600 hover:bg-red-100"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          )}
-                        </div>
-                      ))}
+                    <div>
+                      <label className="mb-2 block text-lg font-semibold text-gray-800">
+                        Price (₹) *
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.price}
+                        onChange={(e) => handlePriceChange(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 p-3 text-base focus:border-transparent focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter price in rupees"
+                        min="0"
+                        step="0.01"
+                        required
+                      />
                     </div>
                   </div>
+
                   {/* Form Actions */}
                   <div className="flex gap-4 pt-2">
-                    <Button type="button" onClick={handleSubmit}>
+                    <Button type="submit">
                       {editingSlot ? 'Update Slot' : 'Add Slot'}
                     </Button>
                     <button
                       type="button"
-                      onClick={() => setShowAddForm(false)}
+                      onClick={() => {
+                        setShowAddForm(false);
+                        setEditingSlot(null);
+                        resetForm();
+                      }}
                       className="rounded-lg bg-gray-100 px-3 py-1 font-semibold text-gray-700 transition-colors hover:bg-gray-200"
                     >
                       Cancel
                     </button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
           )}

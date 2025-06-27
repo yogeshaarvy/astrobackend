@@ -5,6 +5,7 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { da } from 'date-fns/locale';
+import { duration } from 'moment';
 
 export type IRequest = BaseModel & {
   _id?: string;
@@ -28,8 +29,9 @@ export type IRequest = BaseModel & {
     price: number;
   }[];
   availability?: {
-    day: string;
-    slots: string[];
+    day?: string;
+    title?: string;
+    slots?: string[];
   }[];
 };
 
@@ -156,7 +158,7 @@ export const addEditRequest = createAsyncThunk<
       languages: JSON.stringify(data.languages) || [],
       skills: JSON.stringify(data.skills) || [],
       pricing: [{ duration: 15, price: '' }],
-      availability: [{ day: 'Monday', slots: [''] }],
+      availability: data.availability,
       email: data.email || '',
       phone: data.phone || '',
       password: data.password || '',
@@ -267,7 +269,7 @@ export const fetchSlotsList = createAsyncThunk<
     const { page, pageSize, astroId } = input || {};
     dispatch(fetchSlotsStart());
     const response = await fetchApi(
-      `/slots/all/${astroId}?page=${page}&limit=${pageSize}`,
+      `/slots/all/${astroId}?page=${page || 1}&limit=${pageSize || 10}`,
       { method: 'GET' }
     );
     // Check if the API response is valid and has the expected data
@@ -306,10 +308,12 @@ export const addEditSlot = createAsyncThunk<
       return rejectWithValue('Please Provide Details');
     }
     const formData = new FormData();
+    console.log('data is here', data);
     const reqData: any = {
-      pricing: JSON.stringify(data.pricing) || [],
       title: data?.title,
-      astroId: data.astroId
+      astroId: data.astroId,
+      price: data.price,
+      duration: data.duration
     };
     // Append only defined fields to FormData
     Object.entries(reqData).forEach(([key, value]) => {
@@ -331,7 +335,7 @@ export const addEditSlot = createAsyncThunk<
     }
     if (response?.success) {
       dispatch(addEditSlotsSuccess());
-      dispatch(fetchSlotsList());
+      dispatch(fetchSlotsList({ astroId: data.astroId }));
       return response;
     } else {
       const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';

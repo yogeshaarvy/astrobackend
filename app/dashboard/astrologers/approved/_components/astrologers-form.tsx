@@ -20,26 +20,25 @@ import { toast } from 'sonner';
 import CustomReactSelect from '@/utils/CustomReactSelect';
 import {
   addEditRequest,
+  fetchAvailabilityList,
   fetchSingleRequest,
   IRequest,
   updateRequestData
 } from '@/redux/slices/astrologersSlice';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { FileUploader, FileViewCard } from '@/components/file-uploader';
+import { fetchLanguageDataList } from '@/redux/slices/languageDataSlice';
+import { fetchSkillsList } from '@/redux/slices/skillsSlice';
 
 export default function RequestForm() {
-  const languageList = [
-    { name: 'Hindi', _id: 'hindi' },
-    { name: 'English', _id: 'english' }
-  ];
   const educationsList = [
     { name: 'Primary School', _id: 'primary_school' },
     { name: 'Middle School', _id: 'middle_school' },
     { name: 'High School / Secondary', _id: 'high_school' },
     { name: 'Higher Secondary / Intermediate / 12th', _id: 'higher_secondary' },
     { name: 'Diploma', _id: 'diploma' },
-    { name: 'Bachelor’s Degree', _id: 'bachelor' },
-    { name: 'Master’s Degree', _id: 'master' },
+    { name: 'Bachelors Degree', _id: 'bachelor' },
+    { name: 'Masters Degree', _id: 'master' },
     { name: 'M.Phil', _id: 'mphil' },
     { name: 'Ph.D.', _id: 'phd' },
     { name: 'Postdoctoral', _id: 'postdoc' },
@@ -51,11 +50,6 @@ export default function RequestForm() {
     { name: 'Male', _id: 'male' },
     { name: 'Other', _id: 'other' }
   ];
-  const skillsList = [
-    { name: 'Tarot Reading', _id: 'tarot' },
-    { name: 'Astrology', _id: 'astrology' },
-    { name: 'Numerology', _id: 'numerology' }
-  ];
 
   const params = useSearchParams();
   const entityId = params.get('id');
@@ -65,7 +59,20 @@ export default function RequestForm() {
   const {
     singleRequestState: { data: requestData }
   } = useAppSelector((state) => state.astrologersData);
-
+  const {
+    availabilityState: { data: aData, loading }
+  } = useAppSelector((state) => state.astrologersData);
+  const {
+    languageDataListState: {
+      loading: tagListLoading,
+      data: tData = [],
+      pagination: { totalCount }
+    }
+  } = useAppSelector((state) => state.languageData);
+  const {
+    SkillsList: { loading: ListLoading, data: skillsData = [] }
+  } = useAppSelector((state) => state.skills);
+  console.log('  skillsData data is this ....', skillsData);
   const form = useForm({});
   const [Image, setImage] = React.useState<File | null>(null);
 
@@ -73,20 +80,33 @@ export default function RequestForm() {
     if (entityId) {
       dispatch(fetchSingleRequest(entityId));
     }
-  }, [entityId]);
+    dispatch(
+      fetchAvailabilityList({
+        astroId: entityId ?? undefined
+      })
+    );
+    dispatch(fetchLanguageDataList());
+    dispatch(fetchSkillsList());
+  }, [entityId, dispatch]);
 
   const getSelectedSkill = () => {
     const skillValues = (requestData as IRequest)?.skills || [];
-    return skillsList.filter((skill) => skillValues.includes(skill._id));
+    return skillsData.filter((skill: any) => skillValues.includes(skill._id));
   };
 
   const getSelectedLanguage = () => {
     const languageValues = (requestData as IRequest)?.languages || [];
-    return languageList.filter((lang) => languageValues.includes(lang._id));
+    return tData.filter((lang) => languageValues.includes(lang._id));
   };
+
   const getSelectedEducation = () => {
-    const educationValues = (requestData as IRequest)?.education || [];
-    return educationsList.filter((ed) => educationValues.includes(ed._id));
+    const educationValue = (requestData as IRequest)?.education;
+    return educationsList.find((ed) => ed._id === educationValue) || null;
+  };
+
+  const getSelectedAvailability = () => {
+    const availabilityValue = (requestData as IRequest)?.availability;
+    return aData.find((ed: any) => ed?._id === availabilityValue) || null;
   };
 
   const handleInputChange = (e: any) => {
@@ -204,10 +224,10 @@ export default function RequestForm() {
               />
 
               <CustomReactSelect
-                options={skillsList}
+                options={skillsData}
                 label="Skills"
                 isMulti
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.name?.en}
                 getOptionValue={(option) => option._id}
                 placeholder="Select skills"
                 onChange={(selectedOptions: any) =>
@@ -222,7 +242,7 @@ export default function RequestForm() {
               />
 
               <CustomReactSelect
-                options={languageList}
+                options={tData}
                 label="Languages"
                 isMulti
                 getOptionLabel={(option) => option.name}
@@ -240,8 +260,8 @@ export default function RequestForm() {
               />
               <CustomTextField
                 name="expierience"
-                label="Expierience In Years"
-                placeholder="Enter your expierience"
+                label="Experience In Years"
+                placeholder="Enter your experience"
                 type="number"
                 value={(requestData as IRequest)?.expierience || 0}
                 onChange={handleInputChange}
@@ -254,22 +274,41 @@ export default function RequestForm() {
                 value={(requestData as IRequest)?.charges || 0}
                 onChange={handleInputChange}
               />
+
+              {/* CORRECTED: Education field - single select */}
               <CustomReactSelect
                 options={educationsList}
                 label="Education"
-                // isMulti
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Education"
-                onChange={(selectedOptions: any) =>
+                onChange={(selectedOption: any) =>
                   handleInputChange({
                     target: {
                       name: 'education',
-                      value: selectedOptions?.map((opt: any) => opt._id) || []
+                      value: selectedOption?._id || ''
                     }
                   })
                 }
                 value={getSelectedEducation()}
+              />
+
+              {/* CORRECTED: Availability field - single select */}
+              <CustomReactSelect
+                options={aData}
+                label="Availability"
+                getOptionLabel={(option) => option.title}
+                getOptionValue={(option) => option._id}
+                placeholder="Select Availability"
+                onChange={(selectedOption: any) =>
+                  handleInputChange({
+                    target: {
+                      name: 'availability',
+                      value: selectedOption?._id || ''
+                    }
+                  })
+                }
+                value={getSelectedAvailability()}
               />
 
               <FormItem className="space-y-3">
