@@ -303,7 +303,6 @@ export const addEditSlot = createAsyncThunk<
       return rejectWithValue('Please Provide Details');
     }
     const formData = new FormData();
-    console.log('data is here', data);
     const reqData: any = {
       title: data?.title,
       astroId: data.astroId,
@@ -481,13 +480,11 @@ export const addEditAvailability = createAsyncThunk<
         dispatch(fetchAvailabilityList({ astroId: data.astroId }));
         return response;
       } else {
-        console.log('inside else respns', response);
         const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
         dispatch(addEditAvailabilityFailure(errorMsg));
         return rejectWithValue(errorMsg);
       }
     } catch (error: any) {
-      console.log('seconf else reponw ');
       const errorMsg = error?.message ?? 'Something Went Wrong!!';
       dispatch(addEditAvailabilityFailure(errorMsg));
       return rejectWithValue(errorMsg);
@@ -549,6 +546,47 @@ export const deleteAvailability = createAsyncThunk<
     toast.error(error.message);
   }
 });
+
+export const updateAvailabilitySlot = createAsyncThunk<
+  any,
+  {
+    slotId: string;
+    availabilityId: string;
+    active?: boolean;
+    status?: boolean;
+  },
+  { state: RootState }
+>(
+  'availability/add',
+  async (
+    { slotId, availabilityId, active, status },
+    { dispatch, rejectWithValue, getState }
+  ) => {
+    try {
+      const reqData: any = {
+        slotId,
+        availabilityId,
+        active,
+        status
+      };
+
+      let response = await fetchApi(`/availability/updateslot`, {
+        method: 'PUT',
+        body: reqData
+      });
+
+      if (response?.success) {
+        return response;
+      } else {
+        const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message ?? 'Something Went Wrong!!';
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
 
 const requestSlice = createSlice({
   name: 'requests',

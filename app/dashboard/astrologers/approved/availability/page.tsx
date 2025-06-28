@@ -35,7 +35,8 @@ import {
   addEditAvailability,
   fetchAvailabilityList,
   fetchSlotsList,
-  setAvailabilityData
+  setAvailabilityData,
+  updateAvailabilitySlot
 } from '@/redux/slices/astrologersSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useSearchParams } from 'next/navigation';
@@ -105,15 +106,24 @@ const AstrologerAvailabilities = () => {
     value: boolean
   ) => {
     try {
-      // You can implement your API call here to update the specific slot
-      console.log(
-        `Updating slot ${slotId} in availability ${availabilityId}: ${field} = ${value}`
-      );
+      let status;
+      let active;
+      if (field === 'active') {
+        active = value;
+      } else if (field === 'status') {
+        status = value;
+      }
 
       // Example API call structure:
-      // await dispatch(updateSlotStatus({ slotId, availabilityId, field, value }));
-
-      toast.success(`Slot ${field} updated successfully`);
+      await dispatch(
+        updateAvailabilitySlot({ slotId, availabilityId, active, status })
+      ).then((res: any) => {
+        if (res?.payload?.success) {
+          toast.success(`Slot ${field} updated successfully`);
+        } else {
+          toast.error('Something went wrong');
+        }
+      });
 
       // Refresh the data
       const result = await dispatch(
@@ -212,7 +222,6 @@ const AstrologerAvailabilities = () => {
       dispatch(setAvailabilityData(formData));
       await dispatch(addEditAvailability(editingItem?._id || null)).then(
         async (res) => {
-          console.log('respone data is ', res);
           if (res?.payload?.success) {
             setShowAddForm(false);
             setEditingItem(null);
@@ -336,7 +345,7 @@ const AstrologerAvailabilities = () => {
                                   Active
                                 </TableHead>
                                 <TableHead className="w-[80px] font-semibold">
-                                  Status
+                                  delete
                                 </TableHead>
                               </TableRow>
                             </TableHeader>
@@ -409,7 +418,7 @@ const AstrologerAvailabilities = () => {
                                         </div>
                                       </TableCell>
                                       <TableCell className="">
-                                        <div className="flex items-center justify-center">
+                                        <div className="flex items-center ">
                                           <Switch
                                             checked={slot?.active ?? true}
                                             onCheckedChange={(checked) =>
@@ -425,7 +434,7 @@ const AstrologerAvailabilities = () => {
                                         </div>
                                       </TableCell>
                                       <TableCell className="">
-                                        <div className="flex items-center justify-center">
+                                        <div className="flex items-center ">
                                           <Switch
                                             checked={slot?.status ?? true}
                                             onCheckedChange={(checked) =>
