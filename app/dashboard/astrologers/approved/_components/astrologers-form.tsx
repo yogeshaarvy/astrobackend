@@ -24,10 +24,11 @@ import {
   IRequest,
   updateRequestData
 } from '@/redux/slices/astrologersSlice';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileUploader, FileViewCard } from '@/components/file-uploader';
 import { fetchLanguageDataList } from '@/redux/slices/languageDataSlice';
 import { fetchSkillsList } from '@/redux/slices/skillsSlice';
+import CustomTextEditor from '@/utils/CustomTextEditor';
 
 export default function RequestForm() {
   const educationsList = [
@@ -58,7 +59,6 @@ export default function RequestForm() {
   const {
     singleRequestState: { data: requestData }
   } = useAppSelector((state) => state.astrologersData);
-
   const {
     languageDataListState: {
       loading: tagListLoading,
@@ -254,15 +254,6 @@ export default function RequestForm() {
                 value={(requestData as IRequest)?.expierience || 0}
                 onChange={handleInputChange}
               />
-              <CustomTextField
-                name="charges"
-                label="Charges In Rupees"
-                placeholder="Enter your charges"
-                type="number"
-                value={(requestData as IRequest)?.charges || 0}
-                onChange={handleInputChange}
-              />
-
               {/* CORRECTED: Education field - single select */}
               <CustomReactSelect
                 options={educationsList}
@@ -280,6 +271,65 @@ export default function RequestForm() {
                 }
                 value={getSelectedEducation()}
               />
+
+              <Tabs defaultValue="English" className="mt-4 w-full">
+                <TabsList className="flex w-full space-x-2 p-0">
+                  <TabsTrigger
+                    value="English"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    English
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Hindi"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    Hindi
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="English">
+                  <>
+                    <CardContent className="space-y-2 p-0">
+                      <CustomTextEditor
+                        name="about.en"
+                        label="About(English)"
+                        value={(requestData as IRequest)?.about?.en}
+                        onChange={(value) =>
+                          handleInputChange({
+                            target: {
+                              name: 'about.en',
+                              value: value,
+                              type: 'text'
+                            }
+                          })
+                        }
+                      />
+                    </CardContent>
+                  </>
+                </TabsContent>
+
+                <TabsContent value="Hindi">
+                  <>
+                    <CardContent className="space-y-2 p-0">
+                      <CustomTextEditor
+                        name="about.hi"
+                        label="About(Hindi)"
+                        value={(requestData as IRequest)?.about?.hi}
+                        onChange={(value) =>
+                          handleInputChange({
+                            target: {
+                              name: 'about.hi',
+                              value: value,
+                              type: 'text'
+                            }
+                          })
+                        }
+                      />
+                    </CardContent>
+                  </>
+                </TabsContent>
+              </Tabs>
 
               <FormItem className="space-y-3">
                 <FormLabel>Astrologer Image</FormLabel>

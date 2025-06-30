@@ -37,6 +37,7 @@ export default function HomeBannerForm() {
   const {
     singleHomeBannerState: { loading, data: bData }
   } = useAppSelector((state) => state.homeBanner);
+  console.log('this is the bdata', bData);
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [showBannerImage, setShowBannerImage] = useState(true);
   const [showBackgroundColor, setShowBackgroundColor] = useState(false);

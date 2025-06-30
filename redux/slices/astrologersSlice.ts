@@ -5,7 +5,9 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { da } from 'date-fns/locale';
-import { duration } from 'moment';
+import { cloneDeep } from 'lodash';
+import { processNestedFields } from '@/utils/UploadNestedFiles';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 export type IRequest = BaseModel & {
   _id?: string;
@@ -21,6 +23,10 @@ export type IRequest = BaseModel & {
   status?: string;
   active?: boolean;
   showinhome?: boolean;
+  about?: {
+    en?: string;
+    hi?: string;
+  };
   education?: any;
   expierience?: number;
   day?: string;
@@ -145,6 +151,7 @@ export const addEditRequest = createAsyncThunk<
     if (!data) {
       return rejectWithValue('Please Provide Details');
     }
+
     const formData = new FormData();
     const reqData: any = {
       name: data.name || '',
@@ -153,7 +160,6 @@ export const addEditRequest = createAsyncThunk<
       languages: JSON.stringify(data.languages) || [],
       skills: JSON.stringify(data.skills) || [],
       pricing: [{ duration: 15, price: '' }],
-
       email: data.email || '',
       phone: data.phone || '',
       password: data.password || '',
@@ -162,6 +168,7 @@ export const addEditRequest = createAsyncThunk<
       active: data.active,
       showinhome: data.showinhome,
       education: data.education,
+      about: JSON.stringify(data.about),
       expierience: data.expierience
     };
     // Append only defined fields to FormData
@@ -611,8 +618,19 @@ const requestSlice = createSlice({
       state.singleRequestState.data = action.payload;
     },
     updateRequestData(state, action) {
+      console.log('State value is', state);
       const oldData = state.singleRequestState.data;
-      state.singleRequestState.data = { ...oldData, ...action.payload };
+      const keyFirst = Object.keys(action.payload)[0];
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+        state.singleRequestState.data = newData;
+      } else {
+        state.singleRequestState.data = {
+          ...oldData,
+          ...action.payload
+        };
+      }
     },
     addEditRequestStart(state) {
       state.singleRequestState.loading = true;
