@@ -119,7 +119,7 @@ export default function PromoCodeForm() {
     dispatch(addEditPromoCode(entityId || null))
       .then((response: any) => {
         if (response.payload.success) {
-          router.push('/dashboard/promocodes');
+          router.push('/dashboard/settings/pages/promocodes');
           toast.success(response.payload.message);
         }
       })

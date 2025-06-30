@@ -747,6 +747,11 @@ export const navItems: NavItem[] = [
             title: 'Why Choose',
             url: '/dashboard/settings/pages/whyChoose',
             icon: 'general'
+          },
+          {
+            title: 'Promo code',
+            url: '/dashboard/settings/pages/promocodes',
+            icon: 'general'
           }
         ]
       },

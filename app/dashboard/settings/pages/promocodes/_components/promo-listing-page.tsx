@@ -107,7 +107,7 @@ export default function PromoCodeListingPage() {
               Export
             </Button>
             <Link
-              href={'/dashboard/promocodes/add'}
+              href={'/dashboard/settings/pages/promocodes/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New
