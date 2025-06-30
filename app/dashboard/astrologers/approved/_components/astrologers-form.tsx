@@ -20,7 +20,6 @@ import { toast } from 'sonner';
 import CustomReactSelect from '@/utils/CustomReactSelect';
 import {
   addEditRequest,
-  fetchAvailabilityList,
   fetchSingleRequest,
   IRequest,
   updateRequestData
@@ -59,9 +58,7 @@ export default function RequestForm() {
   const {
     singleRequestState: { data: requestData }
   } = useAppSelector((state) => state.astrologersData);
-  const {
-    availabilityState: { data: aData, loading }
-  } = useAppSelector((state) => state.astrologersData);
+
   const {
     languageDataListState: {
       loading: tagListLoading,
@@ -80,11 +77,7 @@ export default function RequestForm() {
     if (entityId) {
       dispatch(fetchSingleRequest(entityId));
     }
-    dispatch(
-      fetchAvailabilityList({
-        astroId: entityId ?? undefined
-      })
-    );
+
     dispatch(fetchLanguageDataList());
     dispatch(fetchSkillsList());
   }, [entityId, dispatch]);
@@ -102,11 +95,6 @@ export default function RequestForm() {
   const getSelectedEducation = () => {
     const educationValue = (requestData as IRequest)?.education;
     return educationsList.find((ed) => ed._id === educationValue) || null;
-  };
-
-  const getSelectedAvailability = () => {
-    const availabilityValue = (requestData as IRequest)?.availability;
-    return aData.find((ed: any) => ed?._id === availabilityValue) || null;
   };
 
   const handleInputChange = (e: any) => {
@@ -291,24 +279,6 @@ export default function RequestForm() {
                   })
                 }
                 value={getSelectedEducation()}
-              />
-
-              {/* CORRECTED: Availability field - single select */}
-              <CustomReactSelect
-                options={aData}
-                label="Availability"
-                getOptionLabel={(option) => option.title}
-                getOptionValue={(option) => option._id}
-                placeholder="Select Availability"
-                onChange={(selectedOption: any) =>
-                  handleInputChange({
-                    target: {
-                      name: 'availability',
-                      value: selectedOption?._id || ''
-                    }
-                  })
-                }
-                value={getSelectedAvailability()}
               />
 
               <FormItem className="space-y-3">

@@ -23,16 +23,11 @@ export type IRequest = BaseModel & {
   showinhome?: boolean;
   education?: any;
   expierience?: number;
-  charges?: number;
-  pricing?: {
-    duration: number;
-    price: number;
-  }[];
-  availability?: {
-    day?: string;
-    title?: string;
-    slots?: string[];
-  }[];
+  day?: string;
+  title?: string;
+  slotno?: any;
+  startTime?: any;
+  slottype?: any;
 };
 
 const initialState = {
@@ -158,7 +153,7 @@ export const addEditRequest = createAsyncThunk<
       languages: JSON.stringify(data.languages) || [],
       skills: JSON.stringify(data.skills) || [],
       pricing: [{ duration: 15, price: '' }],
-      availability: data.availability,
+
       email: data.email || '',
       phone: data.phone || '',
       password: data.password || '',
@@ -308,7 +303,6 @@ export const addEditSlot = createAsyncThunk<
       return rejectWithValue('Please Provide Details');
     }
     const formData = new FormData();
-    console.log('data is here', data);
     const reqData: any = {
       title: data?.title,
       astroId: data.astroId,
@@ -457,9 +451,11 @@ export const addEditAvailability = createAsyncThunk<
       }
       const formData = new FormData();
       const reqData: any = {
-        availability: JSON.stringify(data.availability) || [],
-        astroId: data.astroId,
-        title: data.title
+        day: data.day,
+        startTime: data.startTime,
+        slotno: data.slotno,
+        slottype: data.slottype,
+        astroId: data.astroId
       };
       // Append only defined fields to FormData
       Object.entries(reqData).forEach(([key, value]) => {
@@ -550,6 +546,47 @@ export const deleteAvailability = createAsyncThunk<
     toast.error(error.message);
   }
 });
+
+export const updateAvailabilitySlot = createAsyncThunk<
+  any,
+  {
+    slotId: string;
+    availabilityId: string;
+    active?: boolean;
+    status?: boolean;
+  },
+  { state: RootState }
+>(
+  'availability/add',
+  async (
+    { slotId, availabilityId, active, status },
+    { dispatch, rejectWithValue, getState }
+  ) => {
+    try {
+      const reqData: any = {
+        slotId,
+        availabilityId,
+        active,
+        status
+      };
+
+      let response = await fetchApi(`/availability/updateslot`, {
+        method: 'PUT',
+        body: reqData
+      });
+
+      if (response?.success) {
+        return response;
+      } else {
+        const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message ?? 'Something Went Wrong!!';
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
 
 const requestSlice = createSlice({
   name: 'requests',
