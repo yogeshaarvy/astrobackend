@@ -134,7 +134,6 @@ const AstrologerAvailabilities = () => {
         })
       ).unwrap();
     } catch (error) {
-      console.error(`Error updating slot ${field}:`, error);
       toast.error(`Failed to update slot ${field}`);
     }
   };
@@ -209,8 +208,8 @@ const AstrologerAvailabilities = () => {
           hasMore: false
         }));
       }
-    } catch (error) {
-      console.error('Error loading more data:', error);
+    } catch (error: any) {
+      toast.error('Error loading more data:', error);
     } finally {
       setLoadingMore(false);
     }
@@ -256,8 +255,8 @@ const AstrologerAvailabilities = () => {
           }
         }
       );
-    } catch (error) {
-      console.error('Error saving availability:', error);
+    } catch (error: any) {
+      toast.error('Error saving availability:', error);
     }
   };
 
