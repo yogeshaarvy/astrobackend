@@ -39,7 +39,6 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
   const logoPath = '/logo.png';
 
   const [loading, setLoading] = useState(false);
-  console.log('orderData', orderData);
 
   const handleStatusUpdate = async () => {
     try {

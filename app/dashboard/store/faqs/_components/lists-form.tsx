@@ -88,7 +88,6 @@ export default function ListForm() {
           router.push('/dashboard/store/faqs');
           toast.success(response?.payload?.message);
         } else {
-          console.log('error');
           toast.error(response.payload);
         }
       });

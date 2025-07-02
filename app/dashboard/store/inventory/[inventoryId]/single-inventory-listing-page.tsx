@@ -135,7 +135,6 @@ export default function ProductInventoryListingPage() {
     dispatch(addEditInventory(null))
       .unwrap()
       .then((result) => {
-        console.log('Inventory added successfully:', result);
         // Close the dialog on success
         setIsAddInventoryOpen(false);
 

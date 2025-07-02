@@ -24,7 +24,6 @@ export default function HoroscopeDetailPage() {
   const active = searchParams.get('active') || '';
   const field = searchParams.get('field') || '';
   const horoscopesignId = searchParams.get('horoscopesignId') || '';
-  console.log('Horocope list id in ui', horoscopesignId);
   const page = Number.parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = Number.parseInt(searchParams.get('limit') ?? '5', 10);
 

@@ -38,7 +38,6 @@ const Page = () => {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('name value', name, value);
     dispatch(
       updateShippingPolicysPage({
         [name]:

@@ -75,7 +75,6 @@ export default function AstroPackageForm() {
     try {
       dispatch(addEditHoroscopeDetail({ entityId, horoscopesignId })).then(
         (response: any) => {
-          console.log('this is vjdsvn', horoscopesignId);
           if (!response?.error) {
             router.push(
               `/dashboard/horoscope/prediction?horoscopesignId=${horoscopesignId}`

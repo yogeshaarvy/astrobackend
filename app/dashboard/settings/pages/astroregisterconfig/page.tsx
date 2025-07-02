@@ -58,7 +58,6 @@ const Page = () => {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('e-value', name, value);
     dispatch(
       updateAstrologerConfig({
         [name]:

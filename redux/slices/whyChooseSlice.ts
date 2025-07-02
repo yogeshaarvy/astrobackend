@@ -56,7 +56,6 @@ export const fetchWhyChoose = createAsyncThunk<
     if (response?.success) {
       dispatch(fetchSingleWhyChooseSuccess(response?.whyChoose));
 
-      console.log('fecthaboutWhyChoose', response);
       return response;
     } else {
       const errorMsg = response?.message || 'Failed to fetch description';

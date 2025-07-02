@@ -91,8 +91,6 @@ export const addEditSales = createAsyncThunk<any, null, { state: RootState }>(
         }
       } = getState();
 
-      console.log('data was coming on', data);
-
       dispatch(addEditSalesStart());
 
       if (!data) {
@@ -108,7 +106,6 @@ export const addEditSales = createAsyncThunk<any, null, { state: RootState }>(
 
         clonedData.images = imagesALl;
       }
-      console.log('data was coming on 3', clonedData);
 
       // Prepare FormData
       const formData = new FormData();
@@ -127,8 +124,6 @@ export const addEditSales = createAsyncThunk<any, null, { state: RootState }>(
           formData.append(key, value as string | Blob);
         }
       });
-
-      console.log('data was coming on 4', formData);
 
       let response = await fetchApi('/store/sales/createorupdate', {
         method: 'POST',

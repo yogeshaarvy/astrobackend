@@ -60,7 +60,6 @@ export const fetchHomeAbout = createAsyncThunk<
     if (response?.success) {
       dispatch(fetchSingleHomeAboutSuccess(response?.aboutAstro));
 
-      console.log('fectaboutAbout', response);
       return response;
     } else {
       const errorMsg = response?.message || 'Failed to fetch description';

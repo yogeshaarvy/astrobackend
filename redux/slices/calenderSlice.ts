@@ -49,7 +49,6 @@ export const fetchCalendarConfig = createAsyncThunk<
     if (response?.success) {
       dispatch(fetchSingleCalendarConfigSuccess(response?.calendarConfig));
 
-      console.log('fectaboutAbout', response);
       return response;
     } else {
       const errorMsg = response?.message || 'Failed to fetch description';

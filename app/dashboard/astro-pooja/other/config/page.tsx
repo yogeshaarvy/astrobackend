@@ -42,19 +42,15 @@ const Page = () => {
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
   const [image, setimage] = React.useState<File | null>(null);
 
-  console.log('The loading value is:', loading, cData);
-
   useEffect(() => {
     dispatch(fetchAstroPooja(null));
   }, []);
-  console.log('The cData value is:', cData);
   const form = useForm({
     defaultValues: {}
   });
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('e-value', name, value);
     dispatch(
       updateAstroPooja({
         [name]:
@@ -90,8 +86,6 @@ const Page = () => {
 
     dispatch(updateAstroPooja({ [name]: value }));
   };
-
-  console.log('The bannerImage type value is:', cData);
 
   return (
     <PageContainer scrollable>

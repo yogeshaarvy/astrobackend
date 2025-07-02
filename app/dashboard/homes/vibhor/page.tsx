@@ -33,13 +33,9 @@ const Page = () => {
   } = useAppSelector((state) => state.homeVibhor);
   const [sideImage, setSideImage] = React.useState<File | null>(null);
 
-  console.log('The loading value is:', loading, hvData);
-
   useEffect(() => {
     dispatch(fetchHomeVibhor(null));
   }, []);
-
-  console.log('The hvData value is:', hvData);
 
   const form = useForm({
     defaultValues: {}
@@ -55,7 +51,6 @@ const Page = () => {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('e-value', name, value);
     dispatch(
       updateHomeVibhor({
         [name]:
@@ -109,8 +104,6 @@ const Page = () => {
     const { name, value } = e;
     dispatch(updateHomeVibhor({ [name]: value }));
   };
-
-  console.log('The sideImage type value is:', hvData);
 
   return (
     <PageContainer scrollable>

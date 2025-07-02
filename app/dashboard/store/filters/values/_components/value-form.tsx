@@ -118,8 +118,6 @@ export default function ValuesForm() {
     );
   };
 
-  console.log('The vData value is:', vData);
-
   // Update typesData separately to ensure it syncs with the state
   React.useEffect(() => {
     if (vData?.types) {
