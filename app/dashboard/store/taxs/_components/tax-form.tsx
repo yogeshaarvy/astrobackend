@@ -1,59 +1,52 @@
 'use client';
-import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Form } from '@/components/ui/form';
-
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import PageContainer from '@/components/layout/page-container';
+import { Form, FormItem, FormLabel } from '@/components/ui/form';
 import {
-  updateTaxData,
-  setTaxData,
-  ITax,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter
+} from '@/components/ui/card';
+import PageContainer from '@/components/layout/page-container';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
+import React, { useEffect, useState } from 'react';
+import {
   addEditTax,
+  ITax,
+  updateTaxData,
   fetchSingleTax
 } from '@/redux/slices/taxsSlice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { FileUploader, FileViewCard } from '@/components/file-uploader';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import CustomDropdown from '@/utils/CusomDropdown';
+import CustomTextEditor from '@/utils/CustomTextEditor';
 import CustomTextField from '@/utils/CustomTextField';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-
-import { toast } from 'sonner';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-export default function TaxForm() {
+export default function TagsForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const {
     singleTaxState: { loading, data: bData }
   } = useAppSelector((state) => state.taxsdata);
+  console.log('this is the bData', bData);
+  const form = useForm<ITax>({});
 
-  const form = useForm<ITax>({
-    defaultValues: {
-      name: {
-        en: '',
-        hi: ''
-      },
-      active: false
-    }
-  });
-  React.useEffect(() => {
+  useEffect(() => {
     if (entityId) {
       dispatch(fetchSingleTax(entityId));
     }
   }, [entityId]);
 
-  React.useEffect(() => {
-    if (bData && entityId) {
-      form.setValue('name.en', (bData as ITax)?.name?.en || '');
-      form.setValue('name.hi', (bData as ITax)?.name?.hi || '');
-      form.setValue('rate', (bData as ITax)?.rate || '');
-    }
-  }, [bData, entityId, form]);
-
-  // Handle Input Change
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
@@ -71,96 +64,120 @@ export default function TaxForm() {
     );
   };
 
-  function onSubmit() {
-    dispatch(addEditTax(entityId || null))
-      .then((response: any) => {
-        if (response.payload.success) {
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+
+    try {
+      dispatch(addEditTax(entityId)).then((response: any) => {
+        if (!response?.error) {
           router.push('/dashboard/store/taxs');
-          toast.success(response.payload.message);
+          toast.success(response?.payload?.message);
+        } else {
+          toast.error(response.payload);
         }
-      })
-      .catch((err: any) => toast.error('Error:', err));
-  }
+      });
+    } catch (error) {
+      toast.error('Something Went Wrong');
+    }
+  };
+
+  const handleDropdownChange = (e: any) => {
+    const { name, value } = e;
+
+    dispatch(
+      updateTaxData({ [name]: value }) // .then(handleReduxResponse());
+    );
+  };
 
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Tax Information
+            Taxs List Information
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <Tabs defaultValue="English" className="mt-4 w-full">
-                <TabsList className="flex w-full space-x-2 p-0">
-                  <TabsTrigger
-                    value="English"
-                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
-                  >
-                    English
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="Hindi"
-                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
-                  >
-                    Hindi
-                  </TabsTrigger>
-                </TabsList>
+          <div className="space-y-8">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="space-y-8"
+              >
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <CustomTextField
+                    name="rate"
+                    control={form.control}
+                    label="Rate"
+                    placeholder="Enter Rate"
+                    value={(bData as ITax)?.rate}
+                    onChange={handleInputChange}
+                    type="number"
+                  />
+                </div>
+                <Tabs defaultValue="English" className="mt-4 w-full">
+                  <TabsList className="flex w-full space-x-2 p-0">
+                    <TabsTrigger
+                      value="English"
+                      className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                    >
+                      English
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="Hindi"
+                      className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                    >
+                      Hindi
+                    </TabsTrigger>
+                  </TabsList>
 
-                <TabsContent value="English">
-                  {/* <CardHeader className="!px-0">
-                      <CardTitle className="text-lg font-bold ">
-                        ENGLISH
-                      </CardTitle>
-                    </CardHeader> */}
-                  <CardContent className="space-y-2 p-0">
-                    <CustomTextField
-                      name="name.en"
-                      control={form.control}
-                      label="Name (English)"
-                      placeholder="Enter your name"
-                      value={(bData as ITax)?.name?.en}
-                      onChange={handleInputChange}
-                    />
-                  </CardContent>
-                </TabsContent>
+                  <TabsContent value="English">
+                    <>
+                      <CardContent className="space-y-2 p-0">
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Tags</Label>
+                          <Input
+                            name="name.en"
+                            placeholder="Enter your Tax Name"
+                            value={(bData as ITax)?.name?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </CardContent>
+                    </>
+                  </TabsContent>
 
-                <TabsContent value="Hindi">
-                  {/* <CardHeader className="!px-0">
-                      <CardTitle className="text-lg font-bold ">
-                        HINDI
-                      </CardTitle>
-                    </CardHeader> */}
-                  <CardContent className="space-y-2 p-0">
-                    <CustomTextField
-                      name="name.hi"
-                      control={form.control}
-                      label="Name"
-                      placeholder="Enter your name"
-                      value={(bData as ITax)?.name?.hi}
-                      onChange={handleInputChange}
-                    />
-                  </CardContent>
-                </TabsContent>
-              </Tabs>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <CustomTextField
-                  name="rate"
-                  control={form.control}
-                  label="Rate"
-                  placeholder="Enter Rate"
-                  value={(bData as ITax)?.rate}
-                  onChange={handleInputChange}
-                  type="number"
-                />
-              </div>
-
-              <Button type="submit">Submit</Button>
-            </form>
-          </Form>
+                  <TabsContent value="Hindi">
+                    <>
+                      <CardContent className="space-y-2 p-0">
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Tags</Label>
+                          <Input
+                            name="name.hi"
+                            placeholder="Enter your Tax Name"
+                            value={(bData as ITax)?.name?.hi}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </CardContent>
+                    </>
+                  </TabsContent>
+                </Tabs>
+              </form>
+            </Form>
+          </div>
         </CardContent>
+        <CardFooter
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '1rem'
+          }}
+        >
+          <Button type="submit" onClick={(e: any) => handleSubmit(e)}>
+            Submit
+          </Button>
+        </CardFooter>
       </Card>
     </PageContainer>
   );

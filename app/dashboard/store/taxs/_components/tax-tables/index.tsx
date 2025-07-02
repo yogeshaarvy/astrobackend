@@ -67,7 +67,7 @@ export default function TaxTable({
     },
 
     {
-      accessorKey: 'name',
+      accessorKey: 'name.en',
       header: 'NAME'
     },
 

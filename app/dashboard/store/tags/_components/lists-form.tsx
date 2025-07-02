@@ -37,7 +37,6 @@ export default function TagsForm() {
   const {
     singleTagState: { loading, data: bData }
   } = useAppSelector((state) => state.tags);
-  console.log('this is the bdata:', bData);
 
   const form = useForm<ITag>({});
 
