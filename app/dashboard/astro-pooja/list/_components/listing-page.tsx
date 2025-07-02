@@ -43,7 +43,6 @@ export default function AstropoojaListPage() {
 
   const astropoojaList: IAstropoojaList[] = astropoojaListData;
 
-  console.log('this is the list data of the', astropoojaList);
   const handleSearch = () => {
     if (!field || !keyword) {
       toast.warning(

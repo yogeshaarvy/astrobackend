@@ -30,7 +30,6 @@ const Page = () => {
   const {
     settingState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.settings);
-  console.log('this is the cData', cData);
   const [darkLogo, setDarkLogo] = useState<File | null>(null);
   const [lightLogo, setLightLogo] = useState<File | null>(null);
 

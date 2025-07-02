@@ -618,7 +618,6 @@ const requestSlice = createSlice({
       state.singleRequestState.data = action.payload;
     },
     updateRequestData(state, action) {
-      console.log('State value is', state);
       const oldData = state.singleRequestState.data;
       const keyFirst = Object.keys(action.payload)[0];
       if (keyFirst.includes('.')) {

@@ -37,7 +37,6 @@ export default function AllOrdersListingPage() {
       pagination: { totalCount } = { totalCount: 0 }
     }
   } = useAppSelector((state) => state.allpoojsorders);
-  console.log('pooja data is .......', pData);
   // Function to get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
     const today = new Date();

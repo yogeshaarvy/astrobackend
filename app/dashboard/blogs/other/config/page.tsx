@@ -41,19 +41,15 @@ const Page = () => {
   } = useAppSelector((state) => state.blogConfig);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
 
-  console.log('The loading value is:', loading, cData);
-
   useEffect(() => {
     dispatch(fetchBlog(null));
   }, []);
-  console.log('The cData value is:', cData);
   const form = useForm({
     defaultValues: {}
   });
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('e-value', name, value);
     dispatch(
       updateBlog({
         [name]:
@@ -91,8 +87,6 @@ const Page = () => {
       updateBlog({ [name]: value }) // .then(handleReduxResponse());
     );
   };
-
-  console.log('The bannerImage type value is:', cData);
 
   return (
     <PageContainer scrollable>

@@ -17,6 +17,7 @@ import {
   deleteSlot
 } from '@/redux/slices/astrologersSlice';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 
 const SlotAdminPanel = () => {
   const {
@@ -121,8 +122,8 @@ const SlotAdminPanel = () => {
         const totalLoaded = allSlots.length + newSlots.length;
         setHasMoreData(totalLoaded < newTotal);
       }
-    } catch (error) {
-      console.error('Error loading more slots:', error);
+    } catch (error: any) {
+      toast.error('Error loading more slots:', error);
     } finally {
       setLoadingMore(false);
     }

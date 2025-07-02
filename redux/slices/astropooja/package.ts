@@ -64,7 +64,6 @@ export const addEditAstroPackage = createAsyncThunk<
     { entityId, astropoojaId },
     { dispatch, rejectWithValue, getState }
   ) => {
-    console.log('entity id is', entityId);
     try {
       const {
         astroPackage: {
@@ -103,19 +102,16 @@ export const addEditAstroPackage = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        console.log('add api called');
         response = await fetchApi('/astro-pooja/package/create', {
           method: 'POST',
           body: formData
         });
       } else {
-        console.log('update is called');
         response = await fetchApi(`/astro-pooja/package/update/${entityId}`, {
           method: 'PUT',
           body: formData
         });
       }
-      console.log('response of update and ADDD API ID', response);
       if (response?.success) {
         dispatch(addEditAstroPackageSuccess());
         dispatch(fetchAstroPackageList());
@@ -362,7 +358,7 @@ const astroPackageSlice = createSlice({
     deleteAstroPackageSuccess(state, action) {
       state.singleAstroPackageState.loading = false;
       // Remove deleted item from list if it exists
-      state.astroPackageList.data = state.astroPackageList.data.filter(
+      state.astroPackageList.data = state?.astroPackageList?.data.filter(
         (item) => item._id !== action.payload
       );
     },

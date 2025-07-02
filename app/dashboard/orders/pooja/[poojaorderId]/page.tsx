@@ -19,7 +19,6 @@ const Page = () => {
     });
   }, [dispatch, orderId]); // Added orderId as a dependency
 
-  console.log('order deatils data is ......', orderDetails);
   return (
     <div>
       <OrderDetailsPage orderData={orderDetails} />

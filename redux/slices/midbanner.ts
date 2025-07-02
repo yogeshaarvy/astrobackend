@@ -40,7 +40,6 @@ export const fetchMidbanner = createAsyncThunk<
     const response = await fetchApi('/store/banner/get', {
       method: 'GET'
     });
-    console.log('response1', response);
     if (response?.success) {
       dispatch(fetchSingleMidbannerSuccess(response?.data));
       return response;
@@ -69,7 +68,6 @@ export const addEditMidbanner = createAsyncThunk<
           midbannerState: { data }
         }
       } = getState();
-      console.log('image data', data);
 
       dispatch(addEditMidbannerStart());
 
@@ -83,8 +81,6 @@ export const addEditMidbanner = createAsyncThunk<
         clonedData = await processNestedFields(clonedData);
       }
 
-      console.log('The clonedData value is:', clonedData);
-
       const formData = new FormData();
 
       const reqData: any = {
@@ -95,7 +91,6 @@ export const addEditMidbanner = createAsyncThunk<
         image: clonedData.image,
         link: clonedData.link
       };
-      console.log('req.data', reqData);
       Object.entries(reqData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formData.append(key, value as string | Blob);

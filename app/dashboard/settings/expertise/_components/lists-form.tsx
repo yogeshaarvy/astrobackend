@@ -37,7 +37,6 @@ export default function ListForm() {
     singleSkillState: { data: bData }
   } = useAppSelector((state) => state.skills);
 
-  console.log('bData', bData);
   const form = useForm<ISkills>({});
 
   useEffect(() => {

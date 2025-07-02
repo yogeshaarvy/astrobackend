@@ -69,7 +69,6 @@ export default function RequestForm() {
   const {
     SkillsList: { loading: ListLoading, data: skillsData = [] }
   } = useAppSelector((state) => state.skills);
-  console.log('  skillsData data is this ....', skillsData);
   const form = useForm({});
   const [Image, setImage] = React.useState<File | null>(null);
 

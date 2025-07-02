@@ -41,19 +41,16 @@ const Page = () => {
   } = useAppSelector((state) => state.calendarConfig);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
 
-  console.log('The loading value is:', loading, cData);
-
   useEffect(() => {
     dispatch(fetchCalendarConfig(null));
   }, []);
-  console.log('The cData value is:', cData);
+
   const form = useForm({
     defaultValues: {}
   });
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('e-value', name, value);
     dispatch(
       updateCalendarConfig({
         [name]:
@@ -88,8 +85,6 @@ const Page = () => {
 
     dispatch(updateCalendarConfig({ [name]: value }));
   };
-
-  console.log('The bannerImage type value is:', cData);
 
   return (
     <PageContainer scrollable>

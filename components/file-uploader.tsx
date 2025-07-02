@@ -114,8 +114,6 @@ export function FileUploader(props: FileUploaderProps) {
     onChange: onValueChange
   });
 
-  console.log('The files value is:', files, existingImageURL, files?.length);
-
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (!multiple && maxFiles === 1 && acceptedFiles.length > 1) {
@@ -284,10 +282,6 @@ export function FileCard({
   onRemove,
   existingImageURL
 }: FileCardProps) {
-  console.log(
-    'The exisitngImage URL in the FileUploader is:',
-    existingImageURL
-  );
   return (
     <div className="relative flex items-center space-x-4">
       <div className="flex flex-1 space-x-4">
@@ -344,10 +338,6 @@ export function FileViewCard({
   onRemove,
   existingImageURL
 }: FileViewCardProps) {
-  console.log(
-    'The exisitngImage URL in the FileUploader is:',
-    existingImageURL
-  );
   return (
     <div className="relative flex items-center space-x-4">
       <div className="flex flex-1 space-x-4">

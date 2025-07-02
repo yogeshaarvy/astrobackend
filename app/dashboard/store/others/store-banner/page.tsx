@@ -103,8 +103,6 @@ export default function ListForm() {
     }
   };
 
-  console.log('The jData value is:', jData);
-
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">

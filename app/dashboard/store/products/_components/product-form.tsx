@@ -465,7 +465,6 @@ export default function ProductsForm() {
 
     // Submit the data to the API
     dispatch(addEditProducts(entityId || null)).then((response) => {
-      console.log('response of add edit product is', response);
       if (!response?.error) {
         router.push('/dashboard/store/products');
         toast.success(

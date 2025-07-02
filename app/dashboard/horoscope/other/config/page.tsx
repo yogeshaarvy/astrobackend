@@ -43,19 +43,15 @@ const Page = () => {
   const [sideImage, setsideImage] = React.useState<File | null>(null);
   const [rightImage, setrightImage] = React.useState<File | null>(null);
 
-  console.log('The loading value is:', loading, cData);
-
   useEffect(() => {
     dispatch(fetchHoroscope(null));
   }, []);
-  console.log('The cData value is:', cData);
   const form = useForm({
     defaultValues: {}
   });
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
-    console.log('e-value', name, value);
     dispatch(
       updateHoroscope({
         [name]:
@@ -93,8 +89,6 @@ const Page = () => {
       updateHoroscope({ [name]: value }) // .then(handleReduxResponse());
     );
   };
-
-  console.log('The bannerImage type value is:', cData);
 
   return (
     <PageContainer scrollable>

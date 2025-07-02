@@ -52,7 +52,6 @@ export default function TypesForm() {
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
 
-    console.log('namevalue', name, value);
     dispatch(
       updateTypesData({
         [name]:

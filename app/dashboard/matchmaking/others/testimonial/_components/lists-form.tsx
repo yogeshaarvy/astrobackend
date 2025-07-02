@@ -41,7 +41,6 @@ export default function ListForm() {
   const {
     singleMatchMakingTestimonialState: { data: jData }
   } = useAppSelector((state) => state.matchMakingTestimonial);
-  console.log('this is falana dhimkana', jData);
 
   const form = useForm({});
 

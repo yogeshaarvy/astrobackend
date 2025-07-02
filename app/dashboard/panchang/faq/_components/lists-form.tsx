@@ -89,7 +89,6 @@ export default function ListForm() {
           router.push('/dashboard/panchang/faq');
           toast.success(response?.payload?.message);
         } else {
-          console.log('error');
           toast.error(response.payload);
         }
       });
