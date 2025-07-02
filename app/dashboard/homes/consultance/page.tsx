@@ -211,6 +211,22 @@ const Page = () => {
                       </>
                     </FormItem>
                   </div>
+                  <div className="mt-4 space-y-3">
+                    <CustomDropdown
+                      label="Side Image Alignment"
+                      name="mainSection.imageAlignment"
+                      defaultValue="left"
+                      data={[
+                        { name: 'Left', _id: 'left' },
+                        { name: 'Right', _id: 'right' }
+                      ]}
+                      value={
+                        (cData as IConsultance)?.mainSection?.imageAlignment ||
+                        ''
+                      }
+                      onChange={handleDropdownChange}
+                    />
+                  </div>
 
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
@@ -360,20 +376,6 @@ const Page = () => {
                         className="flex-1"
                       />
                     </div>
-                    <CustomDropdown
-                      label="Text Alignment"
-                      name="mainSection.textAlignment"
-                      defaultValue="left"
-                      data={[
-                        { name: 'Left', _id: 'left' },
-                        { name: 'Right', _id: 'right' }
-                      ]}
-                      value={
-                        (cData as IConsultance)?.mainSection?.textAlignment ||
-                        ''
-                      }
-                      onChange={handleDropdownChange}
-                    />
                   </div>
                   <div className="mt-4 space-y-1">
                     <Label htmlFor="name" className="space-x-3">

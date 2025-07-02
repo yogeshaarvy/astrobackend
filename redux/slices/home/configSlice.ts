@@ -21,6 +21,7 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    active?: boolean;
   };
   horoscopeForest?: {
     divide_Image?: string;
@@ -32,6 +33,7 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    active?: boolean;
   };
   latestArticles?: {
     title?: {
@@ -42,6 +44,7 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    active?: boolean;
   };
   ourProducts?: {
     title?: {
@@ -52,6 +55,7 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    active?: boolean;
   };
   talkToAstrologer?: {
     title?: {
@@ -62,6 +66,7 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    active?: boolean;
   };
   vedMantraJaap?: {
     title?: {
@@ -72,6 +77,7 @@ export type IConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
+    active?: boolean;
   };
 };
 

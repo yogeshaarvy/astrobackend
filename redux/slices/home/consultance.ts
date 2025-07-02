@@ -23,7 +23,7 @@ export type IConsultance = BaseModel & {
       en?: string;
       hi?: string;
     };
-    textAlignment?: 'right' | 'left';
+    imageAlignment?: 'right' | 'left';
     textColor?: string;
     buttonStatus?: boolean;
     buttonTitle?: {
