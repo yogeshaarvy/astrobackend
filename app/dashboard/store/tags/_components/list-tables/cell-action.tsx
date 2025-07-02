@@ -8,11 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { ITag, deleteTag } from '@/redux/slices/store/tagsSlice';
+import { deleteTag, ITag } from '@/redux/slices/store/tagsSlice';
+import { AppDispatch } from '@/redux/store';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+
 interface CellActionProps {
   data: ITag;
 }
@@ -20,8 +22,9 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const dispatch = useDispatch();
+
   const onConfirm = async () => {
     dispatch(deleteTag(data?._id || ''));
     setOpen(false);
@@ -42,6 +45,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
+
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
@@ -52,9 +56,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
-          {/* <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem> */}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
