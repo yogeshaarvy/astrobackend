@@ -52,64 +52,12 @@ export default function HomeBannerListPage() {
     dispatch(fetchHomeBannerList({ page, pageSize, keyword, field, active }));
   };
 
-  const handleExport = async () => {
-    dispatch(
-      fetchHomeBannerList({
-        page,
-        pageSize,
-        keyword,
-        field,
-        active,
-        exportData: true
-      })
-    ).then((response: any) => {
-      if (response?.error) {
-        toast.error("Can't Export The Data Something Went Wrong");
-      }
-      const allHomeBannerList = response.payload?.homeBanner;
-      const fileType =
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-      const fileExtension = '.xlsx';
-      const fileName = 'Home_Banner';
-
-      const ws = XLSX.utils.json_to_sheet(
-        allHomeBannerList?.map((row: any) => {
-          const id = row?._id || 'N/A';
-          const active = row?.active || 'false';
-          const title = row?.title || 'N/A';
-          const sequence = row?.sequence || `N/A`;
-
-          return {
-            ID: id,
-            Title: title,
-            Active: active,
-            Sequence: sequence
-          };
-        })
-      );
-
-      const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
-      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-
-      const data = new Blob([excelBuffer], { type: fileType });
-      const url = URL.createObjectURL(data);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName + fileExtension;
-      a.click();
-    });
-  };
-
   return (
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading title={`Home Banner List (${totalCount})`} description="" />
           <div className="flex gap-5">
-            <Button variant="default" onClick={handleExport}>
-              Export All
-            </Button>
-
             <Link
               href={'/dashboard/homes/banner/add'}
               className={buttonVariants({ variant: 'default' })}
