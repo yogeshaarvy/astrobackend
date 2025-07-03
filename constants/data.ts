@@ -175,6 +175,11 @@ export const navItems: NavItem[] = [
         title: 'News Letter',
         url: '/dashboard/homes/newsletter',
         icon: 'settings'
+      },
+      {
+        title: 'Testimonial',
+        url: '/dashboard/homes/testimonial',
+        icon: 'message'
       }
     ]
   },
