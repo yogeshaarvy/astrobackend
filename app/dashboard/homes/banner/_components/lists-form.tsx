@@ -239,20 +239,6 @@ export default function HomeBannerForm() {
                             onChange={handleInputChange}
                           />
                         </div>
-                        <CustomTextEditor
-                          name="description.en"
-                          label="Full Description"
-                          value={(bData as IHomeBanner)?.description?.en}
-                          onChange={(value) =>
-                            handleInputChange({
-                              target: {
-                                name: 'description.en',
-                                value: value,
-                                type: 'text'
-                              }
-                            })
-                          }
-                        />
                       </CardContent>
                     </>
                   </TabsContent>
@@ -280,20 +266,6 @@ export default function HomeBannerForm() {
                             onChange={handleInputChange}
                           />
                         </div>
-                        <CustomTextEditor
-                          name="description.hi"
-                          label="Full Description"
-                          value={(bData as IHomeBanner)?.description?.hi}
-                          onChange={(value) =>
-                            handleInputChange({
-                              target: {
-                                name: 'description.hi',
-                                value: value,
-                                type: 'text'
-                              }
-                            })
-                          }
-                        />
                       </CardContent>
                     </>
                   </TabsContent>

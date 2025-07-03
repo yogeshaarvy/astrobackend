@@ -1,19 +1,14 @@
-import { searchParamsCache } from '@/lib/searchparams';
 import { SearchParams } from 'nuqs/parsers';
-import React from 'react';
-import TagsListingPage from './_components/tag-listing-page';
-import { getCurrentEmployee } from '@/services/utlis/getCurrentEmployee';
-import { getCurrentModulePermission } from '@/services/utlis/getCurrentModulePermission';
-import TagNotAllwoed from '@/components/not-allowed';
+import TagsListPage from './_components/listing-page';
 
 type PageProps = {
   searchParams: SearchParams;
 };
 
 export const metadata = {
-  title: 'Dashboard : Tags'
+  title: 'Dashboard : Tags List'
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return <TagsListingPage />;
+  return <TagsListPage />;
 }

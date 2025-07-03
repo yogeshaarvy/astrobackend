@@ -15,11 +15,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import React, { useEffect, useState } from 'react';
 import {
-  addEditTax,
-  ITax,
-  updateTaxData,
-  fetchSingleTax
-} from '@/redux/slices/taxsSlice';
+  addEditTag,
+  ITag,
+  updateTagData,
+  fetchSingleTag
+} from '@/redux/slices/store/tagsSlice';
 import { FileUploader, FileViewCard } from '@/components/file-uploader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
@@ -27,7 +27,6 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import CustomDropdown from '@/utils/CusomDropdown';
 import CustomTextEditor from '@/utils/CustomTextEditor';
-import CustomTextField from '@/utils/CustomTextField';
 
 export default function TagsForm() {
   const params = useSearchParams();
@@ -36,14 +35,14 @@ export default function TagsForm() {
   const router = useRouter();
 
   const {
-    singleTaxState: { loading, data: bData }
-  } = useAppSelector((state) => state.taxsdata);
-  console.log('this is the bData', bData);
-  const form = useForm<ITax>({});
+    singleTagState: { loading, data: bData }
+  } = useAppSelector((state) => state.tags);
+
+  const form = useForm<ITag>({});
 
   useEffect(() => {
     if (entityId) {
-      dispatch(fetchSingleTax(entityId));
+      dispatch(fetchSingleTag(entityId));
     }
   }, [entityId]);
 
@@ -51,7 +50,7 @@ export default function TagsForm() {
     const { name, value, type, files, checked } = e.target;
 
     dispatch(
-      updateTaxData({
+      updateTagData({
         [name]:
           type === 'file'
             ? files?.[0]
@@ -68,9 +67,9 @@ export default function TagsForm() {
     e.preventDefault();
 
     try {
-      dispatch(addEditTax(entityId)).then((response: any) => {
+      dispatch(addEditTag(entityId)).then((response: any) => {
         if (!response?.error) {
-          router.push('/dashboard/store/taxs');
+          router.push('/dashboard/store/tags');
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -85,7 +84,7 @@ export default function TagsForm() {
     const { name, value } = e;
 
     dispatch(
-      updateTaxData({ [name]: value }) // .then(handleReduxResponse());
+      updateTagData({ [name]: value }) // .then(handleReduxResponse());
     );
   };
 
@@ -94,7 +93,7 @@ export default function TagsForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Taxs List Information
+            Tags List Information
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -104,17 +103,6 @@ export default function TagsForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <CustomTextField
-                    name="rate"
-                    control={form.control}
-                    label="Rate"
-                    placeholder="Enter Rate"
-                    value={(bData as ITax)?.rate}
-                    onChange={handleInputChange}
-                    type="number"
-                  />
-                </div>
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
                     <TabsTrigger
@@ -138,8 +126,8 @@ export default function TagsForm() {
                           <Label htmlFor="name">Tags</Label>
                           <Input
                             name="name.en"
-                            placeholder="Enter your Tax Name"
-                            value={(bData as ITax)?.name?.en}
+                            placeholder="Enter your Tag Name"
+                            value={(bData as ITag)?.name?.en}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -154,8 +142,8 @@ export default function TagsForm() {
                           <Label htmlFor="name">Tags</Label>
                           <Input
                             name="name.hi"
-                            placeholder="Enter your Tax Name"
-                            value={(bData as ITax)?.name?.hi}
+                            placeholder="Enter your Tag Name"
+                            value={(bData as ITag)?.name?.hi}
                             onChange={handleInputChange}
                           />
                         </div>

@@ -12,10 +12,6 @@ export type IHomeBanner = BaseModel & {
     en?: string;
     hi?: string;
   };
-  description?: {
-    en?: string;
-    hi?: string;
-  };
   short_description?: {
     en?: string;
     hi?: string;
@@ -84,9 +80,6 @@ export const addEditHomeBannerList = createAsyncThunk<
       const formData = new FormData();
       const reqData: any = {
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
-        description: clonedData.description
-          ? JSON.stringify(clonedData.description)
-          : undefined,
         short_description: clonedData.short_description
           ? JSON.stringify(clonedData.short_description)
           : undefined,

@@ -3,16 +3,13 @@
 import { searchParams } from '@/lib/searchparams';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-
-import { fetchTagList } from '@/redux/slices/store/tagsSlice';
+export const FIELD_OPTIONS = [{ value: 'title.en', label: 'Title' }];
 export const STATUS_OPTIONS = [
   { value: 'true', label: 'True' },
   { value: 'false', label: 'False' }
 ];
 
-export function useTagTableFilters() {
-  const dispatch = useDispatch();
+export function useListTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
     searchParams.q
@@ -20,9 +17,13 @@ export function useTagTableFilters() {
       .withDefault('')
   );
 
-  const [statusFilter, setStatusFilter] = useQueryState(
-    'status',
-    searchParams.status.withOptions({ shallow: false }).withDefault('')
+  const [fieldFilter, setFieldFilter] = useQueryState(
+    'field',
+    searchParams.field.withOptions({ shallow: false }).withDefault('')
+  );
+  const [activeFilter, setActiveFilter] = useQueryState(
+    'active',
+    searchParams.active.withOptions({ shallow: false }).withDefault('')
   );
 
   const [page, setPage] = useQueryState(
@@ -32,21 +33,22 @@ export function useTagTableFilters() {
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setStatusFilter(null);
-    setPage(1);
-    dispatch(fetchTagList());
-  }, [setSearchQuery, setPage, setStatusFilter]);
+    setFieldFilter(null);
+    setActiveFilter(null);
+    // setPage(1);
+  }, [setSearchQuery, setFieldFilter, setPage, setActiveFilter]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!statusFilter;
-  }, [searchQuery, statusFilter]);
+    return !!searchQuery || !!fieldFilter || !!activeFilter;
+  }, [searchQuery, fieldFilter, activeFilter]);
 
   return {
     searchQuery,
     setSearchQuery,
-
-    statusFilter,
-    setStatusFilter,
+    fieldFilter,
+    setFieldFilter,
+    activeFilter,
+    setActiveFilter,
     page,
     setPage,
     resetFilters,
