@@ -52,64 +52,12 @@ export default function OurServicesListPage() {
     dispatch(fetchOurServicesList({ page, pageSize, keyword, field, active }));
   };
 
-  const handleExport = async () => {
-    dispatch(
-      fetchOurServicesList({
-        page,
-        pageSize,
-        keyword,
-        field,
-        active,
-        exportData: true
-      })
-    ).then((response: any) => {
-      if (response?.error) {
-        toast.error("Can't Export The Data Something Went Wrong");
-      }
-      const allOurServicesList = response.payload?.ourService;
-      const fileType =
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-      const fileExtension = '.xlsx';
-      const fileName = 'Our_Services';
-
-      const ws = XLSX.utils.json_to_sheet(
-        allOurServicesList?.map((row: any) => {
-          const id = row?._id || 'N/A';
-          const active = row?.active || 'false';
-          const title = row?.title || 'N/A';
-          const sequence = row?.sequence || `N/A`;
-
-          return {
-            ID: id,
-            Title: title,
-            Active: active,
-            Sequence: sequence
-          };
-        })
-      );
-
-      const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
-      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-
-      const data = new Blob([excelBuffer], { type: fileType });
-      const url = URL.createObjectURL(data);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName + fileExtension;
-      a.click();
-    });
-  };
-
   return (
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading title={`Our Services List (${totalCount})`} description="" />
           <div className="flex gap-5">
-            <Button variant="default" onClick={handleExport}>
-              Export All
-            </Button>
-
             <Link
               href={'/dashboard/homes/ourServices/add'}
               className={buttonVariants({ variant: 'default' })}

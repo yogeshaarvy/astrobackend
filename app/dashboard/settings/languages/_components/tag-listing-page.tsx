@@ -108,13 +108,13 @@ export default function LanguageListingPage() {
         <div className="flex items-start justify-between pr-4">
           <Heading title={`Language`} description="" />
           <div className="flex items-center">
-            <Button
+            {/* <Button
               className="mx-5 py-4"
               variant="default"
               onClick={handleExport}
             >
               Export
-            </Button>
+            </Button> */}
             <Link
               href={'/dashboard/settings/languages/add'}
               className={buttonVariants({ variant: 'default' })}

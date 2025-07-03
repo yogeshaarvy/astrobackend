@@ -44,54 +44,54 @@ export default function TypesListingPage() {
     dispatch(fetchTypesList({ page, pageSize, keyword, field, status }));
   };
 
-  const handleExport = async () => {
-    try {
-      // Fetch the export data from the API
-      const exportResponse = await dispatch(
-        fetchTypesList({
-          page,
-          pageSize,
-          keyword,
-          field,
-          status,
-          exportData: 'true'
-        })
-      ).unwrap(); // Ensure this returns a promise that resolves the data
-      const exportData = exportResponse.filterTypesdata;
+  // const handleExport = async () => {
+  //   try {
+  //     // Fetch the export data from the API
+  //     const exportResponse = await dispatch(
+  //       fetchTypesList({
+  //         page,
+  //         pageSize,
+  //         keyword,
+  //         field,
+  //         status,
+  //         exportData: 'true'
+  //       })
+  //     ).unwrap(); // Ensure this returns a promise that resolves the data
+  //     const exportData = exportResponse.filterTypesdata;
 
-      if (!exportData || exportData.length === 0) {
-        alert('No data available to export');
-        return;
-      }
+  //     if (!exportData || exportData.length === 0) {
+  //       alert('No data available to export');
+  //       return;
+  //     }
 
-      // Generate CSV content
-      const csvContent = [
-        ['ID', 'NAME', 'SEQUENCE', 'SEARCH PAGE', 'TYPE', 'ACTIVE'], // CSV headers
-        ...exportData.map((item: ITypes) => [
-          item._id,
-          item.name,
-          item.sequence,
-          item.searchPage,
-          item.type,
-          item.active
-        ])
-      ]
-        .map((row) => row.join(','))
-        .join('\n');
+  //     // Generate CSV content
+  //     const csvContent = [
+  //       ['ID', 'NAME', 'SEQUENCE', 'SEARCH PAGE', 'TYPE', 'ACTIVE'], // CSV headers
+  //       ...exportData.map((item: ITypes) => [
+  //         item._id,
+  //         item.name,
+  //         item.sequence,
+  //         item.searchPage,
+  //         item.type,
+  //         item.active
+  //       ])
+  //     ]
+  //       .map((row) => row.join(','))
+  //       .join('\n');
 
-      // Create a blob and trigger download
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', 'type_data.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Failed to export data:', error);
-      alert('An error occurred while exporting data.');
-    }
-  };
+  //     // Create a blob and trigger download
+  //     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  //     const link = document.createElement('a');
+  //     link.href = URL.createObjectURL(blob);
+  //     link.setAttribute('download', 'type_data.csv');
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //   } catch (error) {
+  //     console.error('Failed to export data:', error);
+  //     alert('An error occurred while exporting data.');
+  //   }
+  // };
   return (
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">
@@ -99,13 +99,13 @@ export default function TypesListingPage() {
           <Heading title={`Types`} description="" />
 
           <div className="flex items-center">
-            <Button
+            {/* <Button
               className="mx-5 py-4"
               variant="default"
               onClick={handleExport}
             >
               Export
-            </Button>
+            </Button> */}
 
             <Link
               href={'/dashboard/store/filters/types/add'}
