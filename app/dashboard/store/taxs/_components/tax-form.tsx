@@ -94,7 +94,7 @@ export default function TagsForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Taxs List Information
+            Tax List Information
           </CardTitle>
         </CardHeader>
         <CardContent>

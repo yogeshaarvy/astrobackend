@@ -392,37 +392,34 @@ export const fetchTaxList = createAsyncThunk<
     keyword?: string;
     field?: string;
     active?: string;
-    exportData?: boolean;
   } | void,
   { state: RootState }
 >(
   'taxes/fetchTaxList',
   async (input, { dispatch, rejectWithValue, getState }) => {
     try {
-      const { page, pageSize, keyword, field, active, exportData } =
-        input || {};
+      const { page, pageSize, keyword, field, active } = input || {};
       dispatch(fetchTaxListStart());
 
       const response = await fetchApi(
         `/store/taxs/all?page=${page || 1}&limit=${pageSize || 10}&field=${
           field || ''
-        }&text=${keyword || ''}&active=${active || ''}&exportData=${
-          exportData || false
+        }&text=${keyword || ''}&active=${active || ''}
         }`,
         { method: 'GET' }
       );
-
+      console.log('respone of tax is', response);
       if (response?.success) {
-        if (!input?.exportData) {
-          dispatch(
-            fetchTaxListSuccess({
-              data: response.TaxsData,
-              totalCount: response.totalTaxCount
-            })
-          );
-        } else {
-          dispatch(fetchTaxExportLoading(false));
-        }
+        // if (!input?.exportData) {
+        dispatch(
+          fetchTaxListSuccess({
+            data: response.TaxsData,
+            totalCount: response.totalTaxCount
+          })
+        );
+        // } else {
+        //   dispatch(fetchTaxExportLoading(false));
+        // }
 
         return response;
       } else {
