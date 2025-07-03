@@ -170,6 +170,11 @@ export const navItems: NavItem[] = [
         title: 'Vibhor',
         url: '/dashboard/homes/vibhor',
         icon: 'atom'
+      },
+      {
+        title: 'Testimonial',
+        url: '/dashboard/homes/testimonial',
+        icon: 'message'
       }
       // {
       //   title: 'News Letter',
