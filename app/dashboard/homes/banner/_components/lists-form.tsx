@@ -92,13 +92,13 @@ export default function HomeBannerForm() {
     // Default to image if both exist or none exist
     if (hasImage) {
       setShowBannerImage(true);
-      setShowBackgroundColor(false);
+      // setShowBackgroundColor(false);
     } else if (hasColor) {
       setShowBannerImage(false);
-      setShowBackgroundColor(true);
+      // setShowBackgroundColor(true);
     } else {
       setShowBannerImage(false);
-      setShowBackgroundColor(false);
+      // setShowBackgroundColor(false);
     }
   }, [bannerImage, bData]);
 
@@ -153,7 +153,7 @@ export default function HomeBannerForm() {
                   )}
                 </FormItem>
 
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                   <Label htmlFor="backgroundColor">Background Color</Label>
 
                   <Switch
@@ -173,7 +173,6 @@ export default function HomeBannerForm() {
 
                   {(bData as IHomeBanner)?.backgroundStatus && (
                     <div className="flex items-center gap-2">
-                      {/* Color Picker */}
                       <Input
                         type="color"
                         name="backgroundColor"
@@ -184,7 +183,6 @@ export default function HomeBannerForm() {
                         className="h-10 w-12 cursor-pointer p-1"
                       />
 
-                      {/* Hex Code Input */}
                       <Input
                         type="text"
                         name="backgroundColor"
@@ -197,7 +195,7 @@ export default function HomeBannerForm() {
                       />
                     </div>
                   )}
-                </div>
+                </div> */}
 
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
