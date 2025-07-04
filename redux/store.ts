@@ -83,6 +83,7 @@ import astroRegisterConfigReducer from './slices/astroregisterconfig';
 import whyChooseConfigReducer from './slices/whyChooseSlice';
 import homeTestimonialReducer from './slices/home/homeTestimonialSlice';
 import aboutConfigReducer from './slices/aboutSlice';
+import contactusReducer from './slices/contact/contactSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -169,7 +170,8 @@ export const makeStore = () => {
       astroRegisterConfig: astroRegisterConfigReducer,
       whyChooseConfig: whyChooseConfigReducer,
       homeTestimonial: homeTestimonialReducer,
-      aboutConfig: aboutConfigReducer
+      aboutConfig: aboutConfigReducer,
+      contactUs: contactusReducer
     }
   });
 };
