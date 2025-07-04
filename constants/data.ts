@@ -730,7 +730,7 @@ export const navItems: NavItem[] = [
           },
           {
             title: 'About Us',
-            url: '/dashboard/settings/pages/about-us',
+            url: '/dashboard/settings/pages/about',
             icon: 'general'
           },
           {
