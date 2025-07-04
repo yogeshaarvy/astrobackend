@@ -130,9 +130,9 @@ export default function BlogsListPage() {
         <div className="flex items-start justify-between">
           <Heading title={`Blogs List (${totalCount})`} description="" />
           <div className="flex gap-5">
-            <Button variant="default" onClick={handleExport}>
+            {/* <Button variant="default" onClick={handleExport}>
               Export All
-            </Button>
+            </Button> */}
             <Link
               href={'/dashboard/blogs/list/add'}
               className={buttonVariants({ variant: 'default' })}

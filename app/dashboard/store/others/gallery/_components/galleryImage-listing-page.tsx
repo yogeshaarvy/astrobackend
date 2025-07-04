@@ -108,13 +108,13 @@ export default function GalleryImageListingPage() {
 
           <div className="flex items-center">
             {/* Export Button */}
-            <Button
+            {/* <Button
               className="mx-5 py-4"
               variant="default"
               onClick={handleExport}
             >
               Export All
-            </Button>
+            </Button> */}
 
             {/* Add New Link */}
             <Link

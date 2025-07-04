@@ -53,7 +53,6 @@ export default function AllUsersListingPage() {
       pagination: { totalCount } = { totalCount: 0 }
     }
   } = useAppSelector((state) => state.allusers);
-
   useEffect(() => {
     dispatch(fetchAllUsers({ page, pageSize, keyword, field, status }));
   }, [page, pageSize, keyword, field, status, dispatch]);

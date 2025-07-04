@@ -106,13 +106,13 @@ export default function AllusersTable({
           setFilterValue={setFieldFilter}
           filterValue={fieldFilter}
         />
-        <DataTableFilterBox
+        {/* <DataTableFilterBox
           filterKey="active"
           title="Filter By Status"
           options={STATUS_OPTIONS}
           setFilterValue={setStatusFilter}
           filterValue={statusFilter}
-        />
+        /> */}
         <Button variant="outline" onClick={handleSearch}>
           Search
         </Button>

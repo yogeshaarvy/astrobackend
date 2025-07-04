@@ -15,7 +15,7 @@ export default function TaxListingPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
-  const status = searchParams.get('status') || '';
+  const active = searchParams.get('status') || '';
   const field = searchParams.get('field') || '';
   const page = parseInt(searchParams.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams.get('limit') ?? '10', 10);
@@ -27,19 +27,16 @@ export default function TaxListingPage() {
       pagination: { totalCount }
     }
   } = useAppSelector((state) => state.taxsdata);
+  console.log('t data issssss', tData);
   useEffect(() => {
-    dispatch(
-      fetchTaxList({ page, pageSize, keyword, field, status, exportData })
-    );
+    dispatch(fetchTaxList({ page, pageSize, keyword, field, active }));
     dispatch(setTaxData(null));
   }, [page, pageSize, dispatch]); // Ensure this is run only once when the component mounts
 
   // You can safely assume `tData` is populated now
   const tax: ITax[] = tData;
   const handleSearch = () => {
-    dispatch(
-      fetchTaxList({ page, pageSize, keyword, field, status, exportData })
-    );
+    dispatch(fetchTaxList({ page, pageSize, keyword, field, active }));
   };
 
   const handleExport = async () => {
@@ -51,8 +48,7 @@ export default function TaxListingPage() {
           pageSize,
           keyword,
           field,
-          status,
-          exportData: 'true'
+          active
         })
       ).unwrap(); // Ensure this returns a promise that resolves the data
       const exportData = exportResponse.taxsData;
@@ -96,13 +92,13 @@ export default function TaxListingPage() {
         <div className="flex items-start justify-between pr-4">
           <Heading title={`Tax`} description="" />
           <div className="flex items-center">
-            <Button
+            {/* <Button
               className="mx-5 py-4"
               variant="default"
               onClick={handleExport}
             >
               Export
-            </Button>
+            </Button> */}
             <Link
               href={'/dashboard/store/taxs/add'}
               className={buttonVariants({ variant: 'default' })}

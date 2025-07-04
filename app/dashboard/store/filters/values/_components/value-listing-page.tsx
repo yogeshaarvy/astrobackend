@@ -118,13 +118,13 @@ export default function ValuesListingPage() {
         <div className="flex items-start justify-between pr-4">
           <Heading title={`Values (${totalCount})`} description="" />
           <div className="flex items-center">
-            <Button
+            {/* <Button
               className="mx-5 py-4"
               variant="default"
               onClick={handleExport}
             >
               Export
-            </Button>
+            </Button> */}
             <Link
               href={'/dashboard/store/filters/values/add'}
               className={buttonVariants({ variant: 'default' })}

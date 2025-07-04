@@ -102,9 +102,9 @@ export default function SliderListingPage() {
         <div className="flex items-start justify-between">
           <Heading title={`Sliders List (${totalCount})`} description="" />
           <div className="flex gap-5">
-            <Button variant="default" onClick={handleExport}>
+            {/* <Button variant="default" onClick={handleExport}>
               Export All
-            </Button>
+            </Button> */}
 
             <Link
               href={'/dashboard/store/others/store-sliders/add'}

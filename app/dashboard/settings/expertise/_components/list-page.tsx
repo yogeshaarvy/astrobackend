@@ -104,9 +104,9 @@ export default function SkillsPage() {
         <div className="flex items-start justify-between">
           <Heading title={`Skills (${totalCount})`} description="" />
           <div className="flex gap-5">
-            <Button variant="default" onClick={handleExport}>
+            {/* <Button variant="default" onClick={handleExport}>
               Export All
-            </Button>
+            </Button> */}
 
             <Link
               href={'/dashboard/settings/expertise/add'}

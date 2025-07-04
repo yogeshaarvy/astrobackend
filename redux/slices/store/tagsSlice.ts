@@ -135,7 +135,7 @@ export const fetchTagList = createAsyncThunk<
           dispatch(
             fetchTagListSuccess({
               data: response.TagsData,
-              totalCount: response.totalTagCount
+              totalCount: response.totalCount
             })
           );
         } else {

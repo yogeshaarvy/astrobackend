@@ -172,15 +172,15 @@ export const navItems: NavItem[] = [
         icon: 'atom'
       },
       {
-        title: 'News Letter',
-        url: '/dashboard/homes/newsletter',
-        icon: 'settings'
-      },
-      {
         title: 'Testimonial',
         url: '/dashboard/homes/testimonial',
         icon: 'message'
       }
+      // {
+      //   title: 'News Letter',
+      //   url: '/dashboard/homes/newsletter',
+      //   icon: 'settings'
+      // }
     ]
   },
   {
@@ -263,11 +263,11 @@ export const navItems: NavItem[] = [
             url: '/dashboard/store/others/best-selling',
             icon: 'taxs'
           },
-          {
-            title: 'Shop By Purpose',
-            url: '/dashboard/store/others/shop-purpose',
-            icon: 'goal'
-          },
+          // {
+          //   title: 'Shop By Purpose',
+          //   url: '/dashboard/store/others/shop-purpose',
+          //   icon: 'goal'
+          // },
           {
             title: 'Store Banner',
             url: '/dashboard/store/others/store-banner',
@@ -368,8 +368,8 @@ export const navItems: NavItem[] = [
     ]
   },
   {
-    title: 'Auth page Images',
-    url: '/dashboard/register-image',
+    title: 'Users',
+    url: '/dashboard/users',
     icon: 'medal',
     isActive: false,
     items: [] // No child items
@@ -557,80 +557,80 @@ export const navItems: NavItem[] = [
       }
     ]
   },
-  {
-    title: 'Feedbacks',
-    url: '/dashboard/feedbacks',
-    icon: 'settings',
-    isActive: false,
-    items: [
-      {
-        title: 'By User',
-        url: '/dashboard/feedbacks/by-user',
-        icon: 'general'
-      },
-      {
-        title: 'By Astrologer',
-        url: '/dashboard/feedbacks/by-astrologer',
-        icon: 'general'
-      }
-    ]
-  },
-  {
-    title: 'Contact Us',
-    url: '/dashboard/contact-us',
-    icon: 'settings',
-    isActive: false,
-    items: [
-      {
-        title: 'By User',
-        url: '/dashboard/contact-us/by-user',
-        icon: 'general'
-      },
-      {
-        title: 'By Astrologer',
-        url: '/dashboard/contact-us/by-astrologer',
-        icon: 'general'
-      }
-    ]
-  },
-  {
-    title: 'Writer Consultant',
-    url: '/dashboard/writer-consultant',
-    icon: 'settings',
-    isActive: false,
-    items: [
-      {
-        title: 'Packages',
-        url: '/dashboard/writer-consultant/packages',
-        icon: 'general'
-      },
-      {
-        title: 'Profile',
-        url: '/dashboard/writer-consultant/profile',
-        icon: 'general'
-      },
-      {
-        title: 'Config',
-        url: '/dashboard/writer-consultant/config',
-        icon: 'general'
-      },
-      {
-        title: 'Testimonial',
-        url: '/dashboard/writer-consultant/testimonial',
-        icon: 'general'
-      },
-      {
-        title: "FAQ's",
-        url: '/dashboard/writer-consultant/faqs',
-        icon: 'general'
-      }
-    ]
-  },
-  {
-    title: 'Career Forms',
-    url: '/dashboard/career-forms',
-    icon: 'settings'
-  },
+  // {
+  //   title: 'Feedbacks',
+  //   url: '/dashboard/feedbacks',
+  //   icon: 'settings',
+  //   isActive: false,
+  //   items: [
+  //     {
+  //       title: 'By User',
+  //       url: '/dashboard/feedbacks/by-user',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: 'By Astrologer',
+  //       url: '/dashboard/feedbacks/by-astrologer',
+  //       icon: 'general'
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: 'Contact Us',
+  //   url: '/dashboard/contact-us',
+  //   icon: 'settings',
+  //   isActive: false,
+  //   items: [
+  //     {
+  //       title: 'By User',
+  //       url: '/dashboard/contact-us/by-user',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: 'By Astrologer',
+  //       url: '/dashboard/contact-us/by-astrologer',
+  //       icon: 'general'
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: 'Writer Consultant',
+  //   url: '/dashboard/writer-consultant',
+  //   icon: 'settings',
+  //   isActive: false,
+  //   items: [
+  //     {
+  //       title: 'Packages',
+  //       url: '/dashboard/writer-consultant/packages',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: 'Profile',
+  //       url: '/dashboard/writer-consultant/profile',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: 'Config',
+  //       url: '/dashboard/writer-consultant/config',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: 'Testimonial',
+  //       url: '/dashboard/writer-consultant/testimonial',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: "FAQ's",
+  //       url: '/dashboard/writer-consultant/faqs',
+  //       icon: 'general'
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: 'Career Forms',
+  //   url: '/dashboard/career-forms',
+  //   icon: 'settings'
+  // },
   {
     title: 'Orders',
     url: '/dashboard/orders',
@@ -654,34 +654,34 @@ export const navItems: NavItem[] = [
       }
     ]
   },
-  {
-    title: 'Consultancy History',
-    url: '/dashboard/consultancy-history',
-    icon: 'settings'
-  },
-  {
-    title: 'User List',
-    url: '/dashboard/user-list',
-    icon: 'user',
-    isActive: false,
-    items: [
-      {
-        title: 'Wallet',
-        url: '/dashboard/user-list/wallet',
-        icon: 'general'
-      },
-      {
-        title: 'Order History',
-        url: '/dashboard/user-list/order-history',
-        icon: 'general'
-      },
-      {
-        title: 'Address',
-        url: '/dashboard/user-list/address',
-        icon: 'general'
-      }
-    ]
-  },
+  // {
+  //   title: 'Consultancy History',
+  //   url: '/dashboard/consultancy-history',
+  //   icon: 'settings'
+  // },
+  // {
+  //   title: 'User List',
+  //   url: '/dashboard/user-list',
+  //   icon: 'user',
+  //   isActive: false,
+  //   items: [
+  //     {
+  //       title: 'Wallet',
+  //       url: '/dashboard/user-list/wallet',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: 'Order History',
+  //       url: '/dashboard/user-list/order-history',
+  //       icon: 'general'
+  //     },
+  //     {
+  //       title: 'Address',
+  //       url: '/dashboard/user-list/address',
+  //       icon: 'general'
+  //     }
+  //   ]
+  // },
   {
     title: 'News letter subscribers',
     url: '/dashboard/newsletter',
@@ -765,16 +765,16 @@ export const navItems: NavItem[] = [
         url: '/dashboard/settings/general',
         icon: 'general'
       },
-      {
-        title: 'Website',
-        url: '/dashboard/settings/website',
-        icon: 'general'
-      },
-      {
-        title: 'App',
-        url: '/dashboard/settings/app',
-        icon: 'general'
-      },
+      // {
+      //   title: 'Website',
+      //   url: '/dashboard/settings/website',
+      //   icon: 'general'
+      // },
+      // {
+      //   title: 'App',
+      //   url: '/dashboard/settings/app',
+      //   icon: 'general'
+      // },
 
       {
         title: 'Languages',
