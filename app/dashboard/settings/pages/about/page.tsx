@@ -32,6 +32,7 @@ const Page = () => {
   const {
     aboutConfigState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.aboutConfig);
+
   console.log('this is the cData', cData);
 
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
@@ -172,7 +173,6 @@ const Page = () => {
                       <TabsTrigger value="English">English</TabsTrigger>
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
-
                     <TabsContent value="English" className="mt-4">
                       <div className="space-y-2">
                         <Label htmlFor="banner-title-en">Title</Label>
@@ -187,7 +187,6 @@ const Page = () => {
                         />
                       </div>
                     </TabsContent>
-
                     <TabsContent value="Hindi" className="mt-4">
                       <div className="space-y-2">
                         <Label htmlFor="banner-title-hi">Title</Label>
@@ -277,7 +276,6 @@ const Page = () => {
                       <TabsTrigger value="English">English</TabsTrigger>
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
-
                     <TabsContent value="English" className="mt-4 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="section1-title-en">Title</Label>
@@ -311,7 +309,6 @@ const Page = () => {
                         />
                       </div>
                     </TabsContent>
-
                     <TabsContent value="Hindi" className="mt-4 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="section1-title-hi">Title</Label>
@@ -348,20 +345,9 @@ const Page = () => {
                   </Tabs>
                 </div>
               </CardContent>
-
-              <CardFooter className="flex justify-center">
-                <Button
-                  type="submit"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="px-8"
-                >
-                  {loading ? 'Submitting...' : 'Submit'}
-                </Button>
-              </CardFooter>
             </Card>
 
-            {/* second Section */}
+            {/* Second Section */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl font-bold">
@@ -369,7 +355,7 @@ const Page = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Divider Image Upload */}
+                {/* Side Image Upload */}
                 <FormItem className="space-y-3">
                   <FormLabel>Side Image</FormLabel>
                   <FileUploader
@@ -407,7 +393,6 @@ const Page = () => {
                       <TabsTrigger value="English">English</TabsTrigger>
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
-
                     <TabsContent value="English" className="mt-4 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="section2-title-en">Title</Label>
@@ -441,7 +426,6 @@ const Page = () => {
                         />
                       </div>
                     </TabsContent>
-
                     <TabsContent value="Hindi" className="mt-4 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="section2-title-hi">Title</Label>
@@ -478,17 +462,6 @@ const Page = () => {
                   </Tabs>
                 </div>
               </CardContent>
-
-              <CardFooter className="flex justify-center">
-                <Button
-                  type="submit"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="px-8"
-                >
-                  {loading ? 'Submitting...' : 'Submit'}
-                </Button>
-              </CardFooter>
             </Card>
 
             {/* Third Section */}
@@ -499,7 +472,7 @@ const Page = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Divider Image Upload */}
+                {/* Side Image Upload */}
                 <FormItem className="space-y-3">
                   <FormLabel>Side Image</FormLabel>
                   <FileUploader
@@ -537,7 +510,6 @@ const Page = () => {
                       <TabsTrigger value="English">English</TabsTrigger>
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
-
                     <TabsContent value="English" className="mt-4 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="section3-title-en">Title</Label>
@@ -571,7 +543,6 @@ const Page = () => {
                         />
                       </div>
                     </TabsContent>
-
                     <TabsContent value="Hindi" className="mt-4 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="section3-title-hi">Title</Label>
@@ -587,7 +558,7 @@ const Page = () => {
                       </div>
                       <div className="space-y-2">
                         <CustomTextEditor
-                          name="section2.description.hi"
+                          name="section3.description.hi"
                           label="Full Description"
                           value={
                             (cData as IAboutConfig)?.section3?.description
@@ -608,18 +579,19 @@ const Page = () => {
                   </Tabs>
                 </div>
               </CardContent>
-
-              <CardFooter className="flex justify-center">
-                <Button
-                  type="submit"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="px-8"
-                >
-                  {loading ? 'Submitting...' : 'Submit'}
-                </Button>
-              </CardFooter>
             </Card>
+
+            <CardFooter
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '1rem'
+              }}
+            >
+              <Button type="submit" onClick={() => handleSubmit()}>
+                Submit
+              </Button>
+            </CardFooter>
           </form>
         </Form>
       </div>
