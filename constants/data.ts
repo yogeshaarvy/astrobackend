@@ -557,6 +557,20 @@ export const navItems: NavItem[] = [
       }
     ]
   },
+  {
+    title: 'Contacts',
+    url: '/dashboard/contact',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'Message List',
+        url: '/dashboard/contact/list',
+        icon: 'general',
+        isActive: false
+      }
+    ]
+  },
   // {
   //   title: 'Feedbacks',
   //   url: '/dashboard/feedbacks',
@@ -730,7 +744,7 @@ export const navItems: NavItem[] = [
           },
           {
             title: 'About Us',
-            url: '/dashboard/settings/pages/about-us',
+            url: '/dashboard/settings/pages/about',
             icon: 'general'
           },
           {
