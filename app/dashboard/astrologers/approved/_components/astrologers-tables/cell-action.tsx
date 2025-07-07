@@ -58,7 +58,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
               )
             }
           >
-            Slots
+            Slots Type
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
@@ -67,14 +67,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
               )
             }
           >
-            Availability
+            Slots
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/astrologers/list/packages?id=${data._id}`)
+              router.push(`/dashboard/astrologers/followers?id=${data._id}`)
             }
           >
-            Packages
+            Followers
           </DropdownMenuItem>
 
           <DropdownMenuItem
