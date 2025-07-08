@@ -138,7 +138,7 @@ export default function RequestTable({
         // If skills are objects with a name property, use .name, else use as string
         const skillsNames = skills
           .map((item: any) =>
-            typeof item === 'object' && item.name ? item.name.en : item
+            typeof item === 'object' && item.name ? item.name : item
           )
           .join(', ');
         return <span>{skillsNames || ''}</span>;
