@@ -103,22 +103,41 @@ export default function RequestTable({
       accessorKey: 'phone',
       header: 'PHONE'
     },
-    {
-      accessorKey: 'phoneType',
-      header: 'PHONE TYPE'
-    },
+
     {
       accessorKey: 'gender',
       header: 'GENDER'
     },
     {
       accessorKey: 'languages',
-      header: 'LANGUAGE'
+      header: 'LANGUAGE',
+      cell: ({ row }) => {
+        const languages = Array.isArray(row.original.languages)
+          ? row.original.languages
+          : [];
+        const languageNames = languages
+          .map((item: any) =>
+            typeof item === 'object' && item.name ? item.name : item
+          )
+          .join(', ');
+        return <span>{languageNames || ''} </span>;
+      }
     },
-
     {
       accessorKey: 'skills',
-      header: 'SKILL'
+      header: 'SKILL',
+      cell: ({ row }) => {
+        const skills = Array.isArray(row.original.skills)
+          ? row.original.skills
+          : [];
+        console.log('skills dataaaaa', skills);
+        const skillsNames = skills
+          .map((item: any) =>
+            typeof item === 'object' && item.name ? item.name : item
+          )
+          .join(', ');
+        return <span>{skillsNames || ''}</span>;
+      }
     },
     {
       accessorKey: 'dob',
