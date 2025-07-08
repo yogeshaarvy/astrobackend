@@ -24,189 +24,10 @@ const FollowersTable = () => {
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Mock data - in real app, this would be your API call
-    const mockFollowers = [
-      {
-        id: 1,
-        username: 'john_doe',
-        name: 'John Doe',
-        email: 'john@example.com',
-        followedDate: '2024-01-15'
-      },
-      {
-        id: 2,
-        username: 'jane_smith',
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        followedDate: '2024-02-20'
-      },
-      {
-        id: 3,
-        username: 'mike_wilson',
-        name: 'Mike Wilson',
-        email: 'mike@example.com',
-        followedDate: '2024-03-10'
-      },
-      {
-        id: 4,
-        username: 'sarah_jones',
-        name: 'Sarah Jones',
-        email: 'sarah@example.com',
-        followedDate: '2024-04-05'
-      },
-      {
-        id: 5,
-        username: 'alex_brown',
-        name: 'Alex Brown',
-        email: 'alex@example.com',
-        followedDate: '2024-05-12'
-      },
-      {
-        id: 6,
-        username: 'emily_davis',
-        name: 'Emily Davis',
-        email: 'emily@example.com',
-        followedDate: '2024-06-01'
-      },
-      {
-        id: 7,
-        username: 'david_lee',
-        name: 'David Lee',
-        email: 'david@example.com',
-        followedDate: '2024-06-15'
-      },
-      {
-        id: 8,
-        username: 'lisa_garcia',
-        name: 'Lisa Garcia',
-        email: 'lisa@example.com',
-        followedDate: '2024-06-20'
-      },
-      {
-        id: 9,
-        username: 'tom_miller',
-        name: 'Tom Miller',
-        email: 'tom@example.com',
-        followedDate: '2024-06-25'
-      },
-      {
-        id: 10,
-        username: 'anna_white',
-        name: 'Anna White',
-        email: 'anna@example.com',
-        followedDate: '2024-06-30'
-      },
-      {
-        id: 11,
-        username: 'chris_taylor',
-        name: 'Chris Taylor',
-        email: 'chris@example.com',
-        followedDate: '2024-07-01'
-      },
-      {
-        id: 12,
-        username: 'maria_rodriguez',
-        name: 'Maria Rodriguez',
-        email: 'maria@example.com',
-        followedDate: '2024-07-02'
-      },
-      {
-        id: 13,
-        username: 'james_anderson',
-        name: 'James Anderson',
-        email: 'james@example.com',
-        followedDate: '2024-07-03'
-      },
-      {
-        id: 14,
-        username: 'sophia_thomas',
-        name: 'Sophia Thomas',
-        email: 'sophia@example.com',
-        followedDate: '2024-07-04'
-      },
-      {
-        id: 15,
-        username: 'ryan_jackson',
-        name: 'Ryan Jackson',
-        email: 'ryan@example.com',
-        followedDate: '2024-07-05'
-      },
-      {
-        id: 16,
-        username: 'olivia_harris',
-        name: 'Olivia Harris',
-        email: 'olivia@example.com',
-        followedDate: '2024-07-06'
-      },
-      {
-        id: 17,
-        username: 'ethan_martin',
-        name: 'Ethan Martin',
-        email: 'ethan@example.com',
-        followedDate: '2024-07-07'
-      },
-      {
-        id: 18,
-        username: 'ava_thompson',
-        name: 'Ava Thompson',
-        email: 'ava@example.com',
-        followedDate: '2024-07-08'
-      },
-      {
-        id: 19,
-        username: 'noah_clark',
-        name: 'Noah Clark',
-        email: 'noah@example.com',
-        followedDate: '2024-07-09'
-      },
-      {
-        id: 20,
-        username: 'emma_lewis',
-        name: 'Emma Lewis',
-        email: 'emma@example.com',
-        followedDate: '2024-07-10'
-      },
-      {
-        id: 21,
-        username: 'liam_walker',
-        name: 'Liam Walker',
-        email: 'liam@example.com',
-        followedDate: '2024-07-11'
-      },
-      {
-        id: 22,
-        username: 'mia_hall',
-        name: 'Mia Hall',
-        email: 'mia@example.com',
-        followedDate: '2024-07-12'
-      },
-      {
-        id: 23,
-        username: 'lucas_allen',
-        name: 'Lucas Allen',
-        email: 'lucas@example.com',
-        followedDate: '2024-07-13'
-      },
-      {
-        id: 24,
-        username: 'zoe_young',
-        name: 'Zoe Young',
-        email: 'zoe@example.com',
-        followedDate: '2024-07-14'
-      },
-      {
-        id: 25,
-        username: 'mason_king',
-        name: 'Mason King',
-        email: 'mason@example.com',
-        followedDate: '2024-07-15'
-      }
-    ];
-
-    const total = mockFollowers.length;
+    const total = followers?.length;
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const paginatedFollowers = mockFollowers.slice(startIndex, endIndex);
+    const paginatedFollowers = followers?.slice(startIndex, endIndex);
 
     setLoading(false);
 
@@ -223,7 +44,7 @@ const FollowersTable = () => {
     loadFollowers(currentPage, limit);
   }, [currentPage, limit]);
 
-  const loadFollowers = async (page, limit) => {
+  const loadFollowers = async (page: number, limit: number) => {
     try {
       const response = await fetchFollowers(page, limit);
       setFollowers(response?.followers);
@@ -236,7 +57,7 @@ const FollowersTable = () => {
 
   const removeFollower = async (id: any) => {
     // Optimistic update - remove from UI immediately
-    setFollowers(followers.filter((follower) => follower.id !== id));
+    setFollowers(followers.filter((follower) => (follower as any)?._id !== id));
     setTotalFollowers((prev) => prev - 1);
 
     // In a real app, you would make an API call here:
@@ -251,7 +72,7 @@ const FollowersTable = () => {
     }
   };
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: any) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
@@ -324,7 +145,7 @@ const FollowersTable = () => {
               {loading ? (
                 <tr>
                   <td
-                    colSpan="4"
+                    colSpan={4}
                     className="px-6 py-12 text-center text-gray-500"
                   >
                     <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-blue-600" />
@@ -334,7 +155,7 @@ const FollowersTable = () => {
               ) : followers.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="4"
+                    colSpan={4}
                     className="px-6 py-12 text-center text-gray-500"
                   >
                     <Users className="mx-auto mb-4 h-12 w-12 text-gray-300" />
@@ -343,9 +164,9 @@ const FollowersTable = () => {
                   </td>
                 </tr>
               ) : (
-                followers.map((follower) => (
+                followers.map((follower: any) => (
                   <tr
-                    key={follower.id}
+                    key={follower?._id}
                     className="transition-colors duration-200 hover:bg-gray-50"
                   >
                     <td className="whitespace-nowrap px-6 py-4">
@@ -353,9 +174,9 @@ const FollowersTable = () => {
                         <div className="h-10 w-10 flex-shrink-0">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-purple-500">
                             <span className="text-sm font-semibold text-white">
-                              {follower.name
+                              {follower?.name
                                 .split(' ')
-                                .map((n) => n[0])
+                                .map((n: any) => n[0])
                                 .join('')}
                             </span>
                           </div>

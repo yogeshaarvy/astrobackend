@@ -84,6 +84,7 @@ import whyChooseConfigReducer from './slices/whyChooseSlice';
 import homeTestimonialReducer from './slices/home/homeTestimonialSlice';
 import aboutConfigReducer from './slices/aboutSlice';
 import contactusReducer from './slices/contact/contactSlice';
+import reviewsReducer from './slices/reviewsSlice';
 import carrierReducer from './slices/career/carrier';
 import carrierConfigReducer from './slices/career/careerConfig';
 
@@ -174,6 +175,7 @@ export const makeStore = () => {
       homeTestimonial: homeTestimonialReducer,
       aboutConfig: aboutConfigReducer,
       contactUs: contactusReducer,
+      reviews: reviewsReducer,
       carrier: carrierReducer,
       carrierConfig: carrierConfigReducer
     }

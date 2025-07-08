@@ -79,7 +79,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/astrologers/list/rating?id=${data._id}`)
+              router.push(
+                `/dashboard/astrologers/reviewsandrating?id=${data._id}`
+              )
             }
           >
             Rating
