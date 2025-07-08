@@ -761,6 +761,11 @@ export const navItems: NavItem[] = [
             icon: 'general'
           },
           {
+            title: 'Feedback',
+            url: '/dashboard/settings/pages/feedback',
+            icon: 'general'
+          },
+          {
             title: "FAQ's",
             url: '/dashboard/settings/pages/project-faq',
             icon: 'general'
