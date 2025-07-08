@@ -182,7 +182,7 @@ export const addEditFaq = createAsyncThunk<
     }
     if (response?.success) {
       dispatch(addEditFaqSuccess());
-      dispatch(fetchFaqList());
+      dispatch(fetchFaqList({}));
       return response;
     } else {
       const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
@@ -234,7 +234,7 @@ export const deleteFaq = createAsyncThunk<any, string, { state: RootState }>(
       });
       if (response.success) {
         dispatch(deleteFaqSuccess(id));
-        dispatch(fetchFaqList());
+        dispatch(fetchFaqList({}));
         toast.success('Faq deleted successfuly');
         return response;
       } else {
