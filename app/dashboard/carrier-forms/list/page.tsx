@@ -43,7 +43,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { RootState } from '@/redux/store';
-import { fetchCarrier, ICarrier } from '@/redux/slices/carrier';
+import { fetchCarrier, ICarrier } from '@/redux/slices/career/carrier';
 
 export default function CarriersPage() {
   const dispatch = useDispatch();
@@ -128,7 +128,7 @@ export default function CarriersPage() {
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Carrier forms ({pagination.totalCount}){' '}
+            Career forms ({pagination.totalCount}){' '}
           </h1>
         </div>
         <Button
@@ -167,7 +167,7 @@ export default function CarriersPage() {
                 <SelectItem value="info">Info</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={status} onValueChange={setStatus}>
+            {/* <Select value={status} onValueChange={setStatus}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
@@ -176,7 +176,7 @@ export default function CarriersPage() {
                 <SelectItem value="active">Active</SelectItem>
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
             <Button onClick={handleSearch} className="flex items-center gap-2">
               <Search className="h-4 w-4" />
               Search
@@ -189,7 +189,7 @@ export default function CarriersPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Carrier Applications</CardTitle>
+            <CardTitle>Career Applications</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -267,7 +267,7 @@ export default function CarriersPage() {
                               </DialogTrigger>
                               <DialogContent className="max-w-2xl">
                                 <DialogHeader>
-                                  <DialogTitle>Carrier Details</DialogTitle>
+                                  <DialogTitle>Career Details</DialogTitle>
                                 </DialogHeader>
                                 {selectedCarrier && (
                                   <div className="space-y-4">
@@ -351,7 +351,7 @@ export default function CarriersPage() {
                           <div className="flex flex-col items-center gap-2">
                             <User className="h-8 w-8 text-muted-foreground" />
                             <p className="text-muted-foreground">
-                              No carriers found
+                              No Career found
                             </p>
                           </div>
                         </TableCell>

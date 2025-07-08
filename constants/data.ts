@@ -641,7 +641,7 @@ export const navItems: NavItem[] = [
   //   ]
   // },
   {
-    title: 'Carrier Forms',
+    title: 'Career Forms',
     url: '/dashboard/carrier-forms',
     icon: 'settings',
     isActive: false,
@@ -649,6 +649,11 @@ export const navItems: NavItem[] = [
       {
         title: 'List',
         url: '/dashboard/carrier-forms/list',
+        icon: 'general'
+      },
+      {
+        title: 'Config',
+        url: '/dashboard/carrier-forms/config',
         icon: 'general'
       }
     ]
