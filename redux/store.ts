@@ -84,6 +84,7 @@ import whyChooseConfigReducer from './slices/whyChooseSlice';
 import homeTestimonialReducer from './slices/home/homeTestimonialSlice';
 import aboutConfigReducer from './slices/aboutSlice';
 import contactusReducer from './slices/contact/contactSlice';
+import carrierReducer from './slices/carrier';
 
 export const makeStore = () => {
   return configureStore({
@@ -171,7 +172,8 @@ export const makeStore = () => {
       whyChooseConfig: whyChooseConfigReducer,
       homeTestimonial: homeTestimonialReducer,
       aboutConfig: aboutConfigReducer,
-      contactUs: contactusReducer
+      contactUs: contactusReducer,
+      carrier: carrierReducer
     }
   });
 };
