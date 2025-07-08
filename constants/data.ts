@@ -640,11 +640,24 @@ export const navItems: NavItem[] = [
   //     }
   //   ]
   // },
-  // {
-  //   title: 'Career Forms',
-  //   url: '/dashboard/career-forms',
-  //   icon: 'settings'
-  // },
+  {
+    title: 'Career Forms',
+    url: '/dashboard/carrier-forms',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'List',
+        url: '/dashboard/carrier-forms/list',
+        icon: 'general'
+      },
+      {
+        title: 'Config',
+        url: '/dashboard/carrier-forms/config',
+        icon: 'general'
+      }
+    ]
+  },
   {
     title: 'Orders',
     url: '/dashboard/orders',
