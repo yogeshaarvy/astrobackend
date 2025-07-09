@@ -88,6 +88,7 @@ import reviewsReducer from './slices/reviewsSlice';
 import carrierReducer from './slices/career/carrier';
 import carrierConfigReducer from './slices/career/careerConfig';
 import feedbackReducer from './slices/feedback';
+import vastrushastrListReducer from './slices/vastushastr/list';
 
 export const makeStore = () => {
   return configureStore({
@@ -179,7 +180,8 @@ export const makeStore = () => {
       reviews: reviewsReducer,
       carrier: carrierReducer,
       carrierConfig: carrierConfigReducer,
-      feedback: feedbackReducer
+      feedback: feedbackReducer,
+      vastushastrList: vastrushastrListReducer
     }
   });
 };
