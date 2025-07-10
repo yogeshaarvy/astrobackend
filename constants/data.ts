@@ -342,6 +342,32 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: 'Vastu-shastr',
+    url: '/dashboard/vastu-shastr',
+    icon: 'temple',
+    isActive: false,
+    items: [
+      {
+        title: 'list',
+        url: '/dashboard/vastu-shastr/list',
+        icon: 'list'
+      }
+      // {
+      //   title: 'Other',
+      //   url: '/dashboard/astro-pooja/other',
+      //   isActive: false,
+      //   icon: 'otherlist',
+      //   items: [
+      //     {
+      //       title: 'Config',
+      //       url: '/dashboard/astro-pooja/other/config',
+      //       icon: 'config'
+      //     }
+      //   ]
+      // }
+    ]
+  },
+  {
     title: 'Vibhor',
     url: '/dashboard/vibhor',
     icon: 'temple',
@@ -758,6 +784,11 @@ export const navItems: NavItem[] = [
           {
             title: 'About Us',
             url: '/dashboard/settings/pages/about',
+            icon: 'general'
+          },
+          {
+            title: 'Feedback',
+            url: '/dashboard/settings/pages/feedback',
             icon: 'general'
           },
           {

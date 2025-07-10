@@ -228,34 +228,34 @@ export const deleteAstropoojaList = createAsyncThunk<
   }
 });
 
-export const fetchAstropoojaListForUser = createAsyncThunk<
-  any,
-  { selectedLanguage?: string } | void,
-  { state: RootState }
->(
-  'astropooja/fetchAstropoojaListForUser',
-  async (input, { dispatch, rejectWithValue }) => {
-    try {
-      const { selectedLanguage } = input || {};
+// export const fetchAstropoojaListForUser = createAsyncThunk<
+//   any,
+//   { selectedLanguage?: string } | void,
+//   { state: RootState }
+// >(
+//   'astropooja/fetchAstropoojaListForUser',
+//   async (input, { dispatch, rejectWithValue }) => {
+//     try {
+//       const { selectedLanguage } = input || {};
 
-      const response = await fetchApi(
-        `/astro-pooja/list/user?selectedLanguage=${selectedLanguage || 'en'}`,
-        { method: 'GET' }
-      );
+//       const response = await fetchApi(
+//         `/astro-pooja/list/user?selectedLanguage=${selectedLanguage || 'en'}`,
+//         { method: 'GET' }
+//       );
 
-      if (response?.success) {
-        return response.data;
-      } else {
-        throw new Error(
-          response?.message || 'Failed to fetch user astropooja list'
-        );
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message ?? 'Something Went Wrong!!';
-      return rejectWithValue(errorMsg);
-    }
-  }
-);
+//       if (response?.success) {
+//         return response.data;
+//       } else {
+//         throw new Error(
+//           response?.message || 'Failed to fetch user astropooja list'
+//         );
+//       }
+//     } catch (error: any) {
+//       const errorMsg = error?.message ?? 'Something Went Wrong!!';
+//       return rejectWithValue(errorMsg);
+//     }
+//   }
+// );
 
 const astropoojaSlice = createSlice({
   name: 'astropooja',
