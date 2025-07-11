@@ -520,6 +520,11 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
+        title: 'List',
+        url: '/dashboard/matchmaking/list',
+        icon: 'list'
+      },
+      {
         title: 'Other',
         url: '/dashboard/matchmaking/others',
         icon: 'general',

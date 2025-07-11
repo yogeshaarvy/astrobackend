@@ -73,6 +73,7 @@ import vibhorPackageReducer from './slices/vibhorPackageSlice';
 import astrologersReducer from './slices/astrologersSlice';
 import matchMakingReducer from './slices/matchmaking/config';
 import matchMakingTestimonialReducer from './slices/matchmaking/testimonial';
+import matchmakingListReducer from './slices/matchmaking/matchmakinglist';
 import allordersReducer from './slices/store/allordersSlice';
 import poojaOrdersReducer from './slices/astropooja/poojaorders';
 import vibhorOrdersReducer from './slices/vibhor/ordersSlice';
@@ -181,7 +182,8 @@ export const makeStore = () => {
       carrier: carrierReducer,
       carrierConfig: carrierConfigReducer,
       feedback: feedbackReducer,
-      vastushastrList: vastrushastrListReducer
+      vastushastrList: vastrushastrListReducer,
+      matchmakinglist: matchmakingListReducer
     }
   });
 };

@@ -87,6 +87,7 @@ export default function AllOrdersTable({
   // 🧾 Generate individual invoice PDF
 
   const generatePDFInvoice = async (order: IAllOrdersList): Promise<Blob> => {
+    console.log('this is for transition', order);
     // Create invoice container (hidden off-screen)
     const invoiceContainer = document.createElement('div');
     invoiceContainer.style.padding = '0';
@@ -689,7 +690,6 @@ export default function AllOrdersTable({
       }
     }
   ];
-
   // Status options for the dropdowns
   const paymentStatusOptions = ['all', 'pending', 'success'];
   const orderStatusOptions = [

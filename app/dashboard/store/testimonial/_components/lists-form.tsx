@@ -232,38 +232,6 @@ export default function ListForm() {
                     onChange={handleInputChange}
                   />
                 </div>
-                <div className="space-y-1">
-                  {/* <FormLabel></FormLabel> */}
-                  <Label htmlFor="name" className="space-x-3">
-                    Read Button
-                  </Label>
-                  <Switch
-                    className="!m-0"
-                    checked={(jData as ITestimonial)?.readStatus}
-                    onCheckedChange={(checked: any) =>
-                      handleInputChange({
-                        target: {
-                          type: 'checkbox',
-                          name: 'readStatus',
-                          checked
-                        }
-                      })
-                    }
-                    aria-label="Toggle Active Status"
-                  />
-                </div>
-
-                {(jData as ITestimonial)?.readStatus && (
-                  <div className="space-y-1">
-                    <Label htmlFor="name">Read Link</Label>
-                    <Input
-                      name="readLinks"
-                      placeholder="Enter Your Link"
-                      value={(jData as ITestimonial)?.readLinks || ''}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                )}
 
                 <FormItem className="space-y-3">
                   <FormLabel>Light Logo</FormLabel>
