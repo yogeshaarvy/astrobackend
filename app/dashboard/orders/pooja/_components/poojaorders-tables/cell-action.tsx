@@ -10,7 +10,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
-import { Edit, Eye, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, Eye, MessageCircle, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Label } from '@/components/ui/label';
@@ -87,6 +87,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         }}
       >
         <Eye className="text-sm text-gray-400" />
+      </button>
+
+      <button
+        className="mx-4"
+        onClick={() => {
+          router.push(`/dashboard/orders/pooja/chats/${data?.orderId}`);
+        }}
+      >
+        <MessageCircle className="text-sm text-gray-400" />
       </button>
 
       <Dialog open={open1} onOpenChange={setOpen1}>
