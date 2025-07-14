@@ -17,7 +17,10 @@ import {
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { fetchSingleOrderList } from '@/redux/slices/astropooja/poojaorders';
+import {
+  fetchSingleOrderList,
+  updatePoojaOrderStatus
+} from '@/redux/slices/astropooja/poojaorders';
 import { useAdminChat } from '@/hooks/useChat';
 
 // Types
@@ -39,23 +42,22 @@ interface PoojaBooking {
   userPhone?: string;
   phoneCode?: string;
   bookingDateTime?: Date;
-  poojaStatus: 'confirmed' | 'pending' | 'completed' | 'cancelled';
+  poojaStatus: 'no start' | 'start' | 'process' | 'complete' | 'cancel';
   isOnline: boolean;
   avatar?: string;
   paymentStatus?: any;
   paidAmount?: any;
+  poojaId?: any;
 }
 
 const PoojaSpecificChat: React.FC = () => {
   const params = useParams();
   const orderId = (params?.orderId as string) || 'booking_123';
-  console.log('orderis is hereee', orderId);
   // Only one admin backend, so use a constant adminId
   const adminId = '67c6d005ca2af808a28c560c';
   const {
     singleAllOrdersListState: { data: orderData }
   } = useAppSelector((state) => state.allpoojsorders);
-  console.log('singleAllOrdersListState', orderData);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -134,6 +136,10 @@ const PoojaSpecificChat: React.FC = () => {
     }
   };
 
+  const handleUpdatePoojaStatus = async ({ poojaId, poojaStatus }: any) => {
+    console.log('poojaId poojaStatus', poojaId, poojaStatus);
+    dispatch(updatePoojaOrderStatus({ poojaId, poojaStatus }));
+  };
   // Memoized handlers to avoid setState-in-render warning
   const handleMessage = useCallback((msg: any) => {
     setMessages((prev) => [
@@ -262,7 +268,8 @@ const PoojaSpecificChat: React.FC = () => {
     paidAmount: orderData?.paidAmount,
     isOnline: true,
     paymentStatus: orderData?.paymentStatus,
-    poojaStatus: orderData?.poojaStatus
+    poojaStatus: orderData?.poojaStatus,
+    poojaId: orderData?._id
   };
 
   return (
@@ -427,8 +434,25 @@ const PoojaSpecificChat: React.FC = () => {
 
             {/* Quick Actions */}
             <div className="space-y-2">
+              <button
+                onClick={() =>
+                  handleUpdatePoojaStatus({
+                    poojaId: poojaBooking?.poojaId,
+                    poojaStatus: 'start'
+                  })
+                }
+                className="w-full rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 px-4 py-2 text-white transition-all duration-200 hover:from-yellow-600 hover:to-yellow-700"
+              >
+                Mark as Start
+              </button>
+              <button className="w-full rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-white transition-all duration-200 hover:from-orange-600 hover:to-orange-700">
+                Mark as Progress
+              </button>
               <button className="w-full rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-4 py-2 text-white transition-all duration-200 hover:from-green-600 hover:to-green-700">
                 Mark as Completed
+              </button>
+              <button className="w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white transition-all duration-200 hover:from-red-600 hover:to-red-700">
+                Mark as Cancel
               </button>
               {/* <button className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-white transition-all duration-200 hover:from-blue-600 hover:to-blue-700">
                 Send Reminder

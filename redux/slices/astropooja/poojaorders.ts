@@ -208,6 +208,35 @@ export const fetchMonthlyOrders = createAsyncThunk<{ state: RootState }>(
     }
   }
 );
+export const updatePoojaOrderStatus = async ({
+  poojaId,
+  poojaStatus
+}: {
+  poojaId: string;
+  poojaStatus: string;
+}) => {
+  try {
+    const response = await fetchApi(`/pooja_order/updatepoojastatus`, {
+      body: {
+        poojaId,
+        poojaStatus
+      },
+      method: 'PUT'
+    });
+    if (response?.success) {
+      toast.success('Pooja Status Updated Successfully!');
+      return response;
+    } else {
+      let errorMsg = response?.data?.message || 'Something Went Wrong';
+      toast.error(errorMsg);
+      return errorMsg;
+    }
+  } catch (error: any) {
+    let errorMsg = error?.message || 'Something Went Wrong';
+    toast.error(errorMsg);
+    return errorMsg;
+  }
+};
 //create shiprocket order
 export const createShiprocketOrder = async (orderId: any) => {
   try {
