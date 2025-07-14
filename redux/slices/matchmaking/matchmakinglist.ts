@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
-
-// Define the MatchmakingRootState type to include matchmaking
 export interface MatchmakingRootState {
   matchmaking: typeof initialState;
 }
