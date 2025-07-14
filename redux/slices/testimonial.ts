@@ -23,8 +23,6 @@ export type ITestimonial = BaseModel & {
   date?: string;
   profile_image?: string;
   active?: boolean;
-  readStatus?: boolean;
-  readLinks?: string;
 };
 
 const initialState = {
@@ -81,9 +79,7 @@ export const addEditTestimonialList = createAsyncThunk<
         date: clonedData.date,
         sequence: clonedData.sequence,
         profile_image: clonedData.profile_image,
-        active: clonedData.active,
-        readStatus: clonedData.readStatus,
-        readLinks: clonedData.readLinks
+        active: clonedData.active
       };
 
       Object.entries(reqData).forEach(([key, value]) => {

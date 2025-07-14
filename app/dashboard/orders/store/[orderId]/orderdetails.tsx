@@ -31,6 +31,7 @@ import {
 } from '@/redux/slices/store/allordersSlice';
 
 const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
+  console.log('this is transiition', orderData);
   // const [orderStatus, setOrderStatus] = React.useState('placed');
   const [transactionId, setTransactionId] = React.useState('');
   const [newStatus, setNewStatus] = React.useState(orderData?.orderStatus);

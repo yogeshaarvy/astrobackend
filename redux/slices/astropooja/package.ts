@@ -358,9 +358,11 @@ const astroPackageSlice = createSlice({
     deleteAstroPackageSuccess(state, action) {
       state.singleAstroPackageState.loading = false;
       // Remove deleted item from list if it exists
-      state.astroPackageList.data = state?.astroPackageList?.data.filter(
-        (item) => item._id !== action.payload
-      );
+      state.astroPackageList.data =
+        state?.astroPackageList?.data &&
+        state?.astroPackageList?.data.filter(
+          (item) => item._id !== action.payload
+        );
     },
     deleteAstroPackageFailure(state, action) {
       state.singleAstroPackageState.loading = false;

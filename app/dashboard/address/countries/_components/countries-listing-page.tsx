@@ -16,7 +16,6 @@ import {
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { fetchBrandList } from '@/redux/slices/brandSlice';
-import { ICategory } from '@/redux/slices/categoriesSlice';
 import CountriesTable from './countries-tables';
 
 export default function CountriesListingPage() {

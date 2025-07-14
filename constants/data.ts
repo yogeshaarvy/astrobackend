@@ -351,20 +351,12 @@ export const navItems: NavItem[] = [
         title: 'list',
         url: '/dashboard/vastu-shastr/list',
         icon: 'list'
+      },
+      {
+        title: 'Config',
+        url: '/dashboard/vastu-shastr/config',
+        icon: 'list'
       }
-      // {
-      //   title: 'Other',
-      //   url: '/dashboard/astro-pooja/other',
-      //   isActive: false,
-      //   icon: 'otherlist',
-      //   items: [
-      //     {
-      //       title: 'Config',
-      //       url: '/dashboard/astro-pooja/other/config',
-      //       icon: 'config'
-      //     }
-      //   ]
-      // }
     ]
   },
   {
@@ -519,6 +511,11 @@ export const navItems: NavItem[] = [
     icon: 'settings',
     isActive: false,
     items: [
+      {
+        title: 'List',
+        url: '/dashboard/matchmaking/list',
+        icon: 'list'
+      },
       {
         title: 'Other',
         url: '/dashboard/matchmaking/others',

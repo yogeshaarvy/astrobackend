@@ -2,7 +2,10 @@ import { RootState } from '@/redux/store';
 import { fetchApi } from '@/services/utlis/fetchApi';
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
-import { processNestedFields } from '@/utils/UploadNestedFiles';
+import {
+  processNestedAWSFields,
+  processNestedFields
+} from '@/utils/UploadNestedFiles';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { cloneDeep } from 'lodash';
 import { toast } from 'sonner';
@@ -64,7 +67,7 @@ export const addEditAstropoojaList = createAsyncThunk<
       let clonedData = cloneDeep(data);
 
       if (clonedData) {
-        clonedData = await processNestedFields(clonedData);
+        clonedData = await processNestedAWSFields(clonedData);
       }
 
       const formData = new FormData();

@@ -55,8 +55,17 @@ export default function HoroscopeDetailTable({
       size: 500,
       maxSize: 700,
       cell: ({ getValue }) => {
-        const date = new Date(getValue());
-        return date.toLocaleDateString(); // Formats to just date (e.g., MM/DD/YYYY)
+        const value = getValue();
+        if (!value) return '';
+
+        const date = new Date(value);
+        if (isNaN(date.getTime())) return '';
+
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
       }
     },
     {
@@ -65,8 +74,17 @@ export default function HoroscopeDetailTable({
       size: 500,
       maxSize: 700,
       cell: ({ getValue }) => {
-        const date = new Date(getValue());
-        return date.toLocaleDateString();
+        const value = getValue();
+        if (!value) return '';
+
+        const date = new Date(value);
+        if (isNaN(date.getTime())) return '';
+
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
       }
     },
 

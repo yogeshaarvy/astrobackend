@@ -73,6 +73,7 @@ import vibhorPackageReducer from './slices/vibhorPackageSlice';
 import astrologersReducer from './slices/astrologersSlice';
 import matchMakingReducer from './slices/matchmaking/config';
 import matchMakingTestimonialReducer from './slices/matchmaking/testimonial';
+import matchmakingListReducer from './slices/matchmaking/matchmakinglist';
 import allordersReducer from './slices/store/allordersSlice';
 import poojaOrdersReducer from './slices/astropooja/poojaorders';
 import vibhorOrdersReducer from './slices/vibhor/ordersSlice';
@@ -89,6 +90,7 @@ import carrierReducer from './slices/career/carrier';
 import carrierConfigReducer from './slices/career/careerConfig';
 import feedbackReducer from './slices/feedback';
 import vastrushastrListReducer from './slices/vastushastr/list';
+import vastrushastrConfigReducer from './slices/vastushastr/config';
 
 export const makeStore = () => {
   return configureStore({
@@ -181,7 +183,9 @@ export const makeStore = () => {
       carrier: carrierReducer,
       carrierConfig: carrierConfigReducer,
       feedback: feedbackReducer,
-      vastushastrList: vastrushastrListReducer
+      vastushastrList: vastrushastrListReducer,
+      matchmakinglist: matchmakingListReducer,
+      vastushastrConfig: vastrushastrConfigReducer
     }
   });
 };
