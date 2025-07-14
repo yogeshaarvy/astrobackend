@@ -27,7 +27,9 @@ export type IAllOrdersList = BaseModel & {
   paymentMethod?: any;
 
   transactionId?: any;
-
+  paymentStatus?: any;
+  poojaStatus?: any;
+  phonecode?: any;
   paidAmount?: any;
 };
 
