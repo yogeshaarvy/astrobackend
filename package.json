@@ -96,7 +96,8 @@
     "uuid": "^9.0.1",
     "xlsx": "^0.18.5",
     "zod": "^3.22.4",
-    "zustand": "^4.4.6"
+    "zustand": "^4.4.6",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.3",

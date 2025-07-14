@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
@@ -30,6 +30,7 @@ export default function AllOrdersListingPage() {
   const [paymentStatus, setPaymentStatus] = useState('');
   const [email, setEmail] = useState('');
   const [orderNo, setOrderNo] = useState('');
+  const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
 
   const {
     AllPoojaOrdersState: {
@@ -148,6 +149,31 @@ export default function AllOrdersListingPage() {
     );
   };
 
+  const fetchUnreadCounts = useCallback(async () => {
+    const orderIds = allorders.map((order) => order?.orderId).join(',');
+    if (!orderIds) return;
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_API_URL}/api/V1/chat/order-unread-messages?orderIds=${orderIds}`
+      );
+      const data = await res.json();
+      setUnreadCounts(data);
+    } catch (err) {
+      console.error('Failed to fetch unread message counts:', err);
+    }
+  }, [allorders]);
+
+  useEffect(() => {
+    fetchUnreadCounts();
+
+    const interval = setInterval(() => {
+      fetchUnreadCounts();
+    }, 20000); // Refresh every 20 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchUnreadCounts]);
+
   return (
     <PageContainer scrollable>
       {/* <About /> */}
@@ -180,6 +206,7 @@ export default function AllOrdersListingPage() {
           }}
           orderNo={orderNo}
           handleOrderNoInputChange={handleOrderNoInputChange}
+          unreadCounts={unreadCounts}
         />
       </div>
     </PageContainer>

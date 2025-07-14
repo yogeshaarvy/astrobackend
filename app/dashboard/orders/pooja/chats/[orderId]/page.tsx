@@ -1,6 +1,6 @@
 'use client';
 import type React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Send,
   Phone,
@@ -15,11 +15,20 @@ import {
   AlertCircle,
   Info
 } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  fetchSingleOrderList,
+  updatePoojaOrderStatus
+} from '@/redux/slices/astropooja/poojaorders';
+import { useAdminChat } from '@/hooks/useChat';
 
 // Types
 interface Message {
   id: string;
-  text: string;
+  text?: string;
+  mediaUrl?: string;
+  type?: 'image' | 'video';
   sender: 'user' | 'admin';
   timestamp: Date;
   isRead: boolean;
@@ -30,175 +39,192 @@ interface PoojaBooking {
   poojaType: string;
   userName: string;
   userEmail: string;
-  userPhone: string;
-  bookingDate: Date;
-  bookingTime: string;
-  location: string;
-  status: 'confirmed' | 'pending' | 'completed' | 'cancelled';
-  specialRequests?: string;
-  panditName?: string;
-  totalAmount: number;
-  advancePaid: number;
+  userPhone?: string;
+  phoneCode?: string;
+  bookingDateTime?: Date;
+  poojaStatus: 'no start' | 'start' | 'process' | 'complete' | 'cancel';
   isOnline: boolean;
   avatar?: string;
+  paymentStatus?: any;
+  paidAmount?: any;
+  poojaId?: any;
 }
 
 const PoojaSpecificChat: React.FC = () => {
-  const [message, setMessage] = useState<string>('');
+  const params = useParams();
+  const orderId = (params?.orderId as string) || 'booking_123';
+  // Only one admin backend, so use a constant adminId
+  const adminId = '67c6d005ca2af808a28c560c';
+  const {
+    singleAllOrdersListState: { data: orderData }
+  } = useAppSelector((state) => state.allpoojsorders);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [message, setMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const socketRef = useRef<any>(null);
+  const dispatch = useAppDispatch();
 
-  // Mock booking data - this would come from props or API
-  const poojaBooking: PoojaBooking = {
-    id: 'booking_123',
-    poojaType: 'Ganesh Pooja',
-    userName: 'Priya Sharma',
-    userEmail: 'priya.sharma@email.com',
-    userPhone: '+91 98765 43210',
-    bookingDate: new Date(Date.now() + 1000 * 60 * 60 * 24), // Tomorrow
-    bookingTime: '10:00 AM',
-    location: 'A-123, Sector 15, Gurugram, Haryana',
-    status: 'confirmed',
-    specialRequests: 'Please bring fresh flowers and sweets for prasad',
-    panditName: 'Pandit Rajesh Kumar',
-    totalAmount: 5000,
-    advancePaid: 2000,
-    isOnline: true
+  useEffect(() => {
+    if (!orderId) return; // Prevents unnecessary API calls if orderId is missing
+    dispatch(fetchSingleOrderList(orderId)).then((res) => {
+      // setOrderDetails(res.payload?.order || null);
+    });
+  }, [dispatch, orderId]); // Added orderId as a dependency
+
+  const handleFileUpload = async (file: File | undefined) => {
+    if (!file) return;
+
+    setIsTyping(true);
+
+    try {
+      const formData = new FormData();
+
+      const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
+      const fieldName = isImage ? 'imagefile' : isVideo ? 'file' : 'file';
+
+      formData.append(fieldName, file);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_API_URL}/api/V1/files`,
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+
+      if (!res.ok) throw new Error('Upload failed');
+
+      const data = await res.json();
+
+      let mediaUrl =
+        data.result?.imageFileUrl ||
+        data.result?.fileUrl ||
+        data.result?.audioFileUrl ||
+        data.result?.quillImgURL;
+
+      if (!mediaUrl) throw new Error('Media URL not found in response');
+      mediaUrl = `${process.env.NEXT_PUBLIC_APP_API_URL}/public${mediaUrl}`;
+
+      const type = isImage ? 'image' : isVideo ? 'video' : 'text';
+
+      // Send the media message
+      sendMessage('', mediaUrl, type);
+      markMessagesAsRead();
+
+      (document.getElementById('file-upload') as HTMLInputElement).value = ''; // Reset file input
+    } catch (err) {
+      console.error('File upload error:', err);
+      alert('Media upload failed. Please try again.');
+    } finally {
+      setIsTyping(false);
+    }
   };
 
-  // Mock messages for this specific pooja booking
-  const mockMessages: Message[] = [
-    {
-      id: '1',
-      text: `Hello! I have booked ${
-        poojaBooking.poojaType
-      } for ${poojaBooking.bookingDate.toLocaleDateString()}. Can you please confirm the details?`,
-      sender: 'user',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-      isRead: true
-    },
-    {
-      id: '2',
-      text: `Namaste ${poojaBooking.userName}! Thank you for booking ${
-        poojaBooking.poojaType
-      } with us. Your booking is confirmed for ${poojaBooking.bookingDate.toLocaleDateString()} at ${
-        poojaBooking.bookingTime
-      }. ${poojaBooking.panditName} will be conducting the pooja.`,
-      sender: 'admin',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1.5),
-      isRead: true
-    },
-    {
-      id: '3',
-      text: 'What items should I arrange for the pooja? Do I need to buy anything specific?',
-      sender: 'user',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60),
-      isRead: true
-    },
-    {
-      id: '4',
-      text: 'For Ganesh Pooja, please arrange: Fresh flowers (marigold and roses), fruits (especially bananas and coconut), sweets (modak or laddoo), incense sticks, and a clean cloth for the altar. Our pandit will bring all other necessary items including the Ganesh idol, kalash, and puja materials.',
-      sender: 'admin',
-      timestamp: new Date(Date.now() - 1000 * 60 * 50),
-      isRead: true
-    },
-    {
-      id: '5',
-      text: "Perfect! Also, I have a special request - can we include some additional prayers for my family's health and prosperity?",
-      sender: 'user',
-      timestamp: new Date(Date.now() - 1000 * 60 * 30),
-      isRead: true
-    },
-    {
-      id: '6',
-      text: "We can include special prayers for your family's health and prosperity. I've noted this in your booking. The pandit will perform additional mantras for this purpose.",
-      sender: 'admin',
-      timestamp: new Date(Date.now() - 1000 * 60 * 25),
-      isRead: true
-    },
-    {
-      id: '7',
-      text: 'Thank you so much! What time should I expect the pandit to arrive?',
-      sender: 'user',
-      timestamp: new Date(Date.now() - 1000 * 60 * 10),
-      isRead: false
-    },
-    {
-      id: '8',
-      text: 'Will the pandit bring the Ganesh idol or should I arrange it?',
-      sender: 'user',
-      timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      isRead: false
+  const markMessagesAsRead = async () => {
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_APP_API_URL}/api/V1/chat/mark-read?orderId=${orderId}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    } catch (err) {
+      console.error('Failed to mark messages as read:', err);
     }
-  ];
+  };
 
-  useEffect(() => {
-    setMessages(mockMessages);
+  const handleUpdatePoojaStatus = async ({ poojaId, poojaStatus }: any) => {
+    console.log('poojaId poojaStatus', poojaId, poojaStatus);
+    dispatch(updatePoojaOrderStatus({ poojaId, poojaStatus }));
+  };
+  // Memoized handlers to avoid setState-in-render warning
+  const handleMessage = useCallback((msg: any) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: msg._id || crypto.randomUUID(),
+        text: msg.message,
+        mediaUrl: msg.mediaUrl,
+        type: msg.type,
+        sender: msg.sender,
+        timestamp: new Date(msg.timestamp),
+        isRead: true
+      }
+    ]);
   }, []);
 
+  const handleHistory = useCallback((history: any[]) => {
+    setMessages(
+      history.map((msg) => ({
+        id: msg._id || crypto.randomUUID(),
+        text: msg.message, // ✅ mapping backend 'message' to frontend 'text'
+        mediaUrl: msg.mediaUrl,
+        type: msg.type,
+        sender: msg.sender,
+        timestamp: new Date(msg.timestamp),
+        isRead: true
+      }))
+    );
+  }, []);
+
+  // --- SOCKET CHAT HOOK ---
+  const { sendMessage } = useAdminChat(
+    orderId,
+    adminId,
+    handleMessage,
+    handleHistory
+  );
+
   useEffect(() => {
-    // Mock Socket.io connection
     setIsConnected(true);
-
-    // In real implementation, initialize socket here:
-    // socketRef.current = io('http://localhost:3001');
-    // socketRef.current.emit('join-booking', poojaBooking.id);
-    // socketRef.current.on('connect', () => setIsConnected(true));
-    // socketRef.current.on('message', handleReceiveMessage);
-    // socketRef.current.on('typing', (data) => setIsTyping(data.isTyping));
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
-    };
+    return () => {};
   }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (!orderId) return;
+
+    dispatch(fetchSingleOrderList(orderId)).then(() => {
+      markMessagesAsRead();
+    });
+  }, [dispatch, orderId]);
+
   const handleSendMessage = () => {
     if (!message.trim()) return;
-
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text: message,
-      sender: 'admin',
-      timestamp: new Date(),
-      isRead: false
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
-    // In real implementation, emit socket message here:
-    // socketRef.current.emit('message', {
-    //   message: newMessage,
-    //   bookingId: poojaBooking.id,
-    //   userId: poojaBooking.userEmail
-    // });
-
+    sendMessage(message, undefined, 'text');
     setMessage('');
+    markMessagesAsRead();
   };
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const formatDate = (date: Date) => {
+  const formatDateTime = (dateInput: string | number | Date) => {
+    const date = new Date(dateInput);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
 
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString();
-    }
+    const datePart =
+      date.toDateString() === today.toDateString()
+        ? 'Today'
+        : date.toDateString() === yesterday.toDateString()
+        ? 'Yesterday'
+        : date.toLocaleDateString();
+
+    const timePart = date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    return `${datePart} at ${timePart}`;
   };
 
   const getStatusColor = (status: string) => {
@@ -231,6 +257,21 @@ const PoojaSpecificChat: React.FC = () => {
     }
   };
 
+  // Mock booking data - this would come from props or API
+  const poojaBooking: PoojaBooking = {
+    id: orderData?.orderId,
+    poojaType: orderData?.product?.title?.en,
+    userName: orderData?.user?.name,
+    userEmail: orderData?.user?.email,
+    userPhone: orderData?.user?.phone,
+    bookingDateTime: orderData?.createdAt, // Tomorrow
+    paidAmount: orderData?.paidAmount,
+    isOnline: true,
+    paymentStatus: orderData?.paymentStatus,
+    poojaStatus: orderData?.poojaStatus,
+    poojaId: orderData?._id
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -247,11 +288,7 @@ const PoojaSpecificChat: React.FC = () => {
                     poojaBooking.isOnline ? 'bg-green-500' : 'bg-gray-400'
                   }`}
                 >
-                  {poojaBooking.userName
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                    .toUpperCase()}
+                  {poojaBooking?.userName}
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-gray-900">
@@ -262,12 +299,16 @@ const PoojaSpecificChat: React.FC = () => {
                     <span>•</span>
                     <span>{poojaBooking.userEmail}</span>
                     <span>•</span>
-                    <span>{poojaBooking.userPhone}</span>
+                    <span>
+                      {orderData?.phonecode
+                        ? `${orderData.phonecode} ${poojaBooking.userPhone}`
+                        : `+${poojaBooking.userPhone}`}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <div className="flex items-center space-x-2">
                 <div
                   className={`h-2 w-2 rounded-full ${
@@ -287,7 +328,7 @@ const PoojaSpecificChat: React.FC = () => {
               <button className="rounded-lg p-2 hover:bg-gray-100">
                 <MoreVertical className="h-5 w-5 text-gray-600" />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -303,15 +344,15 @@ const PoojaSpecificChat: React.FC = () => {
             {/* Status */}
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-700">
-                Status
+                Pooja Status
               </label>
               <div
                 className={`inline-flex items-center space-x-2 rounded-full px-3 py-1 text-sm ${getStatusColor(
-                  poojaBooking.status
+                  poojaBooking?.poojaStatus
                 )}`}
               >
-                {getStatusIcon(poojaBooking.status)}
-                <span className="capitalize">{poojaBooking.status}</span>
+                {getStatusIcon(poojaBooking?.poojaStatus)}
+                <span className="capitalize">{poojaBooking?.poojaStatus}</span>
               </div>
             </div>
 
@@ -322,14 +363,14 @@ const PoojaSpecificChat: React.FC = () => {
               </label>
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Calendar className="h-4 w-4" />
-                <span>{formatDate(poojaBooking.bookingDate)}</span>
-                <Clock className="ml-2 h-4 w-4" />
-                <span>{poojaBooking.bookingTime}</span>
+                <span>
+                  {formatDateTime((poojaBooking as any)?.bookingDateTime)}
+                </span>
               </div>
             </div>
 
             {/* Location */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-700">
                 Location
               </label>
@@ -337,10 +378,10 @@ const PoojaSpecificChat: React.FC = () => {
                 <MapPin className="mt-0.5 h-4 w-4" />
                 <span>{poojaBooking.location}</span>
               </div>
-            </div>
+            </div> */}
 
             {/* Pandit */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-700">
                 Pandit
               </label>
@@ -348,7 +389,7 @@ const PoojaSpecificChat: React.FC = () => {
                 <User className="h-4 w-4" />
                 <span>{poojaBooking.panditName}</span>
               </div>
-            </div>
+            </div> */}
 
             {/* Payment */}
             <div className="mb-6">
@@ -359,26 +400,26 @@ const PoojaSpecificChat: React.FC = () => {
                 <div className="mb-1 flex justify-between text-sm">
                   <span>Total Amount:</span>
                   <span className="font-semibold">
-                    ₹{poojaBooking.totalAmount}
+                    ₹{poojaBooking?.paidAmount}
                   </span>
                 </div>
-                <div className="mb-1 flex justify-between text-sm">
+                {/* <div className="mb-1 flex justify-between text-sm">
                   <span>Advance Paid:</span>
                   <span className="text-green-600">
                     ₹{poojaBooking.advancePaid}
                   </span>
-                </div>
-                <div className="flex justify-between border-t pt-1 text-sm font-semibold">
+                </div> */}
+                {/* <div className="flex justify-between border-t pt-1 text-sm font-semibold">
                   <span>Remaining:</span>
                   <span className="text-red-600">
                     ₹{poojaBooking.totalAmount - poojaBooking.advancePaid}
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
 
             {/* Special Requests */}
-            {poojaBooking.specialRequests && (
+            {/* {poojaBooking.specialRequests && (
               <div className="mb-6">
                 <label className="mb-2 block text-sm font-medium text-gray-700">
                   Special Requests
@@ -389,19 +430,36 @@ const PoojaSpecificChat: React.FC = () => {
                   </p>
                 </div>
               </div>
-            )}
+            )} */}
 
             {/* Quick Actions */}
             <div className="space-y-2">
+              <button
+                onClick={() =>
+                  handleUpdatePoojaStatus({
+                    poojaId: poojaBooking?.poojaId,
+                    poojaStatus: 'start'
+                  })
+                }
+                className="w-full rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 px-4 py-2 text-white transition-all duration-200 hover:from-yellow-600 hover:to-yellow-700"
+              >
+                Mark as Start
+              </button>
+              <button className="w-full rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-white transition-all duration-200 hover:from-orange-600 hover:to-orange-700">
+                Mark as Progress
+              </button>
               <button className="w-full rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-4 py-2 text-white transition-all duration-200 hover:from-green-600 hover:to-green-700">
                 Mark as Completed
               </button>
-              <button className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-white transition-all duration-200 hover:from-blue-600 hover:to-blue-700">
+              <button className="w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white transition-all duration-200 hover:from-red-600 hover:to-red-700">
+                Mark as Cancel
+              </button>
+              {/* <button className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-white transition-all duration-200 hover:from-blue-600 hover:to-blue-700">
                 Send Reminder
               </button>
               <button className="w-full rounded-lg bg-gradient-to-r from-amber-600 to-amber-700 px-4 py-2 text-white transition-all duration-200 hover:from-amber-700 hover:to-amber-800">
                 Reschedule
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -417,17 +475,16 @@ const PoojaSpecificChat: React.FC = () => {
                 </h3>
                 <p className="text-sm text-gray-600">
                   Booking ID: {poojaBooking.id} •{' '}
-                  {formatDate(poojaBooking.bookingDate)} at{' '}
-                  {poojaBooking.bookingTime}
+                  {formatDateTime((poojaBooking as any).bookingDateTime)}
                 </p>
               </div>
               <div className="flex items-center space-x-2">
-                {poojaBooking.isOnline && (
+                {/* {poojaBooking.isOnline && (
                   <div className="flex items-center space-x-2 text-green-600">
                     <div className="h-2 w-2 rounded-full bg-green-500"></div>
                     <span className="text-sm">Online</span>
                   </div>
-                )}
+                )} */}
                 {isTyping && (
                   <div className="flex items-center space-x-2 text-amber-600">
                     <div className="flex space-x-1">
@@ -464,7 +521,23 @@ const PoojaSpecificChat: React.FC = () => {
                       : 'border border-gray-200 bg-white text-gray-800 shadow-sm'
                   }`}
                 >
-                  <p className="text-sm leading-relaxed">{msg.text}</p>
+                  {msg.mediaUrl ? (
+                    msg.type === 'image' ? (
+                      <img
+                        src={msg.mediaUrl}
+                        alt="sent media"
+                        className="max-w-xs rounded-lg shadow-md"
+                      />
+                    ) : (
+                      <video
+                        controls
+                        src={msg.mediaUrl}
+                        className="max-w-xs rounded-lg shadow-md"
+                      />
+                    )
+                  ) : (
+                    <p className="text-sm leading-relaxed">{msg.text}</p>
+                  )}
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs opacity-75">
                       {msg.sender === 'admin' ? 'Admin' : poojaBooking.userName}
@@ -482,6 +555,19 @@ const PoojaSpecificChat: React.FC = () => {
           {/* Message Input */}
           <div className="border-t border-gray-200 bg-white px-6 py-4">
             <div className="flex space-x-3">
+              <input
+                type="file"
+                accept="image/*,video/*"
+                onChange={(e) => handleFileUpload(e.target.files?.[0])}
+                className="hidden"
+                id="file-upload"
+              />
+              <label
+                htmlFor="file-upload"
+                className="flex cursor-pointer items-center space-x-2 rounded-full border px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+              >
+                📎 Attach
+              </label>
               <input
                 type="text"
                 value={message}

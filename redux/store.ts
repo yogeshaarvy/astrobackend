@@ -91,6 +91,7 @@ import carrierConfigReducer from './slices/career/careerConfig';
 import feedbackReducer from './slices/feedback';
 import vastrushastrListReducer from './slices/vastushastr/list';
 import vastrushastrConfigReducer from './slices/vastushastr/config';
+import kundliListReducer from './slices/kundli/kundliList';
 
 export const makeStore = () => {
   return configureStore({
@@ -185,7 +186,8 @@ export const makeStore = () => {
       feedback: feedbackReducer,
       vastushastrList: vastrushastrListReducer,
       matchmakinglist: matchmakingListReducer,
-      vastushastrConfig: vastrushastrConfigReducer
+      vastushastrConfig: vastrushastrConfigReducer,
+      kundliList: kundliListReducer
     }
   });
 };

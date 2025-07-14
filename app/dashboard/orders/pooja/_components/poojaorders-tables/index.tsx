@@ -10,7 +10,7 @@ import { Download, FileText } from 'lucide-react';
 import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import jsPDF from 'jspdf';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -34,7 +34,8 @@ export default function AllOrdersTable({
   handlePaymentStatusChange,
   handleOrderStatusChange,
   orderNo,
-  handleOrderNoInputChange
+  handleOrderNoInputChange,
+  unreadCounts
 }: {
   data: IAllOrdersList[];
   totalData: number;
@@ -51,7 +52,9 @@ export default function AllOrdersTable({
   handleOrderStatusChange?: (value: string) => void;
   orderNo: string;
   handleOrderNoInputChange: any;
+  unreadCounts: any;
 }) {
+  console.log('Unread Counts:', unreadCounts);
   const logoPath = '/logo.png';
 
   // State to manage selected items
@@ -500,94 +503,106 @@ export default function AllOrdersTable({
     });
   };
 
-  const columns: ColumnDef<IAllOrdersList>[] = [
-    {
-      id: 'number',
-      header: 'S.No.',
-      cell: ({ row, table }) => {
-        const currentPage = table.getState().pagination.pageIndex; // Current page index
-        const pageSize = table.getState().pagination.pageSize; // Number of items per page
-        return <span>{currentPage * pageSize + row.index + 1}</span>; // Calculate correct S.No
+  const columns: ColumnDef<IAllOrdersList>[] = useMemo(
+    () => [
+      {
+        id: 'number',
+        header: 'S.No.',
+        cell: ({ row, table }) => {
+          const currentPage = table.getState().pagination.pageIndex;
+          const pageSize = table.getState().pagination.pageSize;
+          return <span>{currentPage * pageSize + row.index + 1}</span>;
+        },
+        enableSorting: false,
+        enableHiding: false
       },
-      enableSorting: false,
-      enableHiding: false
-    },
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={isAllSelected}
-          onCheckedChange={(checked) => handleSelectAll(!!checked)}
-          aria-label="Select all"
-          className="mx-2 translate-y-[2px]"
-          // Handle indeterminate state
-          ref={(el) => {
-            if (el && 'indeterminate' in el) {
-              (el as HTMLInputElement).indeterminate = isIndeterminate;
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={isAllSelected}
+            onCheckedChange={(checked) => handleSelectAll(!!checked)}
+            aria-label="Select all"
+            className="mx-2 translate-y-[2px]"
+            ref={(el) => {
+              if (el && 'indeterminate' in el) {
+                (el as HTMLInputElement).indeterminate = isIndeterminate;
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original._id ?? '')}
+            onCheckedChange={(checked) =>
+              handleSelectItem(row.original._id ?? '', !!checked)
             }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original._id ?? '')}
-          onCheckedChange={(checked) =>
-            handleSelectItem(row.original._id ?? '', !!checked)
-          }
-          aria-label="Select row"
-          className="mx-2 translate-y-[2px]"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false
-    },
-    {
-      accessorKey: 'orderId',
-      header: 'ORDER ID'
-    },
-    {
-      id: 'userEmail',
-      header: 'USER EMAIL',
-      cell: ({ row }) => {
-        const userEmail =
-          row.original?.user?.email || row.original?.addressData?.email || '-';
-        return <span>{userEmail}</span>;
-      }
-    },
-    {
-      accessorKey: 'createdAt',
-      header: 'ORDER DATE & TIME',
-      cell: ({ row }) => {
-        const date = new Date(row.original.createdAt);
-        const options: Intl.DateTimeFormatOptions = {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-          timeZone: 'Asia/Kolkata'
-        };
-        return date.toLocaleString('en-IN', options);
-      }
-    },
-    {
-      accessorKey: 'paidAmount',
-      header: 'TOTAL PAYMENT',
-      cell: ({ row }) => {
-        const amount = `₹ ${row.original?.paidAmount?.toFixed(2)}`;
-        return amount;
-      }
-    },
+            aria-label="Select row"
+            className="mx-2 translate-y-[2px]"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false
+      },
+      {
+        accessorKey: 'orderId',
+        header: 'ORDER ID'
+      },
+      {
+        id: 'userEmail',
+        header: 'USER EMAIL',
+        cell: ({ row }) => {
+          const userEmail =
+            row.original?.user?.email ||
+            row.original?.addressData?.email ||
+            '-';
+          return <span>{userEmail}</span>;
+        }
+      },
+      {
+        accessorKey: 'createdAt',
+        header: 'ORDER DATE & TIME',
+        cell: ({ row }) => {
+          const date = new Date(row.original.createdAt);
+          const options: Intl.DateTimeFormatOptions = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'Asia/Kolkata'
+          };
+          return date.toLocaleString('en-IN', options);
+        }
+      },
+      {
+        accessorKey: 'paidAmount',
+        header: 'TOTAL PAYMENT',
+        cell: ({ row }) => `₹ ${row.original?.paidAmount?.toFixed(2)}`
+      },
+      {
+        accessorKey: 'action',
+        header: 'VIEW DETAILS',
+        cell: ({ row }) => {
+          const order = row.original;
+          const count = unreadCounts[order?.orderId] || 0;
 
-    {
-      accessorKey: 'action',
-      header: 'VIEW DETAILS',
-      cell: ({ row }) => {
-        return <CellAction data={row.original} />;
+          return (
+            <div className="relative inline-block">
+              <CellAction data={order} />
+              {count > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+                  {count}
+                </span>
+              )}
+            </div>
+          );
+        }
       }
-    }
-  ];
+    ],
+    [unreadCounts, selectedItems]
+  );
 
   return (
     <div className="space-y-4">
