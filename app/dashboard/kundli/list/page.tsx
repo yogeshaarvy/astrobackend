@@ -1,10 +1,12 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchAllMatchmaking,
-  type IMatchmaking
-} from '@/redux/slices/matchmaking/matchmakinglist';
+  fetchAllKundli,
+  resetKundliState,
+  type IKundli
+} from '@/redux/slices/kundli/kundliList';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -35,13 +37,13 @@ import {
   Search,
   Download,
   Calendar,
-  MapPin,
   Clock,
   Users,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  MapPin
 } from 'lucide-react';
-import type { RootState } from '@/redux/store';
+import type { RootState, AppDispatch } from '@/redux/store';
 import PageContainer from '@/components/layout/page-container';
 
 // Location cache to avoid repeated API calls
@@ -53,7 +55,6 @@ let isProcessingQueue = false;
 
 const processQueue = async () => {
   if (isProcessingQueue || requestQueue.length === 0) return;
-
   isProcessingQueue = true;
   while (requestQueue.length > 0) {
     const request = requestQueue.shift();
@@ -72,7 +73,6 @@ const getLocationFromCoords = async (
   lon: string
 ): Promise<string> => {
   const cacheKey = `${lat},${lon}`;
-
   // Check cache first
   if (locationCache.has(cacheKey)) {
     return locationCache.get(cacheKey)!;
@@ -82,7 +82,6 @@ const getLocationFromCoords = async (
     // Validate coordinates
     const latitude = Number.parseFloat(lat);
     const longitude = Number.parseFloat(lon);
-
     if (
       isNaN(latitude) ||
       isNaN(longitude) ||
@@ -108,12 +107,10 @@ const getLocationFromCoords = async (
               address.city || address.town || address.village || address.hamlet;
             const state = address.state || address.province;
             const country = address.country;
-
             let location = '';
             if (city) location += city;
             if (state) location += (location ? ', ' : '') + state;
             if (country) location += (location ? ', ' : '') + country;
-
             return (
               location ||
               data.display_name?.split(',').slice(0, 3).join(', ') ||
@@ -134,12 +131,10 @@ const getLocationFromCoords = async (
             let location = '';
             if (data.city) location += data.city;
             else if (data.locality) location += data.locality;
-
             if (data.principalSubdivision)
               location += (location ? ', ' : '') + data.principalSubdivision;
             if (data.countryName)
               location += (location ? ', ' : '') + data.countryName;
-
             return location || 'Unknown Location';
           }
           return null;
@@ -152,20 +147,16 @@ const getLocationFromCoords = async (
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-
         const response = await fetch(service.url, {
           signal: controller.signal,
           headers: {
-            'User-Agent': 'MatchmakingApp/1.0'
+            'User-Agent': 'KundliApp/1.0' // Custom User-Agent
           }
         });
-
         clearTimeout(timeoutId);
-
         if (response.ok) {
           const data = await response.json();
           const location = service.parser(data);
-
           if (location) {
             locationCache.set(cacheKey, location);
             return location;
@@ -206,7 +197,6 @@ const useLocationLookup = (lat?: string, lon?: string) => {
     }
 
     const cacheKey = `${lat},${lon}`;
-
     // Check cache immediately
     if (locationCache.has(cacheKey)) {
       setLocation(locationCache.get(cacheKey)!);
@@ -224,7 +214,9 @@ const useLocationLookup = (lat?: string, lon?: string) => {
       try {
         const result = await getLocationFromCoords(lat, lon);
         setLocation(result);
-        setError(result === 'Location unavailable');
+        setError(
+          result === 'Location unavailable' || result === 'Invalid coordinates'
+        );
       } catch (err) {
         setLocation('Location unavailable');
         setError(true);
@@ -241,22 +233,14 @@ const useLocationLookup = (lat?: string, lon?: string) => {
 };
 
 // Improved Location component with better loading states
-const LocationDisplay = ({
-  lat,
-  lon,
-  prefix
-}: {
-  lat?: string;
-  lon?: string;
-  prefix: string;
-}) => {
+const LocationDisplay = ({ lat, lon }: { lat?: string; lon?: string }) => {
   const { location, loading, error } = useLocationLookup(lat, lon);
 
   if (!lat || !lon) {
     return (
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
         <MapPin className="h-3 w-3" />
-        <span>{prefix}: N/A</span>
+        <span>N/A</span>
       </div>
     );
   }
@@ -266,12 +250,13 @@ const LocationDisplay = ({
       <div className="flex items-center gap-1 text-xs">
         <MapPin className="h-3 w-3 animate-pulse" />
         <div className="flex items-center gap-1">
-          <span>{prefix}:</span>
-          <div className="flex space-x-1">
-            <div className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.3s]"></div>
-            <div className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.15s]"></div>
-            <div className="h-1 w-1 animate-bounce rounded-full bg-current"></div>
-          </div>
+          <span>
+            <div className="flex space-x-1">
+              <div className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.3s]"></div>
+              <div className="h-1 w-1 animate-bounce rounded-full bg-current [animation-delay:-0.15s]"></div>
+              <div className="h-1 w-1 animate-bounce rounded-full bg-current"></div>
+            </div>
+          </span>
         </div>
       </div>
     );
@@ -285,39 +270,46 @@ const LocationDisplay = ({
     >
       <MapPin className="h-3 w-3" />
       <span title={error ? `Coordinates: ${lat}, ${lon}` : undefined}>
-        {prefix}: {location}
+        {location}
       </span>
     </div>
   );
 };
 
-export default function MatchmakingPage() {
-  const dispatch = useDispatch();
-  const { MatchmakingState } = useSelector(
-    (state: RootState) => state.matchmakinglist
-  );
+export default function KundliPage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { KundliState } = useSelector((state: RootState) => state.kundliList);
 
   // Local state for filters and pagination
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [searchField, setSearchField] = useState('allFields');
-  const [statusFilter, setStatusFilter] = useState('allStatus');
+  const [searchField, setSearchField] = useState('name'); // Default to 'name'
+  const [selectedLang, setSelectedLang] = useState('all'); // Default to 'all'
+  const [selectedGender, setSelectedGender] = useState('all'); // Default to 'all'
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Fetch data on component mount and when filters change
+  // Fetch data on component mount and when filters/pagination change
   useEffect(() => {
     handleFetchData();
-  }, [currentPage, pageSize, statusFilter]);
+  }, [
+    currentPage,
+    pageSize,
+    searchField,
+    searchKeyword,
+    selectedLang,
+    selectedGender
+  ]);
 
   const handleFetchData = () => {
     dispatch(
-      fetchAllMatchmaking({
+      fetchAllKundli({
         page: currentPage,
         limit: pageSize,
         field: searchField !== 'allFields' ? searchField : undefined,
         text: searchKeyword || undefined,
-        lang: statusFilter !== 'allStatus' ? statusFilter : undefined
-      }) as any
+        lang: selectedLang !== 'all' ? selectedLang : undefined,
+        gender: selectedGender !== 'all' ? selectedGender : undefined
+      })
     );
   };
 
@@ -328,24 +320,30 @@ export default function MatchmakingPage() {
 
   const handleExport = () => {
     dispatch(
-      fetchAllMatchmaking({
+      fetchAllKundli({
         exportData: true,
-        limit: MatchmakingState.pagination.totalCount
-      }) as any
+        limit: KundliState.pagination.totalCount,
+        field: searchField !== 'allFields' ? searchField : undefined,
+        text: searchKeyword || undefined,
+        lang: selectedLang !== 'all' ? selectedLang : undefined,
+        gender: selectedGender !== 'all' ? selectedGender : undefined
+      })
     );
   };
 
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString();
+  const handleResetFilters = () => {
+    setSearchKeyword('');
+    setSearchField('name'); // Reset to default
+    setSelectedLang('all'); // Reset to default
+    setSelectedGender('all'); // Reset to default
+    setCurrentPage(1); // Reset to first page
+    setPageSize(10); // Reset to default
+    dispatch(resetKundliState()); // Resets Redux state pagination as well
   };
 
   const formatTime = (timeString?: string) => {
     if (!timeString) return 'N/A';
+    // Assuming timeString is already in a displayable format like "HH:MM"
     return timeString;
   };
 
@@ -353,9 +351,7 @@ export default function MatchmakingPage() {
     return (currentPage - 1) * pageSize + index + 1;
   };
 
-  const totalPages = Math.ceil(
-    MatchmakingState.pagination.totalCount / pageSize
-  );
+  const totalPages = Math.ceil(KundliState.pagination.totalCount / pageSize);
 
   return (
     <PageContainer scrollable>
@@ -364,10 +360,10 @@ export default function MatchmakingPage() {
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              Matchmaking Records
+              Kundli Records
             </h1>
             <p className="text-muted-foreground">
-              Manage and view all matchmaking compatibility reports
+              Manage and view all Kundli data records
             </p>
           </div>
           <div className="flex gap-2">
@@ -375,7 +371,7 @@ export default function MatchmakingPage() {
               variant="outline"
               size="sm"
               onClick={handleExport}
-              disabled={MatchmakingState.loading}
+              disabled={KundliState.loading}
             >
               <Download className="mr-2 h-4 w-4" />
               Export
@@ -388,16 +384,19 @@ export default function MatchmakingPage() {
           <CardHeader>
             <CardTitle className="text-lg">Search & Filters</CardTitle>
             <CardDescription>
-              Filter matchmaking records by various criteria
+              Filter Kundli records by various criteria
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Search</label>
+                <label htmlFor="search-input" className="text-sm font-medium">
+                  Search
+                </label>
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
+                    id="search-input"
                     placeholder="Search records..."
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
@@ -407,66 +406,50 @@ export default function MatchmakingPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Search Field</label>
+                <label
+                  htmlFor="search-field-select"
+                  className="text-sm font-medium"
+                >
+                  Search Field
+                </label>
                 <Select value={searchField} onValueChange={setSearchField}>
-                  <SelectTrigger>
+                  <SelectTrigger id="search-field-select">
                     <SelectValue placeholder="Select field" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="allFields">All Fields</SelectItem>
-                    <SelectItem value="boyName">Boy Name</SelectItem>
-                    <SelectItem value="girlName">Girl Name</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="gender">Gender</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Language</label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="allStatus">All Languages</SelectItem>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="hi">Hindi</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Page Size</label>
-                <Select
-                  value={pageSize.toString()}
-                  onValueChange={(value) => setPageSize(Number(value))}
+                <label
+                  htmlFor="gender-filter-select"
+                  className="text-sm font-medium"
                 >
-                  <SelectTrigger>
-                    <SelectValue />
+                  Gender
+                </label>
+                <Select
+                  value={selectedGender}
+                  onValueChange={setSelectedGender}
+                >
+                  <SelectTrigger id="gender-filter-select">
+                    <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="5">5 per page</SelectItem>
-                    <SelectItem value="10">10 per page</SelectItem>
-                    <SelectItem value="20">20 per page</SelectItem>
-                    <SelectItem value="50">50 per page</SelectItem>
+                    <SelectItem value="all">All Genders</SelectItem>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="mt-4 flex gap-2">
-              <Button
-                onClick={handleSearch}
-                disabled={MatchmakingState.loading}
-              >
+              <Button onClick={handleSearch} disabled={KundliState.loading}>
                 <Search className="mr-2 h-4 w-4" />
                 Search
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSearchKeyword('');
-                  setSearchField('allFields');
-                  setStatusFilter('allStatus');
-                  setCurrentPage(1);
-                }}
-              >
+              <Button variant="outline" onClick={handleResetFilters}>
                 Clear Filters
               </Button>
             </div>
@@ -477,7 +460,7 @@ export default function MatchmakingPage() {
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            <span>Total Records: {MatchmakingState.pagination.totalCount}</span>
+            <span>Total Records: {KundliState.pagination.totalCount}</span>
           </div>
           <div>
             Page {currentPage} of {totalPages}
@@ -485,9 +468,9 @@ export default function MatchmakingPage() {
         </div>
 
         {/* Error State */}
-        {MatchmakingState.error && (
+        {KundliState.error && (
           <Alert variant="destructive">
-            <AlertDescription>{MatchmakingState.error}</AlertDescription>
+            <AlertDescription>{KundliState.error}</AlertDescription>
           </Alert>
         )}
 
@@ -499,15 +482,16 @@ export default function MatchmakingPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-16">#</TableHead>
-                    <TableHead>Boy Details</TableHead>
-                    <TableHead>Girl Details</TableHead>
-                    <TableHead>Birth Details</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>DOB</TableHead>
+                    <TableHead>Time of Birth</TableHead>
                     <TableHead>Location</TableHead>
-                    <TableHead>Created</TableHead>
+                    <TableHead>Gender</TableHead>
+                    <TableHead>Lang</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {MatchmakingState.loading ? (
+                  {KundliState.loading ? (
                     // Loading skeleton
                     Array.from({ length: pageSize }).map((_, index) => (
                       <TableRow key={index}>
@@ -521,7 +505,7 @@ export default function MatchmakingPage() {
                           <Skeleton className="h-4 w-24" />
                         </TableCell>
                         <TableCell>
-                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-4 w-20" />
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
@@ -529,93 +513,71 @@ export default function MatchmakingPage() {
                               <MapPin className="h-3 w-3" />
                               <Skeleton className="h-3 w-24" />
                             </div>
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              <Skeleton className="h-3 w-24" />
-                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-12" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-16" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-12" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-12" />
                         </TableCell>
                       </TableRow>
                     ))
-                  ) : MatchmakingState.data.length === 0 ? (
+                  ) : KundliState.data.length === 0 ? (
                     <TableRow>
                       <TableCell
-                        colSpan={6}
+                        colSpan={9}
                         className="py-8 text-center text-muted-foreground"
                       >
-                        No matchmaking records found
+                        No Kundli records found
                       </TableCell>
                     </TableRow>
                   ) : (
-                    MatchmakingState.data.map(
-                      (record: IMatchmaking, index: number) => (
-                        <TableRow key={record.id}>
-                          <TableCell className="font-mono text-sm font-medium">
-                            {getSequenceNumber(index)}
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="font-medium">
-                                {record.boyName || 'N/A'}
-                              </div>
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                {formatDate(record.boy_dob)}
-                              </div>
+                    KundliState.data.map((record: IKundli, index: number) => (
+                      <TableRow key={record._id}>
+                        <TableCell className="font-mono text-sm font-medium">
+                          {getSequenceNumber(index)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-medium">
+                            {record.name || 'N/A'}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Calendar className="h-3 w-3" />
+                            {record.dob}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-xs">
+                            <Clock className="h-3 w-3" />
+                            <span>{formatTime(record.tob)}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {record.lat && record.lon ? (
+                            <LocationDisplay
+                              lat={record.lat}
+                              lon={record.lon}
+                            />
+                          ) : (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <MapPin className="h-3 w-3" />
+                              <span>N/A</span>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="font-medium">
-                                {record.girlName || 'N/A'}
-                              </div>
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                {formatDate(record.girl_dob)}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1 text-xs">
-                              <div className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                <span>Boy: {formatTime(record.boy_tob)}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                <span>Girl: {formatTime(record.girl_tob)}</span>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              {record.boy_lat && record.boy_lon && (
-                                <LocationDisplay
-                                  lat={record.boy_lat}
-                                  lon={record.boy_lon}
-                                  prefix="Boy"
-                                />
-                              )}
-                              {record.girl_lat && record.girl_lon && (
-                                <LocationDisplay
-                                  lat={record.girl_lat}
-                                  lon={record.girl_lon}
-                                  prefix="Girl"
-                                />
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-xs text-muted-foreground">
-                            {record.createdAt
-                              ? formatDate(record.createdAt)
-                              : 'N/A'}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    )
+                          )}
+                        </TableCell>
+                        <TableCell>{record.gender || 'N/A'}</TableCell>
+                        <TableCell>{record.lang || 'N/A'}</TableCell>
+                      </TableRow>
+                    ))
                   )}
                 </TableBody>
               </Table>
@@ -630,16 +592,16 @@ export default function MatchmakingPage() {
               Showing {(currentPage - 1) * pageSize + 1} to{' '}
               {Math.min(
                 currentPage * pageSize,
-                MatchmakingState.pagination.totalCount
+                KundliState.pagination.totalCount
               )}{' '}
-              of {MatchmakingState.pagination.totalCount} results
+              of {KundliState.pagination.totalCount} results
             </div>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1 || MatchmakingState.loading}
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1 || KundliState.loading}
               >
                 <ChevronLeft className="h-4 w-4" />
                 Previous
@@ -653,8 +615,8 @@ export default function MatchmakingPage() {
                       key={pageNum}
                       variant={currentPage === pageNum ? 'default' : 'outline'}
                       size="sm"
-                      onClick={() => handlePageChange(pageNum)}
-                      disabled={MatchmakingState.loading}
+                      onClick={() => setCurrentPage(pageNum)}
+                      disabled={KundliState.loading}
                     >
                       {pageNum}
                     </Button>
@@ -664,10 +626,8 @@ export default function MatchmakingPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={
-                  currentPage === totalPages || MatchmakingState.loading
-                }
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages || KundliState.loading}
               >
                 Next
                 <ChevronRight className="h-4 w-4" />

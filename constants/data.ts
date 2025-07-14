@@ -491,6 +491,11 @@ export const navItems: NavItem[] = [
         icon: 'tableContents'
       },
       {
+        title: 'List',
+        url: '/dashboard/kundli/list',
+        icon: 'list'
+      },
+      {
         title: 'Other',
         url: '/dashboard/kundli/other',
         icon: 'otherlist',
