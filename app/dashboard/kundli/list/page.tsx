@@ -341,6 +341,15 @@ export default function KundliPage() {
     dispatch(resetKundliState()); // Resets Redux state pagination as well
   };
 
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return 'Invalid Date';
+    }
+  };
+
   const formatTime = (timeString?: string) => {
     if (!timeString) return 'N/A';
     // Assuming timeString is already in a displayable format like "HH:MM"
@@ -419,6 +428,27 @@ export default function KundliPage() {
                   <SelectContent>
                     <SelectItem value="name">Name</SelectItem>
                     <SelectItem value="gender">Gender</SelectItem>
+                    <SelectItem value="lang">Language</SelectItem>
+                    {/* Add other searchable fields if applicable */}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="language-filter-select"
+                  className="text-sm font-medium"
+                >
+                  Language
+                </label>
+                <Select value={selectedLang} onValueChange={setSelectedLang}>
+                  <SelectTrigger id="language-filter-select">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Languages</SelectItem>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="hi">Hindi</SelectItem>
+                    <SelectItem value="gu">Gujarati</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -484,8 +514,9 @@ export default function KundliPage() {
                     <TableHead className="w-16">#</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>DOB</TableHead>
-                    <TableHead>Time of Birth</TableHead>
-                    <TableHead>Location</TableHead>
+                    <TableHead>TOB</TableHead>
+                    <TableHead>Location</TableHead> {/* Changed from Lat/Lon */}
+                    <TableHead>TZ</TableHead>
                     <TableHead>Gender</TableHead>
                     <TableHead>Lang</TableHead>
                   </TableRow>
@@ -552,7 +583,7 @@ export default function KundliPage() {
                         <TableCell>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Calendar className="h-3 w-3" />
-                            {record.dob}
+                            {formatDate(record.dob)}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -574,6 +605,7 @@ export default function KundliPage() {
                             </div>
                           )}
                         </TableCell>
+                        <TableCell>{record.tz || 'N/A'}</TableCell>
                         <TableCell>{record.gender || 'N/A'}</TableCell>
                         <TableCell>{record.lang || 'N/A'}</TableCell>
                       </TableRow>
