@@ -208,7 +208,7 @@ const Page = () => {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="name">Contect</Label>
+                          <Label htmlFor="name">Contact</Label>
                           <Input
                             name="contactUs.contact"
                             placeholder="Enter your Contact"
@@ -220,7 +220,6 @@ const Page = () => {
                           <Label htmlFor="name">Whatsapp No</Label>
                           <Input
                             name="contactUs.whatsapp_no"
-                            type="number"
                             placeholder="Enter your Whatsapp No"
                             value={(cData as ISetting)?.contactUs?.whatsapp_no}
                             onChange={handleInputChange}

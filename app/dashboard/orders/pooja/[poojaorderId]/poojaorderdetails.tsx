@@ -84,340 +84,189 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
       // Generate invoice HTML content with clean design matching the image
       invoiceContainer.innerHTML = `
       <!DOCTYPE html>
-      <html lang="en">
+      <html>
       <head>
-        <title>Invoice</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Invoice - ${orderData?.orderId || 'N/A'}</title>
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
           body { 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Poppins', sans-serif;
-            color: #333333;
-            background-color: #fff;
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            color: #333; 
+            line-height: 1.6;
           }
-          .invoice-container { 
-            max-width: 800px;
+          .invoice-container {
+          max-width: 700px;
+          margin: 0 auto;
+          }
+          .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
             margin: 0 auto;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px; 
+            border-bottom: 2px solid #c1d42f; 
+            padding-bottom: 20px; 
           }
-          .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            border-bottom: 1px solid #e0e0e0;
+          .company-name { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #c1d42f; 
           }
-          .logo-section {
-            display: flex;
-            align-items: center;
+          .invoice-title { 
+            font-size: 32px; 
+            font-weight: bold; 
           }
-          .logo-section img {
-            height: 50px;
-            margin-right: 15px;
+          .invoice-details { 
+            margin-bottom: 30px; 
           }
-          .logo-text h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
+          .addresses { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 30px; 
           }
-          .invoice-date {
-            font-size: 14px;
-            margin-top: 5px;
+          .address-block { 
+            width: 45%; 
           }
-          .invoice-number {
-            text-align: right;
+          .address-title { 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            color: #c1d42f; 
           }
-          .status-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 32px;
-            padding: 0 12px;
-            border-radius: 16px;
-            background-color: black;
-            color: white;
-            text-transform: capitalize;
-            font-size: 14px;
-            line-height: 32px;
+          table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 30px; 
           }
-          .company-info {
-            background-color: #f8f8f8;
-            padding: 15px 30px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
+          th, td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
           }
-          .company-info p {
-            margin: 3px 0;
-            font-size: 14px;
+          th { 
+            background-color: #f8f9fa; 
+            font-weight: bold; 
           }
-          .info-section {
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
+          .summary { 
+            float: right; 
+            width: 300px; 
+            clear: both;
           }
-          .info-box {
-            width: 48%;
+          .summary-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 8px 0; 
           }
-          .info-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 5px;
-            display: inline-block;
+          .summary-total { 
+            font-weight: bold; 
+            font-size: 18px; 
+            border-top: 2px solid #c1d42f; 
+            padding-top: 10px; 
           }
-          .address-card {
-            background: #f8f8f8;
-            border-radius: 4px;
-            padding: 15px;
-            border-left: 3px solid #000;
-          }
-          .address-card p {
-            margin: 4px 0;
-            font-size: 14px;
-          }
-          .address-card .name {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 8px;
-          }
-          .payment-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-          }
-          .payment-info .label {
-            font-weight: normal;
-          }
-          .payment-info .value {
-            font-weight: 500;
-          }
-          .amount-paid {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #c0c0c0;
-            display: flex;
-            justify-content: space-between;
-          }
-          .amount-paid .label {
-            font-weight: 600;
-            font-size: 14px;
-          }
-          .amount-paid .value {
-            font-weight: 700;
-            font-size: 16px;
-          }
-          .order-details {
-            padding: 0 30px 30px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-          }
-          thead {
-            background-color: #000;
-            color: white;
-          }
-          th {
-            text-align: left;
-            padding: 10px 15px;
-            font-weight: 500;
-            font-size: 14px;
-          }
-          th:nth-child(2) {
-            text-align: center;
-          }
-          th:nth-child(3), th:nth-child(4) {
-            text-align: right;
-          }
-          td {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 14px;
-          }
-          td:nth-child(2) {
-            text-align: center;
-            font-weight: 500;
-          }
-          td:nth-child(3), td:nth-child(4) {
-            text-align: right;
-          }
-          td:nth-child(4) {
-            font-weight: 600;
-          }
-          .totals-section {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 30px;
-          }
-          .totals-table {
-            width: 300px;
-            background: #f8f8f8;
-            border-radius: 4px;
-            padding: 15px;
-          }
-          .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e0e0e0;
-          }
-          .total-row:last-child {
-            border-bottom: none;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px solid #000;
-            font-weight: 600;
-          }
-          .footer {
-            background: #f8f8f8;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #e0e0e0;
-          }
-          .thank-you {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 5px;
-          }
-          .contact-info {
-            font-size: 13px;
-            color: #666;
-            margin: 5px 0;
-          }
-          .contact-email {
-            color: #000;
-            font-weight: 500;
-          }
-          .copyright {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #c0c0c0;
-            font-size: 12px;
-            color: #888;
+          .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
           }
         </style>
       </head>
       <body>
-        <div class="invoice-container">
-          <!-- Header -->
-          <div class="header">
-            <div class="logo-section">
-              <img src="${logoPath}" alt="Dubblin">
-              <div class="logo-text">
-                <h1>INVOICE</h1>
-                <div class="invoice-date">${moment(orderData?.createdAt).format(
-                  'MMMM Do YYYY'
-                )}</div>
-              </div>
-            </div>
-            <div class="invoice-number">
-              <div>Invoice #ORD-${orderData?.orderId || ''}</div>
-              <div style="margin: 8px 0 0;">Order Status: <span class="status-badge">${
-                orderData?.orderStatus || 'Pending'
-              }</span></div>
-            </div>
+      <div class="invoice-container">
+        <div class="header">
+          <div>
+            <div class="company-name">AstroIndusoot</div>
+            <div>PLOT NO. -27 AND 27-B, KHASRA NO. 46/23</div>
+            <div>Near M.S. VATIKA, NILOTHI EXTENSION, NEW DELHI-110041</div>
+            <div>dubblinofficial@gmail.com | +91 7838388836</div>
           </div>
-  
-          <!-- Company Info -->
-          <div class="company-info">
+          <div class="invoice-title">INVOICE</div>
+        </div>
+        
+        <div class="invoice-details">
+          <strong>Invoice #:</strong> ORD-${orderData?.orderId || ''}<br>
+          <strong>Date:</strong> ${moment(orderData?.createdAt).format(
+            'MMMM Do YYYY'
+          )}<br>
+          <strong>Status:</strong> ${
+            orderData?.orderStatus
+              ? orderData.orderStatus.toUpperCase()
+              : 'PENDING'
+          }
+        </div>
+        
+        <div class="addresses">
+          <div class="address-block">
+            <div class="address-title">Bill To:</div>
             <div>
-              <p>PLOT NO. -27 AND 27-B, KHASRA NO. 46/23</p>
-              <p>Near M.S. VATIKA, NILOTHI EXTENSION, NEW DELHI-110041</p>
-            </div>
-            <div style="text-align: right;">
-              <p>+91 7838388836</p>
-              <p>dubblinofficial@gmail.com</p>
-            </div>
-          </div>
-  
-          <!-- Customer Info Section -->
-          <div class="info-section">
-            <!-- Ship To Information -->
-            <div class="info-box">
-              <div class="info-title">SHIP TO</div>
-              <div class="address-card">
-                <p class="name">${orderData?.user?.name || ''}</p>
-               
-                <p>📞 ${orderData?.user?.phone || ''}</p>
-                <p>✉️ ${orderData?.user?.email || ''}</p>
-              </div>
-            </div>
-  
-            <!-- Payment Information -->
-            <div class="info-box">
-              <div class="info-title">PAYMENT INFO</div>
-              <div class="address-card">
-                <div class="payment-info">
-                  <span class="label">Transaction ID:</span>
-                  <span class="value">${orderData?.transactionId || ''}</span>
-                </div>
-                <div class="payment-info">
-                  <span class="label">Payment Date:</span>
-                  <span class="value">${moment(orderData?.createdAt).format(
-                    'MMM DD, YYYY'
-                  )}</span>
-                </div>
-               
-                <div class="amount-paid">
-                  <span class="label">Amount Paid:</span>
-                  <span class="value">₹ ${orderData?.paidAmount?.toFixed(
-                    2
-                  )}</span>
-                </div>
-              </div>
+              <strong>${orderData?.user?.name || ''}</strong><br>
+              ${orderData?.user?.email || ''}<br>
+              📞 ${orderData?.user?.phone || ''}<br>
+              <br>
+              <strong>Transaction ID:</strong> ${
+                orderData?.transactionId || ''
+              }<br>
+              <strong>Payment Status:</strong> ${
+                orderData?.paymentStatus || ''
+              }<br>
+              <strong>Payment Date:</strong> ${moment(
+                orderData?.createdAt
+              ).format('MMM DD, YYYY')}<br>
+              <strong>Amount Paid:</strong> ₹ ${orderData?.paidAmount?.toFixed(
+                2
+              )}
             </div>
           </div>
-  
-          <!-- Order Details -->
-          <div class="order-details">
-            <div class="info-title">ORDER DETAILS</div>
-            <table>
-              <thead>
-                <tr>
-                  <th>ITEM</th>
-                  <th>PRICE</th>
-                </tr>
-              </thead>
-              <tbody>
-                      <td>
-                        ${orderData?.product?.title?.en}                      
-                      </td>
-              </tbody>
-            </table>
-  
-            <!-- Totals Section -->
-            <div class="totals-section">
-              <div class="totals-table">
-                <div class="total-row">
-                  <span>Total Amount:</span>
-                  <span>₹ ${orderData?.paidAmount?.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Footer -->
-          <div class="footer">
-            <p class="thank-you">Thank you for your business!</p>
-            <p class="contact-info">
-              If you have any questions about this invoice, please contact us at
-              <span class="contact-email">dubblinofficial@gmail.com</span>
-            </p>
-            <div class="copyright">
-              <p>Dubblin © ${new Date().getFullYear()} • All Rights Reserved</p>
+          
+          <div class="address-block">
+            <div class="address-title">From:</div>
+            <div>
+              <strong>AstroIndusoot</strong><br>
+              PLOT NO. -27 AND 27-B, KHASRA NO. 46/23<br>
+              Near M.S. VATIKA, NILOTHI EXTENSION,<br>
+              NEW DELHI-110041<br>
+              dubblinofficial@gmail.com<br>
+              +91 7838388836
             </div>
           </div>
         </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${orderData?.product?.title?.en}</td>
+              <td>₹${(orderData?.paidAmount || 0).toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="clearfix">
+          <div class="summary">
+            <div class="summary-row summary-total">
+              <span>Total:</span>
+              <span>₹${(orderData?.paidAmount || 0).toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px; text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+          <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Thank you for your business!</p>
+          <p style="font-size: 13px; color: #666; margin: 5px 0;">
+            If you have any questions about this invoice, please contact us at
+            <span style="color: #000; font-weight: 500;">dubblinofficial@gmail.com</span>
+          </p>
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #c0c0c0; font-size: 12px; color: #888;">
+            <p>Dubblin © ${new Date().getFullYear()} • All Rights Reserved</p>
+          </div>
+        </div>
+        </div>
       </body>
       </html>`;
-
+      //this is updated invoice 2
       // Add the invoice container to the document
       document.body.appendChild(invoiceContainer);
 
@@ -503,6 +352,12 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
               <p className="text-sm">
                 Transaction Id:{' '}
                 <span className="font-bold">{orderData?.transactionId}</span>{' '}
+              </p>
+            )}
+            {orderData?.paymentStatus && (
+              <p className="text-sm">
+                Payment Status:{' '}
+                <span className="font-bold">{orderData?.paymentStatus}</span>
               </p>
             )}
 
