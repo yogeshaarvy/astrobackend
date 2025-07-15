@@ -10,6 +10,16 @@ import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { title } from 'process';
 import { RootState } from '@/redux/store';
+type UpdatePoojaArgs = {
+  poojaId: string;
+  poojaStatus: string;
+};
+
+type ApiResponse = {
+  success: boolean;
+  data?: any;
+  message?: string;
+};
 
 // Define the IHomeAboutList type
 export type IAllOrdersList = BaseModel & {
@@ -208,35 +218,37 @@ export const fetchMonthlyOrders = createAsyncThunk<{ state: RootState }>(
     }
   }
 );
-export const updatePoojaOrderStatus = async ({
-  poojaId,
-  poojaStatus
-}: {
-  poojaId: string;
-  poojaStatus: string;
-}) => {
-  try {
-    const response = await fetchApi(`/pooja_order/updatepoojastatus`, {
-      body: {
-        poojaId,
-        poojaStatus
-      },
-      method: 'PUT'
-    });
-    if (response?.success) {
-      toast.success('Pooja Status Updated Successfully!');
-      return response;
-    } else {
-      let errorMsg = response?.data?.message || 'Something Went Wrong';
+export const updatePoojaOrderStatus = createAsyncThunk<
+  ApiResponse, // ✅ return type on success
+  UpdatePoojaArgs, // ✅ argument type
+  { rejectValue: string } // ✅ rejected value type
+>(
+  'updatepooja-status',
+  async ({ poojaId, poojaStatus }, { rejectWithValue }) => {
+    try {
+      const response: ApiResponse = await fetchApi(
+        `/pooja_order/updatepoojastatus`,
+        {
+          body: { poojaId, poojaStatus },
+          method: 'PUT'
+        }
+      );
+
+      if (response?.success) {
+        toast.success('Pooja Status Updated Successfully!');
+        return response;
+      } else {
+        const errorMsg = response?.message || 'Something went wrong';
+        toast.error(errorMsg);
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message || 'Something went wrong';
       toast.error(errorMsg);
-      return errorMsg;
+      return rejectWithValue(errorMsg);
     }
-  } catch (error: any) {
-    let errorMsg = error?.message || 'Something Went Wrong';
-    toast.error(errorMsg);
-    return errorMsg;
   }
-};
+);
 //create shiprocket order
 export const createShiprocketOrder = async (orderId: any) => {
   try {

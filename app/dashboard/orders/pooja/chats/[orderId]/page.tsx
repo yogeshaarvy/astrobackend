@@ -22,6 +22,7 @@ import {
   updatePoojaOrderStatus
 } from '@/redux/slices/astropooja/poojaorders';
 import { useAdminChat } from '@/hooks/useChat';
+import { toast } from 'sonner';
 
 // Types
 interface Message {
@@ -42,7 +43,7 @@ interface PoojaBooking {
   userPhone?: string;
   phoneCode?: string;
   bookingDateTime?: Date;
-  poojaStatus: 'no start' | 'start' | 'process' | 'complete' | 'cancel';
+  poojaStatus: 'no started' | 'start' | 'progress' | 'complete' | 'cancel';
   isOnline: boolean;
   avatar?: string;
   paymentStatus?: any;
@@ -64,6 +65,13 @@ const PoojaSpecificChat: React.FC = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+  // Add this state to track loading for each button individually
+  const [loadingStates, setLoadingStates] = useState({
+    start: false,
+    progress: false,
+    complete: false,
+    cancel: false
+  });
 
   useEffect(() => {
     if (!orderId) return; // Prevents unnecessary API calls if orderId is missing
@@ -116,7 +124,7 @@ const PoojaSpecificChat: React.FC = () => {
       (document.getElementById('file-upload') as HTMLInputElement).value = ''; // Reset file input
     } catch (err) {
       console.error('File upload error:', err);
-      alert('Media upload failed. Please try again.');
+      toast.error('Media upload failed. Please try again.');
     } finally {
       setIsTyping(false);
     }
@@ -136,9 +144,29 @@ const PoojaSpecificChat: React.FC = () => {
     }
   };
 
-  const handleUpdatePoojaStatus = async ({ poojaId, poojaStatus }: any) => {
-    console.log('poojaId poojaStatus', poojaId, poojaStatus);
-    dispatch(updatePoojaOrderStatus({ poojaId, poojaStatus }));
+  const handleUpdatePoojaStatus = async ({
+    poojaId,
+    poojaStatus
+  }: {
+    poojaId: string;
+    poojaStatus: string;
+  }) => {
+    try {
+      // Set loading state for specific button
+      setLoadingStates((prev) => ({ ...prev, [poojaStatus]: true }));
+
+      const res = await dispatch(
+        updatePoojaOrderStatus({ poojaId, poojaStatus })
+      );
+      if ((res?.payload as any)?.success) {
+        window.location.reload();
+      }
+    } catch (err) {
+      console.error('Failed to update pooja status', err);
+    } finally {
+      // Reset loading state for specific button
+      setLoadingStates((prev) => ({ ...prev, [poojaStatus]: false }));
+    }
   };
   // Memoized handlers to avoid setState-in-render warning
   const handleMessage = useCallback((msg: any) => {
@@ -434,32 +462,82 @@ const PoojaSpecificChat: React.FC = () => {
 
             {/* Quick Actions */}
             <div className="space-y-2">
-              <button
-                onClick={() =>
-                  handleUpdatePoojaStatus({
-                    poojaId: poojaBooking?.poojaId,
-                    poojaStatus: 'start'
-                  })
-                }
-                className="w-full rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 px-4 py-2 text-white transition-all duration-200 hover:from-yellow-600 hover:to-yellow-700"
-              >
-                Mark as Start
-              </button>
-              <button className="w-full rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-white transition-all duration-200 hover:from-orange-600 hover:to-orange-700">
-                Mark as Progress
-              </button>
-              <button className="w-full rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-4 py-2 text-white transition-all duration-200 hover:from-green-600 hover:to-green-700">
-                Mark as Completed
-              </button>
-              <button className="w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white transition-all duration-200 hover:from-red-600 hover:to-red-700">
-                Mark as Cancel
-              </button>
-              {/* <button className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-white transition-all duration-200 hover:from-blue-600 hover:to-blue-700">
-                Send Reminder
-              </button>
-              <button className="w-full rounded-lg bg-gradient-to-r from-amber-600 to-amber-700 px-4 py-2 text-white transition-all duration-200 hover:from-amber-700 hover:to-amber-800">
-                Reschedule
-              </button> */}
+              {poojaBooking?.poojaStatus === 'no started' && (
+                <button
+                  onClick={() =>
+                    handleUpdatePoojaStatus({
+                      poojaId: poojaBooking?.poojaId,
+                      poojaStatus: 'start'
+                    })
+                  }
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 px-4 py-2 text-white transition-all duration-200 hover:from-yellow-600 hover:to-yellow-700"
+                  disabled={loadingStates.start}
+                >
+                  {loadingStates.start ? (
+                    <span className="loader">Updating .....</span>
+                  ) : (
+                    'Mark as Start'
+                  )}
+                </button>
+              )}
+
+              {(poojaBooking?.poojaStatus === 'no started' ||
+                poojaBooking?.poojaStatus === 'start') && (
+                <button
+                  onClick={() =>
+                    handleUpdatePoojaStatus({
+                      poojaId: poojaBooking?.poojaId,
+                      poojaStatus: 'progress'
+                    })
+                  }
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-white transition-all duration-200 hover:from-orange-600 hover:to-orange-700"
+                  disabled={loadingStates.progress}
+                >
+                  {loadingStates.progress ? (
+                    <span className="loader">Updating .....</span>
+                  ) : (
+                    'Mark as Progress'
+                  )}
+                </button>
+              )}
+
+              {!['cancel', 'complete'].includes(poojaBooking?.poojaStatus) && (
+                <button
+                  onClick={() =>
+                    handleUpdatePoojaStatus({
+                      poojaId: poojaBooking?.poojaId,
+                      poojaStatus: 'complete'
+                    })
+                  }
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-4 py-2 text-white transition-all duration-200 hover:from-green-600 hover:to-green-700"
+                  disabled={loadingStates.complete}
+                >
+                  {loadingStates.complete ? (
+                    <span className="loader">Updating .....</span>
+                  ) : (
+                    'Mark as Completed'
+                  )}
+                </button>
+              )}
+
+              {!['cancel', 'complete'].includes(poojaBooking?.poojaStatus) && (
+                <button
+                  onClick={() =>
+                    handleUpdatePoojaStatus({
+                      poojaId: poojaBooking?.poojaId,
+                      poojaStatus: 'cancel'
+                    })
+                  }
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white transition-all duration-200 hover:from-red-600 hover:to-red-700"
+                  disabled={loadingStates.cancel}
+                >
+                  {loadingStates.cancel ? (
+                    <span className="loader">Updating .....</span>
+                  ) : (
+                    'Mark as Cancel'
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>
