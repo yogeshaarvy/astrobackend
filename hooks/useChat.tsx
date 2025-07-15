@@ -27,7 +27,7 @@ export function useAdminChat(
   useEffect(() => {
     if (!orderId || !adminId) return;
 
-    socketRef.current = io('http://localhost:3830', {
+    socketRef.current = io(process.env.NEXT_PUBLIC_APP_API_URL, {
       withCredentials: true,
       transports: ['websocket']
     });
