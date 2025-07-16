@@ -51,7 +51,6 @@ export const fetchReviewList = createAsyncThunk<
     pageSize?: number;
     keyword?: string;
     field?: string;
-
     exportData?: boolean;
   },
   { state: RootState }
@@ -63,7 +62,6 @@ export const fetchReviewList = createAsyncThunk<
       pageSize = 10,
       keyword = '',
       field = '',
-
       exportData = false
     } = input || {};
     dispatch(fetchReviewStart());
@@ -148,6 +146,45 @@ export const addEditReview = createAsyncThunk<
   }
 });
 
+export const deleteReview = createAsyncThunk<
+  any,
+  { id: string; astroId?: string },
+  { state: RootState }
+>(
+  'review/deleteReview',
+  async ({ id, astroId }, { dispatch, rejectWithValue }) => {
+    dispatch(deleteReviewStart());
+    try {
+      // Fixed: Use the correct endpoint that matches the controller
+      const response = await fetchApi(`/reviews/delete/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response?.success) {
+        dispatch(deleteReviewSuccess(id));
+        // Refresh the review list after deletion
+        if (astroId) {
+          dispatch(fetchReviewList({ astroId }));
+        } else {
+          dispatch(fetchReviewList({}));
+        }
+        toast.success(response?.message || 'Review deleted successfully');
+        return response;
+      } else {
+        let errorMsg = response?.message || 'Something Went Wrong';
+        toast.error(errorMsg);
+        dispatch(deleteReviewFailure(errorMsg));
+        return rejectWithValue(errorMsg);
+      }
+    } catch (error: any) {
+      const errorMsg = error?.message || 'Failed to delete Review';
+      dispatch(deleteReviewFailure(errorMsg));
+      toast.error(errorMsg);
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
 // Slice
 const reviewSlice = createSlice({
   name: 'review',
@@ -181,6 +218,17 @@ const reviewSlice = createSlice({
     updateReviewData(state, action) {
       const oldData = state.singlereviewState.data;
       state.singlereviewState.data = { ...oldData, ...action.payload };
+    },
+    deleteReviewStart(state) {
+      state.singlereviewState.loading = true;
+      state.singlereviewState.error = null;
+    },
+    deleteReviewSuccess(state, action) {
+      state.singlereviewState.loading = false;
+    },
+    deleteReviewFailure(state, action) {
+      state.singlereviewState.loading = false;
+      state.singlereviewState.error = action.payload;
     }
   }
 });
@@ -190,7 +238,10 @@ export const {
   fetchReviewListSuccess,
   fetchReviewFailure,
   addEditReviewStart,
+  deleteReviewStart,
   addEditReviewSuccess,
+  deleteReviewFailure,
+  deleteReviewSuccess,
   addEditReviewFailure,
   updateReviewData
 } = reviewSlice.actions;
