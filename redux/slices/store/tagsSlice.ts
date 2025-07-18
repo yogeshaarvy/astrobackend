@@ -138,6 +138,7 @@ export const fetchTagList = createAsyncThunk<
               totalCount: response.totalCount
             })
           );
+          console.log('respone of tag is', response);
         } else {
           dispatch(fetchTagExportLoading(false));
         }
