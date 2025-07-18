@@ -31,7 +31,7 @@ import {
 } from '@/redux/slices/store/allordersSlice';
 
 const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
-  console.log('this is transiition', orderData);
+  console.log('thiss is the orderData', orderData);
   // const [orderStatus, setOrderStatus] = React.useState('placed');
   const [transactionId, setTransactionId] = React.useState('');
   const [newStatus, setNewStatus] = React.useState(orderData?.orderStatus);
@@ -84,418 +84,246 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
 
       // Generate invoice HTML content with clean design matching the image
       invoiceContainer.innerHTML = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <title>Invoice</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-          body { 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Poppins', sans-serif;
-            color: #333333;
-            background-color: #fff;
-          }
-          .invoice-container { 
-            max-width: 800px;
-            margin: 0 auto;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-          }
-          .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            border-bottom: 1px solid #e0e0e0;
-          }
-          .logo-section {
-            display: flex;
-            align-items: center;
-          }
-          .logo-section img {
-            height: 50px;
-            margin-right: 15px;
-          }
-          .logo-text h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-          }
-          .invoice-date {
-            font-size: 14px;
-            margin-top: 5px;
-          }
-          .invoice-number {
-            text-align: right;
-          }
-          .status-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 32px;
-            padding: 0 12px;
-            border-radius: 16px;
-            background-color: black;
-            color: white;
-            text-transform: capitalize;
-            font-size: 14px;
-            line-height: 32px;
-          }
-          .company-info {
-            background-color: #f8f8f8;
-            padding: 15px 30px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-          }
-          .company-info p {
-            margin: 3px 0;
-            font-size: 14px;
-          }
-          .info-section {
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-          }
-          .info-box {
-            width: 48%;
-          }
-          .info-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 5px;
-            display: inline-block;
-          }
-          .address-card {
-            background: #f8f8f8;
-            border-radius: 4px;
-            padding: 15px;
-            border-left: 3px solid #000;
-          }
-          .address-card p {
-            margin: 4px 0;
-            font-size: 14px;
-          }
-          .address-card .name {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 8px;
-          }
-          .payment-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-          }
-          .payment-info .label {
-            font-weight: normal;
-          }
-          .payment-info .value {
-            font-weight: 500;
-          }
-          .amount-paid {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #c0c0c0;
-            display: flex;
-            justify-content: space-between;
-          }
-          .amount-paid .label {
-            font-weight: 600;
-            font-size: 14px;
-          }
-          .amount-paid .value {
-            font-weight: 700;
-            font-size: 16px;
-          }
-          .order-details {
-            padding: 0 30px 30px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-          }
-          thead {
-            background-color: #000;
-            color: white;
-          }
-          th {
-            text-align: left;
-            padding: 10px 15px;
-            font-weight: 500;
-            font-size: 14px;
-          }
-          th:nth-child(2) {
-            text-align: center;
-          }
-          th:nth-child(3), th:nth-child(4) {
-            text-align: right;
-          }
-          td {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 14px;
-          }
-          td:nth-child(2) {
-            text-align: center;
-            font-weight: 500;
-          }
-          td:nth-child(3), td:nth-child(4) {
-            text-align: right;
-          }
-          td:nth-child(4) {
-            font-weight: 600;
-          }
-          .totals-section {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 30px;
-          }
-          .totals-table {
-            width: 300px;
-            background: #f8f8f8;
-            border-radius: 4px;
-            padding: 15px;
-          }
-          .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e0e0e0;
-          }
-          .total-row:last-child {
-            border-bottom: none;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px solid #000;
-            font-weight: 600;
-          }
-          .footer {
-            background: #f8f8f8;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #e0e0e0;
-          }
-          .thank-you {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 5px;
-          }
-          .contact-info {
-            font-size: 13px;
-            color: #666;
-            margin: 5px 0;
-          }
-          .contact-email {
-            color: #000;
-            font-weight: 500;
-          }
-          .copyright {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #c0c0c0;
-            font-size: 12px;
-            color: #888;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="invoice-container">
-          <!-- Header -->
-          <div class="header">
-            <div class="logo-section">
-              <img src="${logoPath}" alt="Dubblin">
-              <div class="logo-text">
-                <h1>INVOICE</h1>
-                <div class="invoice-date">${moment(orderData?.createdAt).format(
-                  'MMMM Do YYYY'
-                )}</div>
-              </div>
-            </div>
-            <div class="invoice-number">
-              <div>Invoice #ORD-${orderData?.orderId || ''}</div>
-              <div style="margin: 8px 0 0;">Order Status: <span class="status-badge">${
-                orderData?.orderStatus || 'Pending'
-              }</span></div>
-            </div>
-          </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice - ${orderData?.orderId || 'N/A'}</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 40px; 
+      color: #333; 
+      line-height: 1.6;
+    }
+    .invoice-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      margin: 0 auto;
+      margin-bottom: 40px; 
+      border-bottom: 2px solid #c1d42f; 
+      padding-bottom: 20px; 
+    }
+    .company-name { 
+      font-size: 24px; 
+      font-weight: bold; 
+      color: #c1d42f; 
+    }
+    .invoice-title { 
+      font-size: 32px; 
+      font-weight: bold; 
+    }
+    .invoice-details { 
+      margin-bottom: 30px; 
+    }
+    .addresses { 
+      display: flex; 
+      justify-content: space-between; 
+      margin-bottom: 30px; 
+    }
+    .address-block { 
+      width: 45%; 
+    }
+    .address-title { 
+      font-weight: bold; 
+      margin-bottom: 10px; 
+      color: #c1d42f; 
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-bottom: 30px; 
+    }
+    th, td { 
+      padding: 12px; 
+      text-align: left; 
+      border-bottom: 1px solid #ddd; 
+    }
+    th { 
+      background-color: #f8f9fa; 
+      font-weight: bold; 
+    }
+    .summary { 
+      float: right; 
+      width: 300px; 
+      clear: both;
+    }
+    .summary-row { 
+      display: flex; 
+      justify-content: space-between; 
+      padding: 8px 0; 
+    }
+    .summary-total { 
+      font-weight: bold; 
+      font-size: 18px; 
+      border-top: 2px solid #c1d42f; 
+      padding-top: 10px; 
+    }
+    .clearfix::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  </style>
+</head>
+<body>
+<div class="invoice-container">
+  <div class="header">
+    <div>
+      <div class="company-name">Astroindosoot</div>
+      <div>PLOT NO. -27 AND 27-B, KHASRA NO. 46/23</div>
+      <div>Near M.S. VATIKA, NILOTHI EXTENSION, NEW DELHI-110041</div>
+      <div>astroindosoot@gmail.com | +91 7838388836</div>
+    </div>
+    <div class="invoice-title">INVOICE</div>
+  </div>
   
-          <!-- Company Info -->
-          <div class="company-info">
-            <div>
-              <p>PLOT NO. -27 AND 27-B, KHASRA NO. 46/23</p>
-              <p>Near M.S. VATIKA, NILOTHI EXTENSION, NEW DELHI-110041</p>
-            </div>
-            <div style="text-align: right;">
-              <p>+91 7838388836</p>
-              <p>dubblinofficial@gmail.com</p>
-            </div>
-          </div>
+  <div class="invoice-details">
+    <strong>Invoice #:</strong> ORD-${orderData?.orderId || ''}<br>
+    <strong>Date:</strong> ${moment(orderData?.createdAt).format(
+      'MMMM Do YYYY'
+    )}<br>
+    <strong>Status:</strong> ${
+      orderData?.orderStatus ? orderData.orderStatus.toUpperCase() : 'PENDING'
+    }
+  </div>
   
-          <!-- Customer Info Section -->
-          <div class="info-section">
-            <!-- Ship To Information -->
-            <div class="info-box">
-              <div class="info-title">SHIP TO</div>
-              <div class="address-card">
-                <p class="name">${
-                  orderData?.user?.name ||
-                  orderData?.addressData?.firstname ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.address1 ||
-                  orderData?.addressData?.address1 ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.address2 ||
-                  orderData?.addressData?.address2 ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.state?.name ||
-                  orderData?.addressData?.state?.name ||
-                  ''
-                }</p>
-                <p>${
-                  orderData?.shippingAddress?.pinCode ||
-                  orderData?.addressData?.pinCode ||
-                  ''
-                }</p>
-                <p>📞 ${
-                  orderData?.shippingAddress?.phone ||
-                  orderData?.addressData?.phone ||
-                  ''
-                }</p>
-                <p>✉️ ${
-                  orderData?.user?.email || orderData?.addressData?.email || ''
-                }</p>
-              </div>
-            </div>
+  <div class="addresses">
+    <div class="address-block">
+      <div class="address-title">Ship To:</div>
+      <div>
+        <strong>${
+          orderData?.user?.name || orderData?.addressData?.firstname || ''
+        }</strong><br>
+        ${
+          orderData?.shippingAddress?.address1 ||
+          orderData?.addressData?.address1 ||
+          ''
+        }<br>
+        ${
+          orderData?.shippingAddress?.address2 ||
+          orderData?.addressData?.address2 ||
+          ''
+        }<br>
+        ${
+          orderData?.shippingAddress?.state?.name ||
+          orderData?.addressData?.state?.name ||
+          ''
+        }<br>
+        ${
+          orderData?.shippingAddress?.pinCode ||
+          orderData?.addressData?.pinCode ||
+          ''
+        }<br>
+        📞 ${
+          orderData?.shippingAddress?.phone ||
+          orderData?.addressData?.phone ||
+          ''
+        }<br>
+        ✉️ ${orderData?.user?.email || orderData?.addressData?.email || ''}<br>
+        <br>
+        <strong>Transaction ID:</strong> ${orderData?.transactionId || ''}<br>
+        <strong>Payment Method:</strong> ${
+          orderData?.paymentMethod?.toLowerCase() === 'cod' ? 'COD' : 'ONLINE'
+        }<br>
+        <strong>Payment Date:</strong> ${moment(orderData?.createdAt).format(
+          'MMM DD, YYYY'
+        )}<br>
+        <strong>Amount Paid:</strong> ₹ ${orderData?.paidAmount?.toFixed(2)}
+      </div>
+    </div>
+    
+    <div class="address-block">
+      <div class="address-title">From:</div>
+      <div>
+        <strong>Astroindosoot</strong><br>
+        PLOT NO. -27 AND 27-B, KHASRA NO. 46/23<br>
+        Near M.S. VATIKA, NILOTHI EXTENSION,<br>
+        NEW DELHI-110041<br>
+        astroindosoot@gmail.com<br>
+        +91 7838388836
+      </div>
+    </div>
+  </div>
   
-            <!-- Payment Information -->
-            <div class="info-box">
-              <div class="info-title">PAYMENT INFO</div>
-              <div class="address-card">
-                <div class="payment-info">
-                  <span class="label">Transaction ID:</span>
-                  <span class="value">${orderData?.transactionId || ''}</span>
-                </div>
-                <div class="payment-info">
-                  <span class="label">Payment Date:</span>
-                  <span class="value">${moment(orderData?.createdAt).format(
-                    'MMM DD, YYYY'
-                  )}</span>
-                </div>
-                <div class="payment-info">
-                  <span class="label">Payment Method:</span>
-                  <span class="value">${
-                    orderData?.paymentMethod?.toLowerCase() === 'cod'
-                      ? 'COD'
-                      : 'ONLINE'
-                  }</span>
-                </div>
-                <div class="amount-paid">
-                  <span class="label">Amount Paid:</span>
-                  <span class="value">₹ ${orderData?.paidAmount?.toFixed(
-                    2
-                  )}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${orderData?.products
+        ?.map((product) => {
+          return `<tr>
+          <td>
+            ${product?.productId?._doc?.title?.en}
+            ${
+              product?.variantId &&
+              product?.variantId?.values &&
+              product?.variantId?.values?.length > 0
+                ? `<div style="font-size: 12px; color: #666; margin-top: 4px; font-weight: normal;">
+                ${product?.variantId?.values
+                  ?.map((val) => val.full_name?.en)
+                  .join(', ')}
+              </div>`
+                : ''
+            }
+          </td>
+          <td>${product?.quantity}</td>
+          <td>₹ ${(product?.totalAmount / product?.quantity).toFixed(2)}</td>
+          <td>₹ ${product?.totalAmount?.toFixed(2)}</td>
+        </tr>`;
+        })
+        .join('')}
+    </tbody>
+  </table>
   
-          <!-- Order Details -->
-          <div class="order-details">
-            <div class="info-title">ORDER DETAILS</div>
-            <table>
-              <thead>
-                <tr>
-                  <th>ITEM</th>
-                  <th>QTY</th>
-                  <th>PRICE</th>
-                  <th>TOTAL</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${orderData?.products
-                  ?.map((product: any) => {
-                    return `<tr>
-                      <td>
-                        ${product?.productId?.title?.en}
-                        ${
-                          product?.variantId &&
-                          product?.variantId?.values &&
-                          product?.variantId?.values?.length > 0
-                            ? `<div style="font-size: 12px; color: #666; margin-top: 4px; font-weight: normal;">
-                                ${product?.variantId?.values
-                                  ?.map((val: any) => val.full_name?.en)
-                                  .join(', ')}
-                              </div>`
-                            : ''
-                        }
-                      </td>
-                      <td>${product?.quantity}</td>
-                      <td>₹ ${
-                        product?.totalAmount / product?.quantity?.toFixed(2)
-                      }</td>
-                      <td>₹ ${product?.totalAmount?.toFixed(2)}</td>
-                    </tr>`;
-                  })
-                  .join('')}
-              </tbody>
-            </table>
-  
-            <!-- Totals Section -->
-            <div class="totals-section">
-              <div class="totals-table">
-                <div class="total-row">
-                  <span>Subtotal:</span>
-                  <span>₹ ${calculateSubtotal().toFixed(2)}</span>
-                </div>
-                <div class="total-row">
-                  <span>Shipping:</span>
-                  <span>₹ ${(orderData?.shippingCharges || 0).toFixed(2)}</span>
-                </div>
-                <div class="total-row">
-                  <span>Discount:</span>
-                  <span>₹ ${(orderData?.discount || 0).toFixed(2)}</span>
-                </div>
-                <div class="total-row">
-                  <span>Additional Discount:</span>
-                  <span>₹ ${(orderData?.additionalDiscount || 0).toFixed(
-                    2
-                  )}</span>
-                </div>
-                <div class="total-row">
-                  <span>Total Amount:</span>
-                  <span>₹ ${orderData?.paidAmount?.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Footer -->
-          <div class="footer">
-            <p class="thank-you">Thank you for your business!</p>
-            <p class="contact-info">
-              If you have any questions about this invoice, please contact us at
-              <span class="contact-email">dubblinofficial@gmail.com</span>
-            </p>
-            <div class="copyright">
-              <p>Dubblin © ${new Date().getFullYear()} • All Rights Reserved</p>
-            </div>
-          </div>
-        </div>
-      </body>
-      </html>`;
+  <div class="clearfix">
+    <div class="summary">
+      <div class="summary-row">
+        <span>Subtotal:</span>
+        <span>₹ ${calculateSubtotal().toFixed(2)}</span>
+      </div>
+      <div class="summary-row">
+        <span>Shipping:</span>
+        <span>₹ ${(orderData?.shippingCharges || 0).toFixed(2)}</span>
+      </div>
+      <div class="summary-row">
+        <span>Discount:</span>
+        <span>₹ ${(orderData?.discount || 0).toFixed(2)}</span>
+      </div>
+      <div class="summary-row">
+        <span>Additional Discount:</span>
+        <span>₹ ${(orderData?.additionalDiscount || 0).toFixed(2)}</span>
+      </div>
+      <div class="summary-row summary-total">
+        <span>Total Amount:</span>
+        <span>₹ ${orderData?.paidAmount?.toFixed(2)}</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px; text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+    <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Thank you for your business!</p>
+    <p style="font-size: 13px; color: #666; margin: 5px 0;">
+      If you have any questions about this invoice, please contact us at
+      <span style="color: #000; font-weight: 500;">dubblinofficial@gmail.com</span>
+    </p>
+    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #c0c0c0; font-size: 12px; color: #888;">
+      <p>Astroindosoot © ${new Date().getFullYear()} • All Rights Reserved</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
 
       // Add the invoice container to the document
       document.body.appendChild(invoiceContainer);
@@ -565,13 +393,13 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                 </div>
               </div>
               <div>
-                <h2 className="text-xl font-bold">Dubblin</h2>
+                <h2 className="text-xl font-bold">Astroindosoot</h2>
                 <p className="text-sm text-muted-foreground">
                   PLOT NO. -27 AND 27-B,KHASRA NO. 46/23,Near M.S.
                   VATIKA,NILOTHI EXTENSION, NEW DELHI-110041
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Phone: +91 7838388836 | Email: dubblinofficial@gmail.com
+                  Phone: +91 7838388836 | Email: astroindosoot@gmail.com
                 </p>
               </div>
             </div>
@@ -857,7 +685,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                       <TableCell>
                         <div>
                           <div className="font-medium">
-                            {product?.productId?.title?.en} (
+                            {product?.productId?._doc?.title?.en} (
                             {product?.variantId &&
                               product?.variantId?.values &&
                               product?.variantId?.values
