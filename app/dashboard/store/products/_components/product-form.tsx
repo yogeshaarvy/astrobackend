@@ -150,7 +150,6 @@ export default function ProductsForm() {
       })
     );
   }, [dispatch]);
-
   useEffect(() => {
     if (entityId) {
       setMainImage(pData?.main_image || '');
@@ -676,7 +675,7 @@ export default function ProductsForm() {
               <CustomReactSelect
                 options={tagData}
                 label="Tags*"
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.name.en}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Tags"
                 onChange={(e: any) =>
@@ -689,7 +688,7 @@ export default function ProductsForm() {
               <CustomReactSelect
                 options={taxData}
                 label="Tax*"
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.name.en}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Tax"
                 onChange={(e: any) =>
