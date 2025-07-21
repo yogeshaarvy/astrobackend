@@ -11,6 +11,9 @@ import { cloneDeep } from 'lodash';
 import { toast } from 'sonner';
 
 export type IAstropoojaList = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   title?: {
     en?: string;
     hi?: string;
@@ -72,6 +75,9 @@ export const addEditAstropoojaList = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         description: clonedData.description
           ? JSON.stringify(clonedData.description)

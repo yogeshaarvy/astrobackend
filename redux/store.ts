@@ -92,6 +92,8 @@ import feedbackReducer from './slices/feedback';
 import vastrushastrListReducer from './slices/vastushastr/list';
 import vastrushastrConfigReducer from './slices/vastushastr/config';
 import kundliListReducer from './slices/kundli/kundliList';
+import feedbackConfigReducer from './slices/feedbackConfigSlice';
+import projectFaqConfigReducer from './slices/projectFaqConfig';
 
 export const makeStore = () => {
   return configureStore({
@@ -187,7 +189,9 @@ export const makeStore = () => {
       vastushastrList: vastrushastrListReducer,
       matchmakinglist: matchmakingListReducer,
       vastushastrConfig: vastrushastrConfigReducer,
-      kundliList: kundliListReducer
+      kundliList: kundliListReducer,
+      feedbackConfig: feedbackConfigReducer,
+      projectFaqConfig: projectFaqConfigReducer
     }
   });
 };

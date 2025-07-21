@@ -111,7 +111,7 @@ export default function ProjectFaqListPage() {
             </Button> */}
 
             <Link
-              href={'/dashboard/settings/pages/project-faq/add'}
+              href={'/dashboard/settings/pages/project-faq/FAQ/add'}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

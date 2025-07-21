@@ -791,12 +791,38 @@ export const navItems: NavItem[] = [
           {
             title: 'Feedback',
             url: '/dashboard/settings/pages/feedback',
-            icon: 'general'
+            icon: 'general',
+            isActive: false,
+            items: [
+              {
+                title: 'Form',
+                url: '/dashboard/settings/pages/feedback/form',
+                icon: 'general'
+              },
+              {
+                title: 'Config',
+                url: '/dashboard/settings/pages/feedback/config',
+                icon: 'general'
+              }
+            ]
           },
           {
             title: "FAQ's",
             url: '/dashboard/settings/pages/project-faq',
-            icon: 'general'
+            icon: 'general',
+            isActive: false,
+            items: [
+              {
+                title: 'Config',
+                url: '/dashboard/settings/pages/project-faq/config',
+                icon: 'general'
+              },
+              {
+                title: 'List',
+                url: '/dashboard/settings/pages/project-faq/FAQ',
+                icon: 'general'
+              }
+            ]
           },
           {
             title: 'Astrologer Policy',
