@@ -99,6 +99,33 @@ export default function AstropoojaListForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
+                <div className="space-y-1">
+                  <Label htmlFor="name">Meta Title</Label>
+                  <Input
+                    name="metaTitle"
+                    placeholder="Enter Meta Title"
+                    value={(bData as IAstropoojaList)?.metaTitle}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="name">Meta Description</Label>
+                  <Input
+                    name="metaDescription"
+                    placeholder="Enter Meta Description"
+                    value={(bData as IAstropoojaList)?.metaDescription}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="name">Meta Keyword</Label>
+                  <Input
+                    name="metaKeyword"
+                    placeholder="Enter Meta Keyword"
+                    value={(bData as IAstropoojaList)?.metaKeyword}
+                    onChange={handleInputChange}
+                  />
+                </div>
                 <FormItem className="space-y-3">
                   <FormLabel>Thumbnail image</FormLabel>
 

@@ -8,6 +8,9 @@ import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 export type ICareerConfig = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   carrierConfig?: {
     mainTitle?: {
       en?: string;
@@ -90,6 +93,9 @@ export const addEditCareerConfig = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         carrierConfig: clonedData.carrierConfig
           ? JSON.stringify(clonedData.carrierConfig)
           : undefined

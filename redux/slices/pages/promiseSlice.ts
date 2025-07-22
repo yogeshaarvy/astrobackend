@@ -7,6 +7,9 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 export type ITermConditions = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   title?: {
     en?: string;
     hi?: string;
@@ -18,6 +21,9 @@ export type ITermConditions = BaseModel & {
 };
 
 export type IPrivacyPolicy = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   title?: {
     en?: string;
     hi?: string;
@@ -29,6 +35,9 @@ export type IPrivacyPolicy = BaseModel & {
 };
 
 export type IRefundPolicy = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   title?: {
     en?: string;
     hi?: string;
@@ -40,6 +49,9 @@ export type IRefundPolicy = BaseModel & {
 };
 
 export type ICancellationPolicy = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   title?: {
     en?: string;
     hi?: string;
@@ -51,6 +63,9 @@ export type ICancellationPolicy = BaseModel & {
 };
 
 export type IShippingPolicy = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   title?: {
     en?: string;
     hi?: string;
@@ -114,6 +129,9 @@ export const addEditTermConditionsPage = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         description: clonedData.description
           ? JSON.stringify(clonedData.description)
@@ -209,6 +227,9 @@ export const addEditPrivacyPolicysPage = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         description: clonedData.description
           ? JSON.stringify(clonedData.description)
@@ -298,6 +319,9 @@ export const addEditRefundPolicysPage = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         description: clonedData.description
           ? JSON.stringify(clonedData.description)
@@ -386,6 +410,9 @@ export const addEditCancellationPolicysPage = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         description: clonedData.description
           ? JSON.stringify(clonedData.description)
@@ -474,6 +501,9 @@ export const addEditShippingPolicysPage = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         description: clonedData.description
           ? JSON.stringify(clonedData.description)

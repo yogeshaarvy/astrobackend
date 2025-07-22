@@ -29,7 +29,7 @@ const Page = () => {
   const {
     shippingPolicyState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.promise);
-
+  console.log('this is the data', cData);
   useEffect(() => {
     dispatch(fetchShippingPolicysPage(null));
   }, []);
@@ -90,7 +90,35 @@ const Page = () => {
                           Shipping Policy SECTION'S (WEBSITE)
                         </CardTitle>
                       </CardHeader>
-
+                      <div className=" space-x-2">
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Meta Title</Label>
+                          <Input
+                            name="metaTitle"
+                            placeholder="Enter Meta Title"
+                            value={(cData as IShippingPolicy)?.metaTitle}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Meta Description</Label>
+                          <Input
+                            name="metaDescription"
+                            placeholder="Enter Meta Description"
+                            value={(cData as IShippingPolicy)?.metaDescription}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Meta Keyword</Label>
+                          <Input
+                            name="metaKeyword"
+                            placeholder="Enter Meta Keyword"
+                            value={(cData as IShippingPolicy)?.metaKeyword}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
                       <Tabs defaultValue="English" className="mt-4 w-full">
                         <TabsList className="flex w-full space-x-2 p-0">
                           <TabsTrigger

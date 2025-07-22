@@ -89,6 +89,37 @@ const Page = () => {
                         <CardTitle>CANCELLATION POLICY</CardTitle>
                       </CardHeader>
 
+                      <div className=" space-x-2">
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Meta Title</Label>
+                          <Input
+                            name="metaTitle"
+                            placeholder="Enter Meta Title"
+                            value={(cData as ICancellationPolicy)?.metaTitle}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Meta Description</Label>
+                          <Input
+                            name="metaDescription"
+                            placeholder="Enter Meta Description"
+                            value={
+                              (cData as ICancellationPolicy)?.metaDescription
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Meta Keyword</Label>
+                          <Input
+                            name="metaKeyword"
+                            placeholder="Enter Meta Keyword"
+                            value={(cData as ICancellationPolicy)?.metaKeyword}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
                       <Tabs defaultValue="English" className="mt-4 w-full">
                         <TabsList className="flex w-full space-x-2 p-0">
                           <TabsTrigger
