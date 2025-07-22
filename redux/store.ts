@@ -92,6 +92,7 @@ import feedbackReducer from './slices/feedback';
 import vastrushastrListReducer from './slices/vastushastr/list';
 import vastrushastrConfigReducer from './slices/vastushastr/config';
 import kundliListReducer from './slices/kundli/kundliList';
+import ticketsReducer from './slices/adminSupportSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -187,7 +188,8 @@ export const makeStore = () => {
       vastushastrList: vastrushastrListReducer,
       matchmakinglist: matchmakingListReducer,
       vastushastrConfig: vastrushastrConfigReducer,
-      kundliList: kundliListReducer
+      kundliList: kundliListReducer,
+      ticketsData: ticketsReducer
     }
   });
 };
