@@ -129,6 +129,34 @@ const Page = () => {
               <div className="flex items-center space-x-2">
                 <Tabs className="mt-4 w-full">
                   <div className="space-y-2 pt-0 ">
+                    <div className="space-y-1">
+                      <Label htmlFor="name">Meta Title</Label>
+                      <Input
+                        name="metaTitle"
+                        placeholder="Enter your Meta Title"
+                        value={(cData as ICareerConfig)?.metaTitle}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="name">Meta Description</Label>
+                      <Input
+                        name="metaDescription"
+                        placeholder="Enter your Meta Description"
+                        value={(cData as ICareerConfig)?.metaDescription}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="name">Meta Keyword</Label>
+                      <Input
+                        name="metaKeyword"
+                        placeholder="Enter your Meta Keyword"
+                        value={(cData as ICareerConfig)?.metaKeyword}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
                     <FormItem className="space-y-3">
                       <FormLabel>Banner Image</FormLabel>
                       <FileUploader

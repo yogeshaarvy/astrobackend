@@ -98,6 +98,34 @@ export default function HoroscopeForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
+                <div className="space-y-1">
+                  <Label htmlFor="name">Meta Title</Label>
+                  <Input
+                    name="metaTitle"
+                    placeholder="Enter your Meta Title"
+                    value={(bData as IHoroscope)?.metaTitle}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="name">Meta Description</Label>
+                  <Input
+                    name="metaDescription"
+                    placeholder="Enter your Meta Description"
+                    value={(bData as IHoroscope)?.metaDescription}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="name">Meta Keyword</Label>
+                  <Input
+                    name="metaKeyword"
+                    placeholder="Enter your Meta Keyword"
+                    value={(bData as IHoroscope)?.metaKeyword}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
                 <FormItem className="space-y-3">
                   <FormLabel>Banner Image</FormLabel>
 

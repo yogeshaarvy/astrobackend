@@ -88,6 +88,41 @@ const Page = () => {
                       <CardHeader className="flex flex-row items-center justify-center gap-5">
                         <CardTitle>TERM'S & CONDITIONS</CardTitle>
                       </CardHeader>
+                      <div className=" space-x-2">
+                        <div className="space-y-1">
+                          <Label htmlFor="metaTitle">Meta Title</Label>
+                          <Input
+                            name="metaTitle"
+                            placeholder="Enter Meta Title"
+                            value={(cData as ITermConditions)?.metaTitle || ''}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="metaDescription">
+                            Meta Description
+                          </Label>
+                          <Input
+                            name="metaDescription"
+                            placeholder="Enter Meta Description"
+                            value={
+                              (cData as ITermConditions)?.metaDescription || ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="metaKeyword">Meta Keyword</Label>
+                          <Input
+                            name="metaKeyword"
+                            placeholder="Enter Meta Keyword"
+                            value={
+                              (cData as ITermConditions)?.metaKeyword || ''
+                            }
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
 
                       <Tabs defaultValue="English" className="mt-4 w-full">
                         <TabsList className="flex w-full space-x-2 p-0">

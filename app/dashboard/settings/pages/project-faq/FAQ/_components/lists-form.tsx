@@ -69,7 +69,7 @@ export default function HomeBannerForm() {
     try {
       dispatch(addEditProjectfaqList(entityId)).then((response: any) => {
         if (!response?.error) {
-          router.push('/dashboard/settings/pages/project-faq');
+          router.push('/dashboard/settings/pages/project-faq/FAQ');
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);

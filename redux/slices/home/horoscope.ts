@@ -8,6 +8,9 @@ import { cloneDeep } from 'lodash';
 import { toast } from 'sonner';
 
 export type IHoroscope = BaseModel & {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeyword?: string;
   title?: {
     en?: string;
     hi?: string;
@@ -74,6 +77,9 @@ export const addEditHoroscopeList = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        metaTitle: clonedData.metaTitle,
+        metaDescription: clonedData.metaDescription,
+        metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
         short_description: clonedData.short_description
           ? JSON.stringify(clonedData.short_description)
