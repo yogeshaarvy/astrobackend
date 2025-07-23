@@ -44,19 +44,6 @@ export default function AdminTicketDashboard() {
 
   const dispatch = useAppDispatch();
 
-  // Calculate filtered tickets based on search and status
-  const filteredTickets =
-    tickets?.filter(
-      (ticket: any) =>
-        ticket.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.message?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-
-  const getTicketsByStatus = (status?: string) => {
-    if (!status || status === 'all') return filteredTickets;
-    return filteredTickets.filter((ticket: any) => ticket?.status === status);
-  };
-
   // Add this helper function after the getTicketsByStatus function
   const getCurrentTabCount = () => {
     switch (activeTab) {

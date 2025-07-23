@@ -53,7 +53,7 @@ interface PoojaBooking {
 
 const PoojaSpecificChat: React.FC = () => {
   const params = useParams();
-  const orderId = (params?.orderId as string) || 'booking_123';
+  const orderId = params?.orderId as string;
   // Only one admin backend, so use a constant adminId
   const adminId = '67c6d005ca2af808a28c560c';
   const {
