@@ -92,6 +92,7 @@ import feedbackReducer from './slices/feedback';
 import vastrushastrListReducer from './slices/vastushastr/list';
 import vastrushastrConfigReducer from './slices/vastushastr/config';
 import kundliListReducer from './slices/kundli/kundliList';
+import ticketsReducer from './slices/adminSupportSlice';
 import feedbackConfigReducer from './slices/feedbackConfigSlice';
 import projectFaqConfigReducer from './slices/projectFaqConfig';
 import contactConfigReducer from './slices/contact/contactConfigSlice';
@@ -192,6 +193,7 @@ export const makeStore = () => {
       matchmakinglist: matchmakingListReducer,
       vastushastrConfig: vastrushastrConfigReducer,
       kundliList: kundliListReducer,
+      ticketsData: ticketsReducer,
       feedbackConfig: feedbackConfigReducer,
       projectFaqConfig: projectFaqConfigReducer,
       contactConfig: contactConfigReducer,
