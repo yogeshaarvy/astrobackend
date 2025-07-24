@@ -185,6 +185,8 @@ export const addEditRequest = createAsyncThunk<
       if (value !== undefined && value !== null) {
         if (key === 'skills' || key === 'languages') {
           formData.append(key, JSON.stringify(value));
+        } else if (key === 'about') {
+          formData.append(key, JSON.stringify(value));
         } else {
           formData.append(key, value as string | Blob);
         }
@@ -633,16 +635,19 @@ const requestSlice = createSlice({
     updateRequestData(state, action) {
       const oldData = state.singleRequestState.data;
       const keyFirst = Object.keys(action.payload)[0];
+      let merged = {};
       if (keyFirst.includes('.')) {
         const newData = { ...oldData };
         setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
-        state.singleRequestState.data = newData;
+        merged = newData;
       } else {
-        state.singleRequestState.data = {
-          ...oldData,
-          ...action.payload
-        };
+        merged = { ...oldData, ...action.payload };
       }
+      // Always coerce about to an object if it is a string or null
+      if (merged.about === null || typeof merged.about === 'string') {
+        merged.about = { en: merged.about || '' };
+      }
+      state.singleRequestState.data = merged;
     },
     addEditRequestStart(state) {
       state.singleRequestState.loading = true;
