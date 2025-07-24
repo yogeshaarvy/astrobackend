@@ -166,19 +166,20 @@ export default function RequestTable({
       header: 'ACTIVE',
       cell: ({ row }) => {
         const handleToggle = async (checked: boolean) => {
-          const updatedData = { ...row.original, active: checked };
+          // Ensure about is always an object, even if null or string
+          let about = row.original.about;
+          if (!about || typeof about === 'string') {
+            about = { en: about || '' };
+          }
+          const updatedData = { ...row.original, active: checked, about };
           try {
             dispatch(updateRequestData(updatedData));
-            const result = await dispatch(
-              addEditRequest(row.original._id || null)
-            ).unwrap();
+            await dispatch(addEditRequest(row.original._id || null)).unwrap();
             toast.success('Status Updated Successfully!');
           } catch (error: any) {
-            console.error('Error updating active status:', error);
             toast.error('Failed to Update Status');
           }
         };
-
         return (
           <Switch
             checked={row.original.active}
@@ -193,19 +194,20 @@ export default function RequestTable({
       header: 'SHOW IN HOME',
       cell: ({ row }) => {
         const handleToggle = async (checked: boolean) => {
-          const updatedData = { ...row.original, active: checked };
+          // Ensure about is always an object, even if null or string
+          let about = row.original.about;
+          if (!about || typeof about === 'string') {
+            about = { en: about || '' };
+          }
+          const updatedData = { ...row.original, showinhome: checked, about };
           try {
             dispatch(updateRequestData(updatedData));
-            const result = await dispatch(
-              addEditRequest(row.original._id || null)
-            ).unwrap();
+            await dispatch(addEditRequest(row.original._id || null)).unwrap();
             toast.success('Show In Home Status Updated Successfully!');
           } catch (error: any) {
-            console.error('Error updating showinhome status:', error);
             toast.error('Failed to Update Home Status');
           }
         };
-
         return (
           <Switch
             checked={row.original.showinhome}

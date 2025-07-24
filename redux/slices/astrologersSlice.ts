@@ -157,8 +157,17 @@ export const addEditRequest = createAsyncThunk<
       name: data.name || '',
       dob: data.dob || '',
       gender: data.gender || '',
-      languages: JSON.stringify(data.languages) || [],
-      skills: JSON.stringify(data.skills) || [],
+      // Ensure languages and skills are arrays of strings (IDs)
+      languages: Array.isArray(data.languages)
+        ? data.languages.map((l: any) =>
+            typeof l === 'object' && l._id ? l._id : l
+          )
+        : [],
+      skills: Array.isArray(data.skills)
+        ? data.skills.map((s: any) =>
+            typeof s === 'object' && s._id ? s._id : s
+          )
+        : [],
       pricing: [{ duration: 15, price: '' }],
       email: data.email || '',
       phone: data.phone || '',
@@ -168,13 +177,19 @@ export const addEditRequest = createAsyncThunk<
       active: data.active,
       showinhome: data.showinhome,
       education: data.education,
-      about: JSON.stringify(data.about),
+      about: data.about, // keep as object
       expierience: data.expierience
     };
     // Append only defined fields to FormData
     Object.entries(reqData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        formData.append(key, value as string | Blob);
+        if (key === 'skills' || key === 'languages') {
+          formData.append(key, JSON.stringify(value));
+        } else if (key === 'about') {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, value as string | Blob);
+        }
       }
     });
 
@@ -620,16 +635,19 @@ const requestSlice = createSlice({
     updateRequestData(state, action) {
       const oldData = state.singleRequestState.data;
       const keyFirst = Object.keys(action.payload)[0];
+      let merged = {};
       if (keyFirst.includes('.')) {
         const newData = { ...oldData };
         setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
-        state.singleRequestState.data = newData;
+        merged = newData;
       } else {
-        state.singleRequestState.data = {
-          ...oldData,
-          ...action.payload
-        };
+        merged = { ...oldData, ...action.payload };
       }
+      // Always coerce about to an object if it is a string or null
+      if (merged.about === null || typeof merged.about === 'string') {
+        merged.about = { en: merged.about || '' };
+      }
+      state.singleRequestState.data = merged;
     },
     addEditRequestStart(state) {
       state.singleRequestState.loading = true;
