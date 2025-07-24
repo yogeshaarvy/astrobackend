@@ -95,6 +95,8 @@ import kundliListReducer from './slices/kundli/kundliList';
 import ticketsReducer from './slices/adminSupportSlice';
 import feedbackConfigReducer from './slices/feedbackConfigSlice';
 import projectFaqConfigReducer from './slices/projectFaqConfig';
+import contactConfigReducer from './slices/contact/contactConfigSlice';
+import consultationConfigReducer from './slices/consultationSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -193,7 +195,9 @@ export const makeStore = () => {
       kundliList: kundliListReducer,
       ticketsData: ticketsReducer,
       feedbackConfig: feedbackConfigReducer,
-      projectFaqConfig: projectFaqConfigReducer
+      projectFaqConfig: projectFaqConfigReducer,
+      contactConfig: contactConfigReducer,
+      consultationConfig: consultationConfigReducer
     }
   });
 };

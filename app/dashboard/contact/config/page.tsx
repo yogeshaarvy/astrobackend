@@ -21,15 +21,15 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  addEditCareerConfig,
-  fetchCareerConfig,
-  ICareerConfig,
-  updateCareerConfig
-} from '@/redux/slices/career/careerConfig';
+  addEditContactConfig,
+  fetchContactConfig,
+  IContactConfig,
+  updateContactConfig
+} from '@/redux/slices/contact/contactConfigSlice';
 import CustomTextEditor from '@/utils/CustomTextEditor';
 import CustomTextField from '@/utils/CustomTextField';
 import CustomDropdown from '@/utils/CusomDropdown';
@@ -37,26 +37,23 @@ import CustomDropdown from '@/utils/CusomDropdown';
 const Page = () => {
   const dispatch = useAppDispatch();
   const {
-    careerConfigState: { loading, data: cData }
-  } = useAppSelector((state) => state.carrierConfig);
+    contactConfigState: { loading, data: cData = [] }
+  } = useAppSelector((state) => state.contactConfig);
 
-  console.log('this is the cdata', cData);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
   const [sideImage, setsideImage] = React.useState<File | null>(null);
 
   useEffect(() => {
-    dispatch(fetchCareerConfig(null));
+    dispatch(fetchContactConfig(null));
   }, []);
   const form = useForm({
     defaultValues: {}
   });
 
-  const [isChecked, setIsChecked] = useState(false);
-
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
     dispatch(
-      updateCareerConfig({
+      updateContactConfig({
         [name]:
           type === 'file'
             ? files[0]
@@ -67,30 +64,11 @@ const Page = () => {
             : value
       })
     );
-    if (type === 'checkbox' && name === 'carrierConfig.active') {
-      setIsChecked(checked);
-    }
-  };
-  const handleToggleChange = () => {
-    const updatedStatus = !isChecked;
-    setIsChecked(updatedStatus);
-    dispatch(
-      updateCareerConfig({
-        'carrierConfig.active': updatedStatus
-      })
-    );
-    dispatch(addEditCareerConfig(null)).then((response: any) => {
-      if (!response?.error) {
-        toast.success(response?.payload?.message);
-      } else {
-        toast.error(response.payload);
-      }
-    });
   };
 
   const handleSubmit = () => {
     try {
-      dispatch(addEditCareerConfig(null)).then((response: any) => {
+      dispatch(addEditContactConfig(null)).then((response: any) => {
         if (!response?.error) {
           setbannerImage(null);
 
@@ -107,11 +85,55 @@ const Page = () => {
   const handleDropdownChange = (e: any) => {
     const { name, value } = e;
 
-    dispatch(updateCareerConfig({ [name]: value }));
+    dispatch(
+      updateContactConfig({ [name]: value }) // .then(handleReduxResponse());
+    );
   };
 
   return (
     <PageContainer scrollable>
+      <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            Kundli Config List
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2"> */}
+
+              <CustomTextField
+                name="metaTitle"
+                // control={form.control}
+                label="Meta Title"
+                placeholder="Enter your Meta Title"
+                value={(cData as IContactConfig)?.metaTitle}
+                onChange={handleInputChange}
+              />
+              <CustomTextField
+                name="metaDescription"
+                // control={form.control}
+                label="Meta Description"
+                placeholder="Enter your Meta Description"
+                value={(cData as IContactConfig)?.metaDescription}
+                onChange={handleInputChange}
+              />
+              <CustomTextField
+                name="metaKeyword"
+                // control={form.control}
+                label="Meta keywords"
+                placeholder="Enter your Meta Keywords"
+                value={(cData as IContactConfig)?.metaKeyword}
+                onChange={handleInputChange}
+              />
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
@@ -127,34 +149,6 @@ const Page = () => {
               <div className="flex items-center space-x-2">
                 <Tabs className="mt-4 w-full">
                   <div className="space-y-2 pt-0 ">
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Meta Title</Label>
-                      <Input
-                        name="metaTitle"
-                        placeholder="Enter your Meta Title"
-                        value={(cData as ICareerConfig)?.metaTitle}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Meta Description</Label>
-                      <Input
-                        name="metaDescription"
-                        placeholder="Enter your Meta Description"
-                        value={(cData as ICareerConfig)?.metaDescription}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Meta Keyword</Label>
-                      <Input
-                        name="metaKeyword"
-                        placeholder="Enter your Meta Keyword"
-                        value={(cData as ICareerConfig)?.metaKeyword}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-
                     <FormItem className="space-y-3">
                       <FormLabel>Banner Image</FormLabel>
                       <FileUploader
@@ -163,7 +157,7 @@ const Page = () => {
                           setbannerImage(newFiles[0] || null);
                           handleInputChange({
                             target: {
-                              name: 'carrierConfig.bannerImage',
+                              name: 'mainSection.bannerImage',
                               type: 'file',
                               files: newFiles
                             }
@@ -173,45 +167,14 @@ const Page = () => {
                         maxSize={1024 * 1024 * 2}
                       />{' '}
                       <>
-                        {typeof (cData as ICareerConfig)?.carrierConfig
+                        {typeof (cData as IContactConfig)?.mainSection
                           ?.bannerImage === 'string' && (
                           <>
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (cData as ICareerConfig)?.carrierConfig
+                                  (cData as IContactConfig)?.mainSection
                                     ?.bannerImage
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </>
-                      <FormLabel>Side Image</FormLabel>
-                      <FileUploader
-                        value={sideImage ? [sideImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setsideImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'carrierConfig.sideImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as ICareerConfig)?.carrierConfig
-                          ?.sideImage === 'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as ICareerConfig)?.carrierConfig
-                                    ?.sideImage
                                 }
                               />
                             </div>
@@ -220,6 +183,7 @@ const Page = () => {
                       </>
                     </FormItem>
                   </div>
+
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
                       <TabsTrigger
@@ -240,29 +204,29 @@ const Page = () => {
                       <>
                         <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
-                            <Label htmlFor="name">Main Title</Label>
+                            <Label htmlFor="name">Title</Label>
                             <Input
-                              name="carrierConfig.mainTitle.en"
-                              placeholder="Enter your Main Title"
+                              name="mainSection.title.en"
+                              placeholder="Enter your Title"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig
-                                  ?.mainTitle?.en
+                                (cData as IContactConfig)?.mainSection?.title
+                                  ?.en
                               }
                               onChange={handleInputChange}
                             />
                           </div>
                           <div className="space-y-1">
                             <CustomTextEditor
-                              name="carrierConfig.title.en"
-                              label="Title"
+                              name="mainSection.address.en"
+                              label="Enter your Full Address"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig?.title
+                                (cData as IContactConfig)?.mainSection?.address
                                   ?.en
                               }
                               onChange={(value) =>
                                 handleInputChange({
                                   target: {
-                                    name: 'carrierConfig.title.en',
+                                    name: 'mainSection.address.en',
                                     value: value,
                                     type: 'text'
                                   }
@@ -272,16 +236,35 @@ const Page = () => {
                           </div>
                           <div className="space-y-1">
                             <CustomTextEditor
-                              name="carrierConfig.description.en"
-                              label="Full Description"
+                              name="mainSection.schedule.en"
+                              label="Enter your Full schedule"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig
-                                  ?.description?.en
+                                (cData as IContactConfig)?.mainSection?.schedule
+                                  ?.en
                               }
                               onChange={(value) =>
                                 handleInputChange({
                                   target: {
-                                    name: 'carrierConfig.description.en',
+                                    name: 'mainSection.schedule.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="mainSection.mapTitle.en"
+                              label="Enter your Map Title"
+                              value={
+                                (cData as IContactConfig)?.mainSection?.mapTitle
+                                  ?.en
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.mapTitle.en',
                                     value: value,
                                     type: 'text'
                                   }
@@ -297,29 +280,29 @@ const Page = () => {
                       <>
                         <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
-                            <Label htmlFor="name">Main Title</Label>
+                            <Label htmlFor="name">Title</Label>
                             <Input
-                              name="carrierConfig.mainTitle.hi"
-                              placeholder="Enter your Main Title"
+                              name="mainSection.title.hi"
+                              placeholder="Enter your Title"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig
-                                  ?.mainTitle?.hi
+                                (cData as IContactConfig)?.mainSection?.title
+                                  ?.hi
                               }
                               onChange={handleInputChange}
                             />
                           </div>
                           <div className="space-y-1">
                             <CustomTextEditor
-                              name="carrierConfig.title.hi"
-                              label="Title"
+                              name="mainSection.address.hi"
+                              label="Enter your Full Address"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig?.title
+                                (cData as IContactConfig)?.mainSection?.address
                                   ?.hi
                               }
                               onChange={(value) =>
                                 handleInputChange({
                                   target: {
-                                    name: 'carrierConfig.title.hi',
+                                    name: 'mainSection.address.hi',
                                     value: value,
                                     type: 'text'
                                   }
@@ -329,16 +312,35 @@ const Page = () => {
                           </div>
                           <div className="space-y-1">
                             <CustomTextEditor
-                              name="carrierConfig.description.hi"
-                              label="Full Description"
+                              name="mainSection.schedule.hi"
+                              label="Enter your Full schedule"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig
-                                  ?.description?.hi
+                                (cData as IContactConfig)?.mainSection?.schedule
+                                  ?.hi
                               }
                               onChange={(value) =>
                                 handleInputChange({
                                   target: {
-                                    name: 'carrierConfig.description.hi',
+                                    name: 'mainSection.schedule.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="mainSection.mapTitle.hi"
+                              label="Enter your Map Title"
+                              value={
+                                (cData as IContactConfig)?.mainSection?.mapTitle
+                                  ?.hi
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.mapTitle.hi',
                                     value: value,
                                     type: 'text'
                                   }
@@ -350,6 +352,16 @@ const Page = () => {
                       </>
                     </TabsContent>
                   </Tabs>
+
+                  <div className="mt-2 space-y-1">
+                    <Label htmlFor="name">Map Embed Link</Label>
+                    <Input
+                      name="mainSection.mapLink"
+                      placeholder="Enter your Map Embed Link"
+                      value={(cData as IContactConfig)?.mainSection?.mapLink}
+                      onChange={handleInputChange}
+                    />
+                  </div>
                 </Tabs>
               </div>
             </form>
