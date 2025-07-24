@@ -149,15 +149,17 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
             )}
           </div>
           <div className="flex flex-col gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="flex items-center gap-2 bg-transparent"
-              onClick={() => handleNavigateToChat(ticket?._id)}
-            >
-              <MessageCircle className="h-4 w-4" />
-              Chat
-            </Button>
+            {ticket?.status === 'in-process' && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-2 bg-transparent"
+                onClick={() => handleNavigateToChat(ticket?._id)}
+              >
+                <MessageCircle className="h-4 w-4" />
+                Chat
+              </Button>
+            )}
 
             {/* Status Update Select */}
             <Select
