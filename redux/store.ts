@@ -97,6 +97,8 @@ import feedbackConfigReducer from './slices/feedbackConfigSlice';
 import projectFaqConfigReducer from './slices/projectFaqConfig';
 import contactConfigReducer from './slices/contact/contactConfigSlice';
 import consultationConfigReducer from './slices/consultationSlice';
+import saleConfigReducer from './slices/saleConfigSlice';
+import downloadSectionReducer from './slices/downloadSection';
 
 export const makeStore = () => {
   return configureStore({
@@ -197,7 +199,9 @@ export const makeStore = () => {
       feedbackConfig: feedbackConfigReducer,
       projectFaqConfig: projectFaqConfigReducer,
       contactConfig: contactConfigReducer,
-      consultationConfig: consultationConfigReducer
+      consultationConfig: consultationConfigReducer,
+      saleConfig: saleConfigReducer,
+      downloadSection: downloadSectionReducer
     }
   });
 };

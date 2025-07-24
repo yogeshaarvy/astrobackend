@@ -862,6 +862,16 @@ export const navItems: NavItem[] = [
             title: 'Why Choose',
             url: '/dashboard/settings/pages/whyChoose',
             icon: 'general'
+          },
+          {
+            title: 'Sale Config',
+            url: '/dashboard/settings/pages/sale-config',
+            icon: 'general'
+          },
+          {
+            title: 'Download Section',
+            url: '/dashboard/settings/pages/download-section',
+            icon: 'general'
           }
         ]
       },

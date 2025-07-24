@@ -168,7 +168,7 @@ export const fetchSingleSkillsList = createAsyncThunk<
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleSkillsListSuccess(response?.skills));
+        dispatch(fetchSingleSkillsListSuccess(response?.skill));
 
         return response;
       } else {
