@@ -113,12 +113,36 @@ export default function RequestTable({
     },
     {
       accessorKey: 'languages',
-      header: 'LANGUAGE'
+      header: 'LANGUAGE',
+      cell: ({ row }) => {
+        const languages = Array.isArray(row.original.languages)
+          ? row.original.languages
+          : [];
+        // If languages are objects with a name property, use .name, else use as string
+        const languageNames = languages
+          .map((item: any) =>
+            typeof item === 'object' && item.name ? item.name : item
+          )
+          .join(', ');
+        return <span>{languageNames || ''}</span>;
+      }
     },
 
     {
       accessorKey: 'skills',
-      header: 'SKILL'
+      header: 'SKILL',
+      cell: ({ row }) => {
+        const skills = Array.isArray(row.original.skills)
+          ? row.original.skills
+          : [];
+        // If skills are objects with a name property, use .name, else use as string
+        const skillsNames = skills
+          .map((item: any) =>
+            typeof item === 'object' && item.name ? item.name : item
+          )
+          .join(', ');
+        return <span>{skillsNames || ''}</span>;
+      }
     },
     {
       accessorKey: 'dob',

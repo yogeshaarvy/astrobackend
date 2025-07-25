@@ -21,15 +21,15 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  addEditCareerConfig,
-  fetchCareerConfig,
-  ICareerConfig,
-  updateCareerConfig
-} from '@/redux/slices/career/careerConfig';
+  addEditDownloadSection,
+  fetchDownloadSection,
+  IDownloadSection,
+  updateDownloadSection
+} from '@/redux/slices/downloadSection';
 import CustomTextEditor from '@/utils/CustomTextEditor';
 import CustomTextField from '@/utils/CustomTextField';
 import CustomDropdown from '@/utils/CusomDropdown';
@@ -37,26 +37,22 @@ import CustomDropdown from '@/utils/CusomDropdown';
 const Page = () => {
   const dispatch = useAppDispatch();
   const {
-    careerConfigState: { loading, data: cData }
-  } = useAppSelector((state) => state.carrierConfig);
-
-  console.log('this is the cdata', cData);
+    downloadSectionState: { loading, data: cData = [] }
+  } = useAppSelector((state) => state.downloadSection);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
-  const [sideImage, setsideImage] = React.useState<File | null>(null);
+  const [appStoreImage, setappStoreImage] = React.useState<File | null>(null);
 
   useEffect(() => {
-    dispatch(fetchCareerConfig(null));
+    dispatch(fetchDownloadSection(null));
   }, []);
   const form = useForm({
     defaultValues: {}
   });
 
-  const [isChecked, setIsChecked] = useState(false);
-
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target;
     dispatch(
-      updateCareerConfig({
+      updateDownloadSection({
         [name]:
           type === 'file'
             ? files[0]
@@ -67,33 +63,14 @@ const Page = () => {
             : value
       })
     );
-    if (type === 'checkbox' && name === 'carrierConfig.active') {
-      setIsChecked(checked);
-    }
-  };
-  const handleToggleChange = () => {
-    const updatedStatus = !isChecked;
-    setIsChecked(updatedStatus);
-    dispatch(
-      updateCareerConfig({
-        'carrierConfig.active': updatedStatus
-      })
-    );
-    dispatch(addEditCareerConfig(null)).then((response: any) => {
-      if (!response?.error) {
-        toast.success(response?.payload?.message);
-      } else {
-        toast.error(response.payload);
-      }
-    });
   };
 
   const handleSubmit = () => {
     try {
-      dispatch(addEditCareerConfig(null)).then((response: any) => {
+      dispatch(addEditDownloadSection(null)).then((response: any) => {
         if (!response?.error) {
           setbannerImage(null);
-
+          setappStoreImage(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -107,7 +84,9 @@ const Page = () => {
   const handleDropdownChange = (e: any) => {
     const { name, value } = e;
 
-    dispatch(updateCareerConfig({ [name]: value }));
+    dispatch(
+      updateDownloadSection({ [name]: value }) // .then(handleReduxResponse());
+    );
   };
 
   return (
@@ -115,7 +94,7 @@ const Page = () => {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Main Section
+            Download Section Config
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -127,43 +106,15 @@ const Page = () => {
               <div className="flex items-center space-x-2">
                 <Tabs className="mt-4 w-full">
                   <div className="space-y-2 pt-0 ">
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Meta Title</Label>
-                      <Input
-                        name="metaTitle"
-                        placeholder="Enter your Meta Title"
-                        value={(cData as ICareerConfig)?.metaTitle}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Meta Description</Label>
-                      <Input
-                        name="metaDescription"
-                        placeholder="Enter your Meta Description"
-                        value={(cData as ICareerConfig)?.metaDescription}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Meta Keyword</Label>
-                      <Input
-                        name="metaKeyword"
-                        placeholder="Enter your Meta Keyword"
-                        value={(cData as ICareerConfig)?.metaKeyword}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-
                     <FormItem className="space-y-3">
-                      <FormLabel>Banner Image</FormLabel>
+                      <FormLabel>Google Play Image</FormLabel>
                       <FileUploader
                         value={bannerImage ? [bannerImage] : []}
                         onValueChange={(newFiles: any) => {
                           setbannerImage(newFiles[0] || null);
                           handleInputChange({
                             target: {
-                              name: 'carrierConfig.bannerImage',
+                              name: 'contentSection.googleplayImage',
                               type: 'file',
                               files: newFiles
                             }
@@ -173,45 +124,14 @@ const Page = () => {
                         maxSize={1024 * 1024 * 2}
                       />{' '}
                       <>
-                        {typeof (cData as ICareerConfig)?.carrierConfig
-                          ?.bannerImage === 'string' && (
+                        {typeof (cData as IDownloadSection)?.contentSection
+                          ?.googleplayImage === 'string' && (
                           <>
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (cData as ICareerConfig)?.carrierConfig
-                                    ?.bannerImage
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </>
-                      <FormLabel>Side Image</FormLabel>
-                      <FileUploader
-                        value={sideImage ? [sideImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setsideImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'carrierConfig.sideImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as ICareerConfig)?.carrierConfig
-                          ?.sideImage === 'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as ICareerConfig)?.carrierConfig
-                                    ?.sideImage
+                                  (cData as IDownloadSection)?.contentSection
+                                    ?.googleplayImage
                                 }
                               />
                             </div>
@@ -219,6 +139,63 @@ const Page = () => {
                         )}
                       </>
                     </FormItem>
+                    <FormItem className="space-y-3">
+                      <FormLabel>App Store Image</FormLabel>
+                      <FileUploader
+                        value={appStoreImage ? [appStoreImage] : []}
+                        onValueChange={(newFiles: any) => {
+                          setappStoreImage(newFiles[0] || null);
+                          handleInputChange({
+                            target: {
+                              name: 'contentSection.appStoreImage',
+                              type: 'file',
+                              files: newFiles
+                            }
+                          });
+                        }}
+                        accept={{ 'image/*': [] }}
+                        maxSize={1024 * 1024 * 2}
+                      />{' '}
+                      <>
+                        {typeof (cData as IDownloadSection)?.contentSection
+                          ?.appStoreImage === 'string' && (
+                          <>
+                            <div className="max-h-48 space-y-4">
+                              <FileViewCard
+                                existingImageURL={
+                                  (cData as IDownloadSection)?.contentSection
+                                    ?.appStoreImage
+                                }
+                              />
+                            </div>
+                          </>
+                        )}
+                      </>
+                    </FormItem>
+                  </div>
+                  <div className="space-y-2 pt-4 ">
+                    <CustomTextField
+                      name="contentSection.googleplayLink"
+                      label="Google Play Link"
+                      required={true}
+                      placeholder="Enter your Google Play Link"
+                      value={
+                        (cData as IDownloadSection)?.contentSection
+                          ?.googleplayLink
+                      }
+                      onChange={handleInputChange}
+                    />
+                    <CustomTextField
+                      name="contentSection.appStoreLink"
+                      label="App Store Link"
+                      required={true}
+                      placeholder="Enter your App Store Link"
+                      value={
+                        (cData as IDownloadSection)?.contentSection
+                          ?.appStoreLink
+                      }
+                      onChange={handleInputChange}
+                    />
                   </div>
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
@@ -240,53 +217,27 @@ const Page = () => {
                       <>
                         <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
-                            <Label htmlFor="name">Main Title</Label>
+                            <Label htmlFor="name">Title</Label>
                             <Input
-                              name="carrierConfig.mainTitle.en"
-                              placeholder="Enter your Main Title"
+                              name="contentSection.title.en"
+                              placeholder="Enter your Title"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig
-                                  ?.mainTitle?.en
+                                (cData as IDownloadSection)?.contentSection
+                                  ?.title?.en
                               }
                               onChange={handleInputChange}
                             />
                           </div>
                           <div className="space-y-1">
-                            <CustomTextEditor
-                              name="carrierConfig.title.en"
-                              label="Title"
+                            <Label htmlFor="name">Description</Label>
+                            <Input
+                              name="contentSection.description.en"
+                              placeholder="Enter your Description"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig?.title
-                                  ?.en
-                              }
-                              onChange={(value) =>
-                                handleInputChange({
-                                  target: {
-                                    name: 'carrierConfig.title.en',
-                                    value: value,
-                                    type: 'text'
-                                  }
-                                })
-                              }
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <CustomTextEditor
-                              name="carrierConfig.description.en"
-                              label="Full Description"
-                              value={
-                                (cData as ICareerConfig)?.carrierConfig
+                                (cData as IDownloadSection)?.contentSection
                                   ?.description?.en
                               }
-                              onChange={(value) =>
-                                handleInputChange({
-                                  target: {
-                                    name: 'carrierConfig.description.en',
-                                    value: value,
-                                    type: 'text'
-                                  }
-                                })
-                              }
+                              onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>
@@ -297,53 +248,27 @@ const Page = () => {
                       <>
                         <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
-                            <Label htmlFor="name">Main Title</Label>
+                            <Label htmlFor="name">Title</Label>
                             <Input
-                              name="carrierConfig.mainTitle.hi"
-                              placeholder="Enter your Main Title"
+                              name="contentSection.title.hi"
+                              placeholder="Enter your Title"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig
-                                  ?.mainTitle?.hi
+                                (cData as IDownloadSection)?.contentSection
+                                  ?.title?.hi
                               }
                               onChange={handleInputChange}
                             />
                           </div>
                           <div className="space-y-1">
-                            <CustomTextEditor
-                              name="carrierConfig.title.hi"
-                              label="Title"
+                            <Label htmlFor="name"> Description</Label>
+                            <Input
+                              name="contentSection.description.hi"
+                              placeholder="Enter your Description"
                               value={
-                                (cData as ICareerConfig)?.carrierConfig?.title
-                                  ?.hi
-                              }
-                              onChange={(value) =>
-                                handleInputChange({
-                                  target: {
-                                    name: 'carrierConfig.title.hi',
-                                    value: value,
-                                    type: 'text'
-                                  }
-                                })
-                              }
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <CustomTextEditor
-                              name="carrierConfig.description.hi"
-                              label="Full Description"
-                              value={
-                                (cData as ICareerConfig)?.carrierConfig
+                                (cData as IDownloadSection)?.contentSection
                                   ?.description?.hi
                               }
-                              onChange={(value) =>
-                                handleInputChange({
-                                  target: {
-                                    name: 'carrierConfig.description.hi',
-                                    value: value,
-                                    type: 'text'
-                                  }
-                                })
-                              }
+                              onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>

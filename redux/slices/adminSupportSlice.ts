@@ -8,8 +8,6 @@ export interface SlidersRootState {
 import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
-import { toast } from 'sonner';
-import { title } from 'process';
 
 // Define the IHomeAboutList type
 export type IAdminSupport = BaseModel & {
@@ -105,28 +103,20 @@ export const editTicktStatus = createAsyncThunk<
   { status?: string; entityId?: string | null },
   { state: RootState }
 >(
-  'homeaboutlist/add',
+  'updateTicketStatus',
   async ({ status, entityId }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(addEditAdminSupportStart());
+      console.log('Updating ticket status:', status, 'for entityId:', entityId);
 
-      let response;
-      if (!entityId) {
-        // Create new entry
-        response = await fetchApi('/adminsupport/new', {
-          method: 'POST',
-          body: status
-        });
-      } else {
-        // Update existing entry
-        response = await fetchApi(`/adminsupport/update/${entityId}`, {
-          method: 'PUT',
-          body: status
-        });
-      }
+      let response = await fetchApi(`/adminsupport/update/${entityId}`, {
+        method: 'PUT',
+        body: { status }
+      });
+
       if (response?.success) {
         dispatch(addEditAdminSupportSuccess());
-        dispatch(fetchAdminSupport()); // Refresh list after adding/editing
+        dispatch(fetchAdminSupportTickets({})); // Refresh list after adding/editing
         return response;
       } else {
         const errorMsg = response?.data?.message ?? 'Something went wrong!';
@@ -140,6 +130,36 @@ export const editTicktStatus = createAsyncThunk<
     }
   }
 );
+export const fetchSingleTicket = createAsyncThunk<
+  any,
+  { ticketId: string },
+  { state: RootState }
+>('/fetchAdminSupport', async (input, { dispatch, rejectWithValue }) => {
+  try {
+    const { ticketId } = input;
+    console.log('Fetching single ticket with ID:', ticketId);
+    dispatch(fetchSingleTicketStart());
+    const response = await fetchApi(`/adminsupport/single/${ticketId}`, {
+      method: 'GET'
+    });
+    console.log('response of tickets is ', response);
+    if (response?.success) {
+      dispatch(
+        fetchSingleTicketSuccess({
+          data: response.ticketData
+        })
+      );
+      return response;
+    } else {
+      throw new Error('Invalid API response');
+    }
+  } catch (error: any) {
+    dispatch(
+      fetchSingleTicketFailure(error?.message || 'Something went wrong')
+    );
+    return rejectWithValue(error?.message || 'Something went wrong');
+  }
+});
 
 // Slice
 const adminSupportSlice = createSlice({
@@ -163,6 +183,19 @@ const adminSupportSlice = createSlice({
     fetchAdminSupportFailure(state, action) {
       state.AdminSupportState.loading = false;
       state.AdminSupportState.error = action.payload;
+    },
+    fetchSingleTicketStart(state) {
+      state.singleAdminSupportState.loading = true;
+      state.singleAdminSupportState.error = null;
+    },
+    fetchSingleTicketSuccess(state, action) {
+      const { data } = action.payload;
+      state.singleAdminSupportState.data = data;
+      state.singleAdminSupportState.loading = false;
+    },
+    fetchSingleTicketFailure(state, action) {
+      state.singleAdminSupportState.loading = false;
+      state.singleAdminSupportState.error = action.payload;
     },
     addEditAdminSupportStart(state) {
       state.singleAdminSupportState.loading = true;
@@ -199,6 +232,9 @@ export const {
   fetchAdminSupportStart,
   fetchAdminSupportSuccess,
   fetchAdminSupportFailure,
+  fetchSingleTicketStart,
+  fetchSingleTicketSuccess,
+  fetchSingleTicketFailure,
   addEditAdminSupportStart,
   addEditAdminSupportSuccess,
   addEditAdminSupportFailure,

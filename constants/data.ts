@@ -586,6 +586,19 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: 'Consultation',
+    url: '/dashboard/Consultation',
+    icon: 'settings',
+    isActive: false,
+    items: [
+      {
+        title: 'Config',
+        url: '/dashboard/Consultation/Config',
+        icon: 'general'
+      }
+    ]
+  },
+  {
     title: 'Contacts',
     url: '/dashboard/contact',
     icon: 'settings',
@@ -594,6 +607,12 @@ export const navItems: NavItem[] = [
       {
         title: 'Message List',
         url: '/dashboard/contact/list',
+        icon: 'general',
+        isActive: false
+      },
+      {
+        title: 'Config',
+        url: '/dashboard/contact/config',
         icon: 'general',
         isActive: false
       }
@@ -842,6 +861,16 @@ export const navItems: NavItem[] = [
           {
             title: 'Why Choose',
             url: '/dashboard/settings/pages/whyChoose',
+            icon: 'general'
+          },
+          {
+            title: 'Sale Config',
+            url: '/dashboard/settings/pages/sale-config',
+            icon: 'general'
+          },
+          {
+            title: 'Download Section',
+            url: '/dashboard/settings/pages/download-section',
             icon: 'general'
           }
         ]

@@ -3,6 +3,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { useAppDispatch } from '@/redux/hooks';
+import { editTicktStatus } from '@/redux/slices/adminSupportSlice';
+import {
   MessageCircle,
   Clock,
   CheckCircle,
@@ -13,6 +22,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Ticket {
   _id: string;
@@ -66,10 +77,37 @@ function getPriorityColor(priority: string) {
 
 export default function TicketCard({ ticket }: { ticket: Ticket }) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdateTicketStatus = async (newStatus: string) => {
+    if (newStatus === ticket.status) return; // Don't update if status is the same
+
+    setIsUpdating(true);
+    try {
+      const result = await dispatch(
+        editTicktStatus({
+          entityId: ticket._id, // Send ticket ID
+          status: newStatus
+        })
+      );
+      if (result?.payload?.success) {
+        toast.success('Ticket status updated successfully');
+      } else {
+        toast.error('Something went wrong while updating ticket status');
+      }
+    } catch (error) {
+      toast.error('Error updating ticket status');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const handleNavigateToChat = (ticketId: string) => {
     // Navigate to the chat page with the ticket ID
     router.push(`/dashboard/admin-support/${ticketId}`);
   };
+
   return (
     <Card className="mb-4 transition-shadow hover:shadow-md">
       <CardHeader className="pb-3">
@@ -110,15 +148,50 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
               </p>
             )}
           </div>
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex items-center gap-2 bg-transparent"
-            onClick={() => handleNavigateToChat(ticket?._id)}
-          >
-            <MessageCircle className="h-4 w-4" />
-            Chat
-          </Button>
+          <div className="flex flex-col gap-2">
+            {ticket?.status === 'in-process' && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-2 bg-transparent"
+                onClick={() => handleNavigateToChat(ticket?._id)}
+              >
+                <MessageCircle className="h-4 w-4" />
+                Chat
+              </Button>
+            )}
+
+            {/* Status Update Select */}
+            <Select
+              value={ticket.status}
+              onValueChange={handleUpdateTicketStatus}
+              disabled={isUpdating}
+            >
+              <SelectTrigger className="h-8 w-32 text-xs">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="open">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-3 w-3" />
+                    Open
+                  </div>
+                </SelectItem>
+                <SelectItem value="in-process">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-3 w-3" />
+                    In Process
+                  </div>
+                </SelectItem>
+                <SelectItem value="closed">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3" />
+                    Closed
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardHeader>
       <CardContent>

@@ -96,6 +96,16 @@ export default function ListForm() {
                   <Tabs defaultValue="seo" className="mt-4 w-full">
                     <TabsContent value="seo">
                       <Card>
+                        <div className="space-y-2 p-4">
+                          <Label htmlFor="name">sequence</Label>
+                          <Input
+                            name="sequence"
+                            type="text"
+                            placeholder="Enter sequence"
+                            value={(bData as ISkills)?.sequence}
+                            onChange={handleInputChange}
+                          />
+                        </div>
                         <Tabs defaultValue="English" className="mt-4 w-full">
                           <TabsList className="flex w-full space-x-2 p-0">
                             <TabsTrigger

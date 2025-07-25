@@ -50,7 +50,8 @@ const customColors = [
   '#666600',
   '#003700',
   '#002966',
-  '#3d1466'
+  // '#3d1466',
+  '#C1D625'
 ];
 
 const CustomTextEditor: React.FC<CustomTextEditorProps> = ({
