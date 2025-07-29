@@ -173,34 +173,38 @@ export default function VibhorPackageForm() {
                     </div>
                   )}
 
-                {/* Duration Section */}
+                {/* Duration Section - Updated to match model */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <CustomDropdown
                       label="Duration Type *"
                       name="no_of_types"
                       defaultValue=""
-                      data={[
-                        { name: 'Days', _id: 'days' },
-                        { name: 'Week', _id: 'week' },
-                        { name: 'Month', _id: 'month' },
-                        { name: 'Year', _id: 'year' }
-                      ]}
+                      data={[{ name: 'Minutes', _id: 'minutes' }]}
                       value={packageData?.no_of_types || ''}
                       onChange={handleDropdownChange}
                     />
+                    <p className="text-sm text-gray-500">
+                      Package duration is measured in minutes only
+                    </p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="no_of_values">Duration Value *</Label>
+                    <Label htmlFor="no_of_values">
+                      Duration Value (Minutes) *
+                    </Label>
                     <Input
                       name="no_of_values"
                       type="number"
-                      placeholder="Enter duration value"
+                      placeholder="Enter duration in minutes"
                       value={packageData?.no_of_values || ''}
                       onChange={handleInputChange}
                       required
+                      min="1"
                     />
+                    <p className="text-sm text-gray-500">
+                      Enter the total number of minutes for this package
+                    </p>
                   </div>
                 </div>
 
@@ -208,12 +212,21 @@ export default function VibhorPackageForm() {
                 {packageData?.no_of_values && packageData?.no_of_types && (
                   <div className="rounded-lg bg-blue-50 p-4">
                     <p className="font-medium text-blue-700">
-                      Package Duration: {packageData.no_of_values}{' '}
-                      {packageData.no_of_types}
-                      {packageData.no_of_values > 1 &&
-                      packageData.no_of_types !== 'days'
-                        ? 's'
-                        : ''}
+                      Package Duration: {packageData.no_of_values} minutes
+                      {packageData.no_of_values >= 60 && (
+                        <span className="text-blue-600">
+                          {' '}
+                          ({Math.floor(packageData.no_of_values / 60)} hour
+                          {Math.floor(packageData.no_of_values / 60) > 1
+                            ? 's'
+                            : ''}
+                          {packageData.no_of_values % 60 > 0 &&
+                            ` ${packageData.no_of_values % 60} minute${
+                              packageData.no_of_values % 60 > 1 ? 's' : ''
+                            }`}
+                          )
+                        </span>
+                      )}
                     </p>
                   </div>
                 )}
@@ -342,7 +355,7 @@ export default function VibhorPackageForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.push('/dashboard/vibhor-packages')}
+            onClick={() => router.push('/dashboard/vibhor/vibhorpackage')}
           >
             Cancel
           </Button>
