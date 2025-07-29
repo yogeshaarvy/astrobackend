@@ -94,20 +94,30 @@ export default function HoroscopeDetailTable({
       cell: ({ row }) => {
         const handleToggle = async (checked: boolean) => {
           const updatedData = { ...row.original, active: checked };
+          // Try to get sign_id from row.original, fallback to ''
+          let horoscopesignId = '';
+          if (typeof row.original.sign_id === 'string') {
+            horoscopesignId = row.original.sign_id;
+          } else if (
+            row.original.sign_id &&
+            typeof row.original.sign_id === 'object' &&
+            row.original.sign_id._id
+          ) {
+            horoscopesignId = row.original.sign_id._id;
+          }
           try {
             dispatch(updateHoroscopeDetailData(updatedData));
-            const result = await dispatch(
+            await dispatch(
               addEditHoroscopeDetail({
-                entityId: row.original._id || null
+                entityId: row.original._id || null,
+                horoscopesignId
               })
             ).unwrap();
             toast.success('Status Updated Successfully!');
           } catch (error: any) {
-            console.error('Error updating active status:', error);
             toast.error('Failed to Update Status');
           }
         };
-
         return (
           <Switch
             checked={row.original.active}

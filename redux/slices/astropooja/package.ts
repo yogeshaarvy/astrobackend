@@ -114,7 +114,7 @@ export const addEditAstroPackage = createAsyncThunk<
       }
       if (response?.success) {
         dispatch(addEditAstroPackageSuccess());
-        dispatch(fetchAstroPackageList());
+        dispatch(fetchAstroPackageList({ astropoojaId }));
         toast.success(response?.message || 'Operation completed successfully');
         return response;
       } else {

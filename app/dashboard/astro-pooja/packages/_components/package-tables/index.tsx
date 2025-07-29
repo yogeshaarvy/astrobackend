@@ -67,17 +67,18 @@ export default function AstroPackageTable({
       cell: ({ row }) => {
         const handleToggle = async (checked: boolean) => {
           const updatedData = { ...row.original, active: checked };
+          let astropoojaId = (updatedData as any)?.pooja_id?._id;
           try {
             dispatch(updateAstroPackageData(updatedData));
             const result = await dispatch(
               addEditAstroPackage({
-                entityId: row.original._id || null
+                entityId: row.original._id || null,
+                astropoojaId
               })
             ).unwrap();
             toast.success('Status Updated Successfully!');
             // window.location.reload()
           } catch (error: any) {
-            console.error('Error updating active status:', error);
             toast.error('Failed to Update Status');
           }
         };

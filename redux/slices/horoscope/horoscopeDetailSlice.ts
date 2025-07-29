@@ -102,13 +102,11 @@ export const addEditHoroscopeDetail = createAsyncThunk<
 
       let response;
       if (!entityId) {
-        console.log('add api called');
         response = await fetchApi('/horoscope/detail/create', {
           method: 'POST',
           body: formData
         });
       } else {
-        console.log('update is called');
         response = await fetchApi(`/horoscope/detail/update/${entityId}`, {
           method: 'PUT',
           body: formData
@@ -117,7 +115,7 @@ export const addEditHoroscopeDetail = createAsyncThunk<
 
       if (response?.success) {
         dispatch(addEditHoroscopeDetailSuccess());
-        dispatch(fetchHoroscopeDetailList());
+        dispatch(fetchHoroscopeDetailList({ horoscopesignId }));
         toast.success(response?.message || 'Operation completed successfully');
         return response;
       } else {
@@ -160,7 +158,7 @@ export const fetchHoroscopeDetailList = createAsyncThunk<
         active,
         exportData
       } = input || {};
-      console.log('sign iof og atstsgsggh', horoscopesignId, pageSize);
+      console.log('horoscopesignId', horoscopesignId);
       dispatch(fetchHoroscopeDetailListStart());
       const response = await fetchApi(
         `/horoscope/detail/all?page=${page || 1}&limit=${
