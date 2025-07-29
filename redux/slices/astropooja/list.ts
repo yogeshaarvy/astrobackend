@@ -70,7 +70,7 @@ export const addEditAstropoojaList = createAsyncThunk<
       let clonedData = cloneDeep(data);
 
       if (clonedData) {
-        clonedData = await processNestedAWSFields(clonedData);
+        clonedData = await processNestedFields(clonedData);
       }
 
       const formData = new FormData();
