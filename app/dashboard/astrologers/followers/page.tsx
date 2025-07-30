@@ -1,281 +1,278 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Users, Search, AlertCircle, RefreshCw } from 'lucide-react';
 import {
-  UserMinus,
-  Users,
-  ChevronLeft,
-  ChevronRight,
-  Loader2
-} from 'lucide-react';
-import PageContainer from '@/components/layout/page-container';
+  fetchFollowersList,
+  clearFollowersState,
+  type IFollower,
+  type FollowersRootState
+} from '@/redux/slices/followerSlice';
+import { RootState } from '@/redux/store';
+import { useSearchParams } from 'next/navigation';
 
-const FollowersTable = () => {
-  const [followers, setFollowers] = useState([]);
+interface FollowersPageProps {
+  astrologerId: string;
+}
+
+export default function FollowersPage() {
+  const searchParams = useSearchParams();
+  const astrologerId = searchParams.get('id') || '';
+  const dispatch = useDispatch();
+
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalFollowers, setTotalFollowers] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [limit] = useState(10);
+  const pageSize = 10;
 
-  // Mock API function to simulate fetching followers
-  const fetchFollowers = async (page: number, limit: number) => {
-    setLoading(true);
+  // Get state from Redux store
+  const {
+    data: followers,
+    loading,
+    error,
+    pagination
+  } = useSelector((state: RootState & FollowersRootState) => state.followers);
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const total = followers?.length;
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedFollowers = followers?.slice(startIndex, endIndex);
-
-    setLoading(false);
-
-    return {
-      followers: paginatedFollowers,
-      total,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page
-    };
-  };
-
-  // Load followers on component mount and when page changes
+  // Fetch followers on component mount and when page changes
   useEffect(() => {
-    loadFollowers(currentPage, limit);
-  }, [currentPage, limit]);
+    if (astrologerId) {
+      dispatch(
+        fetchFollowersList({
+          astrologerId,
+          page: currentPage,
+          limit: pageSize
+        }) as any
+      );
+    }
 
-  const loadFollowers = async (page: number, limit: number) => {
-    try {
-      const response = await fetchFollowers(page, limit);
-      setFollowers(response?.followers);
-      setTotalFollowers(response.total);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Error fetching followers:', error);
+    // Cleanup on unmount
+    return () => {
+      dispatch(clearFollowersState());
+    };
+  }, [dispatch, astrologerId, currentPage]);
+
+  // Handle refresh
+  const handleRefresh = () => {
+    if (astrologerId) {
+      dispatch(
+        fetchFollowersList({
+          astrologerId,
+          page: currentPage,
+          limit: pageSize
+        }) as any
+      );
     }
   };
 
-  const removeFollower = async (id: any) => {
-    // Optimistic update - remove from UI immediately
-    setFollowers(followers.filter((follower) => (follower as any)?._id !== id));
-    setTotalFollowers((prev) => prev - 1);
+  // Filter followers based on search term
+  const filteredFollowers =
+    followers?.filter(
+      (follower: IFollower) =>
+        follower.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        follower.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
 
-    // In a real app, you would make an API call here:
-    // await deleteFollower(id);
-
-    // If the current page becomes empty and it's not the first page, go to previous page
-    if (followers.length === 1 && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    } else if (followers.length === 1 && currentPage === 1) {
-      // If we're on the first page and it becomes empty, reload to show updated data
-      loadFollowers(currentPage, limit);
-    }
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
-  const handlePageChange = (page: any) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-  const getPageNumbers = () => {
-    const pages = [];
-    const maxVisiblePages = 5;
-
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      const start = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-      const end = Math.min(totalPages, start + maxVisiblePages - 1);
-
-      if (start > 1) {
-        pages.push(1);
-        if (start > 2) pages.push('...');
-      }
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (end < totalPages) {
-        if (end < totalPages - 1) pages.push('...');
-        pages.push(totalPages);
-      }
-    }
-
-    return pages;
-  };
+  // Loading skeleton component
+  const FollowerSkeleton = () => (
+    <Card className="w-full">
+      <CardContent className="p-6">
+        <div className="flex items-center space-x-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-4 w-[200px]" />
+            <Skeleton className="h-4 w-[150px]" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
-    <PageContainer scrollable>
-      <div className="mb-6">
-        <div className="mb-2 flex items-center gap-3">
-          <Users className="h-8 w-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-800">
-            Followers Management
-          </h1>
-        </div>
-        <p className="text-gray-600">
-          Manage your followers list - {totalFollowers} total followers
-        </p>
-      </div>
-
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="border-b border-gray-200 bg-gray-50">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  User
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Email
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Followed Date
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {loading ? (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="px-6 py-12 text-center text-gray-500"
-                  >
-                    <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-blue-600" />
-                    <p className="text-lg font-medium">Loading followers...</p>
-                  </td>
-                </tr>
-              ) : followers.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="px-6 py-12 text-center text-gray-500"
-                  >
-                    <Users className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-                    <p className="text-lg font-medium">No followers yet</p>
-                    <p className="text-sm">Your followers will appear here</p>
-                  </td>
-                </tr>
-              ) : (
-                followers.map((follower: any) => (
-                  <tr
-                    key={follower?._id}
-                    className="transition-colors duration-200 hover:bg-gray-50"
-                  >
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="h-10 w-10 flex-shrink-0">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-purple-500">
-                            <span className="text-sm font-semibold text-white">
-                              {follower?.name
-                                .split(' ')
-                                .map((n: any) => n[0])
-                                .join('')}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {follower.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            @{follower.username}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      {follower.email}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      {new Date(follower.followedDate).toLocaleDateString(
-                        'en-US',
-                        {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        }
-                      )}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                      <button
-                        onClick={() => removeFollower(follower.id)}
-                        className="inline-flex items-center gap-2 rounded-md border border-transparent bg-red-100 px-3 py-2 text-sm font-medium leading-4 text-red-700 transition-colors duration-200 hover:bg-red-200 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                      >
-                        <UserMinus className="h-4 w-4" />
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && !loading && (
-          <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-700">
-                Showing {(currentPage - 1) * limit + 1} to{' '}
-                {Math.min(currentPage * limit, totalFollowers)} of{' '}
-                {totalFollowers} followers
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 transition-colors duration-200 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  Previous
-                </button>
-
-                <div className="flex space-x-1">
-                  {getPageNumbers().map((page, index) => (
-                    <button
-                      key={index}
-                      onClick={() =>
-                        typeof page === 'number' && handlePageChange(page)
-                      }
-                      disabled={page === '...'}
-                      className={`rounded-md px-3 py-2 text-sm font-medium leading-4 transition-colors duration-200 ${
-                        page === currentPage
-                          ? 'bg-blue-600 text-white'
-                          : page === '...'
-                          ? 'cursor-default text-gray-500'
-                          : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 transition-colors duration-200 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Next
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </button>
-              </div>
+    <div className="container mx-auto max-w-4xl p-6">
+      {/* Header */}
+      <Card className="mb-6">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Users className="h-8 w-8 text-primary" />
+              <CardTitle className="text-2xl">Followers</CardTitle>
+              <Badge variant="secondary">
+                {pagination.totalFollowers || 0} Total
+              </Badge>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={loading}
+            >
+              <RefreshCw
+                className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`}
+              />
+              Refresh
+            </Button>
           </div>
-        )}
-      </div>
-    </PageContainer>
-  );
-};
+        </CardHeader>
+        <CardContent>
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+            <Input
+              placeholder="Search followers by name or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-export default FollowersTable;
+      {/* Error State */}
+      {error && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <FollowerSkeleton key={index} />
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && filteredFollowers.length === 0 && !error && (
+        <Card className="w-full">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Users className="mb-4 h-12 w-12 text-muted-foreground" />
+            <h3 className="mb-2 text-lg font-semibold">No followers found</h3>
+            <p className="text-center text-muted-foreground">
+              {searchTerm
+                ? `No followers match "${searchTerm}"`
+                : "This astrologer doesn't have any followers yet."}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Followers List */}
+      {!loading && filteredFollowers.length > 0 && (
+        <div className="space-y-4">
+          {filteredFollowers.map((follower: IFollower) => (
+            <Card
+              key={follower._id}
+              className="w-full transition-shadow hover:shadow-md"
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage
+                      src={
+                        follower.profilePic ||
+                        `/placeholder.svg?height=48&width=48&query=${follower.name}`
+                      }
+                      alt={follower.name || 'Follower'}
+                    />
+                    <AvatarFallback>
+                      {follower.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1 space-y-1">
+                    <h3 className="text-lg font-semibold">
+                      {follower.name || 'Anonymous User'}
+                    </h3>
+                    {follower.email && (
+                      <p className="text-sm text-muted-foreground">
+                        {follower.email}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>ID: {follower._id}</span>
+                      {follower.createdAt && (
+                        <span>
+                          • Joined{' '}
+                          {new Date(follower.createdAt).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Simple Pagination */}
+      {!loading && pagination.totalPages > 1 && (
+        <div className="mt-8 flex items-center justify-center gap-4">
+          <Button
+            variant="outline"
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+
+          <div className="flex items-center gap-2">
+            {Array.from(
+              { length: Math.min(5, pagination.totalPages) },
+              (_, i) => {
+                const page = i + 1;
+                return (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </Button>
+                );
+              }
+            )}
+            {pagination.totalPages > 5 && (
+              <span className="text-muted-foreground">...</span>
+            )}
+          </div>
+
+          <Button
+            variant="outline"
+            onClick={() =>
+              handlePageChange(Math.min(pagination.totalPages, currentPage + 1))
+            }
+            disabled={currentPage === pagination.totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
+
+      {/* Stats Footer */}
+      {!loading && filteredFollowers.length > 0 && (
+        <div className="mt-8 text-center text-sm text-muted-foreground">
+          Showing {(currentPage - 1) * pageSize + 1} to{' '}
+          {Math.min(currentPage * pageSize, pagination.totalFollowers || 0)} of{' '}
+          {pagination.totalFollowers || 0} followers
+        </div>
+      )}
+    </div>
+  );
+}

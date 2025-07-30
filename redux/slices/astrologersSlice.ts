@@ -21,6 +21,7 @@ export type IRequest = BaseModel & {
   password?: string;
   image?: any;
   status?: string;
+  oldstatus?: string;
   active?: boolean;
   showinhome?: boolean;
   about?: {
@@ -136,7 +137,7 @@ export const fetchAstrologersList = createAsyncThunk<
 );
 export const addEditRequest = createAsyncThunk<
   any,
-  string | null,
+  any | null,
   { state: RootState }
 >('request/add', async (entityId, { dispatch, rejectWithValue, getState }) => {
   try {
@@ -180,6 +181,8 @@ export const addEditRequest = createAsyncThunk<
       about: data.about, // keep as object
       expierience: data.expierience
     };
+    const oldstatus = data?.oldstatus;
+    console.log('data is hhere inside the alsice is ', oldstatus);
     // Append only defined fields to FormData
     Object.entries(reqData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -207,7 +210,7 @@ export const addEditRequest = createAsyncThunk<
     }
     if (response?.success) {
       dispatch(addEditRequestSuccess());
-      dispatch(fetchAstrologersList());
+      dispatch(fetchAstrologersList({ status: oldstatus }));
       return response;
     } else {
       const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';

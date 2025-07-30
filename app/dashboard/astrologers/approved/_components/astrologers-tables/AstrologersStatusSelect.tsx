@@ -26,7 +26,8 @@ export default function RequestStatusSelect({
 
     const updatedData = {
       ...request,
-      status: newStatus
+      status: newStatus,
+      oldstatus: status
     };
 
     try {
@@ -34,7 +35,6 @@ export default function RequestStatusSelect({
       await dispatch(addEditRequest(request._id || null)).unwrap();
       toast.success('Status Updated Successfully!');
     } catch (error: any) {
-      console.error('Error updating status:', error);
       toast.error('Failed to Update Status');
     }
   };

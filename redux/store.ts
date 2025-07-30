@@ -99,6 +99,7 @@ import contactConfigReducer from './slices/contact/contactConfigSlice';
 import consultationConfigReducer from './slices/consultationSlice';
 import saleConfigReducer from './slices/saleConfigSlice';
 import downloadSectionReducer from './slices/downloadSection';
+import followersListReducer from './slices/followerSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -201,7 +202,8 @@ export const makeStore = () => {
       contactConfig: contactConfigReducer,
       consultationConfig: consultationConfigReducer,
       saleConfig: saleConfigReducer,
-      downloadSection: downloadSectionReducer
+      downloadSection: downloadSectionReducer,
+      followers: followersListReducer
     }
   });
 };

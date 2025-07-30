@@ -26,7 +26,8 @@ export default function RequestStatusSelect({
 
     const updatedData = {
       ...request,
-      status: newStatus
+      status: newStatus,
+      oldstatus: status
     };
 
     try {
