@@ -86,7 +86,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             Rating
           </DropdownMenuItem>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={() =>
               router.push(
                 `/dashboard/astrologers/list/followers?id=${data._id}`
@@ -94,14 +94,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             }
           >
             Followers
-          </DropdownMenuItem>
-          <DropdownMenuItem
+          </DropdownMenuItem> */}
+          {/* <DropdownMenuItem
             onClick={() =>
               router.push(`/dashboard/astrologers/list/history?id=${data._id}`)
             }
           >
             History
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
