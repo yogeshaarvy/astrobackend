@@ -17,6 +17,7 @@ export default function RequestStatusSelect({
   request: IRequest;
 }) {
   const dispatch = useAppDispatch();
+
   const [status, setStatus] = React.useState(request.status);
   const handleStatusChange = async (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -26,7 +27,8 @@ export default function RequestStatusSelect({
 
     const updatedData = {
       ...request,
-      status: newStatus
+      status: newStatus,
+      oldstatus: status
     };
 
     try {
