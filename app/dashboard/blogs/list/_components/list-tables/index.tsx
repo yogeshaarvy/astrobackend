@@ -53,11 +53,11 @@ export default function BlogsListTable({
       header: 'Slug',
       size: 300
     },
-    {
-      accessorKey: 'shortDescription',
-      header: 'Short Description',
-      size: 300
-    },
+    // {
+    //   accessorKey: 'shortDescription',
+    //   header: 'Short Description',
+    //   size: 300
+    // },
     {
       accessorKey: 'metaTitle',
       header: 'Meta Title'
