@@ -43,12 +43,6 @@ export default function TestimonialListTable({
 
   const columns: ColumnDef<ITestimonial>[] = [
     {
-      accessorKey: 'title.en',
-      header: 'Title',
-      size: 500,
-      maxSize: 700
-    },
-    {
       accessorKey: 'sequence',
       header: 'Sequence',
       size: 300

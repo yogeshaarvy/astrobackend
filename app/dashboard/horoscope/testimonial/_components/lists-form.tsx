@@ -69,7 +69,7 @@ export default function ListForm() {
   };
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const requiredFields: (keyof ITestimonial)[] = ['title'];
+    const requiredFields: (keyof ITestimonial)[] = ['name'];
 
     const missingFields = requiredFields.filter(
       (field) => !(jData as ITestimonial)?.[field]
@@ -77,7 +77,7 @@ export default function ListForm() {
 
     if (missingFields.length > 0) {
       const fieldLabels: { [key in keyof ITestimonial]?: string } = {
-        title: 'Title'
+        name: 'Name'
       };
 
       const missingFieldLabels = missingFields.map(
