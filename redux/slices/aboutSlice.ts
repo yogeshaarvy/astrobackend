@@ -52,6 +52,50 @@ export type IAboutConfig = BaseModel & {
     };
     side_Image?: string;
   };
+  section4?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    side_Image4?: string;
+  };
+  section5?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    side_Image5?: string;
+  };
+  section6?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    side_Image6?: string;
+  };
+  section7?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    side_Image7?: string;
+  };
 };
 
 const initialState = {
@@ -134,6 +178,18 @@ export const addEditAboutConfig = createAsyncThunk<
           : undefined,
         section3: clonedData.section3
           ? JSON.stringify(clonedData.section3)
+          : undefined,
+        section4: clonedData.section4
+          ? JSON.stringify(clonedData.section4)
+          : undefined,
+        section5: clonedData.section5
+          ? JSON.stringify(clonedData.section5)
+          : undefined,
+        section6: clonedData.section6
+          ? JSON.stringify(clonedData.section6)
+          : undefined,
+        section7: clonedData.section7
+          ? JSON.stringify(clonedData.section7)
           : undefined
       };
 

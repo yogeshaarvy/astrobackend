@@ -2,14 +2,7 @@
 
 import { FileUploader, FileViewCard } from '@/components/file-uploader';
 import PageContainer from '@/components/layout/page-container';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,6 +19,7 @@ import {
 } from '@/redux/slices/aboutSlice';
 import CustomTextEditor from '@/utils/CustomTextEditor';
 import CustomTextField from '@/utils/CustomTextField';
+import { Button } from '@/components/ui/button';
 
 const Page = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +33,10 @@ const Page = () => {
   const [dividerimage, setdividerimage] = React.useState<File | null>(null);
   const [sideimage, setsideimage] = React.useState<File | null>(null);
   const [side_image, setside_image] = React.useState<File | null>(null);
+  const [side_Image4, setside_Image4] = React.useState<File | null>(null);
+  const [side_Image5, setside_Image5] = React.useState<File | null>(null);
+  const [side_Image6, setside_Image6] = React.useState<File | null>(null);
+  const [side_Image7, setside_Image7] = React.useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchAboutConfig(null));
@@ -72,6 +70,10 @@ const Page = () => {
           setdividerimage(null);
           setsideimage(null);
           setside_image(null);
+          setside_Image4(null);
+          setside_Image5(null);
+          setside_Image6(null);
+          setside_Image7(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -581,17 +583,476 @@ const Page = () => {
               </CardContent>
             </Card>
 
-            <CardFooter
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginBottom: '1rem'
-              }}
-            >
-              <Button type="submit" onClick={() => handleSubmit()}>
-                Submit
+            {/* Fourth Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold">
+                  4th Section
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Side Image Upload */}
+                <FormItem className="space-y-3">
+                  <FormLabel>Side Image</FormLabel>
+                  <FileUploader
+                    value={side_Image4 ? [side_Image4] : []}
+                    onValueChange={(newFiles: any) => {
+                      setside_Image4(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'section4.side_Image4',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+                  {typeof (cData as IAboutConfig)?.section4?.side_Image4 ===
+                    'string' && (
+                    <div className="max-h-48">
+                      <FileViewCard
+                        existingImageURL={
+                          (cData as IAboutConfig)?.section4?.side_Image4
+                        }
+                      />
+                    </div>
+                  )}
+                </FormItem>
+
+                {/* Section Content Tabs */}
+                <div className="space-y-4">
+                  <Label>Section Content</Label>
+                  <Tabs defaultValue="English" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="English">English</TabsTrigger>
+                      <TabsTrigger value="Hindi">Hindi</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="English" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section4-title-en">Title</Label>
+                        <Input
+                          id="section4-title-en"
+                          name="section4.title.en"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section4?.title?.en || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section4.description.en"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section4?.description
+                              ?.en || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section4.description.en',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section4-title-hi">Title</Label>
+                        <Input
+                          id="section4-title-hi"
+                          name="section4.title.hi"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section4?.title?.hi || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section4.description.hi"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section4?.description
+                              ?.hi || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section4.description.hi',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Fifth Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold">
+                  5th Section
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Side Image Upload */}
+                <FormItem className="space-y-3">
+                  <FormLabel>Side Image</FormLabel>
+                  <FileUploader
+                    value={side_Image5 ? [side_Image5] : []}
+                    onValueChange={(newFiles: any) => {
+                      setside_Image5(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'section5.side_Image5',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+                  {typeof (cData as IAboutConfig)?.section5?.side_Image5 ===
+                    'string' && (
+                    <div className="max-h-48">
+                      <FileViewCard
+                        existingImageURL={
+                          (cData as IAboutConfig)?.section5?.side_Image5
+                        }
+                      />
+                    </div>
+                  )}
+                </FormItem>
+
+                <div className="space-y-4">
+                  <Label>Section Content</Label>
+                  <Tabs defaultValue="English" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="English">English</TabsTrigger>
+                      <TabsTrigger value="Hindi">Hindi</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="English" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section5-title-en">Title</Label>
+                        <Input
+                          id="section5-title-en"
+                          name="section5.title.en"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section5?.title?.en || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section5.description.en"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section5?.description
+                              ?.en || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section5.description.en',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section5-title-hi">Title</Label>
+                        <Input
+                          id="section5-title-hi"
+                          name="section5.title.hi"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section5?.title?.hi || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section5.description.hi"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section5?.description
+                              ?.hi || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section5.description.hi',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* sixth Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold">
+                  6th Section
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Side Image Upload */}
+                <FormItem className="space-y-3">
+                  <FormLabel>Side Image</FormLabel>
+                  <FileUploader
+                    value={side_Image6 ? [side_Image6] : []}
+                    onValueChange={(newFiles: any) => {
+                      setside_Image6(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'section6.side_Image6',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+                  {typeof (cData as IAboutConfig)?.section6?.side_Image6 ===
+                    'string' && (
+                    <div className="max-h-48">
+                      <FileViewCard
+                        existingImageURL={
+                          (cData as IAboutConfig)?.section6?.side_Image6
+                        }
+                      />
+                    </div>
+                  )}
+                </FormItem>
+
+                <div className="space-y-4">
+                  <Label>Section Content</Label>
+                  <Tabs defaultValue="English" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="English">English</TabsTrigger>
+                      <TabsTrigger value="Hindi">Hindi</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="English" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section6-title-en">Title</Label>
+                        <Input
+                          id="section6-title-en"
+                          name="section6.title.en"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section6?.title?.en || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section6.description.en"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section6?.description
+                              ?.en || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section6.description.en',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section6-title-hi">Title</Label>
+                        <Input
+                          id="section6-title-hi"
+                          name="section6.title.hi"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section6?.title?.hi || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section6.description.hi"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section6?.description
+                              ?.hi || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section6.description.hi',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Seventh Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold">
+                  7th Section
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Side Image Upload */}
+                <FormItem className="space-y-3">
+                  <FormLabel>Side Image</FormLabel>
+                  <FileUploader
+                    value={side_Image7 ? [side_Image7] : []}
+                    onValueChange={(newFiles: any) => {
+                      setside_Image7(newFiles[0] || null);
+                      handleInputChange({
+                        target: {
+                          name: 'section7.side_Image7',
+                          type: 'file',
+                          files: newFiles
+                        }
+                      });
+                    }}
+                    accept={{ 'image/*': [] }}
+                    maxSize={1024 * 1024 * 2}
+                  />
+                  {typeof (cData as IAboutConfig)?.section7?.side_Image7 ===
+                    'string' && (
+                    <div className="max-h-48">
+                      <FileViewCard
+                        existingImageURL={
+                          (cData as IAboutConfig)?.section7?.side_Image7
+                        }
+                      />
+                    </div>
+                  )}
+                </FormItem>
+
+                <div className="space-y-4">
+                  <Label>Section Content</Label>
+                  <Tabs defaultValue="English" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="English">English</TabsTrigger>
+                      <TabsTrigger value="Hindi">Hindi</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="English" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section7-title-en">Title</Label>
+                        <Input
+                          id="section7-title-en"
+                          name="section7.title.en"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section7?.title?.en || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section7.description.en"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section7?.description
+                              ?.en || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section7.description.en',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="section7-title-hi">Title</Label>
+                        <Input
+                          id="section7-title-hi"
+                          name="section7.title.hi"
+                          placeholder="Enter your Title"
+                          value={
+                            (cData as IAboutConfig)?.section7?.title?.hi || ''
+                          }
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <CustomTextEditor
+                          name="section7.description.hi"
+                          label="Full Description"
+                          value={
+                            (cData as IAboutConfig)?.section7?.description
+                              ?.hi || ''
+                          }
+                          onChange={(value) =>
+                            handleInputChange({
+                              target: {
+                                name: 'section7.description.hi',
+                                value: value,
+                                type: 'text'
+                              }
+                            })
+                          }
+                        />
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="flex justify-center">
+              <Button type="submit" onClick={handleSubmit} disabled={loading}>
+                {loading ? 'Submitting...' : 'Submit'}
               </Button>
-            </CardFooter>
+            </div>
           </form>
         </Form>
       </div>
