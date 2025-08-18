@@ -571,6 +571,11 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
+        title: 'Faq',
+        url: '/dashboard/panchang/faq',
+        icon: 'general'
+      },
+      {
         title: 'Other',
         url: '/dashboard/panchang/other',
         icon: 'general',

@@ -47,6 +47,16 @@ export type IPanchang = BaseModel & {
       hi?: string;
     };
   };
+  section4?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+  };
   hindu_calendar?: {
     title?: {
       en?: string;
@@ -144,6 +154,9 @@ export const addEditPanchang = createAsyncThunk<
           : undefined,
         section3: clonedData.section3
           ? JSON.stringify(clonedData.section3)
+          : undefined,
+        section4: clonedData.section4
+          ? JSON.stringify(clonedData.section4)
           : undefined,
         hindu_calendar: clonedData.hindu_calendar
           ? JSON.stringify(clonedData.hindu_calendar)
