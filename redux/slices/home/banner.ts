@@ -20,17 +20,16 @@ export type IHomeBanner = BaseModel & {
     en?: string;
     hi?: string;
   };
-  backgroundColor?: string;
   banner_image?: string;
   sequence?: number;
   active?: boolean;
   readStatus?: boolean;
-  backgroundStatus?: boolean;
   readLinks?: string;
   textAlignment?: string;
   textColour?: string;
   readBackgroundcolor?: string;
   readTextColor?: string;
+  banner_type?: string;
 };
 
 const initialState = {
@@ -87,16 +86,15 @@ export const addEditHomeBannerList = createAsyncThunk<
           ? JSON.stringify(clonedData.readTitle)
           : undefined,
         banner_image: clonedData.banner_image,
-        backgroundColor: clonedData.backgroundColor,
         sequence: clonedData.sequence,
         active: clonedData.active,
-        backgroundStatus: clonedData.backgroundStatus,
         readStatus: clonedData.readStatus,
         readLinks: clonedData.readLinks,
         textAlignment: clonedData.textAlignment,
         textColour: clonedData.textColour,
         readBackgroundcolor: clonedData.readBackgroundcolor,
-        readTextColor: clonedData.readTextColor
+        readTextColor: clonedData.readTextColor,
+        banner_type: clonedData.banner_type
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
@@ -229,7 +227,7 @@ export const deleteHomeBanner = createAsyncThunk<
     if (response.success) {
       dispatch(deleteHomeBannerSuccess(id));
       dispatch(fetchHomeBannerList());
-      toast.success('Slider deleted successfuly');
+      toast.success('Banner deleted successfully');
       return response;
     } else {
       let errorMsg = response?.data?.message || 'Something Went Wrong';
@@ -238,7 +236,7 @@ export const deleteHomeBanner = createAsyncThunk<
     }
   } catch (error: any) {
     dispatch(
-      deleteHomeBannerFailure(error.message || 'Failed to delete slider')
+      deleteHomeBannerFailure(error.message || 'Failed to delete banner')
     );
     toast.error(error.message);
   }

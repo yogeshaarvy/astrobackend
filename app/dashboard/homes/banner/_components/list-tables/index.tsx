@@ -54,6 +54,11 @@ export default function HomeBannerListTable({
       size: 300
     },
     {
+      accessorKey: 'banner_type',
+      header: 'Banner Type',
+      size: 300
+    },
+    {
       accessorKey: 'readStatus',
       header: 'Button status',
       size: 300
