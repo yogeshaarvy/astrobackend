@@ -177,7 +177,7 @@ export const fetchSingleProjectfaqList = createAsyncThunk<
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleProjectfaqListSuccess(response?.projectfaq));
+        dispatch(fetchSingleProjectfaqListSuccess(response?.projectFaq));
 
         return response;
       } else {

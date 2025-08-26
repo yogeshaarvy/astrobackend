@@ -52,7 +52,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             onClick={() =>
               router.push(
-                `/dashboard/settings/pages/project_faq/FAQ/edit?id=${data._id}`
+                `/dashboard/settings/pages/project-faq/FAQ/edit?id=${data._id}`
               )
             }
           >
