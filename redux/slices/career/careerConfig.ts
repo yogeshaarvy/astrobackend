@@ -11,12 +11,52 @@ export type ICareerConfig = BaseModel & {
   metaTitle?: string;
   metaDescription?: string;
   metaKeyword?: string;
-  carrierConfig?: {
+  sectionOne?: {
     mainTitle?: {
       en?: string;
       hi?: string;
     };
+    leftImage?: string;
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+  };
+  sectionTwo?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    rightImage?: string;
+    heading?: {
+      en?: string;
+      hi?: string;
+    };
+    subDescription?: {
+      en?: string;
+      hi?: string;
+    };
     sideImage?: string;
+  };
+  sectionThree?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+  };
+  sectionFour?: {
     title?: {
       en?: string;
       hi?: string;
@@ -26,6 +66,10 @@ export type ICareerConfig = BaseModel & {
       hi?: string;
     };
     bannerImage?: string;
+    buttonText?: {
+      en?: string;
+      hi?: string;
+    };
   };
 };
 
@@ -96,8 +140,17 @@ export const addEditCareerConfig = createAsyncThunk<
         metaTitle: clonedData.metaTitle,
         metaDescription: clonedData.metaDescription,
         metaKeyword: clonedData.metaKeyword,
-        carrierConfig: clonedData.carrierConfig
-          ? JSON.stringify(clonedData.carrierConfig)
+        sectionOne: clonedData.sectionOne
+          ? JSON.stringify(clonedData.sectionOne)
+          : undefined,
+        sectionTwo: clonedData.sectionTwo
+          ? JSON.stringify(clonedData.sectionTwo)
+          : undefined,
+        sectionThree: clonedData.sectionThree
+          ? JSON.stringify(clonedData.sectionThree)
+          : undefined,
+        sectionFour: clonedData.sectionFour
+          ? JSON.stringify(clonedData.sectionFour)
           : undefined
       };
 
