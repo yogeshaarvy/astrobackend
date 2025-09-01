@@ -12,6 +12,21 @@ export type IConsultationConfig = BaseModel & {
   metaTitle?: string;
   metaDescription?: string;
   metaKeyword?: string;
+  mainSection?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    short_description?: {
+      en?: string;
+      hi?: string;
+    };
+    bannerImage?: string;
+  };
 };
 
 const initialState = {
@@ -86,7 +101,12 @@ export const addEditConsultationConfig = createAsyncThunk<
         metaDescription: clonedData.metaDescription
           ? clonedData.metaDescription
           : undefined,
-        metaKeyword: clonedData.metaKeyword ? clonedData.metaKeyword : undefined
+        metaKeyword: clonedData.metaKeyword
+          ? clonedData.metaKeyword
+          : undefined,
+        mainSection: clonedData.mainSection
+          ? JSON.stringify(clonedData.mainSection)
+          : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {

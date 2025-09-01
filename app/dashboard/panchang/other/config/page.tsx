@@ -40,6 +40,7 @@ const Page = () => {
     panchangState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.panchangConfig);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+  const [stripImage, setstripImage] = React.useState<File | null>(null);
   const [sideImage, setsideImage] = React.useState<File | null>(null);
   const [rightImage, setrightImage] = React.useState<File | null>(null);
 
@@ -71,7 +72,7 @@ const Page = () => {
       dispatch(addEditPanchang(null)).then((response: any) => {
         if (!response?.error) {
           setbannerImage(null);
-
+          setstripImage(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -314,6 +315,41 @@ const Page = () => {
             >
               <div className="flex items-center space-x-2">
                 <Card>
+                  <div className="space-y-2 p-6 ">
+                    <FormItem className="space-y-3">
+                      <FormLabel>Hindu Calander Strip Image</FormLabel>
+                      <FileUploader
+                        value={stripImage ? [stripImage] : []}
+                        onValueChange={(newFiles: any) => {
+                          setstripImage(newFiles[0] || null);
+                          handleInputChange({
+                            target: {
+                              name: 'hindu_calendar.stripImage',
+                              type: 'file',
+                              files: newFiles
+                            }
+                          });
+                        }}
+                        accept={{ 'image/*': [] }}
+                        maxSize={1024 * 1024 * 2}
+                      />{' '}
+                      <>
+                        {typeof (cData as IPanchang)?.hindu_calendar
+                          ?.stripImage === 'string' && (
+                          <>
+                            <div className="max-h-48 space-y-4">
+                              <FileViewCard
+                                existingImageURL={
+                                  (cData as IPanchang)?.hindu_calendar
+                                    ?.stripImage
+                                }
+                              />
+                            </div>
+                          </>
+                        )}
+                      </>
+                    </FormItem>
+                  </div>
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
                       <TabsTrigger

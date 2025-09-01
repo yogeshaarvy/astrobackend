@@ -47,6 +47,46 @@ export type IHoroscopeConfig = BaseModel & {
       hi?: string;
     };
   };
+  section4?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    rightImage?: string;
+  };
+  cards?: {
+    titleOne?: {
+      en?: string;
+      hi?: string;
+    };
+    titleTwo?: {
+      en?: string;
+      hi?: string;
+    };
+    titleThree?: {
+      en?: string;
+      hi?: string;
+    };
+    descriptionOne?: {
+      en?: string;
+      hi?: string;
+    };
+    descriptionTwo?: {
+      en?: string;
+      hi?: string;
+    };
+    descriptionThree?: {
+      en?: string;
+      hi?: string;
+    };
+    iconOne?: string;
+    iconTwo?: string;
+    iconThree?: string;
+  };
 };
 
 const initialState = {
@@ -130,7 +170,11 @@ export const addEditHoroscope = createAsyncThunk<
           : undefined,
         section3: clonedData.section3
           ? JSON.stringify(clonedData.section3)
-          : undefined
+          : undefined,
+        section4: clonedData.section4
+          ? JSON.stringify(clonedData.section4)
+          : undefined,
+        cards: clonedData.cards ? JSON.stringify(clonedData.cards) : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {

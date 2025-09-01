@@ -40,7 +40,7 @@ const Page = () => {
     consultationConfigState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.consultationConfig);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
-  const [sideImage, setsideImage] = React.useState<File | null>(null);
+  console.log('cData value is:', cData);
 
   useEffect(() => {
     dispatch(fetchConsultationConfig(null));
@@ -129,6 +129,150 @@ const Page = () => {
                 value={(cData as IConsultationConfig)?.metaKeyword}
                 onChange={handleInputChange}
               />
+
+              <FormItem className="space-y-3">
+                <FormLabel>Banner Image</FormLabel>
+                <FileUploader
+                  value={bannerImage ? [bannerImage] : []}
+                  onValueChange={(newFiles: any) => {
+                    setbannerImage(newFiles[0] || null);
+                    handleInputChange({
+                      target: {
+                        name: 'mainSection.bannerImage',
+                        type: 'file',
+                        files: newFiles
+                      }
+                    });
+                  }}
+                  accept={{ 'image/*': [] }}
+                  maxSize={1024 * 1024 * 2}
+                />
+                {typeof (cData as IConsultationConfig)?.mainSection
+                  ?.bannerImage === 'string' && (
+                  <div className="max-h-48 space-y-4">
+                    <FileViewCard
+                      existingImageURL={
+                        (cData as IConsultationConfig)?.mainSection?.bannerImage
+                      }
+                    />
+                  </div>
+                )}
+              </FormItem>
+
+              <Tabs defaultValue="English" className="mt-4 w-full">
+                <TabsList className="flex w-full space-x-2 p-0">
+                  <TabsTrigger
+                    value="English"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    EN
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Hindi"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    HI
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="English">
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input
+                      name="mainSection.title.en"
+                      placeholder="Enter title"
+                      value={
+                        (cData as IConsultationConfig)?.mainSection?.title?.en
+                      }
+                      onChange={handleInputChange}
+                    />
+                    {/* <Label>Description</Label> */}
+                    <CustomTextEditor
+                      name="mainSection.description.en"
+                      label="Description"
+                      value={
+                        (cData as IConsultationConfig)?.mainSection?.description
+                          ?.en
+                      }
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'mainSection.description.en',
+                            value: value,
+                            type: 'text'
+                          }
+                        })
+                      }
+                    />
+                    <CustomTextEditor
+                      name="mainSection.short_description.en"
+                      label="Short Description"
+                      value={
+                        (cData as IConsultationConfig)?.mainSection
+                          ?.short_description?.en
+                      }
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'mainSection.short_description.en',
+                            value: value,
+                            type: 'text'
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                </TabsContent>
+                <TabsContent value="Hindi">
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input
+                      name="mainSection.title.hi"
+                      placeholder="Enter title"
+                      value={
+                        (cData as IConsultationConfig)?.mainSection?.title
+                          ?.hi || ''
+                      }
+                      onChange={handleInputChange}
+                    />
+                    {/* <Label>Description</Label> */}
+                    <CustomTextEditor
+                      name="mainSection.description.hi"
+                      label="Description"
+                      value={
+                        (cData as IConsultationConfig)?.mainSection?.description
+                          ?.hi || ''
+                      }
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'mainSection.description.hi',
+                            value: value,
+                            type: 'text'
+                          }
+                        })
+                      }
+                    />
+                    <CustomTextEditor
+                      name="mainSection.short_description.hi"
+                      label="Short Description"
+                      value={
+                        (cData as IConsultationConfig)?.mainSection
+                          ?.short_description?.hi
+                      }
+                      onChange={(value) =>
+                        handleInputChange({
+                          target: {
+                            name: 'mainSection.short_description.hi',
+                            value: value,
+                            type: 'text'
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                </TabsContent>
+              </Tabs>
             </form>
           </Form>
         </CardContent>

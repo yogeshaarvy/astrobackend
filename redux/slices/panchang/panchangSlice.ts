@@ -70,6 +70,7 @@ export type IPanchang = BaseModel & {
       en?: string;
       hi?: string;
     };
+    stripImage?: string;
   };
 };
 
