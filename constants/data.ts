@@ -864,8 +864,8 @@ export const navItems: NavItem[] = [
             icon: 'general'
           },
           {
-            title: 'Astrologer Config',
-            url: '/dashboard/settings/pages/astroregisterconfig',
+            title: 'Auth Images Config',
+            url: '/dashboard/settings/pages/auth-Images',
             icon: 'general'
           },
           {

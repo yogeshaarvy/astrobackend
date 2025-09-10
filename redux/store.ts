@@ -63,7 +63,7 @@ import ourServicesReducer from './slices/home/ourServices';
 import consultanceReducer from './slices/home/consultance';
 import horoscopeiconReducer from './slices/home/horoscope';
 import horoscopedetailReducer from './slices/horoscope/horoscopeDetailSlice';
-import registerImageReducer from './slices/register-imageSlice';
+import authImageReducer from './slices/authImageSlice';
 import calendarReducer from './slices/calendar';
 import calendarConfigReducer from './slices/calenderSlice';
 import homeKundliReducer from './slices/home/kundli';
@@ -169,7 +169,7 @@ export const makeStore = () => {
       consultance: consultanceReducer,
       horoscope: horoscopeiconReducer,
       horoscopeDetail: horoscopedetailReducer,
-      registerImage: registerImageReducer,
+      authImage: authImageReducer,
       calendar: calendarReducer,
       calendarConfig: calendarConfigReducer,
       homeKundli: homeKundliReducer,
