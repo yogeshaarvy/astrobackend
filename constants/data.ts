@@ -175,6 +175,11 @@ export const navItems: NavItem[] = [
         title: 'Testimonial',
         url: '/dashboard/homes/testimonial',
         icon: 'message'
+      },
+      {
+        title: 'Mobile Home',
+        url: '/dashboard/homes/mobile',
+        icon: 'message'
       }
       // {
       //   title: 'News Letter',

@@ -100,6 +100,7 @@ import consultationConfigReducer from './slices/consultationSlice';
 import saleConfigReducer from './slices/saleConfigSlice';
 import downloadSectionReducer from './slices/downloadSection';
 import followersListReducer from './slices/followerSlice';
+import mobileImageReducer from './slices/home/mobileImageSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -203,7 +204,8 @@ export const makeStore = () => {
       consultationConfig: consultationConfigReducer,
       saleConfig: saleConfigReducer,
       downloadSection: downloadSectionReducer,
-      followers: followersListReducer
+      followers: followersListReducer,
+      mobileImage: mobileImageReducer
     }
   });
 };
