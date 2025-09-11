@@ -70,7 +70,7 @@ const Page = () => {
       dispatch(addEditKundli(null)).then((response: any) => {
         if (!response?.error) {
           setbannerImage(null);
-
+          setsideImage(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -173,6 +173,36 @@ const Page = () => {
                               <FileViewCard
                                 existingImageURL={
                                   (cData as IKundli)?.mainSection?.bannerImage
+                                }
+                              />
+                            </div>
+                          </>
+                        )}
+                      </>
+                      <FormLabel>Side Image</FormLabel>
+                      <FileUploader
+                        value={sideImage ? [sideImage] : []}
+                        onValueChange={(newFiles: any) => {
+                          setsideImage(newFiles[0] || null);
+                          handleInputChange({
+                            target: {
+                              name: 'mainSection.sideImage',
+                              type: 'file',
+                              files: newFiles
+                            }
+                          });
+                        }}
+                        accept={{ 'image/*': [] }}
+                        maxSize={1024 * 1024 * 2}
+                      />{' '}
+                      <>
+                        {typeof (cData as IKundli)?.mainSection?.sideImage ===
+                          'string' && (
+                          <>
+                            <div className="max-h-48 space-y-4">
+                              <FileViewCard
+                                existingImageURL={
+                                  (cData as IKundli)?.mainSection?.sideImage
                                 }
                               />
                             </div>
