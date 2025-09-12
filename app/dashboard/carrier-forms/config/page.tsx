@@ -41,10 +41,14 @@ const Page = () => {
   } = useAppSelector((state) => state.carrierConfig);
 
   console.log('this is the cdata', cData);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
-  const [sideImage, setsideImage] = React.useState<File | null>(null);
-  const [rightImage, setrightImage] = React.useState<File | null>(null);
-  const [leftImage, setleftImage] = React.useState<File | null>(null);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
+  const [sideImageEn, setsideImageEn] = React.useState<File | null>(null);
+  const [sideImageHi, setsideImageHi] = React.useState<File | null>(null);
+  const [rightImageEn, setrightImageEn] = React.useState<File | null>(null);
+  const [rightImageHi, setrightImageHi] = React.useState<File | null>(null);
+  const [leftImageEn, setleftImageEn] = React.useState<File | null>(null);
+  const [leftImageHi, setleftImageHi] = React.useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchCareerConfig(null));
@@ -96,10 +100,14 @@ const Page = () => {
     try {
       dispatch(addEditCareerConfig(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
-          setsideImage(null);
-          setrightImage(null);
-          setleftImage(null);
+          setbannerImageEn(null);
+          setsideImageEn(null);
+          setrightImageEn(null);
+          setleftImageEn(null);
+          setbannerImageHi(null);
+          setsideImageHi(null);
+          setrightImageHi(null);
+          setleftImageHi(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -162,61 +170,6 @@ const Page = () => {
                     </div>
 
                     {/* File Upload Section */}
-                    <FormItem className="space-y-3">
-                      <FormLabel>Left Image (Section One)</FormLabel>
-                      <FileUploader
-                        value={sideImage ? [sideImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setsideImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'sectionOne.leftImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />
-                      {typeof (cData as ICareerConfig)?.sectionOne
-                        ?.leftImage === 'string' && (
-                        <div className="max-h-48 space-y-4">
-                          <FileViewCard
-                            existingImageURL={
-                              (cData as ICareerConfig)?.sectionOne?.leftImage
-                            }
-                          />
-                        </div>
-                      )}
-
-                      <FormLabel>Right Image (Section Two)</FormLabel>
-                      <FileUploader
-                        value={rightImage ? [rightImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setrightImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'sectionTwo.rightImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />
-                      {typeof (cData as ICareerConfig)?.sectionTwo
-                        ?.rightImage === 'string' && (
-                        <div className="max-h-48 space-y-4">
-                          <FileViewCard
-                            existingImageURL={
-                              (cData as ICareerConfig)?.sectionTwo?.rightImage
-                            }
-                          />
-                        </div>
-                      )}
-                    </FormItem>
                   </div>
 
                   {/* Section Tabs */}
@@ -320,6 +273,35 @@ const Page = () => {
                                 }
                               />
                             </div>
+                            <div className="space-y-1">
+                              <FormLabel>Left Image (English)</FormLabel>
+                              <FileUploader
+                                value={leftImageEn ? [leftImageEn] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setleftImageEn(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionOne.leftImage.en',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionOne
+                                ?.leftImage?.en === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionOne
+                                        ?.leftImage?.en
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </div>
                           </CardContent>
                         </TabsContent>
 
@@ -377,6 +359,35 @@ const Page = () => {
                                 }
                               />
                             </div>
+                            <div className="space-y-1">
+                              <FormLabel>Left Image (Hindi)</FormLabel>
+                              <FileUploader
+                                value={leftImageHi ? [leftImageHi] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setleftImageHi(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionOne.leftImage.hi',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionOne
+                                ?.leftImage?.hi === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionOne
+                                        ?.leftImage?.hi
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </div>
                           </CardContent>
                         </TabsContent>
                       </Tabs>
@@ -384,35 +395,6 @@ const Page = () => {
 
                     {/* Section Two */}
                     <TabsContent value="sectionTwo">
-                      <div className="mb-4">
-                        <FormLabel>Side Image</FormLabel>
-                        <FileUploader
-                          value={leftImage ? [leftImage] : []}
-                          onValueChange={(newFiles: any) => {
-                            setleftImage(newFiles[0] || null);
-                            handleInputChange({
-                              target: {
-                                name: 'sectionTwo.sideImage',
-                                type: 'file',
-                                files: newFiles
-                              }
-                            });
-                          }}
-                          accept={{ 'image/*': [] }}
-                          maxSize={1024 * 1024 * 2}
-                        />
-                        {typeof (cData as ICareerConfig)?.sectionTwo
-                          ?.sideImage === 'string' && (
-                          <div className="mt-2 max-h-48 space-y-4">
-                            <FileViewCard
-                              existingImageURL={
-                                (cData as ICareerConfig)?.sectionTwo?.sideImage
-                              }
-                            />
-                          </div>
-                        )}
-                      </div>
-
                       <Tabs defaultValue="English" className="w-full">
                         <TabsList className="flex w-full space-x-2 p-0">
                           <TabsTrigger
@@ -431,6 +413,35 @@ const Page = () => {
 
                         <TabsContent value="English">
                           <CardContent className="space-y-2 p-0">
+                            <div className="space-y-3">
+                              <FormLabel>Right Image (English)</FormLabel>
+                              <FileUploader
+                                value={rightImageEn ? [rightImageEn] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setrightImageEn(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionTwo.rightImage.en',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionTwo
+                                ?.rightImage?.en === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionTwo
+                                        ?.rightImage?.en
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </div>
                             <div className="space-y-1">
                               <CustomTextEditor
                                 name="sectionTwo.title.en"
@@ -468,6 +479,35 @@ const Page = () => {
                                   })
                                 }
                               />
+                            </div>
+                            <div className="mb-4">
+                              <FormLabel>Side Image</FormLabel>
+                              <FileUploader
+                                value={sideImageEn ? [sideImageEn] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setsideImageEn(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionTwo.sideImage.en',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionTwo
+                                ?.sideImage?.en === 'string' && (
+                                <div className="mt-2 max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionTwo
+                                        ?.sideImage?.en
+                                    }
+                                  />
+                                </div>
+                              )}
                             </div>
                             <div className="space-y-1">
                               <CustomTextEditor
@@ -512,6 +552,35 @@ const Page = () => {
 
                         <TabsContent value="Hindi">
                           <CardContent className="space-y-2 p-0">
+                            <div className="space-y-3">
+                              <FormLabel>Right Image (Hindi)</FormLabel>
+                              <FileUploader
+                                value={rightImageHi ? [rightImageHi] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setrightImageHi(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionTwo.rightImage.hi',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionTwo
+                                ?.rightImage?.hi === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionTwo
+                                        ?.rightImage?.hi
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </div>
                             <div className="space-y-1">
                               <CustomTextEditor
                                 name="sectionTwo.title.hi"
@@ -549,6 +618,35 @@ const Page = () => {
                                   })
                                 }
                               />
+                            </div>
+                            <div className="mb-4">
+                              <FormLabel>Side Image (Hindi)</FormLabel>
+                              <FileUploader
+                                value={sideImageHi ? [sideImageHi] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setsideImageHi(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionTwo.sideImage.hi',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionTwo
+                                ?.sideImage?.hi === 'string' && (
+                                <div className="mt-2 max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionTwo
+                                        ?.sideImage?.hi
+                                    }
+                                  />
+                                </div>
+                              )}
                             </div>
                             <div className="space-y-1">
                               <CustomTextEditor
@@ -701,36 +799,6 @@ const Page = () => {
 
                     {/* Section Four */}
                     <TabsContent value="sectionFour">
-                      <div className="mb-4">
-                        <FormLabel>Banner Image</FormLabel>
-                        <FileUploader
-                          value={bannerImage ? [bannerImage] : []}
-                          onValueChange={(newFiles: any) => {
-                            setbannerImage(newFiles[0] || null);
-                            handleInputChange({
-                              target: {
-                                name: 'sectionFour.bannerImage',
-                                type: 'file',
-                                files: newFiles
-                              }
-                            });
-                          }}
-                          accept={{ 'image/*': [] }}
-                          maxSize={1024 * 1024 * 2}
-                        />
-                        {typeof (cData as ICareerConfig)?.sectionFour
-                          ?.bannerImage === 'string' && (
-                          <div className="mt-2 max-h-48 space-y-4">
-                            <FileViewCard
-                              existingImageURL={
-                                (cData as ICareerConfig)?.sectionFour
-                                  ?.bannerImage
-                              }
-                            />
-                          </div>
-                        )}
-                      </div>
-
                       <Tabs defaultValue="English" className="w-full">
                         <TabsList className="flex w-full space-x-2 p-0">
                           <TabsTrigger
@@ -749,6 +817,35 @@ const Page = () => {
 
                         <TabsContent value="English">
                           <CardContent className="space-y-2 p-0">
+                            <div className="mb-4">
+                              <FormLabel>Banner Image (English)</FormLabel>
+                              <FileUploader
+                                value={bannerImageEn ? [bannerImageEn] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setbannerImageEn(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionFour.bannerImage.en',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionFour
+                                ?.bannerImage?.en === 'string' && (
+                                <div className="mt-2 max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionFour
+                                        ?.bannerImage?.en
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </div>
                             <div className="space-y-1">
                               <CustomTextEditor
                                 name="sectionFour.title.en"
@@ -811,6 +908,35 @@ const Page = () => {
 
                         <TabsContent value="Hindi">
                           <CardContent className="space-y-2 p-0">
+                            <div className="mb-4">
+                              <FormLabel>Banner Image (Hindi)</FormLabel>
+                              <FileUploader
+                                value={bannerImageHi ? [bannerImageHi] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setbannerImageHi(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'sectionFour.bannerImage.hi',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as ICareerConfig)?.sectionFour
+                                ?.bannerImage?.hi === 'string' && (
+                                <div className="mt-2 max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as ICareerConfig)?.sectionFour
+                                        ?.bannerImage?.hi
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </div>
                             <div className="space-y-1">
                               <CustomTextEditor
                                 name="sectionFour.title.hi"

@@ -16,7 +16,10 @@ export type ICareerConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    leftImage?: string;
+    leftImage?: {
+      en?: string;
+      hi?: string;
+    };
     title?: {
       en?: string;
       hi?: string;
@@ -35,7 +38,10 @@ export type ICareerConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    rightImage?: string;
+    rightImage?: {
+      en?: string;
+      hi?: string;
+    };
     heading?: {
       en?: string;
       hi?: string;
@@ -44,7 +50,10 @@ export type ICareerConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    sideImage?: string;
+    sideImage?: {
+      en?: string;
+      hi?: string;
+    };
   };
   sectionThree?: {
     title?: {
@@ -65,7 +74,10 @@ export type ICareerConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    bannerImage?: string;
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
     buttonText?: {
       en?: string;
       hi?: string;
