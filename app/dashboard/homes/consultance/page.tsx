@@ -40,7 +40,8 @@ const Page = () => {
     consultanceState: { loading, data: cData }
   } = useAppSelector((state) => state.consultance);
   const [bannerImage, setbannerImage] = React.useState<File | null>(null);
-  const [sideImage, setsideImage] = React.useState<File | null>(null);
+  const [sideImageEn, setSideImageEn] = useState<File | null>(null);
+  const [sideImageHi, setSideImageHi] = useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchConsultance(null));
@@ -177,7 +178,7 @@ const Page = () => {
                           </>
                         )}
                       </>
-                      <FormLabel>Side Image</FormLabel>
+                      {/* <FormLabel>Side Image</FormLabel>
                       <FileUploader
                         value={sideImage ? [sideImage] : []}
                         onValueChange={(newFiles: any) => {
@@ -207,7 +208,7 @@ const Page = () => {
                             </div>
                           </>
                         )}
-                      </>
+                      </> */}
                     </FormItem>
                   </div>
                   <div className="mt-4 space-y-3">
@@ -295,6 +296,35 @@ const Page = () => {
                               }
                             />
                           </div>
+                          <div className="space-y-1">
+                            <FormLabel>Side Image (English)</FormLabel>
+                            <FileUploader
+                              value={sideImageEn ? [sideImageEn] : []}
+                              onValueChange={(newFiles: any) => {
+                                setSideImageEn(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.sideImage.en',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />
+                            {typeof (cData as IConsultance)?.mainSection
+                              ?.sideImage?.en === 'string' && (
+                              <div className="max-h-48 space-y-4">
+                                <FileViewCard
+                                  existingImageURL={
+                                    (cData as IConsultance)?.mainSection
+                                      ?.sideImage?.en
+                                  }
+                                />
+                              </div>
+                            )}
+                          </div>
                         </CardContent>
                       </>
                     </TabsContent>
@@ -350,6 +380,35 @@ const Page = () => {
                                 })
                               }
                             />
+                          </div>
+                          <div className="space-y-1">
+                            <FormLabel>Side Image (Hindi)</FormLabel>
+                            <FileUploader
+                              value={sideImageHi ? [sideImageHi] : []}
+                              onValueChange={(newFiles: any) => {
+                                setSideImageHi(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.sideImage.hi',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />
+                            {typeof (cData as IConsultance)?.mainSection
+                              ?.sideImage?.hi === 'string' && (
+                              <div className="max-h-48 space-y-4">
+                                <FileViewCard
+                                  existingImageURL={
+                                    (cData as IConsultance)?.mainSection
+                                      ?.sideImage?.hi
+                                  }
+                                />
+                              </div>
+                            )}
                           </div>
                         </CardContent>
                       </>

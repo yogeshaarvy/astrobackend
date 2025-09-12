@@ -20,7 +20,10 @@ export type IHomeBanner = BaseModel & {
     en?: string;
     hi?: string;
   };
-  banner_image?: string;
+  banner_image?: {
+    en?: string;
+    hi?: string;
+  };
   sequence?: number;
   active?: boolean;
   readStatus?: boolean;
@@ -85,7 +88,9 @@ export const addEditHomeBannerList = createAsyncThunk<
         readTitle: clonedData.readTitle
           ? JSON.stringify(clonedData.readTitle)
           : undefined,
-        banner_image: clonedData.banner_image,
+        banner_image: clonedData.banner_image
+          ? JSON.stringify(clonedData.banner_image)
+          : undefined,
         sequence: clonedData.sequence,
         active: clonedData.active,
         readStatus: clonedData.readStatus,

@@ -10,7 +10,10 @@ import { setNestedProperty } from '@/utils/SetNestedProperty';
 export type IWhyChoose = BaseModel & {
   mainSection?: {
     bannerImage?: string;
-    sideImage?: string;
+    sideImage?: {
+      en?: string;
+      hi?: string;
+    };
     mainTitle?: {
       en?: string;
       hi?: string;
