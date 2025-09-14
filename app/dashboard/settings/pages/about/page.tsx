@@ -29,12 +29,17 @@ const Page = () => {
 
   console.log('this is the cData', cData);
 
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
   const [dividerimage, setdividerimage] = React.useState<File | null>(null);
-  const [sideimage, setsideimage] = React.useState<File | null>(null);
-  const [side_image, setside_image] = React.useState<File | null>(null);
-  const [side_Image4, setside_Image4] = React.useState<File | null>(null);
-  const [side_Image5, setside_Image5] = React.useState<File | null>(null);
+  const [sideimageEn, setsideimageEn] = React.useState<File | null>(null);
+  const [sideimageHi, setsideimageHi] = React.useState<File | null>(null);
+  const [side_imageEn, setside_imageEn] = React.useState<File | null>(null);
+  const [side_imageHi, setside_imageHi] = React.useState<File | null>(null);
+  const [side_Image4En, setside_Image4En] = React.useState<File | null>(null);
+  const [side_Image4Hi, setside_Image4Hi] = React.useState<File | null>(null);
+  const [side_Image5En, setside_Image5En] = React.useState<File | null>(null);
+  const [side_Image5Hi, setside_Image5Hi] = React.useState<File | null>(null);
   const [side_Image6, setside_Image6] = React.useState<File | null>(null);
   const [side_Image7, setside_Image7] = React.useState<File | null>(null);
 
@@ -66,12 +71,17 @@ const Page = () => {
     try {
       dispatch(addEditAboutConfig(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
+          setbannerImageEn(null);
           setdividerimage(null);
-          setsideimage(null);
-          setside_image(null);
-          setside_Image4(null);
-          setside_Image5(null);
+          setsideimageEn(null);
+          setside_imageEn(null);
+          setside_Image4En(null);
+          setside_Image5En(null);
+          setbannerImageHi(null);
+          setsideimageHi(null);
+          setside_imageHi(null);
+          setside_Image4Hi(null);
+          setside_Image5Hi(null);
           setside_Image6(null);
           setside_Image7(null);
           toast.success(response?.payload?.message);
@@ -137,36 +147,6 @@ const Page = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Banner Image Upload */}
-                <FormItem className="space-y-3">
-                  <FormLabel>Banner Image</FormLabel>
-                  <FileUploader
-                    value={bannerImage ? [bannerImage] : []}
-                    onValueChange={(newFiles: any) => {
-                      setbannerImage(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'banner.bannerImage',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
-                  />
-                  {typeof (cData as IAboutConfig)?.banner?.bannerImage ===
-                    'string' && (
-                    <div className="max-h-48">
-                      <FileViewCard
-                        existingImageURL={
-                          (cData as IAboutConfig)?.banner?.bannerImage
-                        }
-                      />
-                    </div>
-                  )}
-                </FormItem>
-
                 {/* Banner Title Tabs */}
                 <div className="space-y-4">
                   <Label>Banner Title</Label>
@@ -176,6 +156,36 @@ const Page = () => {
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
                     <TabsContent value="English" className="mt-4">
+                      {/* Banner Image Upload */}
+                      <FormItem className="space-y-3">
+                        <FormLabel>Banner Image (English)</FormLabel>
+                        <FileUploader
+                          value={bannerImageEn ? [bannerImageEn] : []}
+                          onValueChange={(newFiles: any) => {
+                            setbannerImageEn(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'banner.bannerImage.en',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.banner?.bannerImage
+                          ?.en === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.banner?.bannerImage?.en
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
+
                       <div className="space-y-2">
                         <Label htmlFor="banner-title-en">Title</Label>
                         <Input
@@ -190,6 +200,34 @@ const Page = () => {
                       </div>
                     </TabsContent>
                     <TabsContent value="Hindi" className="mt-4">
+                      <FormItem className="space-y-3">
+                        <FormLabel>Banner Image (Hindi)</FormLabel>
+                        <FileUploader
+                          value={bannerImageHi ? [bannerImageHi] : []}
+                          onValueChange={(newFiles: any) => {
+                            setbannerImageHi(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'banner.bannerImage.hi',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.banner?.bannerImage
+                          ?.hi === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.banner?.bannerImage?.hi
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="banner-title-hi">Title</Label>
                         <Input
@@ -357,36 +395,6 @@ const Page = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Side Image Upload */}
-                <FormItem className="space-y-3">
-                  <FormLabel>Side Image</FormLabel>
-                  <FileUploader
-                    value={sideimage ? [sideimage] : []}
-                    onValueChange={(newFiles: any) => {
-                      setsideimage(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'section2.sideImage',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
-                  />
-                  {typeof (cData as IAboutConfig)?.section2?.sideImage ===
-                    'string' && (
-                    <div className="max-h-48">
-                      <FileViewCard
-                        existingImageURL={
-                          (cData as IAboutConfig)?.section2?.sideImage
-                        }
-                      />
-                    </div>
-                  )}
-                </FormItem>
-
                 {/* Section Content Tabs */}
                 <div className="space-y-4">
                   <Label>Section Content</Label>
@@ -396,6 +404,35 @@ const Page = () => {
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
                     <TabsContent value="English" className="mt-4 space-y-4">
+                      {/* Side Image Upload */}
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (English)</FormLabel>
+                        <FileUploader
+                          value={sideimageEn ? [sideimageEn] : []}
+                          onValueChange={(newFiles: any) => {
+                            setsideimageEn(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section2.sideImage.en',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section2?.sideImage
+                          ?.en === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section2?.sideImage?.en
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="section2-title-en">Title</Label>
                         <Input
@@ -429,6 +466,34 @@ const Page = () => {
                       </div>
                     </TabsContent>
                     <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (hindi)</FormLabel>
+                        <FileUploader
+                          value={sideimageHi ? [sideimageHi] : []}
+                          onValueChange={(newFiles: any) => {
+                            setsideimageHi(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section2.sideImage.hi',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section2?.sideImage
+                          ?.hi === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section2?.sideImage?.hi
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="section2-title-hi">Title</Label>
                         <Input
@@ -474,36 +539,6 @@ const Page = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Side Image Upload */}
-                <FormItem className="space-y-3">
-                  <FormLabel>Side Image</FormLabel>
-                  <FileUploader
-                    value={side_image ? [side_image] : []}
-                    onValueChange={(newFiles: any) => {
-                      setside_image(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'section3.side_Image',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
-                  />
-                  {typeof (cData as IAboutConfig)?.section3?.side_Image ===
-                    'string' && (
-                    <div className="max-h-48">
-                      <FileViewCard
-                        existingImageURL={
-                          (cData as IAboutConfig)?.section3?.side_Image
-                        }
-                      />
-                    </div>
-                  )}
-                </FormItem>
-
                 {/* Section Content Tabs */}
                 <div className="space-y-4">
                   <Label>Section Content</Label>
@@ -513,6 +548,36 @@ const Page = () => {
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
                     <TabsContent value="English" className="mt-4 space-y-4">
+                      {/* Side Image Upload */}
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (English)</FormLabel>
+                        <FileUploader
+                          value={side_imageEn ? [side_imageEn] : []}
+                          onValueChange={(newFiles: any) => {
+                            setside_imageEn(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section3.side_Image.en',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section3?.side_Image
+                          ?.en === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section3?.side_Image
+                                  ?.en
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="section3-title-en">Title</Label>
                         <Input
@@ -546,6 +611,35 @@ const Page = () => {
                       </div>
                     </TabsContent>
                     <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (Hindi)</FormLabel>
+                        <FileUploader
+                          value={side_imageHi ? [side_imageHi] : []}
+                          onValueChange={(newFiles: any) => {
+                            setside_imageEn(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section3.side_Image.hi',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section3?.side_Image
+                          ?.hi === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section3?.side_Image
+                                  ?.hi
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="section3-title-hi">Title</Label>
                         <Input
@@ -591,36 +685,6 @@ const Page = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Side Image Upload */}
-                <FormItem className="space-y-3">
-                  <FormLabel>Side Image</FormLabel>
-                  <FileUploader
-                    value={side_Image4 ? [side_Image4] : []}
-                    onValueChange={(newFiles: any) => {
-                      setside_Image4(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'section4.side_Image4',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
-                  />
-                  {typeof (cData as IAboutConfig)?.section4?.side_Image4 ===
-                    'string' && (
-                    <div className="max-h-48">
-                      <FileViewCard
-                        existingImageURL={
-                          (cData as IAboutConfig)?.section4?.side_Image4
-                        }
-                      />
-                    </div>
-                  )}
-                </FormItem>
-
                 {/* Section Content Tabs */}
                 <div className="space-y-4">
                   <Label>Section Content</Label>
@@ -630,6 +694,37 @@ const Page = () => {
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
                     <TabsContent value="English" className="mt-4 space-y-4">
+                      {/* Side Image Upload */}
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (English)</FormLabel>
+                        <FileUploader
+                          value={side_Image4En ? [side_Image4En] : []}
+                          onValueChange={(newFiles: any) => {
+                            setside_Image4En(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section4.side_Image4.en',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section4?.side_Image4
+                          ?.en === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section4?.side_Image4
+                                  ?.en
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
+
                       <div className="space-y-2">
                         <Label htmlFor="section4-title-en">Title</Label>
                         <Input
@@ -663,6 +758,36 @@ const Page = () => {
                       </div>
                     </TabsContent>
                     <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      {/* Side Image Upload */}
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (Hindi)</FormLabel>
+                        <FileUploader
+                          value={side_Image4Hi ? [side_Image4Hi] : []}
+                          onValueChange={(newFiles: any) => {
+                            setside_Image4Hi(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section4.side_Image4.hi',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section4?.side_Image4
+                          ?.hi === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section4?.side_Image4
+                                  ?.hi
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="section4-title-hi">Title</Label>
                         <Input
@@ -708,36 +833,6 @@ const Page = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Side Image Upload */}
-                <FormItem className="space-y-3">
-                  <FormLabel>Side Image</FormLabel>
-                  <FileUploader
-                    value={side_Image5 ? [side_Image5] : []}
-                    onValueChange={(newFiles: any) => {
-                      setside_Image5(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'section5.side_Image5',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
-                  />
-                  {typeof (cData as IAboutConfig)?.section5?.side_Image5 ===
-                    'string' && (
-                    <div className="max-h-48">
-                      <FileViewCard
-                        existingImageURL={
-                          (cData as IAboutConfig)?.section5?.side_Image5
-                        }
-                      />
-                    </div>
-                  )}
-                </FormItem>
-
                 <div className="space-y-4">
                   <Label>Section Content</Label>
                   <Tabs defaultValue="English" className="w-full">
@@ -746,6 +841,36 @@ const Page = () => {
                       <TabsTrigger value="Hindi">Hindi</TabsTrigger>
                     </TabsList>
                     <TabsContent value="English" className="mt-4 space-y-4">
+                      {/* Side Image Upload */}
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (English)</FormLabel>
+                        <FileUploader
+                          value={side_Image5En ? [side_Image5En] : []}
+                          onValueChange={(newFiles: any) => {
+                            setside_Image5En(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section5.side_Image5.en',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section5?.side_Image5
+                          ?.en === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section5?.side_Image5
+                                  ?.en
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="section5-title-en">Title</Label>
                         <Input
@@ -779,6 +904,36 @@ const Page = () => {
                       </div>
                     </TabsContent>
                     <TabsContent value="Hindi" className="mt-4 space-y-4">
+                      {/* Side Image Upload */}
+                      <FormItem className="space-y-3">
+                        <FormLabel>Side Image (Hindi)</FormLabel>
+                        <FileUploader
+                          value={side_Image5Hi ? [side_Image5Hi] : []}
+                          onValueChange={(newFiles: any) => {
+                            setside_Image5Hi(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'section5.side_Image5.hi',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+                        {typeof (cData as IAboutConfig)?.section5?.side_Image5
+                          ?.hi === 'string' && (
+                          <div className="max-h-48">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IAboutConfig)?.section5?.side_Image5
+                                  ?.hi
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-2">
                         <Label htmlFor="section5-title-hi">Title</Label>
                         <Input

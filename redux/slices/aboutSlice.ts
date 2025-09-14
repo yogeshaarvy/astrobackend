@@ -12,7 +12,10 @@ export type IAboutConfig = BaseModel & {
   metaDescription?: string;
   metaKeyword?: string;
   banner?: {
-    bannerImage?: string;
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
     title?: {
       en?: string;
       hi?: string;
@@ -39,7 +42,10 @@ export type IAboutConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    sideImage?: string;
+    sideImage?: {
+      en?: string;
+      hi?: string;
+    };
   };
   section3?: {
     title?: {
@@ -50,7 +56,10 @@ export type IAboutConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    side_Image?: string;
+    side_Image?: {
+      en?: string;
+      hi?: string;
+    };
   };
   section4?: {
     title?: {
@@ -61,7 +70,10 @@ export type IAboutConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    side_Image4?: string;
+    side_Image4?: {
+      en?: string;
+      hi?: string;
+    };
   };
   section5?: {
     title?: {
@@ -72,7 +84,10 @@ export type IAboutConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    side_Image5?: string;
+    side_Image5?: {
+      en?: string;
+      hi?: string;
+    };
   };
   section6?: {
     title?: {
