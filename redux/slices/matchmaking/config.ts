@@ -13,7 +13,10 @@ export type IMatchMaking = BaseModel & {
   metaDescription?: string;
   metaKeyword?: string;
   mainSection?: {
-    bannerImage?: string;
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
     title?: {
       en?: string;
       hi?: string;
@@ -31,6 +34,10 @@ export type IMatchMaking = BaseModel & {
       hi?: string;
     };
     description?: {
+      en?: string;
+      hi?: string;
+    };
+    formImage?: {
       en?: string;
       hi?: string;
     };
