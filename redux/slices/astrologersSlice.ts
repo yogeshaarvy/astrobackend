@@ -35,6 +35,7 @@ export type IRequest = BaseModel & {
   slotno?: any;
   startTime?: any;
   slottype?: any;
+  sequence?: number;
 };
 
 const initialState = {
