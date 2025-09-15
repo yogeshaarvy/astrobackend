@@ -13,7 +13,10 @@ export type IHoroscopeConfig = BaseModel & {
   metaDescription?: string;
   metaKeyword?: string;
   mainSection?: {
-    bannerImage?: string;
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
     sideImage?: string;
     title?: {
       en?: string;
@@ -27,7 +30,10 @@ export type IHoroscopeConfig = BaseModel & {
     textColor?: string;
   };
   section2?: {
-    image?: string;
+    image?: {
+      en?: string;
+      hi?: string;
+    };
     title?: {
       en?: string;
       hi?: string;
@@ -56,7 +62,10 @@ export type IHoroscopeConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    rightImage?: string;
+    rightImage?: {
+      en?: string;
+      hi?: string;
+    };
   };
   cards?: {
     titleOne?: {

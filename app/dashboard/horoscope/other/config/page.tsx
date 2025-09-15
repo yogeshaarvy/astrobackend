@@ -39,10 +39,17 @@ const Page = () => {
   const {
     horoscopeState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.horoscopeConfig);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
   const [sideImage, setsideImage] = React.useState<File | null>(null);
-  const [section2Image, setSection2Image] = React.useState<File | null>(null);
-  const [rightImage, setrightImage] = React.useState<File | null>(null);
+  const [section2ImageEn, setSection2ImageEn] = React.useState<File | null>(
+    null
+  );
+  const [section2ImageHi, setSection2ImageHi] = React.useState<File | null>(
+    null
+  );
+  const [rightImageEn, setrightImageEn] = React.useState<File | null>(null);
+  const [rightImageHi, setrightImageHi] = React.useState<File | null>(null);
   const [imageOne, setImageOne] = React.useState<File | null>(null);
   const [imageTwo, setImageTwo] = React.useState<File | null>(null);
   const [imageThree, setImageThree] = React.useState<File | null>(null);
@@ -74,10 +81,13 @@ const Page = () => {
     try {
       dispatch(addEditHoroscope(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
+          setbannerImageEn(null);
+          setbannerImageHi(null);
           setsideImage(null);
-          setSection2Image(null);
-          setrightImage(null);
+          setSection2ImageEn(null);
+          setSection2ImageHi(null);
+          setrightImageEn(null);
+          setrightImageHi(null);
           setImageOne(null);
           setImageTwo(null);
           setImageThree(null);
@@ -154,34 +164,6 @@ const Page = () => {
                 <Tabs className="mt-4 w-full">
                   <div className="space-y-2 pt-0 ">
                     <FormItem className="space-y-3">
-                      <FormLabel>Banner Image</FormLabel>
-                      <FileUploader
-                        value={bannerImage ? [bannerImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setbannerImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'mainSection.bannerImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />
-                      {typeof (cData as IHoroscopeConfig)?.mainSection
-                        ?.bannerImage === 'string' && (
-                        <div className="max-h-48 space-y-4">
-                          <FileViewCard
-                            existingImageURL={
-                              (cData as IHoroscopeConfig)?.mainSection
-                                ?.bannerImage
-                            }
-                          />
-                        </div>
-                      )}
-
                       <FormLabel>Side Image</FormLabel>
                       <FileUploader
                         value={sideImage ? [sideImage] : []}
@@ -231,6 +213,35 @@ const Page = () => {
                     <TabsContent value="English">
                       <CardContent className="space-y-2 p-0">
                         <div className="space-y-1">
+                          <FormLabel>Banner Image</FormLabel>
+                          <FileUploader
+                            value={bannerImageEn ? [bannerImageEn] : []}
+                            onValueChange={(newFiles: any) => {
+                              setbannerImageEn(newFiles[0] || null);
+                              handleInputChange({
+                                target: {
+                                  name: 'mainSection.bannerImage.en',
+                                  type: 'file',
+                                  files: newFiles
+                                }
+                              });
+                            }}
+                            accept={{ 'image/*': [] }}
+                            maxSize={1024 * 1024 * 2}
+                          />
+                          {typeof (cData as IHoroscopeConfig)?.mainSection
+                            ?.bannerImage?.en === 'string' && (
+                            <div className="max-h-48 space-y-4">
+                              <FileViewCard
+                                existingImageURL={
+                                  (cData as IHoroscopeConfig)?.mainSection
+                                    ?.bannerImage?.en
+                                }
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <div className="space-y-1">
                           <Label htmlFor="name">Title</Label>
                           <Input
                             name="mainSection.title.en"
@@ -259,6 +270,35 @@ const Page = () => {
 
                     <TabsContent value="Hindi">
                       <CardContent className="space-y-2 p-0">
+                        <div className="space-y-1">
+                          <FormLabel>Banner Image</FormLabel>
+                          <FileUploader
+                            value={bannerImageHi ? [bannerImageHi] : []}
+                            onValueChange={(newFiles: any) => {
+                              setbannerImageHi(newFiles[0] || null);
+                              handleInputChange({
+                                target: {
+                                  name: 'mainSection.bannerImage.hi',
+                                  type: 'file',
+                                  files: newFiles
+                                }
+                              });
+                            }}
+                            accept={{ 'image/*': [] }}
+                            maxSize={1024 * 1024 * 2}
+                          />
+                          {typeof (cData as IHoroscopeConfig)?.mainSection
+                            ?.bannerImage?.hi === 'string' && (
+                            <div className="max-h-48 space-y-4">
+                              <FileViewCard
+                                existingImageURL={
+                                  (cData as IHoroscopeConfig)?.mainSection
+                                    ?.bannerImage?.hi
+                                }
+                              />
+                            </div>
+                          )}
+                        </div>
                         <div className="space-y-1">
                           <Label htmlFor="name">Title</Label>
                           <Input
@@ -350,36 +390,6 @@ const Page = () => {
                   <CardHeader className="flex flex-row items-center justify-center gap-5">
                     <CardTitle>2nd Section</CardTitle>
                   </CardHeader>
-                  <div className="space-y-2 pt-0 ">
-                    <FormItem className="space-y-3">
-                      <FormLabel>Image</FormLabel>
-                      <FileUploader
-                        value={section2Image ? [section2Image] : []}
-                        onValueChange={(newFiles: any) => {
-                          setSection2Image(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'section2.image',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />
-                      {typeof (cData as IHoroscopeConfig)?.section2?.image ===
-                        'string' && (
-                        <div className="max-h-48 space-y-4">
-                          <FileViewCard
-                            existingImageURL={
-                              (cData as IHoroscopeConfig)?.section2?.image
-                            }
-                          />
-                        </div>
-                      )}
-                    </FormItem>
-                  </div>
 
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
@@ -404,6 +414,37 @@ const Page = () => {
                         </CardHeader>
 
                         <CardContent className="space-y-2">
+                          <div className="space-y-2 pt-0 ">
+                            <FormItem className="space-y-3">
+                              <FormLabel>Image</FormLabel>
+                              <FileUploader
+                                value={section2ImageEn ? [section2ImageEn] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setSection2ImageEn(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'section2.image.en',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as IHoroscopeConfig)?.section2
+                                ?.image?.en === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as IHoroscopeConfig)?.section2
+                                        ?.image?.en
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </FormItem>
+                          </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
@@ -444,6 +485,37 @@ const Page = () => {
                         </CardHeader>
 
                         <CardContent className="space-y-2">
+                          <div className="space-y-2 pt-0 ">
+                            <FormItem className="space-y-3">
+                              <FormLabel>Image</FormLabel>
+                              <FileUploader
+                                value={section2ImageHi ? [section2ImageHi] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setSection2ImageHi(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'section2.image.hi',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as IHoroscopeConfig)?.section2
+                                ?.image?.hi === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as IHoroscopeConfig)?.section2
+                                        ?.image?.hi
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </FormItem>
+                          </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
@@ -626,36 +698,6 @@ const Page = () => {
                   <CardHeader className="flex flex-row items-center justify-center gap-5">
                     <CardTitle>4th Section</CardTitle>
                   </CardHeader>
-                  <div className="space-y-2 pt-0 ">
-                    <FormItem className="space-y-3">
-                      <FormLabel>Right Image</FormLabel>
-                      <FileUploader
-                        value={rightImage ? [rightImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setrightImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'section4.rightImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />
-                      {typeof (cData as IHoroscopeConfig)?.section4
-                        ?.rightImage === 'string' && (
-                        <div className="max-h-48 space-y-4">
-                          <FileViewCard
-                            existingImageURL={
-                              (cData as IHoroscopeConfig)?.section4?.rightImage
-                            }
-                          />
-                        </div>
-                      )}
-                    </FormItem>
-                  </div>
 
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
@@ -680,6 +722,37 @@ const Page = () => {
                         </CardHeader>
 
                         <CardContent className="space-y-2">
+                          <div className="space-y-2 pt-0 ">
+                            <FormItem className="space-y-3">
+                              <FormLabel>Right Image</FormLabel>
+                              <FileUploader
+                                value={rightImageEn ? [rightImageEn] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setrightImageEn(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'section4.rightImage.en',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as IHoroscopeConfig)?.section4
+                                ?.rightImage?.en === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as IHoroscopeConfig)?.section4
+                                        ?.rightImage?.en
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </FormItem>
+                          </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
@@ -720,6 +793,37 @@ const Page = () => {
                         </CardHeader>
 
                         <CardContent className="space-y-2">
+                          <div className="space-y-2 pt-0 ">
+                            <FormItem className="space-y-3">
+                              <FormLabel>Right Image</FormLabel>
+                              <FileUploader
+                                value={rightImageHi ? [rightImageHi] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setrightImageHi(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'section4.rightImage.hi',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as IHoroscopeConfig)?.section4
+                                ?.rightImage?.hi === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as IHoroscopeConfig)?.section4
+                                        ?.rightImage?.hi
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </FormItem>
+                          </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input

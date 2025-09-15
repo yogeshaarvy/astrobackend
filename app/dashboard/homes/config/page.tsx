@@ -246,7 +246,7 @@ const Page = () => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-left text-2xl font-bold">
-              Horoscope Forest
+              Horoscope Forecast
             </CardTitle>
             <div className="flex items-center space-x-2">
               <Label htmlFor="horoscopeForest-active">Active</Label>
@@ -314,19 +314,19 @@ const Page = () => {
 
                 <TabsContent value="English" className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label>Horoscope Forest Title (English)</Label>
+                    <Label>Horoscope Forecast Title (English)</Label>
                     <Input
                       name="horoscopeForest.title.en"
-                      placeholder="Enter Horoscope Forest title in English"
+                      placeholder="Enter Horoscope Forecast title in English"
                       value={(cData as IConfig)?.horoscopeForest?.title?.en}
                       onChange={handleInputChange}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Horoscope Forest Description (English)</Label>
+                    <Label>Horoscope Forecast Description (English)</Label>
                     <Input
                       name="horoscopeForest.description.en"
-                      placeholder="Enter Horoscope Forest description in English"
+                      placeholder="Enter Horoscope Forecast description in English"
                       value={
                         (cData as IConfig)?.horoscopeForest?.description?.en
                       }
@@ -337,19 +337,19 @@ const Page = () => {
 
                 <TabsContent value="Hindi" className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label>Horoscope Forest Title (Hindi)</Label>
+                    <Label>Horoscope Forecast Title (Hindi)</Label>
                     <Input
                       name="horoscopeForest.title.hi"
-                      placeholder="Enter Horoscope Forest title in Hindi"
+                      placeholder="Enter Horoscope Forecast title in Hindi"
                       value={(cData as IConfig)?.horoscopeForest?.title?.hi}
                       onChange={handleInputChange}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Horoscope Forest Description (Hindi)</Label>
+                    <Label>Horoscope Forecast Description (Hindi)</Label>
                     <Input
                       name="horoscopeForest.description.hi"
-                      placeholder="Enter Horoscope Forest description in Hindi"
+                      placeholder="Enter Horoscope Forecast description in Hindi"
                       value={
                         (cData as IConfig)?.horoscopeForest?.description?.hi
                       }
