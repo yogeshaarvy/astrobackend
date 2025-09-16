@@ -53,7 +53,10 @@ export type IMatchMaking = BaseModel & {
     };
   };
   section4?: {
-    image?: string;
+    image?: {
+      en?: string;
+      hi?: string;
+    };
     title?: {
       en?: string;
       hi?: string;

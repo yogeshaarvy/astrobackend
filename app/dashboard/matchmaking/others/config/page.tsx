@@ -43,7 +43,8 @@ const Page = () => {
   const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
   const [formImageEn, setformImageEn] = React.useState<File | null>(null);
   const [formImageHi, setformImageHi] = React.useState<File | null>(null);
-  const [image, setimage] = React.useState<File | null>(null);
+  const [imageEn, setimageEn] = React.useState<File | null>(null);
+  const [imageHi, setimageHi] = React.useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchMatchMaking(null));
@@ -77,7 +78,8 @@ const Page = () => {
           setbannerImageHi(null);
           setformImageEn(null);
           setformImageHi(null);
-          setimage(null);
+          setimageEn(null);
+          setimageHi(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -658,37 +660,6 @@ const Page = () => {
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-8"
             >
-              <div className="space-y-2 pt-0">
-                <FormItem className="space-y-3">
-                  <FormLabel>4th Section Image</FormLabel>
-                  <FileUploader
-                    value={image ? [image] : []}
-                    onValueChange={(newFiles: any) => {
-                      setimage(newFiles[0] || null);
-                      handleInputChange({
-                        target: {
-                          name: 'section4.image',
-                          type: 'file',
-                          files: newFiles
-                        }
-                      });
-                    }}
-                    accept={{ 'image/*': [] }}
-                    maxSize={1024 * 1024 * 2}
-                  />
-                  {typeof (cData as IMatchMaking)?.section4?.image ===
-                    'string' && (
-                    <div className="max-h-48 space-y-4">
-                      <FileViewCard
-                        existingImageURL={
-                          (cData as IMatchMaking)?.section4?.image
-                        }
-                      />
-                    </div>
-                  )}
-                </FormItem>
-              </div>
-
               <div className="flex items-center space-x-2">
                 <Card className="w-full">
                   <CardHeader className="flex flex-row items-center justify-center gap-5">
@@ -718,6 +689,38 @@ const Page = () => {
                         </CardHeader>
 
                         <CardContent className="space-y-2">
+                          <div className="space-y-2 pt-0">
+                            <FormItem className="space-y-3">
+                              <FormLabel>4th Section Image</FormLabel>
+                              <FileUploader
+                                value={imageEn ? [imageEn] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setimageEn(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'section4.image.en',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as IMatchMaking)?.section4?.image
+                                ?.en === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as IMatchMaking)?.section4?.image
+                                        ?.en
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </FormItem>
+                          </div>
+
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
@@ -760,6 +763,38 @@ const Page = () => {
                         </CardHeader>
 
                         <CardContent className="space-y-2">
+                          <div className="space-y-2 pt-0">
+                            <FormItem className="space-y-3">
+                              <FormLabel>4th Section Image</FormLabel>
+                              <FileUploader
+                                value={imageHi ? [imageHi] : []}
+                                onValueChange={(newFiles: any) => {
+                                  setimageHi(newFiles[0] || null);
+                                  handleInputChange({
+                                    target: {
+                                      name: 'section4.image.hi',
+                                      type: 'file',
+                                      files: newFiles
+                                    }
+                                  });
+                                }}
+                                accept={{ 'image/*': [] }}
+                                maxSize={1024 * 1024 * 2}
+                              />
+                              {typeof (cData as IMatchMaking)?.section4?.image
+                                ?.hi === 'string' && (
+                                <div className="max-h-48 space-y-4">
+                                  <FileViewCard
+                                    existingImageURL={
+                                      (cData as IMatchMaking)?.section4?.image
+                                        ?.hi
+                                    }
+                                  />
+                                </div>
+                              )}
+                            </FormItem>
+                          </div>
+
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
