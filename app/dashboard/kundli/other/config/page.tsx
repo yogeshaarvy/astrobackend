@@ -39,7 +39,8 @@ const Page = () => {
   const {
     kundliState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.kundliConfig);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
   const [sideImage, setsideImage] = React.useState<File | null>(null);
 
   useEffect(() => {
@@ -69,7 +70,8 @@ const Page = () => {
     try {
       dispatch(addEditKundli(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
+          setbannerImageEn(null);
+          setbannerImageHi(null);
           setsideImage(null);
           toast.success(response?.payload?.message);
         } else {
@@ -149,36 +151,6 @@ const Page = () => {
                 <Tabs className="mt-4 w-full">
                   <div className="space-y-2 pt-0 ">
                     <FormItem className="space-y-3">
-                      <FormLabel>Banner Image</FormLabel>
-                      <FileUploader
-                        value={bannerImage ? [bannerImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setbannerImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'mainSection.bannerImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as IKundli)?.mainSection?.bannerImage ===
-                          'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as IKundli)?.mainSection?.bannerImage
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </>
                       <FormLabel>Side Image</FormLabel>
                       <FileUploader
                         value={sideImage ? [sideImage] : []}
@@ -232,6 +204,39 @@ const Page = () => {
                       <>
                         <CardContent className="space-y-2 p-0">
                           <div className="space-y-1">
+                            <FormLabel>Banner Image</FormLabel>
+                            <FileUploader
+                              value={bannerImageEn ? [bannerImageEn] : []}
+                              onValueChange={(newFiles: any) => {
+                                setbannerImageEn(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.bannerImage.en',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IKundli)?.mainSection
+                                ?.bannerImage?.en === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IKundli)?.mainSection
+                                          ?.bannerImage?.en
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
+                          <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
                               name="mainSection.title.en"
@@ -258,6 +263,39 @@ const Page = () => {
                     <TabsContent value="Hindi">
                       <>
                         <CardContent className="space-y-2 p-0">
+                          <div className="space-y-1">
+                            <FormLabel>Banner Image</FormLabel>
+                            <FileUploader
+                              value={bannerImageHi ? [bannerImageHi] : []}
+                              onValueChange={(newFiles: any) => {
+                                setbannerImageHi(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.bannerImage.hi',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IKundli)?.mainSection
+                                ?.bannerImage?.hi === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IKundli)?.mainSection
+                                          ?.bannerImage?.hi
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input

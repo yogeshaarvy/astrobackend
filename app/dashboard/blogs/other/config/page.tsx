@@ -39,7 +39,10 @@ const Page = () => {
   const {
     blogConfigState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.blogConfig);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+
+  console.log('this is the blogs data vlaue', cData);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchBlog(null));
@@ -68,8 +71,8 @@ const Page = () => {
     try {
       dispatch(addEditBlog(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
-
+          setbannerImageEn(null);
+          setbannerImageHi(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -128,34 +131,6 @@ const Page = () => {
                 value={(cData as IBlogConfig)?.metaKeyword}
                 onChange={handleInputChange}
               />
-
-              <FormItem className="space-y-3">
-                <FormLabel>Banner Image</FormLabel>
-
-                <FileUploader
-                  value={bannerImage ? [bannerImage] : []}
-                  onValueChange={(newFiles: any) => {
-                    setbannerImage(newFiles[0] || null);
-                    handleInputChange({
-                      target: {
-                        name: 'banner_image',
-                        type: 'file',
-                        files: newFiles
-                      }
-                    });
-                  }}
-                  accept={{ 'image/*': [] }}
-                  maxSize={1024 * 1024 * 2}
-                />
-
-                {typeof (cData as IBlogConfig)?.banner_image === 'string' && (
-                  <div className="max-h-48 space-y-4">
-                    <FileViewCard
-                      existingImageURL={(cData as IBlogConfig)?.banner_image}
-                    />
-                  </div>
-                )}
-              </FormItem>
 
               <div className="space-y-3">
                 <Label htmlFor="backgroundColor">Background Color</Label>
@@ -222,6 +197,36 @@ const Page = () => {
                 <TabsContent value="English">
                   <>
                     <CardContent className="space-y-2 p-0">
+                      <FormItem className="space-y-3">
+                        <FormLabel>Banner Image</FormLabel>
+
+                        <FileUploader
+                          value={bannerImageEn ? [bannerImageEn] : []}
+                          onValueChange={(newFiles: any) => {
+                            setbannerImageEn(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'banner_image.en',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+
+                        {typeof (cData as IBlogConfig)?.banner_image?.en ===
+                          'string' && (
+                          <div className="max-h-48 space-y-4">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IBlogConfig)?.banner_image?.en
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-1">
                         <Label htmlFor="name">Title</Label>
                         <Input
@@ -238,6 +243,36 @@ const Page = () => {
                 <TabsContent value="Hindi">
                   <>
                     <CardContent className="space-y-2 p-0">
+                      <FormItem className="space-y-3">
+                        <FormLabel>Banner Image</FormLabel>
+
+                        <FileUploader
+                          value={bannerImageHi ? [bannerImageHi] : []}
+                          onValueChange={(newFiles: any) => {
+                            setbannerImageHi(newFiles[0] || null);
+                            handleInputChange({
+                              target: {
+                                name: 'banner_image.hi',
+                                type: 'file',
+                                files: newFiles
+                              }
+                            });
+                          }}
+                          accept={{ 'image/*': [] }}
+                          maxSize={1024 * 1024 * 2}
+                        />
+
+                        {typeof (cData as IBlogConfig)?.banner_image?.hi ===
+                          'string' && (
+                          <div className="max-h-48 space-y-4">
+                            <FileViewCard
+                              existingImageURL={
+                                (cData as IBlogConfig)?.banner_image?.hi
+                              }
+                            />
+                          </div>
+                        )}
+                      </FormItem>
                       <div className="space-y-1">
                         <Label htmlFor="name">Title</Label>
                         <Input

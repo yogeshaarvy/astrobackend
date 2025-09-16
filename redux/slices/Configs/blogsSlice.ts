@@ -16,7 +16,10 @@ export type IBlogConfig = BaseModel & {
     hi?: string;
   };
   backgroundColor?: string;
-  banner_image?: string;
+  banner_image?: {
+    en?: string;
+    hi?: string;
+  };
   sequence?: number;
   active?: boolean;
   backgroundStatus?: boolean;
@@ -129,7 +132,9 @@ export const addEditBlog = createAsyncThunk<any, null, { state: RootState }>(
         metaDescription: clonedData.metaDescription,
         metaKeyword: clonedData.metaKeyword,
         title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
-        banner_image: clonedData.banner_image,
+        banner_image: clonedData.banner_image
+          ? JSON.stringify(clonedData.banner_image)
+          : undefined,
         backgroundColor: clonedData.backgroundColor,
         backgroundStatus: clonedData.backgroundStatus,
         textAlignment: clonedData.textAlignment,
