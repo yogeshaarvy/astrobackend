@@ -49,8 +49,8 @@ export default function SlidersTable({
       header: 'Title'
     },
     {
-      accessorKey: 'buttonStatus',
-      header: 'Button Status'
+      accessorKey: 'banner_type',
+      header: 'Banner Type'
     },
     {
       accessorKey: 'sequence',
