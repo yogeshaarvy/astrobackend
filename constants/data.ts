@@ -361,6 +361,11 @@ export const navItems: NavItem[] = [
         title: 'Config',
         url: '/dashboard/vastu-shastr/config',
         icon: 'list'
+      },
+      {
+        title: 'Slider',
+        url: '/dashboard/vastu-shastr/slider',
+        icon: 'list'
       }
     ]
   },

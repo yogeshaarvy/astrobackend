@@ -15,11 +15,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import React, { useEffect, useState } from 'react';
 import {
-  addEditSliders,
-  ISliders,
-  updateSlidersData,
-  fetchSingleSlider
-} from '@/redux/slices/slidersSlice';
+  addEditVastuSliderList,
+  IVastuSlider,
+  updateVastuSliderListData,
+  fetchSingleVastuSliderList
+} from '@/redux/slices/vastushastr/vastuSlider';
 import { FileUploader, FileViewCard } from '@/components/file-uploader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
@@ -27,23 +27,26 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import CustomDropdown from '@/utils/CusomDropdown';
 
-export default function SliderForm() {
+export default function HomeBannerForm() {
   const params = useSearchParams();
   const entityId = params.get('id');
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const {
-    singleSliderState: { loading, data: bData }
-  } = useAppSelector((state) => state.slider);
+    singleVastuSliderState: { loading, data: bData }
+  } = useAppSelector((state) => state.vastuSlider);
+
+  console.log('the bData value is', bData);
+  const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [bannerImageEn, setBannerImageEn] = useState(null);
   const [bannerImageHi, setBannerImageHi] = useState(null);
 
-  const form = useForm<ISliders>({});
+  const form = useForm<IVastuSlider>({});
 
   useEffect(() => {
     if (entityId) {
-      dispatch(fetchSingleSlider(entityId));
+      dispatch(fetchSingleVastuSliderList(entityId));
     }
   }, [entityId]);
 
@@ -51,7 +54,7 @@ export default function SliderForm() {
     const { name, value, type, files, checked } = e.target;
 
     dispatch(
-      updateSlidersData({
+      updateVastuSliderListData({
         [name]:
           type === 'file'
             ? files?.[0]
@@ -66,30 +69,11 @@ export default function SliderForm() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    // const requiredFields: (keyof ISliders)[] = ['title'];
-
-    // const missingFields = requiredFields.filter(
-    //   (field) => !(bData as ISliders)?.[field]
-    // );
-
-    // if (missingFields.length > 0) {
-    //   const fieldLabels: { [key in keyof ISliders]?: string } = {
-    //     title: 'Title'
-    //   };
-
-    //   const missingFieldLabels = missingFields.map(
-    //     (field) => fieldLabels[field] || field
-    //   );
-    //   toast.error(
-    //     `Please fill the required fields: ${missingFieldLabels.join(', ')}`
-    //   );
-    //   return;
-    // }
 
     try {
-      dispatch(addEditSliders(entityId)).then((response: any) => {
+      dispatch(addEditVastuSliderList(entityId)).then((response: any) => {
         if (!response?.error) {
-          router.push('/dashboard/store/others/store-sliders');
+          router.push('/dashboard/vastu-shastr/slider');
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -103,7 +87,7 @@ export default function SliderForm() {
   const handleDropdownChange = (e: any) => {
     const { name, value } = e;
 
-    dispatch(updateSlidersData({ [name]: value }));
+    dispatch(updateVastuSliderListData({ [name]: value }));
   };
 
   return (
@@ -111,7 +95,7 @@ export default function SliderForm() {
       <Card className="mx-auto mb-16 w-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
-            Slider Information
+            Vastu shastr slider
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -121,20 +105,6 @@ export default function SliderForm() {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
               >
-                {/* Banner Type Dropdown */}
-                <div className="space-y-1">
-                  <CustomDropdown
-                    label="Banner Type"
-                    name="banner_type"
-                    defaultValue="web"
-                    data={[
-                      { name: 'Web', _id: 'web' },
-                      { name: 'App', _id: 'app' }
-                    ]}
-                    value={(bData as ISliders)?.banner_type || ''}
-                    onChange={handleDropdownChange}
-                  />
-                </div>
                 <Tabs defaultValue="English" className="mt-4 w-full">
                   <TabsList className="flex w-full space-x-2 p-0">
                     <TabsTrigger
@@ -159,19 +129,23 @@ export default function SliderForm() {
                           <Input
                             name="title.en"
                             placeholder="Enter your Title"
-                            value={(bData as ISliders)?.title?.en}
+                            value={(bData as IVastuSlider)?.title?.en}
                             onChange={handleInputChange}
                           />
                         </div>
+
                         <div className="space-y-1">
-                          <Label htmlFor="name">Description</Label>
+                          <Label htmlFor="name">Short Description</Label>
                           <Input
-                            name="description.en"
-                            placeholder="Enter your Description"
-                            value={(bData as ISliders)?.description?.en}
+                            name="short_description.en"
+                            placeholder="Enter your Short Description"
+                            value={
+                              (bData as IVastuSlider)?.short_description?.en
+                            }
                             onChange={handleInputChange}
                           />
                         </div>
+
                         <FormItem className="space-y-3">
                           <FormLabel>Banner Image (English)</FormLabel>
 
@@ -191,11 +165,11 @@ export default function SliderForm() {
                             maxSize={1024 * 1024 * 2}
                           />
 
-                          {(bData as ISliders)?.banner_image?.en && (
+                          {(bData as IVastuSlider)?.banner_image?.en && (
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (bData as ISliders)?.banner_image?.en
+                                  (bData as IVastuSlider)?.banner_image?.en
                                 }
                               />
                             </div>
@@ -213,19 +187,22 @@ export default function SliderForm() {
                           <Input
                             name="title.hi"
                             placeholder="Enter your Title"
-                            value={(bData as ISliders)?.title?.hi}
+                            value={(bData as IVastuSlider)?.title?.hi}
                             onChange={handleInputChange}
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="name"> Description</Label>
+                          <Label htmlFor="name">Short Description</Label>
                           <Input
-                            name="description.hi"
-                            placeholder="Enter your  Description"
-                            value={(bData as ISliders)?.description?.hi}
+                            name="short_description.hi"
+                            placeholder="Enter your Short Description"
+                            value={
+                              (bData as IVastuSlider)?.short_description?.hi
+                            }
                             onChange={handleInputChange}
                           />
                         </div>
+
                         <FormItem className="space-y-3">
                           <FormLabel>Banner Image (Hindi)</FormLabel>
 
@@ -245,11 +222,11 @@ export default function SliderForm() {
                             maxSize={1024 * 1024 * 2}
                           />
 
-                          {(bData as ISliders)?.banner_image?.hi && (
+                          {(bData as IVastuSlider)?.banner_image?.hi && (
                             <div className="max-h-48 space-y-4">
                               <FileViewCard
                                 existingImageURL={
-                                  (bData as ISliders)?.banner_image?.hi
+                                  (bData as IVastuSlider)?.banner_image?.hi
                                 }
                               />
                             </div>
@@ -266,24 +243,22 @@ export default function SliderForm() {
                     name="sequence"
                     placeholder="Enter Sequence"
                     type="number"
-                    value={(bData as ISliders)?.sequence || ''}
+                    value={(bData as IVastuSlider)?.sequence || ''}
                     onChange={handleInputChange}
                   />
                 </div>
-
                 <div className="space-y-1">
-                  {/* <FormLabel></FormLabel> */}
-                  <Label htmlFor="name" className="space-x-3">
-                    Read Button Status
+                  <Label htmlFor="active" className="space-x-3">
+                    Active Status
                   </Label>
                   <Switch
                     className="!m-0"
-                    checked={(bData as ISliders)?.buttonStatus}
+                    checked={(bData as IVastuSlider)?.active}
                     onCheckedChange={(checked: any) =>
                       handleInputChange({
                         target: {
                           type: 'checkbox',
-                          name: 'buttonStatus',
+                          name: 'active',
                           checked
                         }
                       })
@@ -291,38 +266,6 @@ export default function SliderForm() {
                     aria-label="Toggle Active Status"
                   />
                 </div>
-
-                {(bData as ISliders)?.buttonStatus && (
-                  <>
-                    <div className="!mt-3">
-                      <Label htmlFor="name">Button English Title</Label>
-                      <Input
-                        name="buttonTitle.en"
-                        placeholder="Enter English Button Titlte"
-                        value={(bData as ISliders)?.buttonTitle?.en}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="!mt-3">
-                      <Label htmlFor="name">Button Hindi Title</Label>
-                      <Input
-                        name="buttonTitle.hi"
-                        placeholder="Enter Hindi Button Titlte"
-                        value={(bData as ISliders)?.buttonTitle?.hi}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="!mt-3">
-                      <Label htmlFor="name">Button Link</Label>
-                      <Input
-                        name="button_link"
-                        placeholder="Enter Button Link"
-                        value={(bData as ISliders)?.button_link}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </>
-                )}
               </form>
             </Form>
           </div>

@@ -43,6 +43,8 @@ const Page = () => {
   console.log('this is the value of cData', cData);
   const [banner, setBannerOne] = React.useState<File | null>(null);
   const [bannerTwo, setBannerTwo] = React.useState<File | null>(null);
+  const [sideImageEn, setsideImageEn] = React.useState<File | null>(null);
+  const [sideImageHi, setsideImageHi] = React.useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchVastuShastraConfig(null));
@@ -73,6 +75,8 @@ const Page = () => {
         if (!response?.error) {
           setBannerOne(null);
           setBannerTwo(null);
+          setsideImageEn(null);
+          setsideImageHi(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -343,6 +347,327 @@ const Page = () => {
                                   }
                                 })
                               }
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+                  </Tabs>
+                </Tabs>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            Section One
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="flex items-center space-x-2">
+                <Tabs className="mt-4 w-full">
+                  <Tabs defaultValue="English" className="mt-4 w-full">
+                    <TabsList className="flex w-full space-x-2 p-0">
+                      <TabsTrigger
+                        value="English"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        English
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="Hindi"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        Hindi
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="English">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-">
+                            <FormLabel>Side Image</FormLabel>
+                            <FileUploader
+                              value={sideImageEn ? [sideImageEn] : []}
+                              onValueChange={(newFiles: any) => {
+                                setsideImageEn(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionOne.sideImage.en',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IVastuShastraConfig)?.sectionOne
+                                ?.sideImage?.en === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IVastuShastraConfig)
+                                          ?.sectionOne?.sideImage?.en
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="sectionOne.title.en"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionOne
+                                  ?.title?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="sectionOne.description.en"
+                              label="Description"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionOne
+                                  ?.description?.en
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionOne.description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+
+                    <TabsContent value="Hindi">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-">
+                            <FormLabel>Side Image</FormLabel>
+                            <FileUploader
+                              value={sideImageHi ? [sideImageHi] : []}
+                              onValueChange={(newFiles: any) => {
+                                setsideImageHi(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionOne.sideImage.hi',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IVastuShastraConfig)?.sectionOne
+                                ?.sideImage?.hi === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IVastuShastraConfig)
+                                          ?.sectionOne?.sideImage?.hi
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="sectionOne.title.hi"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionOne
+                                  ?.title?.hi
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="sectionOne.description.hi"
+                              label="Description"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionOne
+                                  ?.description?.hi
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionOne.description.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+                  </Tabs>
+                </Tabs>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            Section Two
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="flex items-center space-x-2">
+                <Tabs className="mt-4 w-full">
+                  <Tabs defaultValue="English" className="mt-4 w-full">
+                    <TabsList className="flex w-full space-x-2 p-0">
+                      <TabsTrigger
+                        value="English"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        English
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="Hindi"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        Hindi
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="English">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="sectionTwo.title.en"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionTwo
+                                  ?.title?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="sectionTwo.description.en"
+                              label="Description"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionTwo
+                                  ?.description?.en
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionTwo.description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Button text</Label>
+                            <Input
+                              name="sectionTwo.buttonText.en"
+                              placeholder="Enter your Button Text"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionTwo
+                                  ?.buttonText?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+
+                    <TabsContent value="Hindi">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="sectionTwo.title.hi"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionTwo
+                                  ?.title?.hi
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="sectionTwo.description.hi"
+                              label="Description"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionTwo
+                                  ?.description?.hi
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionTwo.description.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Button text</Label>
+                            <Input
+                              name="sectionTwo.buttonText.hi"
+                              placeholder="Enter your Button Text"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionTwo
+                                  ?.buttonText?.hi
+                              }
+                              onChange={handleInputChange}
                             />
                           </div>
                         </CardContent>

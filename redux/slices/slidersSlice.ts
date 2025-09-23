@@ -21,10 +21,14 @@ export type ISliders = BaseModel & {
     hi?: string;
   };
   sequence?: number;
-  banner_image?: string;
+  banner_image?: {
+    en?: string;
+    hi?: string;
+  };
   buttonStatus?: boolean;
   button_link?: string;
   active?: boolean;
+  banner_type?: string;
 };
 
 // Initial state
@@ -127,10 +131,14 @@ export const addEditSliders = createAsyncThunk<
         ? JSON.stringify(clonedData.buttonTitle)
         : undefined,
       sequence: clonedData.sequence,
-      banner_image: clonedData.banner_image,
+      // banner_image: clonedData.banner_image,
+      banner_image: clonedData.banner_image
+        ? JSON.stringify(clonedData.banner_image)
+        : undefined,
       buttonStatus: clonedData.buttonStatus,
       button_link: clonedData.button_link,
-      active: clonedData.active
+      active: clonedData.active,
+      banner_type: clonedData.banner_type
     };
     // Append only defined fields to FormData
     Object.entries(reqData).forEach(([key, value]) => {

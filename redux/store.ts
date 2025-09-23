@@ -101,6 +101,7 @@ import saleConfigReducer from './slices/saleConfigSlice';
 import downloadSectionReducer from './slices/downloadSection';
 import followersListReducer from './slices/followerSlice';
 import mobileImageReducer from './slices/home/mobileImageSlice';
+import vastuSliderReducer from './slices/vastushastr/vastuSlider';
 
 export const makeStore = () => {
   return configureStore({
@@ -205,7 +206,8 @@ export const makeStore = () => {
       saleConfig: saleConfigReducer,
       downloadSection: downloadSectionReducer,
       followers: followersListReducer,
-      mobileImage: mobileImageReducer
+      mobileImage: mobileImageReducer,
+      vastuSlider: vastuSliderReducer
     }
   });
 };
