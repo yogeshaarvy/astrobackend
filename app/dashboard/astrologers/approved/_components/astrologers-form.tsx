@@ -165,7 +165,7 @@ export default function RequestForm() {
             >
               <CustomTextField
                 name="sequence"
-                label="Sequence In Years"
+                label="Sequence"
                 placeholder="Enter your sequence"
                 type="number"
                 value={(requestData as IRequest)?.sequence || 0}

@@ -180,7 +180,8 @@ export const addEditRequest = createAsyncThunk<
       showinhome: data.showinhome,
       education: data.education,
       about: data.about, // keep as object
-      expierience: data.expierience
+      expierience: data.expierience,
+      sequence: data.sequence
     };
     const oldstatus = data?.oldstatus;
     console.log('data is hhere inside the alsice is ', oldstatus);
