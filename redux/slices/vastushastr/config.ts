@@ -56,6 +56,20 @@ export type IVastuShastraConfig = BaseModel & {
       hi?: string;
     };
   };
+  sectionThree?: {
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    sectionThreeImage?: {
+      en?: string;
+      hi?: string;
+    };
+  };
 };
 
 const initialState = {
@@ -139,6 +153,9 @@ export const addEditVastuShastraConfig = createAsyncThunk<
           : undefined,
         sectionTwo: clonedData.sectionTwo
           ? JSON.stringify(clonedData.sectionTwo)
+          : undefined,
+        sectionThree: clonedData.sectionThree
+          ? JSON.stringify(clonedData.sectionThree)
           : undefined
       };
 

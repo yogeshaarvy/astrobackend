@@ -45,6 +45,10 @@ const Page = () => {
   const [bannerTwo, setBannerTwo] = React.useState<File | null>(null);
   const [sideImageEn, setsideImageEn] = React.useState<File | null>(null);
   const [sideImageHi, setsideImageHi] = React.useState<File | null>(null);
+  const [secThreeSideImageEn, setsecThreeSideImageEn] =
+    React.useState<File | null>(null);
+  const [secThreeSideImageHi, setsecThreeSideImageHi] =
+    React.useState<File | null>(null);
 
   useEffect(() => {
     dispatch(fetchVastuShastraConfig(null));
@@ -77,6 +81,8 @@ const Page = () => {
           setBannerTwo(null);
           setsideImageEn(null);
           setsideImageHi(null);
+          setsecThreeSideImageEn(null);
+          setsecThreeSideImageHi(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -668,6 +674,193 @@ const Page = () => {
                                   ?.buttonText?.hi
                               }
                               onChange={handleInputChange}
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+                  </Tabs>
+                </Tabs>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            Section Three
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="flex items-center space-x-2">
+                <Tabs className="mt-4 w-full">
+                  <Tabs defaultValue="English" className="mt-4 w-full">
+                    <TabsList className="flex w-full space-x-2 p-0">
+                      <TabsTrigger
+                        value="English"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        English
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="Hindi"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        Hindi
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="English">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-">
+                            <FormLabel>Side Image</FormLabel>
+                            <FileUploader
+                              value={
+                                secThreeSideImageEn ? [secThreeSideImageEn] : []
+                              }
+                              onValueChange={(newFiles: any) => {
+                                setsecThreeSideImageEn(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionThree.sectionThreeImage.en',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IVastuShastraConfig)
+                                ?.sectionThree?.sectionThreeImage?.en ===
+                                'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IVastuShastraConfig)
+                                          ?.sectionThree?.sectionThreeImage?.en
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="sectionThree.title.en"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionThree
+                                  ?.title?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="sectionThree.description.en"
+                              label="Description"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionThree
+                                  ?.description?.en
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionThree.description.en',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+
+                    <TabsContent value="Hindi">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-">
+                            <FormLabel>Side Image</FormLabel>
+                            <FileUploader
+                              value={
+                                secThreeSideImageHi ? [secThreeSideImageHi] : []
+                              }
+                              onValueChange={(newFiles: any) => {
+                                setsecThreeSideImageHi(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionThree.sectionThreeImage.hi',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IVastuShastraConfig)
+                                ?.sectionThree?.sectionThreeImage?.hi ===
+                                'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IVastuShastraConfig)
+                                          ?.sectionThree?.sectionThreeImage?.hi
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="sectionThree.title.hi"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionThree
+                                  ?.title?.hi
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <CustomTextEditor
+                              name="sectionThree.description.hi"
+                              label="Description"
+                              value={
+                                (cData as IVastuShastraConfig)?.sectionThree
+                                  ?.description?.hi
+                              }
+                              onChange={(value) =>
+                                handleInputChange({
+                                  target: {
+                                    name: 'sectionThree.description.hi',
+                                    value: value,
+                                    type: 'text'
+                                  }
+                                })
+                              }
                             />
                           </div>
                         </CardContent>

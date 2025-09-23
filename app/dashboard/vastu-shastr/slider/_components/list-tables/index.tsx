@@ -54,8 +54,8 @@ export default function HomeBannerListTable({
       size: 300
     },
     {
-      accessorKey: 'description.en',
-      header: 'Description',
+      accessorKey: 'short_description.en',
+      header: 'Short Description',
       size: 500,
       maxSize: 700
     },
