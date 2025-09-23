@@ -13,7 +13,10 @@ export type IPanchang = BaseModel & {
   metaDescription?: string;
   metaKeyword?: string;
   mainSection?: {
-    bannerImage?: string;
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
     sideImage?: string;
     title?: {
       en?: string;
