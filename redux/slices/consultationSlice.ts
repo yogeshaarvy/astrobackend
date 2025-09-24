@@ -25,7 +25,10 @@ export type IConsultationConfig = BaseModel & {
       en?: string;
       hi?: string;
     };
-    bannerImage?: string;
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
   };
 };
 

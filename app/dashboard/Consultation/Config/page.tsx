@@ -39,7 +39,8 @@ const Page = () => {
   const {
     consultationConfigState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.consultationConfig);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
   console.log('cData value is:', cData);
 
   useEffect(() => {
@@ -69,8 +70,8 @@ const Page = () => {
     try {
       dispatch(addEditConsultationConfig(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
-
+          setbannerImageEn(null);
+          setbannerImageHi(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -130,35 +131,6 @@ const Page = () => {
                 onChange={handleInputChange}
               />
 
-              <FormItem className="space-y-3">
-                <FormLabel>Banner Image</FormLabel>
-                <FileUploader
-                  value={bannerImage ? [bannerImage] : []}
-                  onValueChange={(newFiles: any) => {
-                    setbannerImage(newFiles[0] || null);
-                    handleInputChange({
-                      target: {
-                        name: 'mainSection.bannerImage',
-                        type: 'file',
-                        files: newFiles
-                      }
-                    });
-                  }}
-                  accept={{ 'image/*': [] }}
-                  maxSize={1024 * 1024 * 2}
-                />
-                {typeof (cData as IConsultationConfig)?.mainSection
-                  ?.bannerImage === 'string' && (
-                  <div className="max-h-48 space-y-4">
-                    <FileViewCard
-                      existingImageURL={
-                        (cData as IConsultationConfig)?.mainSection?.bannerImage
-                      }
-                    />
-                  </div>
-                )}
-              </FormItem>
-
               <Tabs defaultValue="English" className="mt-4 w-full">
                 <TabsList className="flex w-full space-x-2 p-0">
                   <TabsTrigger
@@ -176,6 +148,35 @@ const Page = () => {
                 </TabsList>
 
                 <TabsContent value="English">
+                  <FormItem className="space-y-3">
+                    <FormLabel>Banner Image</FormLabel>
+                    <FileUploader
+                      value={bannerImageEn ? [bannerImageEn] : []}
+                      onValueChange={(newFiles: any) => {
+                        setbannerImageEn(newFiles[0] || null);
+                        handleInputChange({
+                          target: {
+                            name: 'mainSection.bannerImage.en',
+                            type: 'file',
+                            files: newFiles
+                          }
+                        });
+                      }}
+                      accept={{ 'image/*': [] }}
+                      maxSize={1024 * 1024 * 2}
+                    />
+                    {typeof (cData as IConsultationConfig)?.mainSection
+                      ?.bannerImage?.en === 'string' && (
+                      <div className="max-h-48 space-y-4">
+                        <FileViewCard
+                          existingImageURL={
+                            (cData as IConsultationConfig)?.mainSection
+                              ?.bannerImage?.en
+                          }
+                        />
+                      </div>
+                    )}
+                  </FormItem>
                   <div className="space-y-2">
                     <Label>Title</Label>
                     <Input
@@ -224,6 +225,35 @@ const Page = () => {
                   </div>
                 </TabsContent>
                 <TabsContent value="Hindi">
+                  <FormItem className="space-y-3">
+                    <FormLabel>Banner Image</FormLabel>
+                    <FileUploader
+                      value={bannerImageHi ? [bannerImageHi] : []}
+                      onValueChange={(newFiles: any) => {
+                        setbannerImageHi(newFiles[0] || null);
+                        handleInputChange({
+                          target: {
+                            name: 'mainSection.bannerImage.hi',
+                            type: 'file',
+                            files: newFiles
+                          }
+                        });
+                      }}
+                      accept={{ 'image/*': [] }}
+                      maxSize={1024 * 1024 * 2}
+                    />
+                    {typeof (cData as IConsultationConfig)?.mainSection
+                      ?.bannerImage?.hi === 'string' && (
+                      <div className="max-h-48 space-y-4">
+                        <FileViewCard
+                          existingImageURL={
+                            (cData as IConsultationConfig)?.mainSection
+                              ?.bannerImage?.hi
+                          }
+                        />
+                      </div>
+                    )}
+                  </FormItem>
                   <div className="space-y-2">
                     <Label>Title</Label>
                     <Input
