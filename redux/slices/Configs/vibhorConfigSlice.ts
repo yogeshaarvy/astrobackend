@@ -12,7 +12,10 @@ export type IVibhorConfig = BaseModel & {
   metaDescription?: string;
   metaKeyword?: string;
   mainSection?: {
-    bannerImage?: string;
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
     title?: {
       en?: string;
       hi?: string;

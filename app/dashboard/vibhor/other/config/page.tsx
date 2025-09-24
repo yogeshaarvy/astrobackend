@@ -39,7 +39,8 @@ const Page = () => {
   const {
     vibhorConfigState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.vibhorConfig);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
   const [image, setimage] = React.useState<File | null>(null);
 
   useEffect(() => {
@@ -69,7 +70,8 @@ const Page = () => {
     try {
       dispatch(addEditVibhorConfig(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
+          setbannerImageEn(null);
+          setbannerImageHi(null);
           setimage(null);
           toast.success(response?.payload?.message);
         } else {
@@ -147,42 +149,6 @@ const Page = () => {
             >
               <div className="flex items-center space-x-2">
                 <Tabs className="mt-4 w-full">
-                  <div className="space-y-2 pt-0 ">
-                    <FormItem className="space-y-3">
-                      <FormLabel>Banner Image</FormLabel>
-                      <FileUploader
-                        value={bannerImage ? [bannerImage] : []}
-                        onValueChange={(newFiles: any) => {
-                          setbannerImage(newFiles[0] || null);
-                          handleInputChange({
-                            target: {
-                              name: 'mainSection.bannerImage',
-                              type: 'file',
-                              files: newFiles
-                            }
-                          });
-                        }}
-                        accept={{ 'image/*': [] }}
-                        maxSize={1024 * 1024 * 2}
-                      />{' '}
-                      <>
-                        {typeof (cData as IVibhorConfig)?.mainSection
-                          ?.bannerImage === 'string' && (
-                          <>
-                            <div className="max-h-48 space-y-4">
-                              <FileViewCard
-                                existingImageURL={
-                                  (cData as IVibhorConfig)?.mainSection
-                                    ?.bannerImage
-                                }
-                              />
-                            </div>
-                          </>
-                        )}
-                      </>
-                    </FormItem>
-                  </div>
-
                   <Tabs defaultValue="English" className="mt-4 w-full">
                     <TabsList className="flex w-full space-x-2 p-0">
                       <TabsTrigger
@@ -202,6 +168,39 @@ const Page = () => {
                     <TabsContent value="English">
                       <>
                         <CardContent className="space-y-2 p-0">
+                          <div className="space-y-2">
+                            <FormLabel>Banner Image</FormLabel>
+                            <FileUploader
+                              value={bannerImageEn ? [bannerImageEn] : []}
+                              onValueChange={(newFiles: any) => {
+                                setbannerImageEn(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.bannerImage.en',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IVibhorConfig)?.mainSection
+                                ?.bannerImage?.en === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IVibhorConfig)?.mainSection
+                                          ?.bannerImage?.en
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input
@@ -232,6 +231,39 @@ const Page = () => {
                     <TabsContent value="Hindi">
                       <>
                         <CardContent className="space-y-2 p-0">
+                          <div className="space-y-2">
+                            <FormLabel>Banner Image</FormLabel>
+                            <FileUploader
+                              value={bannerImageHi ? [bannerImageHi] : []}
+                              onValueChange={(newFiles: any) => {
+                                setbannerImageHi(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.bannerImage.hi',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IVibhorConfig)?.mainSection
+                                ?.bannerImage?.hi === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IVibhorConfig)?.mainSection
+                                          ?.bannerImage?.hi
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
                           <div className="space-y-1">
                             <Label htmlFor="name">Title</Label>
                             <Input

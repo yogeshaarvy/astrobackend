@@ -39,7 +39,8 @@ const Page = () => {
   const {
     feedbackConfigState: { loading, data: cData = [] }
   } = useAppSelector((state) => state.feedbackConfig);
-  const [bannerImage, setbannerImage] = React.useState<File | null>(null);
+  const [bannerImageEn, setbannerImageEn] = React.useState<File | null>(null);
+  const [bannerImageHi, setbannerImageHi] = React.useState<File | null>(null);
   const [sideImage, setsideImage] = React.useState<File | null>(null);
 
   useEffect(() => {
@@ -69,8 +70,8 @@ const Page = () => {
     try {
       dispatch(addEditFeedbackConfig(null)).then((response: any) => {
         if (!response?.error) {
-          setbannerImage(null);
-
+          setbannerImageEn(null);
+          setbannerImageHi(null);
           toast.success(response?.payload?.message);
         } else {
           toast.error(response.payload);
@@ -129,6 +130,210 @@ const Page = () => {
                 value={(cData as IFeedbackConfig)?.metaKeyword}
                 onChange={handleInputChange}
               />
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            Main Section
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="flex items-center space-x-2">
+                <Tabs className="mt-4 w-full">
+                  <Tabs defaultValue="English" className="mt-4 w-full">
+                    <TabsList className="flex w-full space-x-2 p-0">
+                      <TabsTrigger
+                        value="English"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        English
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="Hindi"
+                        className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                      >
+                        Hindi
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="English">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-2">
+                            <FormLabel>Banner Image</FormLabel>
+                            <FileUploader
+                              value={bannerImageEn ? [bannerImageEn] : []}
+                              onValueChange={(newFiles: any) => {
+                                setbannerImageEn(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.bannerImage.en',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IFeedbackConfig)?.mainSection
+                                ?.bannerImage?.en === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IFeedbackConfig)?.mainSection
+                                          ?.bannerImage?.en
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="mainSection.title.en"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IFeedbackConfig)?.mainSection?.title
+                                  ?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Description</Label>
+                            <Input
+                              name="mainSection.description.en"
+                              placeholder="Enter your Description"
+                              value={
+                                (cData as IFeedbackConfig)?.mainSection
+                                  ?.description?.en
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+
+                    <TabsContent value="Hindi">
+                      <>
+                        <CardContent className="space-y-2 p-0">
+                          <div className="space-y-2">
+                            <FormLabel>Banner Image</FormLabel>
+                            <FileUploader
+                              value={bannerImageHi ? [bannerImageHi] : []}
+                              onValueChange={(newFiles: any) => {
+                                setbannerImageHi(newFiles[0] || null);
+                                handleInputChange({
+                                  target: {
+                                    name: 'mainSection.bannerImage.hi',
+                                    type: 'file',
+                                    files: newFiles
+                                  }
+                                });
+                              }}
+                              accept={{ 'image/*': [] }}
+                              maxSize={1024 * 1024 * 2}
+                            />{' '}
+                            <>
+                              {typeof (cData as IFeedbackConfig)?.mainSection
+                                ?.bannerImage?.hi === 'string' && (
+                                <>
+                                  <div className="max-h-48 space-y-4">
+                                    <FileViewCard
+                                      existingImageURL={
+                                        (cData as IFeedbackConfig)?.mainSection
+                                          ?.bannerImage?.hi
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name">Title</Label>
+                            <Input
+                              name="mainSection.title.hi"
+                              placeholder="Enter your Title"
+                              value={
+                                (cData as IFeedbackConfig)?.mainSection?.title
+                                  ?.hi
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="name"> Description</Label>
+                            <Input
+                              name="mainSection.description.hi"
+                              placeholder="Enter your Description"
+                              value={
+                                (cData as IFeedbackConfig)?.mainSection
+                                  ?.description?.hi
+                              }
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </CardContent>
+                      </>
+                    </TabsContent>
+                  </Tabs>
+
+                  <div className="mt-4 space-y-3">
+                    <Label htmlFor="textColour">Text Color</Label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="color"
+                        name="mainSection.textColor"
+                        value={
+                          (cData as IFeedbackConfig)?.mainSection?.textColor
+                        }
+                        onChange={handleInputChange}
+                        className="h-10 w-12 cursor-pointer p-1"
+                      />
+                      <Input
+                        type="text"
+                        name="mainSection.textColor"
+                        value={
+                          (cData as IFeedbackConfig)?.mainSection?.textColor
+                        }
+                        // onChange={handleInputChange}
+                        placeholder="Enter color hex code"
+                        className="flex-1"
+                      />
+                    </div>
+                    <CustomDropdown
+                      label="Text Alignment"
+                      name="mainSection.textAlignment"
+                      defaultValue="left"
+                      data={[
+                        { name: 'Left', _id: 'left' },
+                        { name: 'Center', _id: 'center' },
+                        { name: 'Right', _id: 'right' }
+                      ]}
+                      value={
+                        (cData as IFeedbackConfig)?.mainSection
+                          ?.textAlignment || ''
+                      }
+                      onChange={handleDropdownChange}
+                    />
+                  </div>
+                </Tabs>
+              </div>
             </form>
           </Form>
         </CardContent>

@@ -12,6 +12,22 @@ export type IFeedbackConfig = BaseModel & {
   metaTitle?: string;
   metaDescription?: string;
   metaKeyword?: string;
+  mainSection?: {
+    bannerImage?: {
+      en?: string;
+      hi?: string;
+    };
+    title?: {
+      en?: string;
+      hi?: string;
+    };
+    description?: {
+      en?: string;
+      hi?: string;
+    };
+    textAlignment?: string;
+    textColor?: string;
+  };
 };
 
 const initialState = {
@@ -84,7 +100,12 @@ export const addEditFeedbackConfig = createAsyncThunk<
         metaDescription: clonedData.metaDescription
           ? clonedData.metaDescription
           : undefined,
-        metaKeyword: clonedData.metaKeyword ? clonedData.metaKeyword : undefined
+        metaKeyword: clonedData.metaKeyword
+          ? clonedData.metaKeyword
+          : undefined,
+        mainSection: clonedData.mainSection
+          ? JSON.stringify(clonedData.mainSection)
+          : undefined
       };
 
       Object.entries(reqData).forEach(([key, value]) => {
