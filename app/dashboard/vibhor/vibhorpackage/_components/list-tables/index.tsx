@@ -54,8 +54,8 @@ export default function VibhorPackageListTable({
       size: 300
     },
     {
-      accessorKey: 'no_of_types',
-      header: 'TYPES',
+      accessorKey: 'hasQuestions',
+      header: 'Question Type',
       size: 300
     },
     {
