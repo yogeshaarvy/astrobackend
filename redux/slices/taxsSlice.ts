@@ -161,8 +161,7 @@ export const fetchSingleTax = createAsyncThunk<
         method: 'GET'
       });
       if (response?.success) {
-        dispatch(fetchSingleTaxSuccess(response?.tax));
-
+        dispatch(fetchSingleTaxSuccess(response?.taxdata));
         return response;
       } else {
         let errorMsg = response?.message || 'Something Went Wrong';

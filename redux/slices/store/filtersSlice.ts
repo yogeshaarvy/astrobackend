@@ -137,13 +137,11 @@ export const addEditTypes = createAsyncThunk<
     } = getState();
 
     dispatch(addEditTypesStart());
-    console.log('filterSlice -> addEditTypes -> data 1');
 
     if (!data) {
       return rejectWithValue('Please Provide Details');
     }
 
-    console.log('filterSlice -> addEditTypes -> data', data);
     let clonedData = cloneDeep(data);
 
     if (clonedData) {
@@ -458,7 +456,6 @@ const filterSlice = createSlice({
       state.singleTypesState.data = action.payload;
     },
     updateTypesData(state, action) {
-      console.log('testing 1', action.payload);
       const oldData = state.singleTypesState.data;
       const keyFirst = Object.keys(action.payload)[0];
 
@@ -529,7 +526,6 @@ const filterSlice = createSlice({
       state.singleValuesState.data = action.payload;
     },
     updateValuesData(state, action) {
-      console.log('testing 1', action.payload);
       const oldData = state.singleValuesState.data;
       const keyFirst = Object.keys(action.payload)[0];
 

@@ -83,7 +83,7 @@ export default function CategoryForm() {
         pageSize,
         keyword: '',
         field: '',
-        status: '',
+        active: 'true',
         exportData: 'true'
       })
     );
@@ -127,16 +127,6 @@ export default function CategoryForm() {
             : value
       })
     );
-  };
-
-  // Handle file changes for logo and banner images
-  const handleFileChange = (name: string, file: File[]) => {
-    // Update Redux state with the uploaded file
-    dispatch(updateCategoryData({ [name]: file[0] }));
-
-    // Update the form with the uploaded file value (could be a file URL or base64 string)
-    const fileUrl = URL.createObjectURL(file[0]);
-    form.setValue(name as keyof ICategory, fileUrl);
   };
 
   useEffect(() => {
@@ -316,11 +306,11 @@ export default function CategoryForm() {
                 />
               )}
               <CustomTextField
-                name="meta_tag"
-                label="Meta Tag"
-                placeholder="Enter your meta tag"
-                value={(bData as ICategory)?.meta_tag}
+                label="Meta Title"
+                name="meta_title"
+                placeholder="Enter meta title"
                 onChange={handleInputChange}
+                value={(bData as ICategory)?.meta_title}
               />
               <CustomTextField
                 name="meta_description"
@@ -330,16 +320,16 @@ export default function CategoryForm() {
                 onChange={handleInputChange}
               />
               <CustomTextField
-                label="Meta Title"
-                name="meta_title"
-                placeholder="Enter meta title"
+                name="meta_tag"
+                label="Meta Tag"
+                placeholder="Enter your meta tag"
+                value={(bData as ICategory)?.meta_tag}
                 onChange={handleInputChange}
-                value={(bData as ICategory)?.meta_title}
               />
               <CustomReactSelect
                 options={tagData}
                 label="Tags"
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.name.en}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Tags"
                 onChange={(e: any) =>
@@ -427,7 +417,7 @@ export default function CategoryForm() {
                       setLightLogo(newFiles[0] || null);
                       handleInputChange({
                         target: {
-                          name: 'light_logo_image',
+                          name: 'logo_image',
                           type: 'file',
                           files: newFiles
                         }
@@ -437,14 +427,11 @@ export default function CategoryForm() {
                     maxSize={1024 * 1024 * 2}
                   />{' '}
                   <>
-                    {typeof (bData as ICategory)?.light_logo_image ===
-                      'string' && (
+                    {typeof (bData as ICategory)?.logo_image === 'string' && (
                       <>
                         <div className="max-h-48 space-y-4">
                           <FileViewCard
-                            existingImageURL={
-                              (bData as ICategory)?.light_logo_image
-                            }
+                            existingImageURL={(bData as ICategory)?.logo_image}
                           />
                         </div>
                       </>

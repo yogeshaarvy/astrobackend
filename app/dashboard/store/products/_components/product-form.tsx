@@ -115,7 +115,7 @@ export default function ProductsForm() {
         pageSize,
         keyword: '',
         field: '',
-        status: 'true',
+        active: 'true',
         exportData: 'true'
       })
     );
@@ -125,8 +125,7 @@ export default function ProductsForm() {
         pageSize,
         keyword: '',
         field: '',
-        status: 'true',
-        exportData: 'true'
+        active: 'true'
       })
     );
     dispatch(
@@ -634,7 +633,7 @@ export default function ProductsForm() {
               <CustomReactSelect
                 options={brands}
                 label="Brand Name*"
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.name.en || ''}
                 getOptionValue={(option) => option._id}
                 placeholder="Select Brand"
                 onChange={(e: any) =>

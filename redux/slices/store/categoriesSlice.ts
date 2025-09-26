@@ -9,12 +9,11 @@ import { processNestedFields } from '@/utils/UploadNestedFiles';
 
 export type ICategory = BaseModel & {
   _id?: string;
-  name?: string;
   title?: {
     en?: string;
     hi?: string;
   };
-  light_logo_image?: string;
+  logo_image?: string;
   dark_logo_image?: string;
   banner_image?: string;
   short_description?: {
@@ -54,11 +53,6 @@ const initialState = {
     error: null
   } as BaseState<ICategory | null>,
   currentCategoryState: {
-    data: null,
-    loading: null,
-    error: null
-  } as BaseState<ICategory | null>,
-  changeCategoryPassword: {
     data: null,
     loading: null,
     error: null
@@ -138,11 +132,10 @@ export const addEditCategory = createAsyncThunk<
 
     const formData = new FormData();
     const reqData: any = {
-      name: clonedData.name,
       title: clonedData.title ? JSON.stringify(clonedData.title) : undefined,
       short_description: JSON.stringify(clonedData.short_description),
       long_description: JSON.stringify(clonedData.long_description),
-      light_logo_image: clonedData.light_logo_image,
+      logo_image: clonedData.logo_image,
       dark_logo_image: clonedData.dark_logo_image,
       banner_image: clonedData.banner_image,
       meta_tag: clonedData.meta_tag,

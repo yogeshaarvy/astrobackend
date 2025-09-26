@@ -117,29 +117,27 @@ export default function TypesForm() {
                   type="number"
                 />
                 <CustomDropdown
-                  control={form.control}
                   label="Search Page"
                   name="searchPage"
                   // placeholder="Select id child"
-                  defaultValue="default"
+                  defaultValue="no"
                   data={[
                     { name: 'Yes', _id: 'yes' },
                     { name: 'No', _id: 'no' }
                   ]}
-                  value={form.getValues('searchPage') || ''}
+                  value={(bData as ITypes)?.searchPage || ''}
                   onChange={handleDropdownChange}
                 />
                 <CustomDropdown
-                  control={form.control}
                   label="Type"
                   name="type"
                   // placeholder="Select id child"
-                  defaultValue="default"
+                  defaultValue="color"
                   data={[
                     { name: 'Text', _id: 'text' },
                     { name: 'Color', _id: 'color' }
                   ]}
-                  value={form.getValues('type') || ''}
+                  value={(bData as ITypes)?.type || ''}
                   onChange={handleDropdownChange}
                 />
               </div>

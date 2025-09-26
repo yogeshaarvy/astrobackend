@@ -109,8 +109,8 @@ export const fetchTagList = createAsyncThunk<
     pageSize?: number;
     keyword?: string;
     field?: string;
-    active?: string;
-    exportData?: boolean;
+    active?: string | boolean;
+    exportData?: string | boolean;
   } | void,
   { state: RootState }
 >(
@@ -131,22 +131,15 @@ export const fetchTagList = createAsyncThunk<
       );
 
       if (response?.success) {
-        if (!input?.exportData) {
-          dispatch(
-            fetchTagListSuccess({
-              data: response.TagsData,
-              totalCount: response.totalCount
-            })
-          );
-          console.log('respone of tag is', response);
-        } else {
-          dispatch(fetchTagExportLoading(false));
-        }
-
-        return response;
-      } else {
-        throw new Error('No Status Or Invalid Response');
+        dispatch(
+          fetchTagListSuccess({
+            data: response.TagsData,
+            totalCount: response.totalCount
+          })
+        );
       }
+
+      return response;
     } catch (error: any) {
       const errorMsg = error?.message ?? 'Something Went Wrong!!';
       dispatch(fetchTagListFailure(errorMsg));

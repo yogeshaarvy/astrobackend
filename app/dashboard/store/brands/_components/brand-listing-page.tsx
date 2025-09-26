@@ -119,7 +119,7 @@ export default function BrandListingPage() {
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">
         <div className="flex items-start justify-between ">
-          <Heading title={`Brands`} description="" />
+          <Heading title={`Brands (${totalCount})`} description="" />
           {/* {empPermissions.permission.add ? ( */}
           <div>
             <Button

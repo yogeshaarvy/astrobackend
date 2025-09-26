@@ -5,6 +5,7 @@ import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
 import { processNestedFields } from '@/utils/UploadNestedFiles';
 import { cloneDeep } from 'lodash';
+import { setNestedProperty } from '@/utils/SetNestedProperty';
 
 export type IBrand = BaseModel & {
   _id?: string;
@@ -120,6 +121,7 @@ export const addEditBrand = createAsyncThunk<
     if (!data) {
       return rejectWithValue('Please Provide Details');
     }
+
     let clonedData = cloneDeep(data);
 
     if (clonedData) {
@@ -132,7 +134,9 @@ export const addEditBrand = createAsyncThunk<
       short_description: clonedData.short_description
         ? JSON.stringify(clonedData.short_description)
         : undefined,
-      long_description: data.long_description,
+      long_description: clonedData.long_description
+        ? JSON.stringify(clonedData.long_description)
+        : undefined,
       logo_image: data.logo_image,
       banner_image: data.banner_image,
       meta_tag: data.meta_tag,
@@ -253,7 +257,17 @@ const brandSlice = createSlice({
     },
     updateBrandData(state, action) {
       const oldData = state.singleBrandState.data;
-      state.singleBrandState.data = { ...oldData, ...action.payload };
+
+      const keyFirst = Object.keys(action.payload)[0];
+
+      if (keyFirst.includes('.')) {
+        const newData = { ...oldData };
+        setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
+
+        state.singleBrandState.data = newData;
+      } else {
+        state.singleBrandState.data = { ...oldData, ...action.payload };
+      }
     },
     addEditBrandStart(state) {
       state.singleBrandState.loading = true;

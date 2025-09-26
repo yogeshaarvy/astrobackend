@@ -46,75 +46,20 @@ export default function BrandForm() {
   const [logoImage, setLogoImage] = React.useState<File | null>(null);
   const [bannerImage, setBannerImage] = React.useState<File | null>(null);
 
-  const form = useForm<IBrand>({
-    defaultValues: {
-      name: {
-        en: '',
-        hi: ''
-      },
-      short_description: {
-        en: '',
-        hi: ''
-      },
-      long_description: {
-        en: '',
-        hi: ''
-      },
-      banner_image: '',
-      logo_image: '',
-      meta_tag: '',
-      active: false,
-      sequence: 0,
-      meta_description: '',
-      meta_title: ''
-    }
-  });
+  const form = useForm<IBrand>({ defaultValues: {} });
+
   React.useEffect(() => {
     if (entityId) {
       dispatch(fetchSingleBrand(entityId));
     }
   }, [entityId]);
 
+  // Sync form data when bData changes
   React.useEffect(() => {
-    if (bData && entityId) {
-      // const {name, email, phone, countryCode, password, bio , role , permissionType} = bData;
-      form.setValue('name.en', (bData as IBrand)?.name?.en || '');
-      form.setValue('name.hi', (bData as IBrand)?.name?.hi || '');
-      form.setValue(
-        'short_description.en',
-        (bData as IBrand)?.short_description?.en || ''
-      );
-
-      form.setValue(
-        'long_description.hi',
-        (bData as IBrand)?.long_description?.hi || ''
-      );
-      form.setValue('sequence', (bData as IBrand)?.sequence || 0);
-      form.setValue('meta_title', (bData as IBrand)?.meta_title ?? '');
-      form.setValue(
-        'meta_description',
-        (bData as IBrand)?.meta_description || ''
-      );
-      form.setValue('meta_tag', (bData as IBrand)?.meta_tag || '');
-      form.setValue('logo_image', (bData as IBrand)?.logo_image || '');
-      form.setValue('banner_image', (bData as IBrand)?.banner_image || '');
+    if (bData) {
+      form.reset(bData);
     }
-  }, [bData, entityId, form]);
-
-  // React.useEffect(() => {
-  //   const name = form.watch('name'); // Watch for changes in the 'name' field
-
-  //   if (name) {
-  //     const generatedSlug = slugify(name, {
-  //       lower: true, // Converts to lowercase
-  //       strict: true, // Removes special characters
-  //       trim: true // Trims whitespace
-  //     });
-
-  //     form.setValue('slug', generatedSlug);
-  //     dispatch(updateBrandData({ ['slug']: generatedSlug })); // Set the generated slug value
-  //   }
-  // }, [form.watch('name'), form]);
+  }, [bData, form]);
 
   // Handle Input Change
   const handleInputChange = (e: any) => {
@@ -134,20 +79,11 @@ export default function BrandForm() {
     );
   };
 
-  // Handle file changes for logo and banner images
-  const handleFileChange = (name: string, file: File[]) => {
-    // Update Redux state with the uploaded file
-    dispatch(updateBrandData({ [name]: file[0] }));
-
-    // Update the form with the uploaded file value (could be a file URL or base64 string)
-    const fileUrl = URL.createObjectURL(file[0]);
-    form.setValue(name as keyof IBrand, fileUrl);
+  // Handle ReactQuill change
+  const handleQuillChange = (value: string, field: string) => {
+    form.setValue(field as any, value);
+    dispatch(updateBrandData({ [field]: value }));
   };
-  useEffect(() => {
-    if (files && files?.length > 0) {
-      dispatch(updateBrandData({ image: files }));
-    }
-  }, [files]);
 
   function onSubmit() {
     dispatch(addEditBrand(entityId || null))
@@ -188,15 +124,9 @@ export default function BrandForm() {
                 </TabsList>
 
                 <TabsContent value="English">
-                  {/* <CardHeader className="!px-0">
-                      <CardTitle className="text-lg font-bold ">
-                        ENGLISH-VALUES
-                      </CardTitle>
-                    </CardHeader> */}
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
                       name="name.en"
-                      control={form.control}
                       label="Name (English)"
                       placeholder="Enter your name"
                       value={(bData as IBrand)?.name?.en}
@@ -204,25 +134,55 @@ export default function BrandForm() {
                     />
                     <CustomTextField
                       name="short_description.en"
-                      control={form.control}
                       label="Short description (English)"
                       value={(bData as IBrand)?.short_description?.en}
                       placeholder="Enter your short description"
                       onChange={handleInputChange}
                     />
+                    <FormField
+                      control={form.control}
+                      name="long_description.en"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>Long Description (English)</FormLabel>
+                          <FormControl>
+                            <ReactQuill
+                              value={
+                                field.value ||
+                                (bData as IBrand)?.long_description?.en ||
+                                ''
+                              }
+                              onChange={(value) =>
+                                handleQuillChange(value, 'long_description.en')
+                              }
+                              placeholder="Enter your long description"
+                              modules={{
+                                toolbar: [
+                                  [
+                                    { header: '1' },
+                                    { header: '2' },
+                                    { font: [] }
+                                  ],
+                                  [{ list: 'ordered' }, { list: 'bullet' }],
+                                  ['bold', 'italic', 'underline'],
+                                  ['link'],
+                                  [{ align: [] }],
+                                  ['image']
+                                ]
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </CardContent>
                 </TabsContent>
 
                 <TabsContent value="Hindi">
-                  {/* <CardHeader className="!px-0">
-                      <CardTitle className="text-lg font-bold ">
-                        HINDI-VALUES
-                      </CardTitle>
-                    </CardHeader> */}
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
                       name="name.hi"
-                      control={form.control}
                       label="Name (Hindi)"
                       placeholder="Enter your name"
                       value={(bData as IBrand)?.name?.hi}
@@ -230,11 +190,47 @@ export default function BrandForm() {
                     />
                     <CustomTextField
                       name="short_description.hi"
-                      control={form.control}
                       label="Short description (Hindi)"
                       value={(bData as IBrand)?.short_description?.hi}
                       placeholder="Enter your short description"
                       onChange={handleInputChange}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="long_description.hi"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>Long Description (Hindi)</FormLabel>
+                          <FormControl>
+                            <ReactQuill
+                              value={
+                                field.value ||
+                                (bData as IBrand)?.long_description?.hi ||
+                                ''
+                              }
+                              onChange={(value) =>
+                                handleQuillChange(value, 'long_description.hi')
+                              }
+                              placeholder="Enter your long description"
+                              modules={{
+                                toolbar: [
+                                  [
+                                    { header: '1' },
+                                    { header: '2' },
+                                    { font: [] }
+                                  ],
+                                  [{ list: 'ordered' }, { list: 'bullet' }],
+                                  ['bold', 'italic', 'underline'],
+                                  ['link'],
+                                  [{ align: [] }],
+                                  ['image']
+                                ]
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
                   </CardContent>
                 </TabsContent>
@@ -242,62 +238,34 @@ export default function BrandForm() {
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomTextField
                   name="sequence"
-                  control={form.control}
                   label="Sequence"
                   placeholder="Enter your Sequence"
                   value={(bData as IBrand)?.sequence}
                   onChange={handleInputChange}
                   type="number"
                 />
-
                 <CustomTextField
-                  name="meta_tag"
-                  control={form.control}
-                  label="Meta Tag"
-                  placeholder="Enter your meta tag"
-                  value={(bData as IBrand)?.meta_tag}
+                  label="Meta Title"
+                  name="meta_title"
+                  placeholder="Enter meta title"
                   onChange={handleInputChange}
+                  value={(bData as IBrand)?.meta_title}
                 />
                 <CustomTextField
                   name="meta_description"
-                  control={form.control}
                   label="Meta Description"
                   placeholder="Enter your meta description"
                   value={(bData as IBrand)?.meta_description}
                   onChange={handleInputChange}
                 />
                 <CustomTextField
-                  label="Meta Title"
-                  name="meta_title"
-                  control={form.control}
-                  placeholder="Enter meta title"
+                  name="meta_tag"
+                  label="Meta Tag"
+                  placeholder="Enter your meta tag"
+                  value={(bData as IBrand)?.meta_tag}
                   onChange={handleInputChange}
-                  value={(bData as IBrand)?.meta_title}
                 />
               </div>
-              {/* Quill Editor for Long Description */}
-              <FormItem className="space-y-3">
-                <FormLabel>Long Description</FormLabel>
-                <FormControl>
-                  <ReactQuill
-                    value={form.getValues('long_description')}
-                    onChange={(value) =>
-                      form.setValue('long_description', value)
-                    }
-                    placeholder="Enter your long description"
-                    modules={{
-                      toolbar: [
-                        [{ header: '1' }, { header: '2' }, { font: [] }],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['bold', 'italic', 'underline'],
-                        ['link'],
-                        [{ align: [] }],
-                        ['image']
-                      ]
-                    }}
-                  />
-                </FormControl>
-              </FormItem>
 
               <FormItem className="space-y-3">
                 <FormLabel>Logo</FormLabel>

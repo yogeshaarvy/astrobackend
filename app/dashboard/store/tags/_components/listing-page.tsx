@@ -33,7 +33,7 @@ export default function TagsListPage() {
   } = useAppSelector((state) => state.tags);
 
   useEffect(() => {
-    dispatch(fetchTagList({ page, pageSize }));
+    dispatch(fetchTagList({ page, pageSize, exportData: true }));
     dispatch(setTagData(null));
   }, [dispatch, page, pageSize]);
 
@@ -45,7 +45,9 @@ export default function TagsListPage() {
         'Both Keyword and Field is required to Search with Keyword'
       );
     }
-    dispatch(fetchTagList({ page, pageSize, keyword, field, active }));
+    dispatch(
+      fetchTagList({ page, pageSize, keyword, field, active, exportData: true })
+    );
   };
 
   const handleExport = async () => {
@@ -56,7 +58,7 @@ export default function TagsListPage() {
         keyword,
         field,
         active,
-        exportData: true
+        exportData: false
       })
     ).then((response: any) => {
       if (response?.error) {
@@ -102,10 +104,6 @@ export default function TagsListPage() {
         <div className="flex items-start justify-between">
           <Heading title={`Tags List (${totalCount})`} description="" />
           <div className="flex gap-5">
-            {/* <Button variant="default" onClick={handleExport}>
-              Export All
-            </Button> */}
-
             <Link
               href={'/dashboard/store/tags/add'}
               className={buttonVariants({ variant: 'default' })}
