@@ -140,10 +140,10 @@ export default function RequestTable({
       }
     },
     {
-      accessorKey: 'dob',
+      accessorKey: 'date_of_birth',
       header: 'DOB',
       cell: ({ row }) => {
-        const date = new Date(row.original.dob ?? '');
+        const date = new Date(row.original.date_of_birth ?? '');
         return date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: '2-digit',
