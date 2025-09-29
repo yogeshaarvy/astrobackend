@@ -515,6 +515,11 @@ export const navItems: NavItem[] = [
             title: 'Config',
             url: '/dashboard/kundli/other/config',
             icon: 'config'
+          },
+          {
+            title: 'Mobile Config',
+            url: '/dashboard/kundli/other/mobile-config',
+            icon: 'config'
           }
         ]
       }

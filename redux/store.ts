@@ -102,6 +102,7 @@ import downloadSectionReducer from './slices/downloadSection';
 import followersListReducer from './slices/followerSlice';
 import mobileImageReducer from './slices/home/mobileImageSlice';
 import vastuSliderReducer from './slices/vastushastr/vastuSlider';
+import mobileKundliReducer from './slices/kundli/mobileKundliConfigSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -207,7 +208,8 @@ export const makeStore = () => {
       downloadSection: downloadSectionReducer,
       followers: followersListReducer,
       mobileImage: mobileImageReducer,
-      vastuSlider: vastuSliderReducer
+      vastuSlider: vastuSliderReducer,
+      mobileKundli: mobileKundliReducer
     }
   });
 };
