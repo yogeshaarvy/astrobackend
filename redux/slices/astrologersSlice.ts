@@ -12,7 +12,7 @@ import { setNestedProperty } from '@/utils/SetNestedProperty';
 export type IRequest = BaseModel & {
   _id?: string;
   name?: string;
-  dob?: any;
+  date_of_birth?: any;
   gender?: string;
   languages?: any[];
   skills?: any[];
@@ -157,7 +157,7 @@ export const addEditRequest = createAsyncThunk<
     const formData = new FormData();
     const reqData: any = {
       name: data.name || '',
-      dob: data.dob || '',
+      date_of_birth: data.date_of_birth || '',
       gender: data.gender || '',
       // Ensure languages and skills are arrays of strings (IDs)
       languages: Array.isArray(data.languages)
@@ -212,7 +212,13 @@ export const addEditRequest = createAsyncThunk<
     }
     if (response?.success) {
       dispatch(addEditRequestSuccess());
-      dispatch(fetchAstrologersList({ status: oldstatus }));
+      dispatch(
+        fetchAstrologersList({
+          status: oldstatus || '',
+          field: '',
+          exportData: ''
+        })
+      );
       return response;
     } else {
       const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
@@ -640,13 +646,13 @@ const requestSlice = createSlice({
     updateRequestData(state, action) {
       const oldData = state.singleRequestState.data;
       const keyFirst = Object.keys(action.payload)[0];
-      let merged = {};
+      let merged: IRequest = {} as IRequest;
       if (keyFirst.includes('.')) {
-        const newData = { ...oldData };
+        const newData: IRequest = { ...(oldData as IRequest) };
         setNestedProperty(newData, keyFirst, action.payload[keyFirst]);
         merged = newData;
       } else {
-        merged = { ...oldData, ...action.payload };
+        merged = { ...(oldData as IRequest), ...action.payload };
       }
       // Always coerce about to an object if it is a string or null
       if (merged.about === null || typeof merged.about === 'string') {

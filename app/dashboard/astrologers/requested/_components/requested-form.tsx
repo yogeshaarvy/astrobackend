@@ -12,7 +12,7 @@ import {
   CardFooter
 } from '@/components/ui/card';
 import PageContainer from '@/components/layout/page-container';
-
+import { debounce } from 'lodash';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomTextField from '@/utils/CustomTextField';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -26,27 +26,10 @@ import {
 } from '@/redux/slices/astrologersSlice';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { FileUploader, FileViewCard } from '@/components/file-uploader';
+import CustomDropdown from '@/utils/CusomDropdown';
+import { fetchSkillsList, ISkills } from '@/redux/slices/skillsSlice';
 
 export default function RequestForm() {
-  const languageList = [
-    { name: 'Hindi', _id: 'hindi' },
-    { name: 'English', _id: 'english' }
-  ];
-  const phoneTypes = [
-    { name: 'Android', _id: 'android' },
-    { name: 'IOS', _id: 'ios' }
-  ];
-  const gendersList = [
-    { name: 'Female', _id: 'female' },
-    { name: 'Male', _id: 'male' },
-    { name: 'Other', _id: 'other' }
-  ];
-  const skillsList = [
-    { name: 'Tarot Reading', _id: 'tarot' },
-    { name: 'Astrology', _id: 'astrology' },
-    { name: 'Numerology', _id: 'numerology' }
-  ];
-
   const params = useSearchParams();
   const entityId = params.get('id');
   const dispatch = useAppDispatch();
@@ -56,8 +39,13 @@ export default function RequestForm() {
     singleRequestState: { data: requestData }
   } = useAppSelector((state) => state.astrologersData);
 
+  const {
+    SkillsList: { loading: ListLoading, data: skillsData = [] }
+  } = useAppSelector((state) => state.skills);
+
   const form = useForm({});
   const [Image, setImage] = React.useState<File | null>(null);
+  const [skillsListQuery, setSkillsListQuery] = React.useState<string>('');
 
   React.useEffect(() => {
     if (entityId) {
@@ -65,15 +53,20 @@ export default function RequestForm() {
     }
   }, [entityId]);
 
-  const getSelectedSkill = () => {
-    const skillValues = (requestData as IRequest)?.skills || [];
-    return skillsList.filter((skill) => skillValues.includes(skill._id));
-  };
-
-  const getSelectedLanguage = () => {
-    const languageValues = (requestData as IRequest)?.languages || [];
-    return languageList.filter((lang) => languageValues.includes(lang._id));
-  };
+  const debouncedSearchSkillList = React.useCallback(
+    debounce((query: string) => {
+      if (query.trim()) {
+        dispatch(
+          fetchSkillsList({
+            field: 'name',
+            keyword: query,
+            active: 'true'
+          })
+        );
+      }
+    }, 800),
+    [dispatch]
+  );
 
   const handleInputChange = (e: any) => {
     const { name, value, type, files, checked } = e.target || {};
@@ -113,23 +106,19 @@ export default function RequestForm() {
     }
   };
 
-  // Helper functions to find selected options
-  const getSelectedPhoneType = () => {
-    const phoneTypeValue = (requestData as IRequest)?.phoneType;
-    return phoneTypes.find((type) => type._id === phoneTypeValue) || null;
-  };
-
-  const getSelectedGender = () => {
-    const genderValue = (requestData as IRequest)?.gender;
-    return gendersList.find((gender) => gender._id === genderValue) || null;
-  };
-
   // Format date for input field
   const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
   };
+
+  const handleInputSkills = (inputValue: string) => {
+    setSkillsListQuery(inputValue);
+    debouncedSearchSkillList(inputValue);
+  };
+
+  const cleanedSkillsListQuery = skillsData?.map((skill: ISkills) => skill);
 
   return (
     <PageContainer scrollable>
@@ -170,7 +159,7 @@ export default function RequestForm() {
                 value={(requestData as IRequest)?.phone || ''}
                 onChange={handleInputChange}
               />
-              <CustomReactSelect
+              {/* <CustomReactSelect
                 options={phoneTypes}
                 label="Phone Type"
                 getOptionLabel={(option) => option.name}
@@ -181,50 +170,57 @@ export default function RequestForm() {
                     target: { name: 'phoneType', value: e?._id }
                   })
                 }
-                value={getSelectedPhoneType()}
-              />
-              <CustomReactSelect
-                options={gendersList}
+                value={(requestData as IRequest)?.phone || ''}
+              /> */}
+              <CustomDropdown
                 label="Gender"
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option._id}
+                name="gender"
+                required={true}
                 placeholder="Select gender"
+                data={[
+                  { _id: 'male', name: 'Male' },
+                  { _id: 'female', name: 'Female' },
+                  { _id: 'other', name: 'Other' }
+                ]}
                 onChange={(e: any) =>
                   handleInputChange({
                     target: { name: 'gender', value: e?._id }
                   })
                 }
-                value={getSelectedGender()}
+                value={(requestData as IRequest)?.gender || ''}
               />
 
               <CustomTextField
-                name="dob"
+                name="date_of_birth"
                 label="DOB"
                 placeholder="Enter your DOB"
                 type="date"
-                value={formatDateForInput((requestData as IRequest)?.dob)}
+                value={formatDateForInput(
+                  (requestData as IRequest)?.date_of_birth
+                )}
                 onChange={handleInputChange}
               />
 
               <CustomReactSelect
-                options={skillsList}
+                options={skillsListQuery ? cleanedSkillsListQuery : []}
                 label="Skills"
                 isMulti
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option._id}
                 placeholder="Select skills"
+                getOptionLabel={(option) => option?.name?.en}
+                getOptionValue={(option) => option._id}
+                onInputChange={handleInputSkills}
                 onChange={(selectedOptions: any) =>
                   handleInputChange({
                     target: {
                       name: 'skills',
-                      value: selectedOptions?.map((opt: any) => opt._id) || []
+                      value: selectedOptions
                     }
                   })
                 }
-                value={getSelectedSkill()}
+                value={(requestData as IRequest)?.skills || []}
               />
 
-              <CustomReactSelect
+              {/* <CustomReactSelect
                 options={languageList}
                 label="Languages"
                 isMulti
@@ -240,7 +236,7 @@ export default function RequestForm() {
                   })
                 }
                 value={getSelectedLanguage()}
-              />
+              /> */}
 
               <FormItem className="space-y-3">
                 <FormLabel>Astrologer Image</FormLabel>
