@@ -279,7 +279,7 @@ const LocationDisplay = ({ lat, lon }: { lat?: string; lon?: string }) => {
 export default function KundliPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { KundliState } = useSelector((state: RootState) => state.kundliList);
-
+  console.log('this is the kundli data', KundliState);
   // Local state for filters and pagination
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchField, setSearchField] = useState('name'); // Default to 'name'
@@ -341,10 +341,73 @@ export default function KundliPage() {
     dispatch(resetKundliState()); // Resets Redux state pagination as well
   };
 
+  // const formatDate = (dateString?: string) => {
+  //   if (!dateString) return 'N/A';
+  //   try {
+  //     return new Date(dateString).toLocaleDateString();
+  //   } catch {
+  //     return 'Invalid Date';
+  //   }
+  // };
+
+  //  const formatDate = (dateString?: string) => {
+  //   if (!dateString) return 'N/A';
+  //   try {
+  //     // Handle DD/MM/YYYY format
+  //     const parts = dateString.split('/');
+  //     if (parts.length === 3) {
+  //       const [day, month, year] = parts;
+  //       // Create date object (month is 0-indexed in JavaScript)
+  //       const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  //       // Validate the date is valid
+  //       if (!isNaN(date.getTime())) {
+  //         return date.toLocaleDateString();
+  //       }
+  //     }
+  //     // Fallback: try parsing as-is
+  //     const date = new Date(dateString);
+  //     if (!isNaN(date.getTime())) {
+  //       return date.toLocaleDateString();
+  //     }
+  //     return 'Invalid Date';
+  //   } catch {
+  //     return 'Invalid Date';
+  //   }
+  // };
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
     try {
-      return new Date(dateString).toLocaleDateString();
+      // Handle DD/MM/YYYY format
+      const parts = dateString.split('/');
+      if (parts.length === 3) {
+        const [day, month, year] = parts;
+        // Create date object (month is 0-indexed in JavaScript)
+        const date = new Date(
+          parseInt(year),
+          parseInt(month) - 1,
+          parseInt(day)
+        );
+        // Validate the date is valid
+        if (!isNaN(date.getTime())) {
+          // Format as "DD Month YYYY" (e.g., "20 February 2002")
+          return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+          });
+        }
+      }
+      // Fallback: try parsing as-is
+      const date = new Date(dateString);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        });
+      }
+      return 'Invalid Date';
     } catch {
       return 'Invalid Date';
     }
@@ -468,8 +531,8 @@ export default function KundliPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Genders</SelectItem>
-                    <SelectItem value="Male">Male</SelectItem>
-                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
