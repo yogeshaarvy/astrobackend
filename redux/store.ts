@@ -103,6 +103,7 @@ import followersListReducer from './slices/followerSlice';
 import mobileImageReducer from './slices/home/mobileImageSlice';
 import vastuSliderReducer from './slices/vastushastr/vastuSlider';
 import mobileKundliReducer from './slices/kundli/mobileKundliConfigSlice';
+import bulkOrderReducer from './slices/bulkOrderSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -209,7 +210,8 @@ export const makeStore = () => {
       followers: followersListReducer,
       mobileImage: mobileImageReducer,
       vastuSlider: vastuSliderReducer,
-      mobileKundli: mobileKundliReducer
+      mobileKundli: mobileKundliReducer,
+      bulkOrder: bulkOrderReducer
     }
   });
 };

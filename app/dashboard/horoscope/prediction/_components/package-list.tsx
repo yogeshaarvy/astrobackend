@@ -118,6 +118,12 @@ export default function HoroscopeDetailPage() {
             description=""
           />
           <div className="flex gap-5">
+            <Link
+              href={`/dashboard/horoscope/prediction/bulk-orders?horoscopesignId=${horoscopesignId}`}
+              className={buttonVariants({ variant: 'default' })}
+            >
+              Bulk Upload
+            </Link>
             <Button variant="default" onClick={handleExport}>
               Export All
             </Button>

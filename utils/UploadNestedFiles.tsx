@@ -54,7 +54,7 @@ export const uploadAWSFile = async (file: File): Promise<string> => {
 
   formData.append(fileType, file);
 
-  const response = await fetchApi('/files-aws', {
+  const response = await fetchApi('/files', {
     method: 'POST',
     body: formData
   });

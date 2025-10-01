@@ -137,10 +137,18 @@ export default function RequestForm() {
             >
               <CustomTextField
                 name="name"
-                label="Name"
+                label="First Name"
                 required
                 placeholder="Enter your name"
                 value={(requestData as IRequest)?.name || ''}
+                onChange={handleInputChange}
+              />
+              <CustomTextField
+                name="last_name"
+                label="Last Name"
+                required
+                placeholder="Enter your last name"
+                value={(requestData as IRequest)?.last_name || ''}
                 onChange={handleInputChange}
               />
               <CustomTextField
