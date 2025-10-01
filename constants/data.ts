@@ -321,7 +321,7 @@ export const navItems: NavItem[] = [
     ]
   },
   {
-    title: 'Astro Pooja',
+    title: 'Astro Puja',
     url: '/dashboard/astro-pooja',
     icon: 'temple',
     isActive: false,

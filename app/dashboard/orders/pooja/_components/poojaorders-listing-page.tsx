@@ -23,9 +23,13 @@ export default function AllOrdersListingPage() {
   const pageSize = parseInt(searchParams?.get('limit') ?? '10', 10);
   const order_status = searchParams?.get('order_status') ?? '';
   const datesdata = searchParams?.get('data') ?? '';
+  const poojaStatusParam = searchParams?.get('pooja_status') ?? '';
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [poojaStatusState, setPoojaStatusState] = useState(
+    poojaStatusParam || 'all'
+  );
   const [orderStatus, setOrderStatus] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('');
   const [email, setEmail] = useState('');
@@ -38,6 +42,7 @@ export default function AllOrdersListingPage() {
       pagination: { totalCount } = { totalCount: 0 }
     }
   } = useAppSelector((state) => state.allpoojsorders);
+
   // Function to get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
     const today = new Date();
@@ -46,10 +51,11 @@ export default function AllOrdersListingPage() {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+
   // Function to get the date for one week ago in YYYY-MM-DD format
   const getWeekAgoDate = () => {
     const today = new Date();
-    today.setDate(today.getDate() - 7); // Subtract 7 days
+    today.setDate(today.getDate() - 7);
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
@@ -59,7 +65,7 @@ export default function AllOrdersListingPage() {
   // Function to get the date for 30 days ago in YYYY-MM-DD format
   const getThirtyDaysAgoDate = () => {
     const today = new Date();
-    today.setDate(today.getDate() - 30); // Subtract 30 days
+    today.setDate(today.getDate() - 30);
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
@@ -69,17 +75,13 @@ export default function AllOrdersListingPage() {
   // Function to get the date for one year ago in YYYY-MM-DD format
   const getOneYearAgoDate = () => {
     const today = new Date();
-    today.setFullYear(today.getFullYear() - 1); // Subtract 1 year
+    today.setFullYear(today.getFullYear() - 1);
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
 
-  // If 'datesdata' is 'today', set both start and end dates to today's date.
-  // If 'datesdata' is 'week', set start date to one week ago, and end date to today.
-  // If 'datesdata' is 'month', set start date to 30 days ago, and end date to today.
-  // If 'datesdata' is 'year', set start date to one year ago, and end date to today.
   useEffect(() => {
     if (datesdata === 'today') {
       const today = getTodayDate();
@@ -104,37 +106,57 @@ export default function AllOrdersListingPage() {
   }, [datesdata]);
 
   useEffect(() => {
+    const finalPoojaStatus = poojaStatusState === 'all' ? '' : poojaStatusState;
     dispatch(
       fetchAllOrdersList({
         page,
         pageSize,
         orderStatus,
+        poojaStatus: finalPoojaStatus,
         startDate,
         endDate,
         email,
         orderNo
       })
     );
-  }, [page, pageSize, orderStatus, datesdata, dispatch]);
+  }, [
+    page,
+    pageSize,
+    orderStatus,
+    poojaStatusState,
+    startDate,
+    endDate,
+    email,
+    orderNo,
+    dispatch
+  ]);
 
   const allorders: IAllOrdersList[] = pData;
 
   const handlestartdateChange = (event: any) => {
     setStartDate(event.target.value as string);
   };
+
   const handleenddateChange = (event: any) => {
     setEndDate(event.target.value as string);
   };
 
+  const handlePoojaStatusChange = (value: string) => {
+    setPoojaStatusState(value);
+  };
+
   const handleEmailInputChange = (event: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     setEmail(value);
   };
+
   const handleOrderNoInputChange = (event: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     setOrderNo(value);
   };
+
   const handleSearch = () => {
+    const finalPoojaStatus = poojaStatusState === 'all' ? '' : poojaStatusState;
     dispatch(
       fetchAllOrdersList({
         page,
@@ -142,6 +164,7 @@ export default function AllOrdersListingPage() {
         orderStatus,
         paymentStatus,
         startDate,
+        poojaStatus: finalPoojaStatus,
         endDate,
         email,
         orderNo
@@ -169,43 +192,44 @@ export default function AllOrdersListingPage() {
 
     const interval = setInterval(() => {
       fetchUnreadCounts();
-    }, 20000); // Refresh every 20 seconds
+    }, 20000);
 
     return () => clearInterval(interval);
   }, [fetchUnreadCounts]);
 
   return (
     <PageContainer scrollable>
-      {/* <About /> */}
-      <div className="mr-5 space-y-4  p-8">
+      <div className="mr-5 space-y-4 p-8">
         {/* Header */}
         <div className="flex items-start justify-between pr-4">
-          <Heading title="All Pooja Orders" description="" />
+          <Heading title="All Puja Orders" description="" />
         </div>
 
         <Separator />
 
-        {/* Sliders Table */}
+        {/* Orders Table */}
         <AllOrdersTable
           data={allorders}
           totalData={totalCount}
           handleSearch={handleSearch}
           startDate={startDate}
           endDate={endDate}
+          poojaStatus={poojaStatusState}
           email={email}
           handlestartdateChange={handlestartdateChange}
           handleEmailInputChange={handleEmailInputChange}
           handleenddateChange={handleenddateChange}
           handleOrderStatusChange={(value: string) => {
-            value === 'all' ? setOrderStatus('') : setOrderStatus(value);
+            setOrderStatus(value === 'all' ? '' : value);
           }}
           orderStatus={orderStatus}
           paymentStatus={paymentStatus}
           handlePaymentStatusChange={(value: string) => {
-            value === 'all' ? setPaymentStatus('') : setPaymentStatus(value);
+            setPaymentStatus(value === 'all' ? '' : value);
           }}
           orderNo={orderNo}
           handleOrderNoInputChange={handleOrderNoInputChange}
+          handlePoojaStatusChange={handlePoojaStatusChange}
           unreadCounts={unreadCounts}
         />
       </div>

@@ -85,6 +85,7 @@ export const fetchAllOrdersList = createAsyncThunk<
     email?: string;
     endDate?: string;
     orderNo?: string;
+    poojaStatus?: string | undefined | null;
   },
   { state: RootState }
 >(
@@ -97,6 +98,7 @@ export const fetchAllOrdersList = createAsyncThunk<
         exportData = false,
         orderStatus = 'all',
         paymentStatus = 'all',
+        poojaStatus = '',
         startDate = '',
         endDate = '',
         email = '',
@@ -105,7 +107,7 @@ export const fetchAllOrdersList = createAsyncThunk<
 
       dispatch(fetchAllOrdersListStart());
       const response = await fetchApi(
-        `/pooja_order/all?page=${page}&pageSize=${pageSize}&export=${exportData}&orderStatus=${orderStatus}&paymentStatus=${paymentStatus}&startDate=${startDate}&endDate=${endDate}&email=${
+        `/pooja_order/all?page=${page}&pageSize=${pageSize}&export=${exportData}&poojaStatus=${poojaStatus}&orderStatus=${orderStatus}&paymentStatus=${paymentStatus}&startDate=${startDate}&endDate=${endDate}&email=${
           email ?? ''
         }&orderNo=${orderNo ?? ''}`,
         { method: 'GET' }

@@ -18,6 +18,7 @@ import html2canvas from 'html2canvas';
 import moment from 'moment';
 import { CellAction } from './cell-action';
 import { IAllOrdersList } from '@/redux/slices/astropooja/poojaorders';
+import CustomDropdown from '@/utils/CusomDropdown';
 
 export default function AllOrdersTable({
   data,
@@ -35,7 +36,9 @@ export default function AllOrdersTable({
   handleOrderStatusChange,
   orderNo,
   handleOrderNoInputChange,
-  unreadCounts
+  unreadCounts,
+  poojaStatus, // ✅ Add this prop
+  handlePoojaStatusChange // ✅ Add this prop
 }: {
   data: IAllOrdersList[];
   totalData: number;
@@ -53,8 +56,10 @@ export default function AllOrdersTable({
   orderNo: string;
   handleOrderNoInputChange: any;
   unreadCounts: any;
+  poojaStatus?: string; // ✅ Add this type
+  handlePoojaStatusChange?: (value: string) => void;
 }) {
-  console.log('Unread Counts:', unreadCounts);
+  console.log('Unread Counts:', data);
   const logoPath = '/logo.png';
 
   // State to manage selected items
@@ -582,6 +587,10 @@ export default function AllOrdersTable({
         cell: ({ row }) => `₹ ${row.original?.paidAmount?.toFixed(2)}`
       },
       {
+        accessorKey: 'poojaStatus',
+        header: 'PUJA STATUS'
+      },
+      {
         accessorKey: 'action',
         header: 'VIEW DETAILS',
         cell: ({ row }) => {
@@ -605,6 +614,104 @@ export default function AllOrdersTable({
   );
 
   return (
+    // <div className="space-y-4">
+    //   <div className="space-y-4">
+    //     {/* Row 1: Email, From, To */}
+    //     <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-5">
+    //       <div>
+    //         <p className="mb-1 text-sm">Enter User Email to Search Order:</p>
+    //         <Input
+    //           type="text"
+    //           className="w-full"
+    //           placeholder="Enter user email"
+    //           name="email"
+    //           value={email ?? ''}
+    //           onChange={handleEmailInputChange}
+    //         />
+    //       </div>
+    //       <div>
+    //         <p className="mb-1 text-sm">Enter Order No. Search Order:</p>
+    //         <Input
+    //           type="text"
+    //           className="w-full"
+    //           placeholder="Enter order no."
+    //           name="text"
+    //           value={orderNo ?? ''}
+    //           onChange={handleOrderNoInputChange}
+    //         />
+    //       </div>
+    //       <div>
+    //         <p className="mb-1 text-sm">From:</p>
+    //         <Input
+    //           type="date"
+    //           className="w-full"
+    //           id="startDate"
+    //           name="startDate"
+    //           value={startDate ?? ''}
+    //           onChange={handlestartdateChange}
+    //         />
+    //       </div>
+
+    //       <div>
+    //         <p className="mb-1 text-sm">To:</p>
+    //         <Input
+    //           type="date"
+    //           className="w-full"
+    //           id="endDate"
+    //           name="endDate"
+    //           value={endDate ?? ''}
+    //           onChange={handleenddateChange}
+    //         />
+    //       </div>
+    //       <div>
+    //         <p className="mb-1 text-sm">To:</p>
+    //         <CustomDropdown
+    //           label="Text Alignment"
+    //           name="poojaStatus"
+    //           defaultValue="left"
+    //           data={[
+    //             { name: 'Success', _id: 'success' },
+    //             { name: 'Panding', _id: 'panding' },
+    //           ]}
+    //         />
+    //       </div>
+
+    //       <div className="flex h-full items-end">
+    //         <Button variant="default" onClick={handleSearch} className="w-full">
+    //           Search
+    //         </Button>
+    //       </div>
+    //     </div>
+    //     .{/* Selected Items Action Bar */}
+    //     {selectedItems.length > 0 && (
+    //       <div className="flex items-center justify-between rounded-md bg-blue-50 p-3">
+    //         <span className="text-sm text-blue-700">
+    //           {selectedItems.length} item{selectedItems.length > 1 ? 's' : ''}{' '}
+    //           selected
+    //         </span>
+    //         <div className="flex gap-2">
+    //           <Button
+    //             variant="default"
+    //             size="sm"
+    //             onClick={generateIndividualInvoices}
+    //             className="flex items-center gap-2"
+    //           >
+    //             <Download size={16} />
+    //             {isLoading ? 'Downloading...' : ' Download Invoices'}
+    //           </Button>
+    //           <Button
+    //             variant="outline"
+    //             size="sm"
+    //             onClick={() => setSelectedItems([])}
+    //           >
+    //             Clear Selection
+    //           </Button>
+    //         </div>
+    //       </div>
+    //     )}
+    //   </div>
+    //   <DataTable columns={columns} data={data} totalItems={totalData} />
+    // </div>
     <div className="space-y-4">
       <div className="space-y-4">
         {/* Row 1: Email, From, To */}
@@ -655,13 +762,30 @@ export default function AllOrdersTable({
             />
           </div>
 
+          {/* ✅ Simple HTML Select for Pooja Status */}
+          <select
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm
+                      ring-offset-background focus-visible:outline-none focus-visible:ring-2
+                      focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            value={poojaStatus || 'all'}
+            onChange={(e) => handlePoojaStatusChange?.(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="no started">Not Started</option>
+            <option value="progress">In Progress</option>
+            <option value="start">Start</option>
+            <option value="complete">Complete</option>
+            <option value="cancel">Cancel</option>
+          </select>
+
           <div className="flex h-full items-end">
             <Button variant="default" onClick={handleSearch} className="w-full">
               Search
             </Button>
           </div>
         </div>
-        .{/* Selected Items Action Bar */}
+
+        {/* Selected Items Action Bar */}
         {selectedItems.length > 0 && (
           <div className="flex items-center justify-between rounded-md bg-blue-50 p-3">
             <span className="text-sm text-blue-700">
