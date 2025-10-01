@@ -70,7 +70,7 @@ export default function AstropoojaListPage() {
       const fileType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
       const fileExtension = '.xlsx';
-      const fileName = 'astropoojaList';
+      const fileName = 'astropujaList';
 
       const ws = XLSX.utils.json_to_sheet(
         allAstropoojaList?.map((row: any) => {
@@ -104,7 +104,7 @@ export default function AstropoojaListPage() {
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <Heading title={`Astropooja List (${totalCount})`} description="" />
+          <Heading title={`Astro-Puja List (${totalCount})`} description="" />
           <div className="flex gap-5">
             <Button variant="default" onClick={handleExport}>
               Export All

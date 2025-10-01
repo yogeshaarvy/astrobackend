@@ -307,9 +307,9 @@ const PoojaSpecificChat: React.FC = () => {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <button className="rounded-lg p-2 hover:bg-gray-100">
+              {/* <button className="rounded-lg p-2 hover:bg-gray-100">
                 <ArrowLeft className="h-5 w-5 text-gray-600" />
-              </button>
+              </button> */}
               <div className="flex items-center space-x-3">
                 <div
                   className={`flex h-12 w-12 items-center justify-center rounded-full font-semibold text-white ${

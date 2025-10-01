@@ -324,13 +324,13 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
                 </div>
               </div>
               <div>
-                <h2 className="text-xl font-bold">Dubblin</h2>
+                <h2 className="text-xl font-bold">AstroIndusoot</h2>
                 <p className="text-sm text-muted-foreground">
-                  PLOT NO. -27 AND 27-B,KHASRA NO. 46/23,Near M.S.
-                  VATIKA,NILOTHI EXTENSION, NEW DELHI-110041
+                  BASEMENT, BHARAT PLAZA COMPLEX, OPP. NAI SARAK, GARH RD,
+                  MEERUT, UTTAR PRADESH
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Phone: +91 7838388836 | Email: dubblinofficial@gmail.com
+                  Phone: +919068311666 | Email: astroindusoot@gmail.com
                 </p>
               </div>
             </div>

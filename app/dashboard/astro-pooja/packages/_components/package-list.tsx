@@ -114,7 +114,10 @@ export default function AstroPackagePage() {
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <Heading title={`Astro Package (${totalCount})`} description="" />
+          <Heading
+            title={`Astro-Puja Package (${totalCount})`}
+            description=""
+          />
           <div className="flex gap-5">
             <Button variant="default" onClick={handleExport}>
               Export All
