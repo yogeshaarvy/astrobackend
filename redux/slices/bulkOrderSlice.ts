@@ -12,6 +12,7 @@ export type Order = BaseModel & {
   TitleHindi?: string;
   FullDescriptionEnglish?: string;
   FullDescriptionHindi?: string;
+  horoscopesignId?: string; // Added horoscopesignId
 };
 
 type BulkError = {
@@ -23,6 +24,7 @@ export type BulkOrder = {
   excel: any[];
   orderList: Order[];
   errorOrders: BulkError[];
+  horoscopesignId?: string; // Added horoscopesignId to BulkOrder
 };
 
 const initialState = {
@@ -51,14 +53,16 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
       console.log('Received orderArray:', data);
 
       // Map the order array to match backend expectations
-      const orderList = orderArray.map((data: any) => ({
-        StateDate: safeTrim(data?.StateDate),
-        EndDate: safeTrim(data?.EndDate),
-        TitleEnglish: safeTrim(data?.TitleEnglish),
-        TitleHindi: safeTrim(data?.TitleHindi),
-        FullDescriptionEnglish: data?.FullDescriptionEnglish ?? null,
-        FullDescriptionHindi: data?.FullDescriptionHindi ?? null
+      const orderList = orderArray.map((item: any) => ({
+        StateDate: safeTrim(item?.StateDate),
+        EndDate: safeTrim(item?.EndDate),
+        TitleEnglish: safeTrim(item?.TitleEnglish),
+        TitleHindi: safeTrim(item?.TitleHindi),
+        FullDescriptionEnglish: item?.FullDescriptionEnglish ?? null,
+        FullDescriptionHindi: item?.FullDescriptionHindi ?? null,
+        horoscopesignId: data?.horoscopesignId || null // Include horoscopesignId
       }));
+
       console.log('Prepared orderList:', data?.excel);
       let uploadFileURL = null;
       if (data?.excel && data?.excel instanceof File) {
@@ -68,7 +72,8 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
       console.log('Sending order list to backend:', orderList);
       const updatedPayload = {
         orderList: orderList,
-        file: uploadFileURL ? uploadFileURL : null
+        file: uploadFileURL ? uploadFileURL : null,
+        horoscopesignId: data?.horoscopesignId || null // Include at payload level
       };
 
       const response = await fetchApi(`/order/admin/bulk`, {
@@ -94,7 +99,6 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
             )
           );
 
-          // Return partial success with error details
           return {
             success: true,
             message: message,
@@ -183,18 +187,15 @@ export const convertBulkOrderData = createAsyncThunk<
       const excelData = data?.excel ?? [];
       console.log('The excel Data value is', excelData);
 
-      // Check if excelData exists and has items
       if (
         excelData &&
         (Array.isArray(excelData) ? excelData.length > 0 : excelData)
       ) {
         console.log('Test 1');
 
-        // Handle both array and single file cases
         const excelItem = Array.isArray(excelData) ? excelData[0] : excelData;
         console.log('Test 2 - Processing file:', excelItem.name);
 
-        // Wrap FileReader in a Promise to handle async operation properly
         const processExcelFile = () => {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -212,38 +213,33 @@ export const convertBulkOrderData = createAsyncThunk<
                   console.log('Test 4 - Rows extracted:', rows);
 
                   const orderList = rows.map((row: any) => {
-                    // Helper function to format date to MM/DD/YYYY format
                     const formatDate = (dateValue: any) => {
                       if (!dateValue) return '';
 
                       let jsDate: Date;
 
-                      // If it's already a Date object
                       if (dateValue instanceof Date) {
                         jsDate = dateValue;
-                      }
-                      // If it's an Excel serial number (like 45878)
-                      else if (typeof dateValue === 'number' && dateValue > 1) {
-                        // Excel serial date conversion
+                      } else if (
+                        typeof dateValue === 'number' &&
+                        dateValue > 1
+                      ) {
                         const excelEpoch = new Date(1900, 0, 1);
-                        const days = dateValue - 2; // Adjust for Excel's leap year bug
+                        const days = dateValue - 2;
                         jsDate = new Date(
                           excelEpoch.getTime() + days * 24 * 60 * 60 * 1000
                         );
-                      }
-                      // If it's a string, try to parse it
-                      else if (typeof dateValue === 'string') {
+                      } else if (typeof dateValue === 'string') {
                         const parsedDate = new Date(dateValue);
                         if (!isNaN(parsedDate.getTime())) {
                           jsDate = parsedDate;
                         } else {
-                          return `${dateValue}`; // Return as-is if can't parse
+                          return `${dateValue}`;
                         }
                       } else {
                         return `${dateValue}`;
                       }
 
-                      // Format to MM/DD/YYYY
                       const month = String(jsDate.getMonth() + 1).padStart(
                         2,
                         '0'
@@ -256,7 +252,6 @@ export const convertBulkOrderData = createAsyncThunk<
 
                     console.log('Processing row:', row);
 
-                    // Map Excel columns to Order type
                     return {
                       StateDate: formatDate(row?.StateDate) || '',
                       EndDate: formatDate(row?.EndDate) || '',
@@ -268,6 +263,7 @@ export const convertBulkOrderData = createAsyncThunk<
                       FullDescriptionHindi: row?.FullDescriptionHindi
                         ? `${row?.FullDescriptionHindi}`
                         : null
+                      // horoscopesignId will be added from state when submitting
                     };
                   });
 
@@ -291,14 +287,11 @@ export const convertBulkOrderData = createAsyncThunk<
           });
         };
 
-        // Wait for the file processing to complete
         const orderList = await processExcelFile();
         console.log('Final OrderList:', orderList);
 
-        // Dispatch the action with the processed data
         dispatch(updateOrderDataFromExcel(orderList));
 
-        // Return the orderList for the thunk
         return orderList;
       } else {
         throw new Error('No Excel file found in data');

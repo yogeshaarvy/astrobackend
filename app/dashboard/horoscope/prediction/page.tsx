@@ -11,7 +11,7 @@ type PageProps = {
 };
 
 export const metadata = {
-  title: 'Dashboard : Astro Package'
+  title: 'Dashboard : Astro Horoscope Prediction List'
 };
 
 export default async function Page({ searchParams }: PageProps) {

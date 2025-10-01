@@ -38,7 +38,7 @@ export default function HoroscopeDetailPage() {
   useEffect(() => {
     dispatch(fetchHoroscopeDetailList({ page, pageSize, horoscopesignId }));
     dispatch(setHoroscopeDetailData(null));
-  }, [page, pageSize]);
+  }, [page, horoscopesignId, pageSize]);
 
   const HoroscopeDetail: IHoroscopeDetail[] = Horoscope;
 

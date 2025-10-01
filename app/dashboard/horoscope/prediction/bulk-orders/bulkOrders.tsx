@@ -22,8 +22,11 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
+import { useSearchParams } from 'next/navigation';
 
 export default function BulkOrderPage({ empPermissions }: any) {
+  const params = useSearchParams();
+  const horoscopesignId = params.get('horoscopesignId');
   const form = useForm({ defaultValues: {} });
   const dispatch = useAppDispatch();
   const [exlFile, setExlFile] = React.useState<File | null>(null);
@@ -31,6 +34,13 @@ export default function BulkOrderPage({ empPermissions }: any) {
   const {
     bulkOrderState: { loading: uploadBulkOrderLoading, data }
   } = useAppSelector((state) => state.bulkOrder);
+
+  // Set horoscopesignId when component mounts or when it changes
+  useEffect(() => {
+    if (horoscopesignId) {
+      dispatch(updateBulkOrderData({ horoscopesignId }));
+    }
+  }, [horoscopesignId, dispatch]);
 
   const handleInputChange = (e: any) => {
     const { name, type, files } = e.target;
@@ -47,18 +57,15 @@ export default function BulkOrderPage({ empPermissions }: any) {
   ) => {
     if (!Array.isArray(errorOrders) || errorOrders.length === 0) return;
 
-    // Flatten each order with its errors
     const formattedData = errorOrders.map((item: any) => {
       const row = { ...item.data };
-      row.Errors = (item.errors || []).join(', '); // Add errors column
+      row.Errors = (item.errors || []).join(', ');
       return row;
     });
 
-    // Create worksheet
     const ws = XLSX.utils.json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
 
-    // Write file
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
@@ -73,6 +80,12 @@ export default function BulkOrderPage({ empPermissions }: any) {
 
   const handleSubmit = () => {
     try {
+      // Validate horoscopesignId if it's required
+      if (!horoscopesignId) {
+        toast.error('Horoscope Sign ID is required');
+        return;
+      }
+
       if (data && Array.isArray(data?.orderList)) {
         dispatch(addBulkOrder(data?.orderList)).then((response: any) => {
           if (!response?.error) {
@@ -177,6 +190,12 @@ export default function BulkOrderPage({ empPermissions }: any) {
                         <li>
                           Upload the file in <strong>.xlsx</strong> format only.
                         </li>
+                        {horoscopesignId && (
+                          <li className="font-semibold text-blue-600">
+                            All orders will be associated with Horoscope Sign
+                            ID: {horoscopesignId}
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </div>
@@ -294,7 +313,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
                         'application/vnd.ms-excel': ['.xls'],
                         'text/csv': ['.csv']
                       }}
-                      maxSize={1024 * 1024 * 5} // 5 MB
+                      maxSize={1024 * 1024 * 5}
                     />
 
                     <p className="text-sm text-gray-500">
@@ -316,6 +335,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
             variant="default"
             className="px-8 py-2 text-white"
             onClick={() => handleSubmit()}
+            disabled={!horoscopesignId}
           >
             {uploadBulkOrderLoading ? 'UPLOADING...' : 'UPLOAD'}
           </Button>

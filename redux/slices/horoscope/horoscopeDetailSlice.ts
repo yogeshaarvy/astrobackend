@@ -158,7 +158,6 @@ export const fetchHoroscopeDetailList = createAsyncThunk<
         active,
         exportData
       } = input || {};
-      console.log('horoscopesignId', horoscopesignId);
       dispatch(fetchHoroscopeDetailListStart());
       const response = await fetchApi(
         `/horoscope/detail/all?page=${page || 1}&limit=${
@@ -361,9 +360,9 @@ const horoscopeDetailSlice = createSlice({
     deleteHoroscopeDetailSuccess(state, action) {
       state.singleHoroscopeDetailState.loading = false;
       // Remove deleted item from list if it exists
-      state.horoscopeDetailList.data = state.horoscopeDetailList.data.filter(
-        (item) => item._id !== action.payload
-      );
+      state.horoscopeDetailList.data = (
+        state.horoscopeDetailList.data ?? []
+      ).filter((item) => item._id !== action.payload);
     },
     deleteHoroscopeDetailFailure(state, action) {
       state.horoscopeDetailList.loading = false;
