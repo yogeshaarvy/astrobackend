@@ -18,7 +18,10 @@ import {
 } from './use-newsletter-table-filters';
 import { Button } from '@/components/ui/button';
 
-import { IAllUsers } from '@/redux/slices/allusersSlice';
+import {
+  IAllUsers,
+  updateUserActiveStatus
+} from '@/redux/slices/allusersSlice';
 
 export default function AllusersTable({
   data,
@@ -42,35 +45,61 @@ export default function AllusersTable({
   } = useAllUsersFilters();
   const dispatch = useAppDispatch();
 
+  // const columns: ColumnDef<IAllUsers>[] = [
+  //   {
+  //     id: 'number',
+  //     header: 'S.No.',
+  //     cell: ({ row, table }) => {
+  //       const currentPage = table.getState().pagination.pageIndex; // Current page index
+  //       const pageSize = table.getState().pagination.pageSize; // Number of items per page
+  //       return <span>{currentPage * pageSize + row.index + 1}</span>; // Calculate correct S.No
+  //       // return <p>this is demo</p>
+  //     },
+  //     enableSorting: false,
+  //     enableHiding: false
+  //   },
+  //   {
+  //     id: 'select',
+  //     header: ({ table }) =>
+  //       // <Checkbox
+  //       //   checked={table.getIsAllPageRowsSelected()}
+  //       //   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       //   aria-label="Select all"
+  //       // />
+  //       '',
+  //     cell: ({ row }) =>
+  //       // <Checkbox
+  //       //   checked={row.getIsSelected()}
+  //       //   onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       //   aria-label="Select row"
+  //       // />
+  //       '',
+  //     enableSorting: false,
+  //     enableHiding: false
+  //   },
+  //   {
+  //     accessorKey: 'name',
+  //     header: 'NAME'
+  //   },
+
+  //   {
+  //     accessorKey: 'email',
+  //     header: 'EMAIL'
+  //   },
+  //   {
+  //     accessorKey: 'phone',
+  //     header: 'PHONE'
+  //   }
+  // ];
   const columns: ColumnDef<IAllUsers>[] = [
     {
       id: 'number',
       header: 'S.No.',
       cell: ({ row, table }) => {
-        const currentPage = table.getState().pagination.pageIndex; // Current page index
-        const pageSize = table.getState().pagination.pageSize; // Number of items per page
-        return <span>{currentPage * pageSize + row.index + 1}</span>; // Calculate correct S.No
-        // return <p>this is demo</p>
+        const currentPage = table.getState().pagination.pageIndex;
+        const pageSize = table.getState().pagination.pageSize;
+        return <span>{currentPage * pageSize + row.index + 1}</span>;
       },
-      enableSorting: false,
-      enableHiding: false
-    },
-    {
-      id: 'select',
-      header: ({ table }) =>
-        // <Checkbox
-        //   checked={table.getIsAllPageRowsSelected()}
-        //   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        //   aria-label="Select all"
-        // />
-        '',
-      cell: ({ row }) =>
-        // <Checkbox
-        //   checked={row.getIsSelected()}
-        //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-        //   aria-label="Select row"
-        // />
-        '',
       enableSorting: false,
       enableHiding: false
     },
@@ -78,7 +107,6 @@ export default function AllusersTable({
       accessorKey: 'name',
       header: 'NAME'
     },
-
     {
       accessorKey: 'email',
       header: 'EMAIL'
@@ -86,8 +114,29 @@ export default function AllusersTable({
     {
       accessorKey: 'phone',
       header: 'PHONE'
+    },
+    {
+      accessorKey: 'active',
+      header: 'STATUS',
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <Switch
+            checked={user.active}
+            onCheckedChange={(value) => {
+              dispatch(
+                updateUserActiveStatus({
+                  userId: user._id,
+                  active: value
+                })
+              );
+            }}
+          />
+        );
+      }
     }
   ];
+
   {
   }
   return (
