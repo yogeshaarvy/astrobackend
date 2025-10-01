@@ -12,6 +12,7 @@ import { setNestedProperty } from '@/utils/SetNestedProperty';
 export type IRequest = BaseModel & {
   _id?: string;
   name?: string;
+  last_name?: string;
   date_of_birth?: any;
   gender?: string;
   languages?: any[];
@@ -157,6 +158,7 @@ export const addEditRequest = createAsyncThunk<
     const formData = new FormData();
     const reqData: any = {
       name: data.name || '',
+      last_name: data.last_name || '',
       date_of_birth: data.date_of_birth || '',
       gender: data.gender || '',
       // Ensure languages and skills are arrays of strings (IDs)
