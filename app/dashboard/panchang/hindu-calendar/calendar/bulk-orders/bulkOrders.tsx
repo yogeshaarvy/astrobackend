@@ -160,8 +160,8 @@ export default function BulkOrderPage({ empPermissions }: any) {
                         </li>
                         <li>
                           <strong>StartDate and EndDate</strong> format must be{' '}
-                          <code>MM/DD/YYYY</code> (e.g., 15/01/2024,
-                          31/12/2023).
+                          <code>MM/DD/YYYY</code> (e.g., 12/01/2025,
+                          12/05/2025).
                         </li>
                         <li>
                           <strong>TitleEnglish and TitleHindi</strong> are
@@ -169,7 +169,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
                         </li>
                         <li>
                           <strong>
-                            FullDescriptionEnglish and FullDescriptionHindi
+                            ShortDescriptionEnglish and ShortDescriptionHindi
                           </strong>{' '}
                           can be left empty or contain detailed text.
                         </li>
@@ -206,7 +206,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
                               <td className="px-4 py-2">Date</td>
                               <td className="px-4 py-2">Yes</td>
                               <td className="px-4 py-2">
-                                MM/DD/YYYY (e.g., 15/01/2024)
+                                MM/DD/YYYY (e.g., 12/01/2025)
                               </td>
                             </tr>
                             <tr className="border-t bg-gray-50">
@@ -214,7 +214,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
                               <td className="px-4 py-2">Date</td>
                               <td className="px-4 py-2">Yes</td>
                               <td className="px-4 py-2">
-                                MM/DD/YYYY (e.g., 31/12/2024)
+                                MM/DD/YYYY (e.g., 12/05/2025)
                               </td>
                             </tr>
                             <tr className="border-t">
