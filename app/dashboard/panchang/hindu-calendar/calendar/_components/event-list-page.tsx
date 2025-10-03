@@ -66,9 +66,15 @@ export default function EventListPage({
         <div className="flex items-start justify-between">
           <Heading title={`Calendars  (${totalCount})`} description="" />
           <div className="flex gap-5">
+            <Link
+              href={`/dashboard/panchang/hindu-calendar/calendar/bulk-orders`}
+              className={buttonVariants({ variant: 'default' })}
+            >
+              Bulk Upload
+            </Link>
             {/* {empPermissions.permission.add ? ( */}
             <Link
-              href={`/dashboard/calendar/add`}
+              href={`/dashboard/panchang/hindu-calendar/calendar/add`}
               className={buttonVariants({ variant: 'default' })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

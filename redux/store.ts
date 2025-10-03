@@ -104,6 +104,7 @@ import mobileImageReducer from './slices/home/mobileImageSlice';
 import vastuSliderReducer from './slices/vastushastr/vastuSlider';
 import mobileKundliReducer from './slices/kundli/mobileKundliConfigSlice';
 import bulkOrderReducer from './slices/bulkOrderSlice';
+import bulkOrderCalendarReducer from './slices/panchang/bulkOrderCalendar';
 
 export const makeStore = () => {
   return configureStore({
@@ -211,7 +212,8 @@ export const makeStore = () => {
       mobileImage: mobileImageReducer,
       vastuSlider: vastuSliderReducer,
       mobileKundli: mobileKundliReducer,
-      bulkOrder: bulkOrderReducer
+      bulkOrder: bulkOrderReducer,
+      bulkOrderCalendar: bulkOrderCalendarReducer
     }
   });
 };

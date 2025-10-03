@@ -1,34 +1,36 @@
-import { BaseModel, BaseState } from '@/types/globals';
+import type { BaseModel, BaseState } from '@/types/globals';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import type { RootState } from '../../store';
 import { fetchApi } from '@/services/utlis/fetchApi';
 import { read, utils } from 'xlsx';
 import { uploadAWSFile } from '@/utils/UploadNestedFiles';
 
 export type Order = BaseModel & {
-  StartDate?: string;
-  EndDate?: string;
-  TitleEnglish?: string;
-  TitleHindi?: string;
-  FullDescriptionEnglish?: string;
-  FullDescriptionHindi?: string;
-  horoscopesignId?: string;
+  name?: string;
+  startDateTime?: string;
+  endDateTime?: string;
+  content?: {
+    TitleEnglish?: string;
+    TitleHindi?: string;
+    ShortDescriptionEnglish?: string;
+    ShortDescriptionHindi?: string;
+  };
 };
 
 type BulkError = {
   index: number;
-  error: string;
+  data?: any;
+  errors: string[];
 };
 
 export type BulkOrder = {
   excel: any[];
   orderList: Order[];
   errorOrders: BulkError[];
-  horoscopesignId?: string; // Added horoscopesignId to BulkOrder
 };
 
 const initialState = {
-  bulkOrderState: {
+  bulkOrderCalendarState: {
     data: null,
     loading: false,
     error: null
@@ -41,8 +43,8 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
     dispatch(updateOrderDataError([]));
     dispatch(addBulkOrderStart());
     const {
-      bulkOrder: {
-        bulkOrderState: { data }
+      bulkOrderCalendar: {
+        bulkOrderCalendarState: { data }
       }
     } = getState();
 
@@ -54,16 +56,16 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
 
       // Map the order array to match backend expectations
       const orderList = orderArray.map((item: any) => ({
+        name: item?.name ?? null,
         StartDate: safeTrim(item?.StartDate),
         EndDate: safeTrim(item?.EndDate),
         TitleEnglish: safeTrim(item?.TitleEnglish),
         TitleHindi: safeTrim(item?.TitleHindi),
-        FullDescriptionEnglish: item?.FullDescriptionEnglish ?? null,
-        FullDescriptionHindi: item?.FullDescriptionHindi ?? null,
-        horoscopesignId: data?.horoscopesignId || null // Include horoscopesignId
+        ShortDescriptionEnglish: item?.ShortDescriptionEnglish ?? null,
+        ShortDescriptionHindi: item?.ShortDescriptionHindi ?? null
       }));
 
-      console.log('Prepared orderList:', data?.excel);
+      console.log('Prepared orderList:', orderList);
       let uploadFileURL = null;
       if (data?.excel && data?.excel instanceof File) {
         uploadFileURL = await uploadAWSFile(data?.excel);
@@ -72,11 +74,10 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
       console.log('Sending order list to backend:', orderList);
       const updatedPayload = {
         orderList: orderList,
-        file: uploadFileURL ? uploadFileURL : null,
-        horoscopesignId: data?.horoscopesignId || null // Include at payload level
+        file: uploadFileURL ? uploadFileURL : null
       };
 
-      const response = await fetchApi(`/order/admin/bulk`, {
+      const response = await fetchApi(`/calendar/admin/bulk`, {
         method: 'POST',
         body: updatedPayload
       });
@@ -85,13 +86,13 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
 
       if (response?.status) {
         const {
-          data: errorOrders = [],
+          errorOrders = [],
           successCount = 0,
           errorCount = 0,
           message
         } = response;
 
-        if (errorOrders.length > 0) {
+        if (Array.isArray(errorOrders) && errorOrders.length > 0) {
           dispatch(updateOrderDataError(errorOrders));
           dispatch(
             addBulkOrderFailure(
@@ -154,7 +155,10 @@ export const convertBulkOrderError = createAsyncThunk<
 
       let errorContent = '';
       for (const errorItem of errorOrders) {
-        errorContent += `Error: ${errorItem.error}. on line no. ${errorItem.index}\n\n`;
+        const messages = Array.isArray(errorItem?.error) ? errorItem.error : [];
+        for (const msg of messages) {
+          errorContent += `Error: ${msg}. on line no. ${errorItem.index}\n\n`;
+        }
       }
       const link = document.createElement('a');
       const file = new Blob([errorContent], { type: 'text/plain' });
@@ -253,17 +257,17 @@ export const convertBulkOrderData = createAsyncThunk<
                     console.log('Processing row:', row);
 
                     return {
+                      name: row?.name ? `${row?.name}` : null,
                       StartDate: formatDate(row?.StartDate) || '',
                       EndDate: formatDate(row?.EndDate) || '',
                       TitleEnglish: `${row?.TitleEnglish || ''}`,
                       TitleHindi: `${row?.TitleHindi || ''}`,
-                      FullDescriptionEnglish: row?.FullDescriptionEnglish
-                        ? `${row?.FullDescriptionEnglish}`
+                      ShortDescriptionEnglish: row?.ShortDescriptionEnglish
+                        ? `${row?.ShortDescriptionEnglish}`
                         : null,
-                      FullDescriptionHindi: row?.FullDescriptionHindi
-                        ? `${row?.FullDescriptionHindi}`
+                      ShortDescriptionHindi: row?.ShortDescriptionHindi
+                        ? `${row?.ShortDescriptionHindi}`
                         : null
-                      // horoscopesignId will be added from state when submitting
                     };
                   });
 
@@ -309,34 +313,34 @@ const bulkOrderSlice = createSlice({
   initialState,
   reducers: {
     addBulkOrderStart(state) {
-      state.bulkOrderState.loading = true;
-      state.bulkOrderState.error = null;
+      state.bulkOrderCalendarState.loading = true;
+      state.bulkOrderCalendarState.error = null;
     },
     addBulkOrderSuccess(state) {
-      state.bulkOrderState.loading = false;
-      state.bulkOrderState.error = null;
+      state.bulkOrderCalendarState.loading = false;
+      state.bulkOrderCalendarState.error = null;
     },
     addBulkOrderFailure(state, action) {
-      state.bulkOrderState.loading = false;
-      state.bulkOrderState.error = action.payload;
+      state.bulkOrderCalendarState.loading = false;
+      state.bulkOrderCalendarState.error = action.payload;
     },
     updateBulkOrderData(state, action) {
       console.log('Action payload in updateBulkOrderData:', action.payload);
-      const oldData = state.bulkOrderState.data ?? {
+      const oldData = state.bulkOrderCalendarState.data ?? {
         excel: [],
         orderList: [],
         errorOrders: []
       };
-      state.bulkOrderState.data = { ...oldData, ...action.payload };
+      state.bulkOrderCalendarState.data = { ...oldData, ...action.payload };
     },
     updateOrderDataFromExcel(state, action) {
-      if (state.bulkOrderState.data) {
-        state.bulkOrderState.data.orderList = action.payload;
+      if (state.bulkOrderCalendarState.data) {
+        state.bulkOrderCalendarState.data.orderList = action.payload;
       }
     },
     updateOrderDataError(state, action) {
-      if (state.bulkOrderState.data) {
-        state.bulkOrderState.data.errorOrders = action.payload;
+      if (state.bulkOrderCalendarState.data) {
+        state.bulkOrderCalendarState.data.errorOrders = action.payload;
       }
     }
   }
