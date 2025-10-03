@@ -728,23 +728,51 @@ export const navItems: NavItem[] = [
   {
     title: 'Orders',
     url: '/dashboard/orders',
-    icon: 'settings',
+    icon: 'basket',
     isActive: false,
     items: [
       {
         title: 'Store',
         url: '/dashboard/orders/store',
-        icon: 'general'
+        icon: 'store'
       },
       {
         title: 'Pooja',
         url: '/dashboard/orders/pooja',
-        icon: 'general'
+        icon: 'shell',
+        isActive: false,
+        items: [
+          {
+            title: 'All Pooja Orders',
+            url: '/dashboard/orders/pooja',
+            icon: 'shoppingCart'
+          },
+          {
+            title: 'Not Started',
+            url: '/dashboard/orders/pooja?poojaStatus=no-started',
+            icon: 'general'
+          },
+          {
+            title: 'In Progress',
+            url: '/dashboard/orders/pooja?poojaStatus=progress',
+            icon: 'spinner'
+          },
+          {
+            title: 'Cancel',
+            url: '/dashboard/orders/pooja?poojaStatus=cancel',
+            icon: 'cancel'
+          },
+          {
+            title: 'Completed',
+            url: '/dashboard/orders/pooja?poojaStatus=complete',
+            icon: 'checkCheck'
+          }
+        ]
       },
       {
         title: 'Vibhor',
         url: '/dashboard/orders/vibhor-packages',
-        icon: 'general'
+        icon: 'graduationCap'
       }
     ]
   },

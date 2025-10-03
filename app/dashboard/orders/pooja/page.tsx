@@ -9,7 +9,7 @@ type PageProps = {
 };
 
 export const metadata = {
-  title: 'Dashboard : Pooja All Orders'
+  title: 'Dashboard : Pooja Orders'
 };
 
 export default async function Page({ searchParams }: PageProps) {
