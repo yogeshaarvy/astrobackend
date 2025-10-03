@@ -13,6 +13,9 @@ import { RootState } from '@/redux/store';
 type UpdatePoojaArgs = {
   poojaId: string;
   poojaStatus: string;
+  assignedTo?: string;
+  assignedFrom?: string;
+  assignStatus?: 'yes' | 'no' | '';
 };
 
 type ApiResponse = {
@@ -80,6 +83,9 @@ export const fetchAllOrdersList = createAsyncThunk<
     pageSize?: number;
     exportData?: boolean;
     orderStatus?: string;
+    assignStatus?: string;
+    assignedTo?: string;
+    assignedFrom?: string;
     paymentStatus?: string;
     startDate?: string;
     email?: string;
@@ -96,8 +102,11 @@ export const fetchAllOrdersList = createAsyncThunk<
         page = 1,
         pageSize = 10,
         exportData = false,
-        orderStatus = 'all',
-        paymentStatus = 'all',
+        orderStatus = '',
+        assignedFrom = '',
+        assignedTo = '',
+        paymentStatus = '',
+        assignStatus = '',
         poojaStatus = '',
         startDate = '',
         endDate = '',
@@ -109,7 +118,9 @@ export const fetchAllOrdersList = createAsyncThunk<
       const response = await fetchApi(
         `/pooja_order/all?page=${page}&pageSize=${pageSize}&export=${exportData}&poojaStatus=${poojaStatus}&orderStatus=${orderStatus}&paymentStatus=${paymentStatus}&startDate=${startDate}&endDate=${endDate}&email=${
           email ?? ''
-        }&orderNo=${orderNo ?? ''}`,
+        }&orderNo=${orderNo ?? ''}&assignStatus=${assignStatus}&assignedFrom=${
+          assignedFrom ?? ''
+        }&assignedTo=${assignedTo ?? ''}`,
         { method: 'GET' }
       );
       if (response?.success) {
@@ -226,12 +237,21 @@ export const updatePoojaOrderStatus = createAsyncThunk<
   { rejectValue: string } // ✅ rejected value type
 >(
   'updatepooja-status',
-  async ({ poojaId, poojaStatus }, { rejectWithValue }) => {
+  async (
+    { poojaId, poojaStatus, assignedTo, assignedFrom, assignStatus },
+    { rejectWithValue }
+  ) => {
     try {
       const response: ApiResponse = await fetchApi(
         `/pooja_order/updatepoojastatus`,
         {
-          body: { poojaId, poojaStatus },
+          body: {
+            poojaId,
+            poojaStatus,
+            assignedTo,
+            assignedFrom,
+            assignStatus
+          },
           method: 'PUT'
         }
       );

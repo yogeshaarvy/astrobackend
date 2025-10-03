@@ -17,17 +17,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-interface CellActionProps {
-  data: {
-    sequence: number;
-    icon: string;
-    title: string;
-    status: string;
-    orderId: string;
-  };
-}
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+export const CellAction = ({ data }: any) => {
   const [loading, setLoading] = useState(false);
   const [open1, setOpen1] = useState(false);
   const router = useRouter();

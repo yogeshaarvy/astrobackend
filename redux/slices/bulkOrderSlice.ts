@@ -6,7 +6,7 @@ import { read, utils } from 'xlsx';
 import { uploadAWSFile } from '@/utils/UploadNestedFiles';
 
 export type Order = BaseModel & {
-  StateDate?: string;
+  StartDate?: string;
   EndDate?: string;
   TitleEnglish?: string;
   TitleHindi?: string;
@@ -54,7 +54,7 @@ export const addBulkOrder = createAsyncThunk<any, any, { state: RootState }>(
 
       // Map the order array to match backend expectations
       const orderList = orderArray.map((item: any) => ({
-        StateDate: safeTrim(item?.StateDate),
+        StartDate: safeTrim(item?.StartDate),
         EndDate: safeTrim(item?.EndDate),
         TitleEnglish: safeTrim(item?.TitleEnglish),
         TitleHindi: safeTrim(item?.TitleHindi),
@@ -253,7 +253,7 @@ export const convertBulkOrderData = createAsyncThunk<
                     console.log('Processing row:', row);
 
                     return {
-                      StateDate: formatDate(row?.StateDate) || '',
+                      StartDate: formatDate(row?.StartDate) || '',
                       EndDate: formatDate(row?.EndDate) || '',
                       TitleEnglish: `${row?.TitleEnglish || ''}`,
                       TitleHindi: `${row?.TitleHindi || ''}`,

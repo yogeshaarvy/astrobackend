@@ -5,12 +5,12 @@ import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
-export const STATUS_OPTIONS = [
+export const ASSIGN_STATUS_OPTIONS = [
   { value: 'true', label: 'True' },
   { value: 'false', label: 'False' }
 ];
 export const FIELD_OPTIONS = [{ value: 'date', label: 'Date' }];
-export function useFaqTableFilters() {
+export function useAllOrderTableFilters() {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
@@ -26,6 +26,10 @@ export function useFaqTableFilters() {
     'status',
     searchParams.status.withOptions({ shallow: false }).withDefault('')
   );
+  const [assignStatusFilter, setAssignStatusFilter] = useQueryState(
+    'assignStatus',
+    searchParams.status.withOptions({ shallow: false }).withDefault('')
+  );
 
   const [page, setPage] = useQueryState(
     'page',
@@ -36,8 +40,9 @@ export function useFaqTableFilters() {
     setSearchQuery(null);
     setStatusFilter(null);
     setFieldFilter(null);
+    setAssignStatusFilter(null);
     setPage(1);
-  }, [setSearchQuery, setPage, setStatusFilter]);
+  }, [setSearchQuery, setPage, setStatusFilter, setAssignStatusFilter]);
 
   const isAnyFilterActive = useMemo(() => {
     return !!searchQuery || !!statusFilter;
@@ -50,6 +55,8 @@ export function useFaqTableFilters() {
     setFieldFilter,
     statusFilter,
     setStatusFilter,
+    assignStatusFilter,
+    setAssignStatusFilter,
     page,
     setPage,
     resetFilters,

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import AllOrdersTable from './poojaorders-tables';
 import {
@@ -14,24 +14,22 @@ import {
 export default function AllOrdersListingPage() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const entityId = searchParams?.get('id');
-
-  const keyword = searchParams?.get('q') || '';
-  const status = searchParams?.get('status') || '';
-  const field = searchParams?.get('field') || '';
+  const router = useRouter();
   const page = parseInt(searchParams?.get('page') ?? '1', 10);
   const pageSize = parseInt(searchParams?.get('limit') ?? '10', 10);
-  const order_status = searchParams?.get('order_status') ?? '';
   const datesdata = searchParams?.get('data') ?? '';
-  const poojaStatusParam = searchParams?.get('pooja_status') ?? '';
+  const rawStatus = searchParams?.get('poojaStatus') ?? '';
+
+  const poojaStatusParam =
+    rawStatus === 'no-started' ? 'no started' : rawStatus;
 
   const [startDate, setStartDate] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
+  const [assignedFrom, setAssignedFrom] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [poojaStatusState, setPoojaStatusState] = useState(
-    poojaStatusParam || 'all'
-  );
   const [orderStatus, setOrderStatus] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('');
+  const [assignStatus, setAssignStatus] = useState('');
   const [email, setEmail] = useState('');
   const [orderNo, setOrderNo] = useState('');
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
@@ -43,43 +41,28 @@ export default function AllOrdersListingPage() {
     }
   } = useAppSelector((state) => state.allpoojsorders);
 
-  // Function to get today's date in YYYY-MM-DD format
+  // Date helper functions
   const getTodayDate = () => {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return today.toISOString().split('T')[0];
   };
 
-  // Function to get the date for one week ago in YYYY-MM-DD format
   const getWeekAgoDate = () => {
     const today = new Date();
     today.setDate(today.getDate() - 7);
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return today.toISOString().split('T')[0];
   };
 
-  // Function to get the date for 30 days ago in YYYY-MM-DD format
   const getThirtyDaysAgoDate = () => {
     const today = new Date();
     today.setDate(today.getDate() - 30);
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return today.toISOString().split('T')[0];
   };
 
-  // Function to get the date for one year ago in YYYY-MM-DD format
   const getOneYearAgoDate = () => {
     const today = new Date();
     today.setFullYear(today.getFullYear() - 1);
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return today.toISOString().split('T')[0];
   };
 
   useEffect(() => {
@@ -88,32 +71,29 @@ export default function AllOrdersListingPage() {
       setStartDate(today);
       setEndDate(today);
     } else if (datesdata === 'week') {
-      const weekAgo = getWeekAgoDate();
-      const today = getTodayDate();
-      setStartDate(weekAgo);
-      setEndDate(today);
+      setStartDate(getWeekAgoDate());
+      setEndDate(getTodayDate());
     } else if (datesdata === 'month') {
-      const thirtyDaysAgo = getThirtyDaysAgoDate();
-      const today = getTodayDate();
-      setStartDate(thirtyDaysAgo);
-      setEndDate(today);
+      setStartDate(getThirtyDaysAgoDate());
+      setEndDate(getTodayDate());
     } else if (datesdata === 'year') {
-      const oneYearAgo = getOneYearAgoDate();
-      const today = getTodayDate();
-      setStartDate(oneYearAgo);
-      setEndDate(today);
+      setStartDate(getOneYearAgoDate());
+      setEndDate(getTodayDate());
     }
   }, [datesdata]);
 
   useEffect(() => {
-    const finalPoojaStatus = poojaStatusState === 'all' ? '' : poojaStatusState;
     dispatch(
       fetchAllOrdersList({
         page,
         pageSize,
         orderStatus,
-        poojaStatus: finalPoojaStatus,
+        poojaStatus: poojaStatusParam,
         startDate,
+        assignedTo,
+        assignedFrom,
+        paymentStatus,
+        assignStatus,
         endDate,
         email,
         orderNo
@@ -123,8 +103,12 @@ export default function AllOrdersListingPage() {
     page,
     pageSize,
     orderStatus,
-    poojaStatusState,
+    poojaStatusParam,
     startDate,
+    assignedTo,
+    assignedFrom,
+    paymentStatus,
+    assignStatus,
     endDate,
     email,
     orderNo,
@@ -134,37 +118,49 @@ export default function AllOrdersListingPage() {
   const allorders: IAllOrdersList[] = pData;
 
   const handlestartdateChange = (event: any) => {
-    setStartDate(event.target.value as string);
+    setStartDate(event.target.value);
   };
 
   const handleenddateChange = (event: any) => {
-    setEndDate(event.target.value as string);
+    setEndDate(event.target.value);
+  };
+
+  // ✅ Fixed: Separate handlers for assignedFrom and assignedTo
+  const handleAssignedFromChange = (event: any) => {
+    setAssignedFrom(event.target.value);
+  };
+
+  const handleAssignedToChange = (event: any) => {
+    setAssignedTo(event.target.value);
   };
 
   const handlePoojaStatusChange = (value: string) => {
-    setPoojaStatusState(value);
+    const params = new URLSearchParams(searchParams.toString());
+    const finalValue = value === 'no-started' ? 'no started' : value;
+    params.set('poojaStatus', finalValue);
+    router.push(`?${params.toString()}`);
   };
 
   const handleEmailInputChange = (event: any) => {
-    const { value } = event.target;
-    setEmail(value);
+    setEmail(event.target.value);
   };
 
   const handleOrderNoInputChange = (event: any) => {
-    const { value } = event.target;
-    setOrderNo(value);
+    setOrderNo(event.target.value);
   };
 
   const handleSearch = () => {
-    const finalPoojaStatus = poojaStatusState === 'all' ? '' : poojaStatusState;
     dispatch(
       fetchAllOrdersList({
         page,
         pageSize,
         orderStatus,
         paymentStatus,
+        assignStatus,
         startDate,
-        poojaStatus: finalPoojaStatus,
+        assignedFrom,
+        assignedTo,
+        poojaStatus: poojaStatusParam,
         endDate,
         email,
         orderNo
@@ -189,44 +185,40 @@ export default function AllOrdersListingPage() {
 
   useEffect(() => {
     fetchUnreadCounts();
-
-    const interval = setInterval(() => {
-      fetchUnreadCounts();
-    }, 20000);
-
+    const interval = setInterval(fetchUnreadCounts, 20000);
     return () => clearInterval(interval);
   }, [fetchUnreadCounts]);
 
   return (
     <PageContainer scrollable>
       <div className="mr-5 space-y-4 p-8">
-        {/* Header */}
         <div className="flex items-start justify-between pr-4">
           <Heading title="All Puja Orders" description="" />
         </div>
 
         <Separator />
 
-        {/* Orders Table */}
         <AllOrdersTable
           data={allorders}
           totalData={totalCount}
           handleSearch={handleSearch}
           startDate={startDate}
           endDate={endDate}
-          poojaStatus={poojaStatusState}
+          poojaStatus={poojaStatusParam}
           email={email}
+          assignedFrom={assignedFrom}
+          assignedTo={assignedTo}
+          handleAssignedFromChange={handleAssignedFromChange}
+          handleAssignedToChange={handleAssignedToChange}
           handlestartdateChange={handlestartdateChange}
           handleEmailInputChange={handleEmailInputChange}
           handleenddateChange={handleenddateChange}
-          handleOrderStatusChange={(value: string) => {
-            setOrderStatus(value === 'all' ? '' : value);
-          }}
+          handleOrderStatusChange={(value: string) => setOrderStatus(value)}
           orderStatus={orderStatus}
           paymentStatus={paymentStatus}
-          handlePaymentStatusChange={(value: string) => {
-            setPaymentStatus(value === 'all' ? '' : value);
-          }}
+          assignStatus={assignStatus}
+          handlePaymentStatusChange={(value: string) => setPaymentStatus(value)}
+          handleAssignStatusChange={(value: string) => setAssignStatus(value)}
           orderNo={orderNo}
           handleOrderNoInputChange={handleOrderNoInputChange}
           handlePoojaStatusChange={handlePoojaStatusChange}

@@ -165,7 +165,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
                           the schema keys listed in the reference table.
                         </li>
                         <li>
-                          <strong>Required columns:</strong> StateDate, EndDate,
+                          <strong>Required columns:</strong> StartDate, EndDate,
                           TitleEnglish, TitleHindi
                         </li>
                         <li>
@@ -173,8 +173,8 @@ export default function BulkOrderPage({ empPermissions }: any) {
                           FullDescriptionEnglish, FullDescriptionHindi
                         </li>
                         <li>
-                          <strong>StateDate and EndDate</strong> format must be{' '}
-                          <code>MM/DD/YYYY</code> (e.g., 15/01/2024,
+                          <strong>StartDate and EndDate</strong> format must be{' '}
+                          <code>DD/MM/YYYY</code> (e.g., 15/01/2024,
                           31/12/2023).
                         </li>
                         <li>
@@ -222,11 +222,11 @@ export default function BulkOrderPage({ empPermissions }: any) {
                           </thead>
                           <tbody>
                             <tr className="border-t">
-                              <td className="px-4 py-2 font-mono">StateDate</td>
+                              <td className="px-4 py-2 font-mono">StartDate</td>
                               <td className="px-4 py-2">Date</td>
                               <td className="px-4 py-2">Yes</td>
                               <td className="px-4 py-2">
-                                MM/DD/YYYY (e.g., 15/01/2024)
+                                DD/MM/YYYY (e.g., 15/01/2024)
                               </td>
                             </tr>
                             <tr className="border-t bg-gray-50">
@@ -234,7 +234,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
                               <td className="px-4 py-2">Date</td>
                               <td className="px-4 py-2">Yes</td>
                               <td className="px-4 py-2">
-                                MM/DD/YYYY (e.g., 31/12/2024)
+                                DD/MM/YYYY (e.g., 31/12/2024)
                               </td>
                             </tr>
                             <tr className="border-t">
