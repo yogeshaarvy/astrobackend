@@ -45,7 +45,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/dashboard/calendar/edit?id=${data._id}`)
+              router.push(
+                `/dashboard/panchang/hindu-calendar/calendar/edit?id=${data._id}`
+              )
             }
           >
             <Edit className="mr-2 h-4 w-4" /> Update

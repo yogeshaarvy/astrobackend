@@ -51,28 +51,28 @@ export default function EventListTable({
       header: () => (
         <div className="flex flex-col">
           <span className="font-medium">Start Date</span>
-          <span className="text-sm text-muted-foreground">Start Time</span>
+          {/* <span className="text-sm text-muted-foreground">Start Time</span> */}
         </div>
       ),
       cell: ({ row }) => {
         const dateTime = new Date(row.getValue('startDateTime'));
         const date = dateTime.toISOString().split('T')[0];
 
-        // Format time with AM/PM
-        let hours = dateTime.getHours();
-        const minutes = dateTime.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
+        // // Format time with AM/PM
+        // let hours = dateTime.getHours();
+        // const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+        // const ampm = hours >= 12 ? 'PM' : 'AM';
 
-        // Convert 24-hour to 12-hour format
-        hours = hours % 12;
-        hours = hours ? hours : 12;
+        // // Convert 24-hour to 12-hour format
+        // hours = hours % 12;
+        // hours = hours ? hours : 12;
 
         return (
           <div className="flex flex-col">
             <span className="font-medium">{date}</span>
-            <span className="text-sm text-muted-foreground">
+            {/* <span className="text-sm text-muted-foreground">
               {hours}:{minutes} {ampm}
-            </span>
+            </span> */}
           </div>
         );
       }
@@ -82,7 +82,7 @@ export default function EventListTable({
       header: () => (
         <div className="flex flex-col">
           <span className="font-medium">End Date</span>
-          <span className="text-sm text-muted-foreground">End Time</span>
+          {/* <span className="text-sm text-muted-foreground">End Time</span> */}
         </div>
       ),
       cell: ({ row }) => {
@@ -90,20 +90,20 @@ export default function EventListTable({
         const date = dateTime.toISOString().split('T')[0];
 
         // Format time with AM/PM
-        let hours = dateTime.getHours();
-        const minutes = dateTime.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
+        // let hours = dateTime.getHours();
+        // const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+        // const ampm = hours >= 12 ? 'PM' : 'AM';
 
-        // Convert 24-hour to 12-hour format
-        hours = hours % 12;
-        hours = hours ? hours : 12;
+        // // Convert 24-hour to 12-hour format
+        // hours = hours % 12;
+        // hours = hours ? hours : 12;
 
         return (
           <div className="flex flex-col">
             <span className="font-medium">{date}</span>
-            <span className="text-sm text-muted-foreground">
+            {/* <span className="text-sm text-muted-foreground">
               {hours}:{minutes} {ampm}
-            </span>
+            </span> */}
           </div>
         );
       }

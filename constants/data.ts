@@ -465,31 +465,6 @@ export const navItems: NavItem[] = [
     ]
   },
   {
-    title: 'Calendar',
-    url: '/dashboard/calendar-data',
-    icon: 'settings',
-    items: [
-      {
-        title: 'Config',
-        url: '/dashboard/calendar-data/config',
-        icon: 'tableContents'
-      },
-      {
-        title: 'Other',
-        url: '/dashboard/calendar-data',
-        icon: 'config',
-        isActive: false,
-        items: [
-          {
-            title: 'Calender Events',
-            url: '/dashboard/calendar-data/others/calendar',
-            icon: 'tableContents'
-          }
-        ]
-      }
-    ]
-  },
-  {
     title: 'Kundli',
     url: '/dashboard/kundli',
     icon: 'atom',
@@ -600,6 +575,31 @@ export const navItems: NavItem[] = [
             title: 'Config',
             url: '/dashboard/panchang/other/config',
             icon: 'general'
+          }
+        ]
+      },
+      {
+        title: 'Hindu Calendar',
+        url: '/dashboard/panchang/hindu-calendar',
+        icon: 'settings',
+        items: [
+          {
+            title: 'Calender Events',
+            url: '/dashboard/panchang/hindu-calendar/calendar',
+            icon: 'tableContents'
+          },
+          {
+            title: 'Other',
+            url: '/dashboard/panchang/hindu-calendar/others',
+            icon: 'config',
+            isActive: false,
+            items: [
+              {
+                title: 'Config',
+                url: '/dashboard/panchang/hindu-calendar/others/config',
+                icon: 'tableContents'
+              }
+            ]
           }
         ]
       }

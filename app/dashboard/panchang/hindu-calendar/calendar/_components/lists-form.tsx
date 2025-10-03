@@ -9,6 +9,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Form, FormItem, FormLabel } from '@/components/ui/form';
+import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
@@ -128,7 +129,7 @@ export default function ListForm() {
       dispatch(addEditEventCalendarList(entityId || null)).then(
         (response: any) => {
           if (!response?.error) {
-            router.push(`/dashboard/calendar`);
+            router.push(`/dashboard/panchang/hindu-calendar/calendar`);
             toast.success(
               response?.payload?.message || 'Calendar saved successfully'
             );
@@ -178,7 +179,7 @@ export default function ListForm() {
               />
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-1">
+                {/* <div className="col-span-1">
                   <CustomTextField
                     name="startDateTime"
                     label="Event Start Date & Time"
@@ -192,8 +193,24 @@ export default function ListForm() {
                     }
                     onChange={handleInputChange}
                   />
+                </div> */}
+                <div className="space-y-1">
+                  <Label htmlFor="startDateTime">Start Date</Label>
+                  <Input
+                    name="startDateTime"
+                    placeholder="Enter Start Date"
+                    type="date"
+                    value={
+                      (wData as ICalendar)?.startDateTime
+                        ? new Date((wData as ICalendar).startDateTime)
+                            .toISOString()
+                            .split('T')[0]
+                        : ''
+                    }
+                    onChange={handleInputChange}
+                  />
                 </div>
-                <div className="col-span-1">
+                {/* <div className="col-span-1">
                   <CustomTextField
                     name="endDateTime"
                     label="Event End Date & Time"
@@ -203,6 +220,22 @@ export default function ListForm() {
                         ? new Date((wData as ICalendar)?.endDateTime || '')
                             .toISOString()
                             .slice(0, 16)
+                        : ''
+                    }
+                    onChange={handleInputChange}
+                  />
+                </div> */}
+                <div className="space-y-1">
+                  <Label htmlFor="endDateTime">End Date</Label>
+                  <Input
+                    name="endDateTime"
+                    placeholder="Enter End Date"
+                    type="date"
+                    value={
+                      (wData as ICalendar)?.endDateTime
+                        ? new Date((wData as ICalendar).endDateTime)
+                            .toISOString()
+                            .split('T')[0]
                         : ''
                     }
                     onChange={handleInputChange}
