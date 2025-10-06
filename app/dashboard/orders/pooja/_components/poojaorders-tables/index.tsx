@@ -350,7 +350,7 @@ export default function AllOrdersTable({
             <!-- Header -->
             <div class="header">
               <div class="logo-section">
-                <img src="${logoPath}" alt="Dubblin">
+                <img src="${logoPath}" alt="astroindusoot">
                 <div class="logo-text">
                   <h1>INVOICE</h1>
                   <div class="invoice-date">${moment(order?.createdAt).format(
@@ -456,7 +456,7 @@ export default function AllOrdersTable({
                 <span class="contact-email">astroindusoot@gmail.com</span>
               </p>
               <div class="copyright">
-                <p>Dubblin © ${new Date().getFullYear()} • All Rights Reserved</p>
+                <p>Astro Indusoot © ${new Date().getFullYear()} • All Rights Reserved</p>
               </div>
             </div>
           </div>

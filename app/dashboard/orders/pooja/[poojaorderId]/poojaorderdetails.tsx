@@ -176,7 +176,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
             <div class="company-name">AstroIndusoot</div>
             <div>PLOT NO. -27 AND 27-B, KHASRA NO. 46/23</div>
             <div>Near M.S. VATIKA, NILOTHI EXTENSION, NEW DELHI-110041</div>
-            <div>dubblinofficial@gmail.com | +91 7838388836</div>
+            <div>astrologyastroindusoot.in@gmail.com | +91 7838388836</div>
           </div>
           <div class="invoice-title">INVOICE</div>
         </div>
@@ -223,7 +223,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
               PLOT NO. -27 AND 27-B, KHASRA NO. 46/23<br>
               Near M.S. VATIKA, NILOTHI EXTENSION,<br>
               NEW DELHI-110041<br>
-              dubblinofficial@gmail.com<br>
+              astrologyastroindusoot.in@gmail.com<br>
               +91 7838388836
             </div>
           </div>
@@ -257,10 +257,10 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
           <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Thank you for your business!</p>
           <p style="font-size: 13px; color: #666; margin: 5px 0;">
             If you have any questions about this invoice, please contact us at
-            <span style="color: #000; font-weight: 500;">dubblinofficial@gmail.com</span>
+            <span style="color: #000; font-weight: 500;">astrologyastroindusoot.in@gmail.com</span>
           </p>
           <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #c0c0c0; font-size: 12px; color: #888;">
-            <p>Dubblin © ${new Date().getFullYear()} • All Rights Reserved</p>
+            <p>Astroindusoot © ${new Date().getFullYear()} • All Rights Reserved</p>
           </div>
         </div>
         </div>
@@ -312,7 +312,7 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
 
   return (
     <PageContainer scrollable>
-      <div className="container mx-auto max-w-6xl p-6">
+      <div className="container mx-auto max-w-4xl p-6">
         {/* Company Information Card */}
         <Card className="mb-6">
           <CardContent className="pt-6">
@@ -320,7 +320,12 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
               <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border">
                 {/* Company Logo Placeholder */}
                 <div className="flex h-full w-full items-center justify-center bg-gray-100 text-lg font-bold">
-                  <img src={logoPath} alt="logo" />
+                  <img
+                    src={
+                      'https://apinew.astroindusoot.com/public/images/imagefile-1752571365681-8364178.png'
+                    }
+                    alt="logo"
+                  />
                 </div>
               </div>
               <div>

@@ -312,7 +312,12 @@ const OrderDetailsPage = ({ orderData }: { orderData: any }) => {
               <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border">
                 {/* Company Logo Placeholder */}
                 <div className="flex h-full w-full items-center justify-center bg-gray-100 text-lg font-bold">
-                  <img src={logoPath} alt="logo" />
+                  <img
+                    src={
+                      'https://apinew.astroindusoot.com/public/images/imagefile-1752571365681-8364178.png'
+                    }
+                    alt="logo"
+                  />
                 </div>
               </div>
               <div>

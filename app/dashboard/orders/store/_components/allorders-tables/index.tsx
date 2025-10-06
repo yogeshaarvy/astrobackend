@@ -332,7 +332,7 @@ export default function AllOrdersTable({
             <!-- Header -->
             <div class="header">
               <div class="logo-section">
-                <img src="${logoPath}" alt="Dubblin">
+                <img src="${logoPath}" alt="astroindusoot">
                 <div class="logo-text">
                   <h1>INVOICE</h1>
                   <div class="invoice-date">${moment(order?.createdAt).format(
@@ -356,7 +356,7 @@ export default function AllOrdersTable({
               </div>
               <div style="text-align: right;">
                 <p>+91 7838388836</p>
-                <p>dubblinofficial@gmail.com</p>
+                <p>astrologyastroindusoot.in@gmail.com</p>
               </div>
             </div>
     
@@ -507,10 +507,10 @@ export default function AllOrdersTable({
               <p class="thank-you">Thank you for your business!</p>
               <p class="contact-info">
                 If you have any questions about this invoice, please contact us at
-                <span class="contact-email">dubblinofficial@gmail.com</span>
+                <span class="contact-email">astrologyastroindusoot.in@gmail.com</span>
               </p>
               <div class="copyright">
-                <p>Dubblin © ${new Date().getFullYear()} • All Rights Reserved</p>
+                <p>Astro Indusoot © ${new Date().getFullYear()} • All Rights Reserved</p>
               </div>
             </div>
           </div>
