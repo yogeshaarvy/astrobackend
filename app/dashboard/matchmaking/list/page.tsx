@@ -344,6 +344,13 @@ export default function MatchmakingPage() {
     return new Date(dateString).toLocaleDateString();
   };
 
+  //   const formatDate = (dateString?: string) => {
+  //   if (!dateString) return 'N/A';
+
+  //   const [month, day, year] = dateString.split('-');
+  //   return `${month}/${day}/${year}`;
+  // };
+
   const formatTime = (timeString?: string) => {
     if (!timeString) return 'N/A';
     return timeString;
@@ -563,7 +570,7 @@ export default function MatchmakingPage() {
                               </div>
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <Calendar className="h-3 w-3" />
-                                {formatDate(record.boy_dob)}
+                                {record.boy_dob}
                               </div>
                             </div>
                           </TableCell>
@@ -574,7 +581,7 @@ export default function MatchmakingPage() {
                               </div>
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <Calendar className="h-3 w-3" />
-                                {formatDate(record.girl_dob)}
+                                {record.girl_dob}
                               </div>
                             </div>
                           </TableCell>
