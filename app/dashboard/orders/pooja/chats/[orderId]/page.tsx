@@ -765,7 +765,10 @@ const PoojaSpecificChat: React.FC = () => {
               />
               <button
                 onClick={handleSendMessage}
-                disabled={!message.trim()}
+                disabled={
+                  !message.trim() ||
+                  ['complete', 'cancel'].includes(poojaBooking?.poojaStatus)
+                }
                 className="flex items-center space-x-2 rounded-full bg-gradient-to-r from-amber-600 to-amber-700 px-6 py-3 text-white transition-all duration-200 hover:from-amber-700 hover:to-amber-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Send className="h-5 w-5" />
