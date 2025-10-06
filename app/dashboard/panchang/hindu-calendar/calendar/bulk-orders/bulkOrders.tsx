@@ -128,7 +128,7 @@ export default function BulkOrderPage({ empPermissions }: any) {
                   variant="default"
                   className="px-6 py-2 text-white"
                 >
-                  <a href={'/files/Upload_Order_Sample_File.xlsx'} download>
+                  <a href={'/files/Upload_Calendar_Sample_File.xlsx'} download>
                     SAMPLE EXCEL FILE DOWNLOAD (For Bulk Order Upload)
                   </a>
                 </Button>
