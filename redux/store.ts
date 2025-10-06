@@ -105,6 +105,7 @@ import vastuSliderReducer from './slices/vastushastr/vastuSlider';
 import mobileKundliReducer from './slices/kundli/mobileKundliConfigSlice';
 import bulkOrderReducer from './slices/bulkOrderSlice';
 import bulkOrderCalendarReducer from './slices/panchang/bulkOrderCalendar';
+import mobileNotificationsReducer from './slices/notifications/notificationSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -213,6 +214,7 @@ export const makeStore = () => {
       vastuSlider: vastuSliderReducer,
       mobileKundli: mobileKundliReducer,
       bulkOrder: bulkOrderReducer,
+      mobileNotifications: mobileNotificationsReducer,
       bulkOrderCalendar: bulkOrderCalendarReducer
     }
   });

@@ -12,13 +12,23 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
-export default function EmployeeNotAllowedToAdd() {
+type Props = {
+  label?: string;
+  isIconVisilbe?: boolean;
+  name?: string;
+};
+
+export default function EmployeeNotAllowedToAdd({
+  label,
+  isIconVisilbe,
+  name
+}: Props) {
   return (
     <div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button>
-            <Plus className="mr-2 h-4 w-4" /> Add New
+            {isIconVisilbe && <Plus className="mr-2 h-4 w-4" />} {label}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -26,7 +36,7 @@ export default function EmployeeNotAllowedToAdd() {
             <AlertDialogTitle>Permission Denied</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription>
-            You do not have permission to add new employee. Please contact the
+            You do not have permission to add {name}. Please contact the
             administrator for access.
           </AlertDialogDescription>
           <AlertDialogFooter>

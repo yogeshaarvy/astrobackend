@@ -826,6 +826,11 @@ export const navItems: NavItem[] = [
         icon: 'general'
       },
       {
+        title: 'Notification ',
+        url: '/dashboard/notification',
+        icon: 'notification'
+      },
+      {
         title: 'Pages',
         url: '/dashboard/settings/pages',
         icon: 'general',
