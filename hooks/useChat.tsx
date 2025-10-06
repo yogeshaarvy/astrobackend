@@ -28,7 +28,7 @@ export function useAdminChat(
     if (!orderId || !adminId) return;
     socketRef.current = io(process.env.NEXT_PUBLIC_APP_API_URL, {
       withCredentials: true,
-      transports: ['websocket']
+      transports: ['websocket', 'polling']
     });
 
     // First: bind listeners

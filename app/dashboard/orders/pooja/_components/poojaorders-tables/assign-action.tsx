@@ -149,7 +149,10 @@ export const AssignAction = ({ data }: any) => {
                 type="date"
                 value={assignDates.assignedTo}
                 onChange={(e) =>
-                  setAssignDates({ ...assignDates, assignedTo: e.target.value })
+                  setAssignDates({
+                    ...assignDates,
+                    assignedTo: e.target.value
+                  })
                 }
                 required
               />
