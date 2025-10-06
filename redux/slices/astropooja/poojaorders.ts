@@ -35,10 +35,12 @@ export type IAllOrdersList = BaseModel & {
   totalAmount?: any;
   products?: any;
   orderId?: any;
+  assignedFrom?: any;
+  assignedTo?: any;
   createdAt?: any;
   orderStatus?: any;
   paymentMethod?: any;
-
+  assignStatus?: any;
   transactionId?: any;
   paymentStatus?: any;
   poojaStatus?: any;

@@ -45,16 +45,18 @@ interface PoojaBooking {
   bookingDateTime?: Date;
   poojaStatus: 'no started' | 'start' | 'progress' | 'complete' | 'cancel';
   isOnline: boolean;
+  assignedFrom?: string;
+  assignedTo?: string;
   avatar?: string;
   paymentStatus?: any;
   paidAmount?: any;
   poojaId?: any;
+  assignStatus?: string;
 }
 
 const PoojaSpecificChat: React.FC = () => {
   const params = useParams();
   const orderId = params?.orderId as string;
-  // Only one admin backend, so use a constant adminId
   const adminId = '67c6d005ca2af808a28c560c';
   const {
     singleAllOrdersListState: { data: orderData }
@@ -297,7 +299,10 @@ const PoojaSpecificChat: React.FC = () => {
     isOnline: true,
     paymentStatus: orderData?.paymentStatus,
     poojaStatus: orderData?.poojaStatus,
-    poojaId: orderData?._id
+    poojaId: orderData?._id,
+    assignStatus: orderData?.assignStatus || 'no',
+    assignedFrom: orderData?.assignedFrom,
+    assignedTo: orderData?.assignedTo
   };
 
   return (
@@ -462,7 +467,7 @@ const PoojaSpecificChat: React.FC = () => {
 
             {/* Quick Actions */}
             <div className="space-y-2">
-              {poojaBooking?.poojaStatus === 'no started' && (
+              {/* {poojaBooking?.poojaStatus === 'no started' && (
                 <button
                   onClick={() =>
                     handleUpdatePoojaStatus({
@@ -537,6 +542,110 @@ const PoojaSpecificChat: React.FC = () => {
                     'Mark as Cancel'
                   )}
                 </button>
+              )} */}
+              {/* Case 1: assignStatus = no */}
+              {poojaBooking?.assignStatus === 'no' && (
+                <button
+                  onClick={() =>
+                    handleUpdatePoojaStatus({
+                      poojaId: poojaBooking?.poojaId,
+                      poojaStatus: 'cancel'
+                    })
+                  }
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white transition-all duration-200 hover:from-red-600 hover:to-red-700"
+                  disabled={loadingStates.cancel}
+                >
+                  {loadingStates.cancel ? (
+                    <span className="loader">Updating .....</span>
+                  ) : (
+                    'Mark as Cancel'
+                  )}
+                </button>
+              )}
+
+              {/* Case 2: assignStatus = yes */}
+              {poojaBooking?.assignStatus === 'yes' && (
+                <>
+                  {/* If status is no started OR start → show Progress + Cancel */}
+                  {['no started', 'start'].includes(
+                    poojaBooking?.poojaStatus
+                  ) && (
+                    <>
+                      <button
+                        onClick={() =>
+                          handleUpdatePoojaStatus({
+                            poojaId: poojaBooking?.poojaId,
+                            poojaStatus: 'progress'
+                          })
+                        }
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-white transition-all duration-200 hover:from-orange-600 hover:to-orange-700"
+                        disabled={loadingStates.progress}
+                      >
+                        {loadingStates.progress ? (
+                          <span className="loader">Updating .....</span>
+                        ) : (
+                          'Mark as Progress'
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          handleUpdatePoojaStatus({
+                            poojaId: poojaBooking?.poojaId,
+                            poojaStatus: 'cancel'
+                          })
+                        }
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white transition-all duration-200 hover:from-red-600 hover:to-red-700"
+                        disabled={loadingStates.cancel}
+                      >
+                        {loadingStates.cancel ? (
+                          <span className="loader">Updating .....</span>
+                        ) : (
+                          'Mark as Cancel'
+                        )}
+                      </button>
+                    </>
+                  )}
+
+                  {/* If status is progress → show Complete + Cancel */}
+                  {poojaBooking?.poojaStatus === 'progress' && (
+                    <>
+                      <button
+                        onClick={() =>
+                          handleUpdatePoojaStatus({
+                            poojaId: poojaBooking?.poojaId,
+                            poojaStatus: 'complete'
+                          })
+                        }
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-4 py-2 text-white transition-all duration-200 hover:from-green-600 hover:to-green-700"
+                        disabled={loadingStates.complete}
+                      >
+                        {loadingStates.complete ? (
+                          <span className="loader">Updating .....</span>
+                        ) : (
+                          'Mark as Completed'
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          handleUpdatePoojaStatus({
+                            poojaId: poojaBooking?.poojaId,
+                            poojaStatus: 'cancel'
+                          })
+                        }
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white transition-all duration-200 hover:from-red-600 hover:to-red-700"
+                        disabled={loadingStates.cancel}
+                      >
+                        {loadingStates.cancel ? (
+                          <span className="loader">Updating .....</span>
+                        ) : (
+                          'Mark as Cancel'
+                        )}
+                      </button>
+                    </>
+                  )}
+                </>
               )}
             </div>
           </div>

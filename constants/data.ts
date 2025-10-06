@@ -743,7 +743,7 @@ export const navItems: NavItem[] = [
         isActive: false,
         items: [
           {
-            title: 'All Pooja Orders',
+            title: 'All Puja Orders',
             url: '/dashboard/orders/pooja',
             icon: 'shoppingCart'
           },
