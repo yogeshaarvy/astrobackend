@@ -1,27 +1,29 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import OrderDetailsPage from './poojaorderdetails';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { usePathname } from 'next/navigation';
 import { fetchSingleOrderList } from '@/redux/slices/astropooja/poojaorders';
 
 const Page = () => {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
-  const [orderDetails, setOrderDetails] = useState<any>(null);
+
+  const {
+    singleAllOrdersListState: { loading, data: orderDetails }
+  } = useAppSelector((state) => state.allpoojsorders);
 
   const orderId = pathname?.split('/').pop();
 
   useEffect(() => {
-    if (!orderId) return; // Prevents unnecessary API calls if orderId is missing
-    dispatch(fetchSingleOrderList(orderId)).then((res) => {
-      setOrderDetails(res.payload?.order || null);
-    });
-  }, [dispatch, orderId]); // Added orderId as a dependency
+    if (orderId) {
+      dispatch(fetchSingleOrderList(orderId));
+    }
+  }, [dispatch, orderId]);
 
   return (
     <div>
-      <OrderDetailsPage orderData={orderDetails} />
+      <OrderDetailsPage loading={loading} orderData={orderDetails} />
     </div>
   );
 };
