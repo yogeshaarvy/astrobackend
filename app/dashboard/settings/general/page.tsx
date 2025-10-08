@@ -268,11 +268,20 @@ const Page = () => {
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="name">Address</Label>
+                          <Label htmlFor="name">English Address</Label>
                           <Input
-                            name="contactUs.address"
-                            placeholder="Enter your Address"
-                            value={(cData as ISetting)?.contactUs?.address}
+                            name="contactUs.address.en"
+                            placeholder="Enter your English Address"
+                            value={(cData as ISetting)?.contactUs?.address?.en}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name">Hindi Address</Label>
+                          <Input
+                            name="contactUs.address.hi"
+                            placeholder="Enter your Hindi Address"
+                            value={(cData as ISetting)?.contactUs?.address?.hi}
                             onChange={handleInputChange}
                           />
                         </div>

@@ -34,7 +34,10 @@ export type ISetting = BaseModel & {
       en?: string;
       hi?: string;
     };
-    address?: string;
+    address?: {
+      en?: string;
+      hi?: string;
+    };
     contact?: string;
     whatsapp_no?: string;
     eMail?: string;
