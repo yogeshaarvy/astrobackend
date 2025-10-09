@@ -36,6 +36,7 @@ import StockmanagmentProductForm from './othercomponents/stockmanagement';
 import AttributesForm from './othercomponents/attributes';
 import VariationsForm from './othercomponents/variations';
 import { fetchApi } from '@/services/utlis/fetchApi';
+import slugify from 'slugify';
 
 interface TabsState {
   general: boolean;
@@ -474,6 +475,20 @@ export default function ProductsForm() {
     });
   };
 
+  useEffect(() => {
+    if (!entityId) {
+      const name = (pData as IProducts)?.name;
+      if (name) {
+        const generatedSlug = slugify(name, {
+          lower: true,
+          strict: true,
+          trim: true
+        });
+        dispatch(updateProductsData({ ['slug']: generatedSlug }));
+      }
+    }
+  }, [(pData as IProducts)?.name, entityId]);
+
   return (
     <PageContainer scrollable>
       <Card className="mx-auto mb-16 w-full">
@@ -489,12 +504,12 @@ export default function ProductsForm() {
               className="space-y-8"
             >
               <CustomTextField
-                name="sequence"
-                label="Sequence*"
-                placeholder="Enter your sequence"
-                value={(pData as IProducts)?.sequence}
+                name="name"
+                label="Name*"
+                placeholder="Enter name"
+                value={(pData as IProducts)?.name}
                 onChange={handleInputChange}
-                type="number"
+                type="text"
               />
               <CustomTextField
                 name="slug"
@@ -503,6 +518,14 @@ export default function ProductsForm() {
                 value={(pData as IProducts)?.slug}
                 onChange={handleInputChange}
                 type="text"
+              />
+              <CustomTextField
+                name="sequence"
+                label="Sequence*"
+                placeholder="Enter your sequence"
+                value={(pData as IProducts)?.sequence}
+                onChange={handleInputChange}
+                type="number"
               />
               <Tabs defaultValue="English" className="mt-4 w-full">
                 <TabsList className="flex w-full space-x-2 p-0">
@@ -521,11 +544,6 @@ export default function ProductsForm() {
                 </TabsList>
 
                 <TabsContent value="English">
-                  {/* <CardHeader className="!px-0">
-                    <CardTitle className="text-lg font-bold ">
-                      ENGLISH-PRODUCT
-                    </CardTitle>
-                  </CardHeader> */}
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
                       name="title.en"
@@ -561,11 +579,6 @@ export default function ProductsForm() {
                 </TabsContent>
 
                 <TabsContent value="Hindi">
-                  {/* <CardHeader className="!px-0">
-                    <CardTitle className="text-lg font-bold ">
-                      HINDI-PRODUCT
-                    </CardTitle>
-                  </CardHeader> */}
                   <CardContent className="space-y-2 p-0">
                     <CustomTextField
                       name="title.hi"
@@ -609,11 +622,11 @@ export default function ProductsForm() {
                 type="text"
               />
               <CustomTextField
-                name="meta_tag"
-                label="Meta Tag*"
-                placeholder="Enter your meta tag"
-                value={(pData as IProducts)?.meta_tag}
+                label="Meta Title*"
+                name="meta_title"
+                placeholder="Enter meta title"
                 onChange={handleInputChange}
+                value={(pData as IProducts)?.meta_title}
               />
               <CustomTextField
                 name="meta_description"
@@ -623,13 +636,12 @@ export default function ProductsForm() {
                 onChange={handleInputChange}
               />
               <CustomTextField
-                label="Meta Title*"
-                name="meta_title"
-                placeholder="Enter meta title"
+                name="meta_tag"
+                label="Meta Tag*"
+                placeholder="Enter your meta tag"
+                value={(pData as IProducts)?.meta_tag}
                 onChange={handleInputChange}
-                value={(pData as IProducts)?.meta_title}
               />
-
               <CustomReactSelect
                 options={brands}
                 label="Brand Name*"
@@ -643,7 +655,6 @@ export default function ProductsForm() {
                 }
                 value={(pData as IProducts)?.brand_name}
               />
-
               <CustomReactSelect
                 options={canData}
                 label="Made In*"
@@ -723,14 +734,7 @@ export default function ProductsForm() {
                     { name: 'True', _id: 'true' },
                     { name: 'False', _id: 'false' }
                   ]}
-                  onChange={(value) =>
-                    handleInputChange({
-                      target: {
-                        name: 'return_able',
-                        value: value.value
-                      }
-                    })
-                  }
+                  onChange={handleDropdownChange}
                 />
                 {(pData as IProducts)?.return_able && (
                   <CustomTextField
@@ -755,14 +759,7 @@ export default function ProductsForm() {
                     { name: 'True', _id: 'true' },
                     { name: 'False', _id: 'false' }
                   ]}
-                  onChange={(value) =>
-                    handleInputChange({
-                      target: {
-                        name: 'if_cancel',
-                        value: value.value
-                      }
-                    })
-                  }
+                  onChange={handleDropdownChange}
                 />
                 {(pData as IProducts)?.if_cancel && (
                   <CustomTextField
@@ -894,68 +891,6 @@ export default function ProductsForm() {
                     </div>
                   ))}
                 </div>
-              </div>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <CustomDropdown
-                  label="Video Type"
-                  name="videotype"
-                  // placeholder="Select Video Type"
-                  required={true}
-                  value={(pData as IProducts)?.videotype}
-                  defaultValue={(pData as IProducts)?.videotype || 'none'}
-                  data={[
-                    { name: 'None', _id: 'none' },
-                    { name: 'Self Hosted', _id: 'selfmadevideo' },
-                    { name: 'Vimeo ', _id: 'vimeovideo' },
-                    { name: 'YouTube', _id: 'youtubvideo' }
-                  ]}
-                  onChange={(value) =>
-                    handleInputChange({
-                      target: {
-                        name: 'videotype',
-                        value: value.value
-                      }
-                    })
-                  }
-                />
-                {(pData as IProducts)?.videotype === 'selfmadevideo' && (
-                  <div>
-                    <label className="mt-2 block text-sm font-medium text-gray-700">
-                      Upload Video*
-                    </label>
-                    <input
-                      type="file"
-                      accept="video/*"
-                      className="file:bg-black-100 hover:file:bg-black-100 block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-500"
-                      onChange={handleVideoUpload}
-                    />
-                    {videoFileName && (
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-700">{videoFileName}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {(pData as IProducts)?.videotype === 'vimeovideo' && (
-                  <CustomTextField
-                    label=" Upload Video*"
-                    name="videodata"
-                    placeholder="Enter Vimeo video URL"
-                    onChange={handleInputChange}
-                    value={(pData as IProducts)?.videodata}
-                    type="url"
-                  />
-                )}
-                {(pData as IProducts)?.videotype === 'youtubvideo' && (
-                  <CustomTextField
-                    label="Upload Video*"
-                    name="videodata"
-                    placeholder="Enter YouTube video URL"
-                    onChange={handleInputChange}
-                    value={(pData as IProducts)?.videodata}
-                    type="url"
-                  />
-                )}
               </div>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <CustomDropdown

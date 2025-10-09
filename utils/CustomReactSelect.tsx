@@ -33,7 +33,6 @@ const CustomReactSelect: React.FC<CustomReactSelectProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-
   // Debounced input handler
   const debouncedInputChange = useCallback(
     debounce((inputValue: string) => {
@@ -66,6 +65,7 @@ const CustomReactSelect: React.FC<CustomReactSelectProps> = ({
         getOptionLabel={getOptionLabel}
         getOptionValue={getOptionValue}
         value={value}
+        menuPosition="fixed"
       />
       {errorMsg && <span className="text-sm text-red-500">{errorMsg}</span>}
     </div>
