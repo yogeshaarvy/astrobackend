@@ -263,7 +263,7 @@ export default function ProductsForm() {
       return;
     }
 
-    const formData = { ...pData }; // Create a copy to avoid mutation
+    const formData: any = { ...pData }; // Create a copy to avoid mutation
     const productType = formData.productype;
     const stockManagementEnabled =
       formData.stockManagement?.stock_management === true;
@@ -464,7 +464,7 @@ export default function ProductsForm() {
 
     // Submit the data to the API
     dispatch(addEditProducts(entityId || null)).then((response) => {
-      if (!response?.error) {
+      if (!response?.payload?.error) {
         router.push('/dashboard/store/products');
         toast.success(
           response?.payload?.message || 'Product saved successfully'
@@ -736,7 +736,7 @@ export default function ProductsForm() {
                   ]}
                   onChange={handleDropdownChange}
                 />
-                {(pData as IProducts)?.return_able && (
+                {(pData as IProducts)?.return_able === 'true' && (
                   <CustomTextField
                     label="Number of days"
                     name="number_of_days"
@@ -761,7 +761,7 @@ export default function ProductsForm() {
                   ]}
                   onChange={handleDropdownChange}
                 />
-                {(pData as IProducts)?.if_cancel && (
+                {(pData as IProducts)?.if_cancel === 'true' && (
                   <CustomTextField
                     label="Number Of Days"
                     name="cancel_days"

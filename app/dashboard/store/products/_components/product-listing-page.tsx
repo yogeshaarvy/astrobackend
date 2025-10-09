@@ -125,7 +125,7 @@ export default function ProductsListingPage() {
     <PageContainer scrollable>
       <div className="mr-5 space-y-4">
         <div className="flex items-start justify-between pr-4">
-          <Heading title={`Products`} description="" />
+          <Heading title={`Store Products (${totalCount})`} description="" />
           <div className="flex items-center">
             <Button
               className="mx-5 py-4"

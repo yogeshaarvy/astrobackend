@@ -61,9 +61,9 @@ export type IProducts = BaseModel & {
   minorder?: string;
   minorder_value?: number;
   hsn_code?: string;
-  return_able?: boolean;
+  return_able?: boolean | string | undefined;
   number_of_days?: number;
-  if_cancel?: string;
+  if_cancel?: boolean | string | undefined;
   cancel_days?: number;
   videodata?: string;
   is_cod_allowed?: boolean;
