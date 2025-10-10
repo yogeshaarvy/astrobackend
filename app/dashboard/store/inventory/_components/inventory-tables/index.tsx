@@ -33,9 +33,10 @@ export default function InventoryTable({
   const [ProductsQuery, setProductsQuery] = useState<string>('');
   const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<IInventory[]>(data);
+  const [isExporting, setIsExporting] = useState(false);
   const searchParams = useSearchParams();
-  const pageSize = parseInt(searchParams?.get('limit'));
-  const page = parseInt(searchParams?.get('page'));
+  const pageSize = parseInt(searchParams?.get('limit') ?? '10', 10);
+  const page = parseInt(searchParams?.get('page') ?? '1', 10);
 
   const handleProductChange = (selectedOption: any) => {
     setSelectedProducts(selectedOption);
@@ -45,7 +46,8 @@ export default function InventoryTable({
       dispatch(
         fetchProductsList({
           pageSize,
-          page
+          page,
+          exportData: 'false'
         })
       );
     }
@@ -54,7 +56,14 @@ export default function InventoryTable({
   const debouncedSearchProducts = useCallback(
     debounce((query) => {
       if (query.trim()) {
-        dispatch(fetchProductsList({ keyword: query, page, pageSize }));
+        dispatch(
+          fetchProductsList({
+            keyword: query,
+            page,
+            pageSize,
+            exportData: 'false'
+          })
+        );
       }
     }, 800),
     [dispatch]
@@ -63,6 +72,123 @@ export default function InventoryTable({
   const handleSearchProducts = (query: string) => {
     setProductsQuery(query);
     debouncedSearchProducts(query);
+  };
+
+  // CSV Export function - fetches all data from DB
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    try {
+      // Dispatch action to fetch all data for export
+      const result = await dispatch(
+        fetchProductsList({
+          exportData: 'true', // Send export flag to API
+          // Remove pagination limits for full data export
+          pageSize: 999999, // Large number to get all records
+          page: 1
+        })
+      ).unwrap();
+      // Use the fetched export data
+      const exportData = result?.productsdata || [];
+      const csvHeaders = [
+        'S.No.',
+        'Name',
+        'Variants',
+        'Stock',
+        'Stock Management Level',
+        'Inventory Id'
+      ];
+
+      const csvData = exportData.map((item: any, index: number) => {
+        // Get variants
+        let variants = '';
+        if (
+          item.productype === 'variableproduct' &&
+          item.stockManagement?.stock_management_level === 'product_level'
+        ) {
+          variants = '';
+        } else {
+          variants =
+            item?.variants?.[0]?.values
+              ?.map((e: any) => e?.short_name)
+              .join(', ') || '';
+        }
+
+        // Get stock
+        let stock = '';
+        if (
+          item.productype === 'variableproduct' &&
+          item.stockManagement?.stock_management_level === 'variable_level'
+        ) {
+          stock = item?.variants?.[0]?.totalStock || '';
+        } else {
+          stock = item?.stock_value || '';
+        }
+
+        // Get status
+        let status = '';
+        if (
+          item.productype === 'variableproduct' &&
+          item.stockManagement?.stock_management_level === 'product_level'
+        ) {
+          status = item?.stock_status === 'true' ? 'In Stock' : 'Out Of Stock';
+        } else {
+          status =
+            item?.variants?.[0]?.stock_status === 'true'
+              ? 'In Stock'
+              : 'Out Of Stock';
+        }
+
+        let stock_management_level = '';
+        if (
+          item.productype === 'variableproduct' &&
+          item.stockManagement?.stock_management_level === 'variable_level'
+        ) {
+          stock_management_level = 'Variable Level';
+        } else {
+          stock_management_level = 'Product Level';
+        }
+        let InventoryId = item.lastInventoryId ? item.lastInventoryId : '';
+
+        return [
+          index + 1,
+          item.name || '',
+          variants,
+          stock,
+          stock_management_level,
+          InventoryId
+        ];
+      });
+
+      // Convert to CSV format
+      const csvContent = [
+        csvHeaders.join(','),
+        ...csvData.map((row: any) =>
+          row
+            .map((cell: any) => `"${String(cell).replace(/"/g, '""')}"`)
+            .join(',')
+        )
+      ].join('\n');
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute(
+        'download',
+        `inventory_export_${new Date().toISOString().split('T')[0]}.csv`
+      );
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      // You can add a toast notification here for better UX
+      alert('Failed to export data. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const handleReset = () => {
@@ -230,6 +356,13 @@ export default function InventoryTable({
         </Button>
         <Button variant="destructive" onClick={handleReset}>
           Reset
+        </Button>
+        <Button
+          variant="default"
+          onClick={handleExportCSV}
+          disabled={isExporting}
+        >
+          {isExporting ? 'Exporting...' : 'Export CSV'}
         </Button>
       </div>
       <DataTable columns={columns} data={filteredData} totalItems={totalData} />

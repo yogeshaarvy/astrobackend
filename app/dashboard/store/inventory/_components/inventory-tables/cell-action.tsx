@@ -54,16 +54,16 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                   'product_level'
                 ) {
                   router.push(
-                    `/dashboard/inventries/product?productid=${data._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}&variantid=${data?.variants[0]?._id}`
+                    `/dashboard/store/inventory/product?id=${data._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}&variantid=${data?.variants[0]?._id}`
                   );
                 } else {
                   router.push(
-                    `/dashboard/inventries/product?productid=${data._id}&variantid=${data?.variants[0]?._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}`
+                    `/dashboard/store/inventory/product?id=${data._id}&variantid=${data?.variants[0]?._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}`
                   );
                 }
               } else {
                 router.push(
-                  `/dashboard/inventries/product?productid=${data._id}&variantid=${data?.variants[0]?._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}`
+                  `/dashboard/store/inventory/product?id=${data._id}&variantid=${data?.variants[0]?._id}&producttype=${data.productype}&stock_management=${data?.stockManagement?.stock_management_level}&productname=${data?.name}`
                 );
               }
             }}

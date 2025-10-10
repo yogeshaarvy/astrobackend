@@ -464,7 +464,8 @@ export default function ProductsForm() {
 
     // Submit the data to the API
     dispatch(addEditProducts(entityId || null)).then((response) => {
-      if (!response?.payload?.error) {
+      console.log('response response', response);
+      if (response?.meta?.requestStatus === 'fulfilled') {
         router.push('/dashboard/store/products');
         toast.success(
           response?.payload?.message || 'Product saved successfully'

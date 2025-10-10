@@ -5,7 +5,6 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { IInventory } from '@/redux/slices/inventoriesSlice';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 export default function ProductInventoryTable({
   data,

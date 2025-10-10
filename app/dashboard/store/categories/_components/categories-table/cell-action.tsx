@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useAppDispatch } from '@/redux/hooks';
 import {
   ICategory,
   deleteCategory,
@@ -25,7 +26,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onConfirm = async () => {
     dispatch(deleteCategory(data?._id || ''));
     setOpen(false);

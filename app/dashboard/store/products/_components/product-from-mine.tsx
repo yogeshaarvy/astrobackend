@@ -31,10 +31,6 @@
 // import { fetchCategoryList } from '@/redux/slices/store/categoriesSlice';
 // import CustomDropdown from '@/utils/CusomDropdown';
 // import { Switch } from '@/components/ui/switch';
-// import SimpleProductForm from './othercomponents/simpleproductsdrop';
-// import StockmanagmentProductForm from './othercomponents/stockmanagement';
-// import AttributesForm from './othercomponents/attributes';
-// import VariationsForm from './othercomponents/variations';
 // import { fetchApi } from '@/services/utlis/fetchApi';
 // import slugify from 'slugify';
 
@@ -51,26 +47,9 @@
 //   const dispatch = useAppDispatch();
 
 //   const [mainImage, setMainImage] = useState<File | null>(null);
-//   const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
 //   const [secondMainImage, setSecondMainImage] = useState<File | null>(null);
-//   const [secondMainImagePreview, setSecondMainImagePreview] = useState<
-//     string | null
-//   >(null);
 //   const [otherImages, setOtherImages] = useState<File[]>([]);
 //   const [variations, setVariations] = useState<any[]>([]);
-//   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-//   const [videoFile, setVideoFile] = useState<File | null>(null);
-//   const [videoFileName, setVideoFileName] = useState<string | null>(null);
-//   const [activeTab, setActiveTab] = useState('general');
-//   const [attributes, setAttributes] = useState<
-//     { type: string; values: string[] }[]
-//   >([]);
-//   const [settingsSaved, setSettingsSaved] = useState(false);
-//   const [tabsEnabled, setTabsEnabled] = useState<TabsState>({
-//     general: true,
-//     attribute: false,
-//     variations: false
-//   });
 
 //   const {
 //     singleProductsState: { loading, data: pData }
@@ -148,7 +127,7 @@
 //   const handleDropdownChange = (e: any) => {
 //     const { name, value } = e;
 //     dispatch(
-//       updateProductsData({ [name]: value }) // .then(handleReduxResponse());
+//       updateProductsData({ [name]: value })
 //     );
 //   };
 
@@ -167,204 +146,12 @@
 //       })
 //     );
 //   };
-
-//   // Fixed handleSaveSettings function
-//   const handleSaveSettings = () => {
-//     if (!pData) {
-//       toast.error('Product data is not available');
-//       return;
-//     }
-
-//     const formData:any = { ...pData };
-//     let requiredFields: any[] = [];
-
-//     const missingFields = requiredFields.filter(
-//       (field) => !formData[field]
-//     );
-
-//     if (missingFields.length > 0) {
-//       toast.error(`Missing  fields required: ${missingFields.join(', ')}`);
-//       return;
-//     }
-
-//     // Enable the "Attribute" and "Variations" tabs after saving settings
-//     setTabsEnabled((prev) => ({
-//       ...prev,
-//       attribute: true,
-//       variations: true // Only enable variations for variable products
-//     }));
-
-//     // Mark settings as saved
-//     setSettingsSaved(true);
-
-//     toast.success('Settings saved successfully!');
-//   };
-
 //   // Fixed handleSubmit function
 //   const handleSubmit = async () => {
-//     if (entityId) {
-//       handleSaveSettings();
-//     }
 //     if (!pData) {
 //       toast.error('Product data is not available');
 //       return;
 //     }
-
-//     // Validate required fields
-//     let missingFields: any[] = [];
-//     const categories = pData.categories?.length > 0 ? pData.categories : [];
-//     const brandName = pData.brand_name || '';
-//     const madeIn = pData.madeIn || '';
-//     const tags = pData.tags || '';
-//     const tax = pData.tax || '';
-
-//     // If any fields are missing, show an error message with the field names
-//     if (missingFields.length > 0) {
-//       toast.error(
-//         `The following fields are required: ${missingFields.join(', ')}`
-//       );
-//       return;
-//     }
-
-//     // If product type is variable, ensure at least one attribute is selected
-//     if (
-//       pData.productype === 'variableproduct' &&
-//       (!attributes || attributes.length === 0)
-//     ) {
-//       toast.error('At least one attribute is required for variable products');
-//       return;
-//     }
-
-//     // Validate video data if videotype is selected
-//     if (pData.videotype && pData.videotype !== 'none') {
-//       if (
-//         pData.videotype === 'selfmadevideo' &&
-//         !videoFile &&
-//         !pData.videodata
-//       ) {
-//         toast.error('Video file is required for self-hosted videos');
-//         return;
-//       } else if (pData.videotype !== 'selfmadevideo' && !pData.videodata) {
-//         toast.error('Video URL is required when video type is selected');
-//         return;
-//       }
-//     }
-
-//     // Validate variations if product is variable and variations exist
-//     if (variations?.length > 0) {
-//       let isValid = true;
-
-//       let variationErrors: any[] = [];
-
-//       variations.forEach((variation, index) => {
-//         let missingVariationFields: any[] = [];
-
-//         if (!variation.price) missingVariationFields.push('Price');
-//         if (!variation.special_price)
-//           missingVariationFields.push('Special Price');
-//         if (!variation.weight) missingVariationFields.push('Weight');
-//         if (!variation.height) missingVariationFields.push('Height');
-//         if (!variation.breadth) missingVariationFields.push('Breadth');
-//         if (!variation.length) missingVariationFields.push('Length');
-//         if (pData.productype != 'simpleproduct') {
-//           if (!variation.sku) missingVariationFields.push('SKU');
-//           if (!variation.image) missingVariationFields.push('Image');
-//         }
-
-//         if (missingVariationFields.length > 0) {
-//           isValid = false;
-//           variationErrors.push(
-//             `Variation ${index + 1}: ${missingVariationFields.join(', ')}`
-//           );
-//         }
-//       });
-
-//       if (!isValid) {
-//         toast.error(
-//           `Please fill in the required fields for variations:\n${variationErrors.join(
-//             '\n'
-//           )}`
-//         );
-//         return;
-//       }
-//     }
-
-//     // Determine video data based on video type
-//     const finalVideoData =
-//       pData.videotype === 'selfmadevideo' ? videoFile : pData.videodata;
-
-//     // Handle variations based on product type
-//     let finalVariations = variations;
-
-//     // Upload images for variations if needed
-//     const uploadImageAndUpdate = async () => {
-//       // Create a copy of the variations array
-//       const updatedVariations = [...finalVariations];
-
-//       for (let i = 0; i < updatedVariations.length; i++) {
-//         const item = updatedVariations[i];
-
-//         const formData = new FormData();
-
-//         if (item.image) {
-//           const fileType = item?.image?.type?.startsWith('image/')
-//             ? 'imagefile'
-//             : item?.image?.type?.startsWith('audio/')
-//             ? 'audiofile'
-//             : 'file';
-
-//           formData.append(fileType, item?.image);
-
-//           try {
-//             const response = await fetchApi('/files', {
-//               method: 'POST',
-//               body: formData
-//             });
-
-//             // Update the finalVariations array with the response data
-//             finalVariations[i] = {
-//               ...item,
-//               image: response?.result?.imageFileUrl
-//             };
-//           } catch (error) {
-//             console.error('Error uploading file:', error);
-//           }
-//         }
-//       }
-
-//       // Update finalVariations with the processed data
-//       // finalVariations = updatedVariations;
-//     };
-
-//     // Process variations images
-
-//     await uploadImageAndUpdate();
-
-//     // Format attributes properly for saving
-//     const attributesToSave = attributes.map((attr) => ({
-//       type: attr?.type?._id,
-//       values: attr?.values.map((value: any) => value?._id)
-//     }));
-
-//     // Create the final data for submission
-//     const finalData = {
-//       ...(pData || {}),
-//       brand_name: brandName,
-//       madeIn: madeIn,
-//       tags: tags,
-//       tax: tax,
-//       categories: categories,
-//       variations: finalVariations,
-//       attributes: attributesToSave,
-//       // Handle main images appropriately
-//       main_image: mainImage || pData.main_image || '',
-//       second_main_image: secondMainImage || pData.second_main_image || '',
-//       videodata: finalVideoData || '',
-//       other_image: otherImages || []
-//     };
-
-//     // Update the product data in Redux
-//     dispatch(updateProductsData(finalData));
 
 //     // Submit the data to the API
 //     dispatch(addEditProducts(entityId || null)).then((response) => {
@@ -392,8 +179,6 @@
 //       }
 //     }
 //   }, [(pData as IProducts)?.name, entityId]);
-
-//   console.log("(pData as IProducts)?.if_cancel", typeof (pData as IProducts)?.if_cancel)
 
 //   return (
 //     <PageContainer scrollable>

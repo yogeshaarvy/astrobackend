@@ -4,7 +4,7 @@ import { fetchApi } from '@/services/utlis/fetchApi';
 
 import { BaseModel, BaseState, PaginationState } from '@/types/globals';
 import { toast } from 'sonner';
-import { IProducts } from './productSlice';
+import { IProducts } from './store/productSlice';
 
 export type IInventory = BaseModel & {
   _id?: string;

@@ -51,8 +51,6 @@ export type IProducts = BaseModel & {
   meta_description?: string;
   meta_tag?: string;
   madeIn?: any;
-  // price?: number;
-  // special_price?: number,
   videotype?: any;
   tax?: any;
   tags?: any;
@@ -69,8 +67,8 @@ export type IProducts = BaseModel & {
   is_cod_allowed?: boolean;
 
   productype?: string;
-  simpleProduct?: ISimpleProduct; // Nested object for Simple Product fields
-  stockManagement?: IStockManagement; // Nested object for Stock Management fields
+  simpleProduct?: ISimpleProduct;
+  stockManagement?: IStockManagement;
   variations?: any;
   attributes?: any;
   variants?: any;
@@ -268,12 +266,10 @@ export const addEditProducts = createAsyncThunk<
     } else {
       const errorMsg = response?.data?.message ?? 'Something Went Wrong1!!';
       dispatch(addEditProductsFailure(errorMsg));
-      toast.error(errorMsg);
       return rejectWithValue(errorMsg);
     }
   } catch (error: any) {
     const errorMsg = error?.message ?? 'Something Went Wrong!!';
-    toast.error(errorMsg);
     dispatch(addEditProductsFailure(errorMsg));
     return rejectWithValue(errorMsg);
   }

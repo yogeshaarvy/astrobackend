@@ -39,6 +39,9 @@ export default function ProductInventoryListingPage() {
   const pageSize = parseInt(searchParams?.get('limit') ?? '10', 10);
   let exportData = 'false';
 
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
   // State for the add inventory popup
   const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
   const [inventoryFormData, setInventoryFormData] = useState({
@@ -73,7 +76,9 @@ export default function ProductInventoryListingPage() {
         variantId,
         producttype,
         stock_management,
-        exportData
+        exportData,
+        startDate: undefined,
+        endDate: undefined
       })
     );
 
@@ -92,7 +97,9 @@ export default function ProductInventoryListingPage() {
         variantId,
         producttype,
         stock_management,
-        exportData
+        exportData,
+        startDate: undefined,
+        endDate: undefined
       })
     );
   };
@@ -163,7 +170,9 @@ export default function ProductInventoryListingPage() {
           variantId,
           producttype,
           stock_management,
-          exportData: 'true'
+          exportData: 'true',
+          startDate: undefined,
+          endDate: undefined
         })
       ).unwrap();
       const exportData = exportResponse.InventoriesData;
@@ -233,6 +242,10 @@ export default function ProductInventoryListingPage() {
           data={product_Inventories}
           totalData={totalCount}
           handleSearch={handleSearch}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          startDate={startDate}
+          endDate={endDate}
         />
       </div>
 
