@@ -144,7 +144,7 @@ const AttributesForm: React.FC<AttributesFormProps> = ({
         </div>
       )}
       {attributes?.length === 0 ? (
-        <div className="text-md border-black-1000 border bg-gray-100 p-3 text-center font-medium font-semibold">
+        <div className="text-md border-black-1000 border bg-gray-100 p-3 text-center font-semibold">
           No Product Attributes Are Added!
         </div>
       ) : (
