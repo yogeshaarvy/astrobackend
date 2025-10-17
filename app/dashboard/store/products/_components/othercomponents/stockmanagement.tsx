@@ -15,8 +15,8 @@ import { FormLabel } from '@/components/ui/form';
 import { useAppDispatch } from '@/redux/hooks';
 
 interface StockmanagmentProductFormProps {
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  producttype: 'simpleproduct' | 'variableproduct';
+  handleInputChange: (e: any) => void;
+  producttype: any;
   disabled: boolean;
   pData: any;
 }

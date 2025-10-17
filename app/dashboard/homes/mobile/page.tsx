@@ -41,6 +41,10 @@ const Page = () => {
   } = useAppSelector((state) => state.mobileImage);
 
   console.log('this is the cData Value', cData);
+  const [appBarBannerEnFile, setAppBarBannerEnFile] =
+    React.useState<File | null>(null);
+  const [appBarBannerHiFile, setAppBarBannerHiFile] =
+    React.useState<File | null>(null);
   const [consultationEnFile, setConsultationEnFile] =
     React.useState<File | null>(null);
   const [consultationHiFile, setConsultationHiFile] =
@@ -81,6 +85,8 @@ const Page = () => {
           // Reset all file states
           setConsultationEnFile(null);
           setConsultationHiFile(null);
+          setAppBarBannerEnFile(null);
+          setAppBarBannerHiFile(null);
           setKundliEnFile(null);
           setKundliHiFile(null);
           setVibhorEnFile(null);
@@ -105,6 +111,103 @@ const Page = () => {
             Mobile Home Page Images
           </CardTitle>
         </CardHeader>
+      </Card>
+
+      {/* App Bar Banner Images Section */}
+      <Card className="mx-auto mb-16 w-full">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">
+            App Bar Banner Images
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form className="space-y-8">
+              <Tabs defaultValue="English" className="w-full">
+                <TabsList className="flex w-full space-x-2 p-0">
+                  <TabsTrigger
+                    value="English"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    English
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Hindi"
+                    className="flex-1 rounded-md py-2 text-center hover:bg-gray-200"
+                  >
+                    Hindi
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="English">
+                  <div className="space-y-2 pt-4">
+                    <FormItem className="space-y-3">
+                      <FormLabel>App Bar Banner Image (English)</FormLabel>
+                      <FileUploader
+                        value={appBarBannerEnFile ? [appBarBannerEnFile] : []}
+                        onValueChange={(newFiles: any) => {
+                          setAppBarBannerEnFile(newFiles[0] || null);
+                          handleInputChange({
+                            target: {
+                              name: 'appBarBanner.en',
+                              type: 'file',
+                              files: newFiles
+                            }
+                          });
+                        }}
+                        accept={{ 'image/*': [] }}
+                        maxSize={1024 * 1024 * 2}
+                      />
+                      {typeof (cData as IMobileImage)?.appBarBanner?.en ===
+                        'string' && (
+                        <div className="max-h-48 space-y-4">
+                          <FileViewCard
+                            existingImageURL={
+                              (cData as IMobileImage)?.appBarBanner?.en
+                            }
+                          />
+                        </div>
+                      )}
+                    </FormItem>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="Hindi">
+                  <div className="space-y-2 pt-4">
+                    <FormItem className="space-y-3">
+                      <FormLabel>App Bar Banner Image (Hindi)</FormLabel>
+                      <FileUploader
+                        value={appBarBannerHiFile ? [appBarBannerHiFile] : []}
+                        onValueChange={(newFiles: any) => {
+                          setAppBarBannerHiFile(newFiles[0] || null);
+                          handleInputChange({
+                            target: {
+                              name: 'appBarBanner.hi',
+                              type: 'file',
+                              files: newFiles
+                            }
+                          });
+                        }}
+                        accept={{ 'image/*': [] }}
+                        maxSize={1024 * 1024 * 2}
+                      />
+                      {typeof (cData as IMobileImage)?.appBarBanner?.hi ===
+                        'string' && (
+                        <div className="max-h-48 space-y-4">
+                          <FileViewCard
+                            existingImageURL={
+                              (cData as IMobileImage)?.appBarBanner?.hi
+                            }
+                          />
+                        </div>
+                      )}
+                    </FormItem>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </form>
+          </Form>
+        </CardContent>
       </Card>
 
       {/* Consultation Images Section */}
@@ -405,7 +508,7 @@ const Page = () => {
           marginBottom: '1rem'
         }}
       >
-        <Button type="submit" onClick={() => handleSubmit()} disabled={loading}>
+        <Button type="submit" onClick={() => handleSubmit()}>
           {loading ? 'Submitting...' : 'Submit'}
         </Button>
       </CardFooter>

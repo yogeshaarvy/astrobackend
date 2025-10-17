@@ -13,6 +13,10 @@ export type IMobileImage = BaseModel & {
     en?: string;
     hi?: string;
   };
+  appBarBanner?: {
+    en?: string;
+    hi?: string;
+  };
   kundliImage?: {
     en?: string;
     hi?: string;
@@ -89,6 +93,9 @@ export const addEditMobileImage = createAsyncThunk<
 
       const formData = new FormData();
       const reqData: any = {
+        appBarBanner: clonedData.appBarBanner
+          ? JSON.stringify(clonedData.appBarBanner)
+          : undefined,
         consultationImage: clonedData.consultationImage
           ? JSON.stringify(clonedData.consultationImage)
           : undefined,
@@ -115,7 +122,6 @@ export const addEditMobileImage = createAsyncThunk<
         dispatch(addEditMobileImageSuccess());
         dispatch(setMobileImage(null));
         dispatch(fetchMobileImages(null)); // Re-fetch to update the latest data
-        toast.success(response?.message);
         return response;
       } else {
         const errorMsg = response?.message || 'Failed to save description';
@@ -126,7 +132,6 @@ export const addEditMobileImage = createAsyncThunk<
     } catch (error: any) {
       const errorMsg = error?.message || 'Something Went Wrong';
       dispatch(addEditMobileImageFailure(errorMsg));
-      toast.error(errorMsg);
       return rejectWithValue(errorMsg);
     }
   }

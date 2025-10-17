@@ -152,8 +152,8 @@ export default function ProductsForm() {
   }, [dispatch]);
   useEffect(() => {
     if (entityId) {
-      setMainImage(pData?.main_image || '');
-      setSecondMainImage(pData?.second_main_image || '');
+      setMainImage(null);
+      setSecondMainImage(null);
       setAttributes(pData?.attributes || []);
       // Set initial state for images
       setMainImagePreview(pData?.main_image || null);
@@ -437,7 +437,7 @@ export default function ProductsForm() {
     await uploadImageAndUpdate();
 
     // Format attributes properly for saving
-    const attributesToSave = attributes.map((attr) => ({
+    const attributesToSave = attributes.map((attr: any) => ({
       type: attr?.type?._id,
       values: attr?.values.map((value: any) => value?._id)
     }));
