@@ -66,8 +66,8 @@ export default function AllOrdersTable({
       header: 'Booked Date'
     },
     {
-      accessorKey: 'bookedTime',
-      header: 'Booked Time'
+      accessorKey: 'orderStatus',
+      header: 'Order Status'
     },
     {
       accessorKey: 'paymentStatus',
