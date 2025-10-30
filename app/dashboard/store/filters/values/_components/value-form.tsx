@@ -18,7 +18,8 @@ import CustomTextField from '@/utils/CustomTextField';
 import { CustomMultiDropdown } from '@/utils/CustomMultiDropdown';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { debounce } from 'lodash';
-
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { fetchTypesList } from '@/redux/slices/store/filtersSlice';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -241,6 +242,24 @@ export default function ValuesForm() {
                 value={typesData}
                 onChange={setTypesData}
               />
+
+              {typesData?.some((typeId) => {
+                const type = tData.find((t) => t._id === typeId);
+                return type?.name?.en?.toLowerCase() === 'color';
+              }) && (
+                <div className="flex flex-col space-y-2">
+                  <Label htmlFor="colorCode">Color Code</Label>
+                  <Input
+                    id="colorCode"
+                    type="color"
+                    name="colorCode"
+                    value={(vData as IValues)?.colorCode || '#ffffff'}
+                    onChange={handleInputChange}
+                    className="h-10 w-full cursor-pointer rounded-md border p-1"
+                  />
+                </div>
+              )}
+
               {/* </div> */}
 
               <Button type="submit">Submit</Button>

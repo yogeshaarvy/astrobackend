@@ -31,6 +31,7 @@ export type IValues = BaseModel & {
   };
   active?: boolean;
   types?: any;
+  colorCode?: string;
   sequence?: number;
 };
 
@@ -333,6 +334,7 @@ export const addEditValues = createAsyncThunk<
         ? JSON.stringify(clonedData.full_name)
         : undefined,
       active: data.active,
+      colorCode: data.colorCode,
       sequence: data.sequence,
       types: Array.isArray(data.types)
         ? data.types.map((type) => (typeof type === 'object' ? type._id : type))

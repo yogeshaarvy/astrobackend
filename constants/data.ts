@@ -773,6 +773,11 @@ export const navItems: NavItem[] = [
         title: 'Vibhor',
         url: '/dashboard/orders/vibhor-packages',
         icon: 'graduationCap'
+      },
+      {
+        title: 'Consultation',
+        url: '/dashboard/orders/consultation',
+        icon: 'speech'
       }
     ]
   },

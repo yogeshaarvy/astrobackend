@@ -75,6 +75,7 @@ import matchMakingReducer from './slices/matchmaking/config';
 import matchMakingTestimonialReducer from './slices/matchmaking/testimonial';
 import matchmakingListReducer from './slices/matchmaking/matchmakinglist';
 import allordersReducer from './slices/store/allordersSlice';
+import allConsultationOrderReducer from './slices/consultations/consultationsOrdersSlice';
 import poojaOrdersReducer from './slices/astropooja/poojaorders';
 import vibhorOrdersReducer from './slices/vibhor/ordersSlice';
 import projectFaqReducer from './slices/projectFaqSlice';
@@ -184,6 +185,7 @@ export const makeStore = () => {
       matchMaking: matchMakingReducer,
       matchMakingTestimonial: matchMakingTestimonialReducer,
       allorders: allordersReducer,
+      consultationOrder: allConsultationOrderReducer,
       allpoojsorders: poojaOrdersReducer,
       allvibhororders: vibhorOrdersReducer,
       projectfaq: projectFaqReducer,
