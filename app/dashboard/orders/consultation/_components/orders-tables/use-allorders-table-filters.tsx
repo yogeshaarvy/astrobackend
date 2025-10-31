@@ -6,10 +6,20 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 export const STATUS_OPTIONS = [
-  { value: 'true', label: 'True' },
-  { value: 'false', label: 'False' }
+  { value: 'succcess', label: 'Succcess' },
+  { value: 'panding', label: 'Panding' },
+  { value: 'failed', label: 'Failed' }
 ];
-export const FIELD_OPTIONS = [{ value: 'date', label: 'Date' }];
+export const ORDER_STATUS_OPTIONS = [
+  { value: 'completed', label: 'Completed' },
+  { value: 'panding', label: 'Panding' },
+  { value: 'failed', label: 'Failed' }
+];
+export const FIELD_OPTIONS = [
+  { value: 'orderId', label: 'Order Id' },
+  { value: 'bookedDate', label: 'Booked Date (Ex :-2025-10-31)' }
+];
+
 export function useConsultationsOrdersTableFilters() {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useQueryState(
