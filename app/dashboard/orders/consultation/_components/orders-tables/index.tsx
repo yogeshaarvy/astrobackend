@@ -8,6 +8,7 @@ import { IConsultationsOrdersList } from '@/redux/slices/consultations/consultat
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
 import {
   FIELD_OPTIONS,
+  ORDER_STATUS_OPTIONS,
   STATUS_OPTIONS,
   useConsultationsOrdersTableFilters
 } from './use-allorders-table-filters';
@@ -31,6 +32,8 @@ export default function AllOrdersTable({
     searchQuery,
     statusFilter,
     setStatusFilter,
+    orderStatusFilter,
+    setOrderStatusFilter,
     setPage,
     setSearchQuery
   } = useConsultationsOrdersTableFilters();
@@ -97,17 +100,26 @@ export default function AllOrdersTable({
         />
         <DataTableFilterBox
           filterKey="field"
-          title="Filetr By Field"
+          title="Filter By Field"
           options={FIELD_OPTIONS}
           setFilterValue={setFieldFilter}
           filterValue={fieldFilter}
         />
         <DataTableFilterBox
-          filterKey="status"
-          title="Filter By Status"
+          filterKey="paymentStatus"
+          title="Filter By Payment Status"
           options={STATUS_OPTIONS}
           setFilterValue={setStatusFilter}
           filterValue={statusFilter}
+        />
+        <DataTableFilterBox
+          filterKey="orderStatus"
+          title="Filter By Order Status"
+          options={ORDER_STATUS_OPTIONS}
+          setFilterValue={setOrderStatusFilter}
+          filterValue={
+            typeof orderStatusFilter === 'string' ? orderStatusFilter : ''
+          }
         />
         <Button variant="outline" onClick={handleSearch}>
           Search

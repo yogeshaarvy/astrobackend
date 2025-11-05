@@ -49,23 +49,39 @@ export const fetchConsultationOrderList = createAsyncThunk<
     field?: string;
     active?: string;
     exportData?: boolean;
+    paymentStatus?: string;
+    orderStatus?: string;
   } | void,
   { state: RootState }
 >(
   'orders/fetchConsultationOrderList',
   async (input, { dispatch, rejectWithValue, getState }) => {
     try {
-      const { page, pageSize, keyword, field, active, exportData } =
-        input || {};
+      const {
+        page,
+        pageSize,
+        keyword,
+        field,
+        active,
+        exportData,
+        paymentStatus,
+        orderStatus
+      } = input || {};
 
       dispatch(fetchConsultationOrderListStart());
 
+      const params = new URLSearchParams();
+      params.append('page', String(page || 1));
+      params.append('limit', String(pageSize || 5));
+      if (field) params.append('field', field);
+      if (keyword) params.append('text', keyword);
+      if (active) params.append('active', active);
+      if (exportData) params.append('exportData', String(exportData));
+      if (paymentStatus) params.append('paymentStatus', paymentStatus);
+      if (orderStatus) params.append('orderStatus', orderStatus);
+
       const response = await fetchApi(
-        `/astrodetails/getbooking/admin?page=${page || 1}&limit=${
-          pageSize || 5
-        }&field=${field || ''}&text=${keyword || ''}&active=${
-          active || ''
-        }&exportData=${exportData || false}`,
+        `/astrodetails/getbooking/admin?${params.toString()}`,
         { method: 'GET' }
       );
 

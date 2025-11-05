@@ -777,7 +777,35 @@ export const navItems: NavItem[] = [
       {
         title: 'Consultation',
         url: '/dashboard/orders/consultation',
-        icon: 'speech'
+        icon: 'speech',
+        isActive: false,
+        items: [
+          {
+            title: 'All Consultation',
+            url: '/dashboard/orders/consultation',
+            icon: 'shoppingCart'
+          },
+          {
+            title: 'Not Started',
+            url: '/dashboard/orders/consultation?orderStatus=no-started',
+            icon: 'general'
+          },
+          // {
+          //   title: 'In Progress',
+          //   url: '/dashboard/orders/consultation?orderStatus=progress',
+          //   icon: 'spinner'
+          // },
+          // {
+          //   title: 'Cancel',
+          //   url: '/dashboard/orders/consultation?orderStatus=cancel',
+          //   icon: 'cancel'
+          // },
+          {
+            title: 'Completed',
+            url: '/dashboard/orders/consultation?orderStatus=complete',
+            icon: 'checkCheck'
+          }
+        ]
       }
     ]
   },

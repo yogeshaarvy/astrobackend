@@ -6,14 +6,16 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 export const STATUS_OPTIONS = [
-  { value: 'succcess', label: 'Succcess' },
-  { value: 'panding', label: 'Panding' },
-  { value: 'failed', label: 'Failed' }
+  { value: 'success', label: 'Success' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'falied', label: 'Failed' }
 ];
 export const ORDER_STATUS_OPTIONS = [
-  { value: 'completed', label: 'Completed' },
-  { value: 'panding', label: 'Panding' },
-  { value: 'failed', label: 'Failed' }
+  { value: 'no started', label: 'Not started' },
+  { value: 'progress', label: 'Progress' },
+  { value: 'start', label: 'Start' },
+  { value: 'complete', label: 'Complete' },
+  { value: 'cancel', label: 'Cancel' }
 ];
 export const FIELD_OPTIONS = [
   { value: 'orderId', label: 'Order Id' },
@@ -33,7 +35,12 @@ export function useConsultationsOrdersTableFilters() {
     searchParams.field.withOptions({ shallow: false }).withDefault('')
   );
   const [statusFilter, setStatusFilter] = useQueryState(
-    'status',
+    'paymentStatus',
+    searchParams.status.withOptions({ shallow: false }).withDefault('')
+  );
+
+  const [orderStatusFilter, setOrderStatusFilter] = useQueryState(
+    'orderStatus',
     searchParams.status.withOptions({ shallow: false }).withDefault('')
   );
 
@@ -45,13 +52,22 @@ export function useConsultationsOrdersTableFilters() {
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
     setStatusFilter(null);
+    setOrderStatusFilter(null);
     setFieldFilter(null);
     setPage(1);
-  }, [setSearchQuery, setPage, setStatusFilter]);
+  }, [
+    setSearchQuery,
+    setPage,
+    setStatusFilter,
+    setOrderStatusFilter,
+    setFieldFilter
+  ]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!statusFilter;
-  }, [searchQuery, statusFilter]);
+    return (
+      !!searchQuery || !!statusFilter || !!orderStatusFilter || !!fieldFilter
+    );
+  }, [searchQuery, statusFilter, orderStatusFilter, fieldFilter]);
 
   return {
     searchQuery,
@@ -60,6 +76,8 @@ export function useConsultationsOrdersTableFilters() {
     setFieldFilter,
     statusFilter,
     setStatusFilter,
+    orderStatusFilter,
+    setOrderStatusFilter,
     page,
     setPage,
     resetFilters,
