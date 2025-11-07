@@ -364,7 +364,7 @@ export default function ProductsForm() {
         if (!variation.length) missingVariationFields.push('Length');
         if (pData.productype != 'simpleproduct') {
           if (!variation.sku) missingVariationFields.push('SKU');
-          if (!variation.image) missingVariationFields.push('Image');
+          // if (!variation.image) missingVariationFields.push('Image');
         }
 
         if (missingVariationFields.length > 0) {
