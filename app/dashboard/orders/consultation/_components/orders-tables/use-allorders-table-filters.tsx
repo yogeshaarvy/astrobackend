@@ -12,10 +12,10 @@ export const STATUS_OPTIONS = [
 ];
 export const ORDER_STATUS_OPTIONS = [
   { value: 'no started', label: 'Not started' },
-  { value: 'progress', label: 'Progress' },
-  { value: 'start', label: 'Start' },
-  { value: 'complete', label: 'Complete' },
-  { value: 'cancel', label: 'Cancel' }
+  // { value: 'progress', label: 'Progress' },
+  // { value: 'start', label: 'Start' },
+  { value: 'complete', label: 'Complete' }
+  // { value: 'cancel', label: 'Cancel' }
 ];
 export const FIELD_OPTIONS = [
   { value: 'orderId', label: 'Order Id' },
